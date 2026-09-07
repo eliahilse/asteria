@@ -21,4 +21,5 @@ export type Dataset = {
   schemaVersion: number; title: string; fingerprint: string; artifactCommit: string;
   cohorts: { id: string; label: string; attempts: number; selection: string }[];
   threatModel: string; facts: Fact[]; runs: Run[]; limitations: string[]; artifacts: Artifact[];
+  securityProtocols: { protocol: string; evaluatedAt: string; environment: Record<string, string>; inputHashes: Record<string, string>; limitations: string[]; controls: { target: string; validated: boolean; expected: Record<string, string>; checks: Check[] }[] }[];
 };

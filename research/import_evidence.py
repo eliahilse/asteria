@@ -145,11 +145,21 @@ class Importer:
                 "rawResponse": None, "source": str(PILOT / "published_full_pass_security.json"), "securityEvaluation": None})
         # New evaluations live separately from preserved historical observations.
         evaluation_path = Path("research/results/highscore-security-v1.json")
+        security_protocols = []
         if (self.root / evaluation_path).exists():
             evaluation = self.read(evaluation_path)
+            if not evaluation["controls"] or not all(c["validated"] for c in evaluation["controls"]):
+                raise ValueError("Security evaluation lacks validated controls")
+            for path, sha in evaluation["inputHashes"].items():
+                if self.artifact(path)["sha256"] != sha:
+                    raise ValueError(f"Security evaluation input hash mismatch: {path}")
+            security_protocols.append({k: v for k, v in evaluation.items() if k != "runs"})
             for run in runs:
                 observed = next((r for r in evaluation["runs"] if r["run_id"] == run["id"]), None)
                 if observed:
+                    for path, sha in observed["inputHashes"].items():
+                        if self.artifact(path)["sha256"] != sha:
+                            raise ValueError(f"Evaluated source hash mismatch: {path}")
                     run["securityEvaluation"] = {**observed, "source": str(evaluation_path), "protocol": evaluation["protocol"], "environment": evaluation["environment"]}
         for suite, filename in (("unit", "ApoMarioHighscoreTest.java"), ("invoked", "ApoMarioHighscoreInvokedTest.java"), ("autonomous", "ApoMarioHighscoreAutonomousTest.java")):
             self.artifact(Path("vamos-artifact/Tests") / filename)
@@ -158,6 +168,7 @@ class Importer:
             "cohorts": [{"id": "fresh_pilot", "label": "Fresh pilot", "attempts": 16, "selection": "All 16 attempts; two repetitions per model × strategy × intervention cell."},
                         {"id": "published_selected", "label": "Published · selected", "attempts": 80, "selection": "Only the six fully functional outputs are included. Not representative of all 80 attempts; never pool with the fresh pilot."}],
             "threatModel": reviews["threat_model"], "facts": facts, "runs": runs,
+            "securityProtocols": security_protocols,
             "limitations": ["Exploratory sample: two repetitions per fresh-pilot cell; no causal or general security claims.",
                 "Source adjudication and executable security checks are separate evidence layers.",
                 "The historical six-check security suite did not execute: Java runtime unavailable.",
