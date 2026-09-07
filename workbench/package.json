@@ -1,0 +1,35 @@
+{
+  "name": "asteria-research-workbench",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "data": "cd .. && python3 -m research.import_evidence",
+    "predev": "npm run data",
+    "dev": "vite --host 127.0.0.1",
+    "prebuild": "npm run data",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "diff": "^8.0.2",
+    "exceljs": "4.4.0",
+    "lucide-react": "^0.577.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "typescript": "^5.9.3",
+    "vite": "8.2.2",
+    "vitest": "5.0.0"
+  }
+}
