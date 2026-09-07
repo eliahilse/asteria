@@ -12,13 +12,24 @@ npm run dev -- --port 5173
 Open http://localhost:5173. Changes update live. No model connection is needed to
 inspect the test definitions, extracted contexts or frozen prompts.
 
+**Experiment** is the default tab. It shows the original Generation/Reuse ×
+S/F/B matrix with security cases as additional columns. Local attempts are read
+automatically from `.local/experiments/<study-id>`; no import environment variables
+are needed for this matrix. Open a cell for all 27 test contracts, separate outcome
+counts, raw diagnostics and exact submitted prompts. JSON/XLSX exports retain
+condition, attempt and test-level denominators. The public build contains plans
+only. See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
+
 **Context generation** creates fresh Luna security context from a selected game
 repository and a feature task. Its local backend reads the gitignored adapter
 configuration and saves inputs, outputs and traces in `.local/context-generation`.
 See [the acquisition protocol](../research/CONTEXT_GENERATION.md). Generation has
 its own JSON exports; experiment exports do not include private generations.
 
-## Import new observations locally
+## Earlier single-axis study views
+
+Results, Runs, Contexts and Conditions retain the previous study design for
+inspection. They are separate from the current paper-matrix experiment.
 
 The [adapter](../research/ADAPTER.md) writes run records and the
 [evaluator](../research/EVALUATION.md) writes separate reports. Select those

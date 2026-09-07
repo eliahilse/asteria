@@ -11,10 +11,12 @@ npm ci
 npm run dev
 ```
 
-The next Luna study has 16 frozen conditions and 140 planned attempts. Connect
-your provider through the [private adapter protocol](research/ADAPTER.md); local
-adapters, credentials and observations stay gitignored. Validate the plan without
-making model calls with `python3 -m research.run_experiment` from the root.
+The main experiment replays the original **2 methods × 8 context combinations**
+for Highscore: 80 Luna attempts, followed by 80 fresh control/security attempts
+on the four selected combinations. See the [frozen protocol](research/MATRIX_EXPERIMENT.md).
+Connect your provider through the [private adapter protocol](research/ADAPTER.md);
+local adapters, credentials and observations stay gitignored. The default
+Experiment tab reads local observations as they are evaluated.
 
 Migrated from the local `B` workspace. The reports, experiments, audit evidence,
 corpus, and upstream source snapshots are preserved here. See

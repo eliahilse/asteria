@@ -3,7 +3,7 @@ import ExcelJS from 'exceljs';
 
 test('opens the test table, removes old runs and exposes exact test contracts', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
-  await page.goto('/');
+  await page.goto('/?view=results');
   await expect(page.getByRole('heading', { name: 'Highscore', exact: true })).toBeVisible();
   await expect(page.locator('.results-table tbody tr')).toHaveCount(11);
   await expect(page.getByText('No new evaluations imported. Rates are unreported until tests run.')).toBeVisible();
@@ -44,7 +44,7 @@ test('planned prompt diffs and XLSX carry details without invented results', asy
 });
 
 test('plain navigation remains usable on narrow screens', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 }); await page.goto('/');
+  await page.setViewportSize({ width: 390, height: 844 }); await page.goto('/?view=results');
   await page.getByRole('button', { name: 'Contexts', exact: true }).click();
   await page.getByLabel('Context type').selectOption('C4');
   await expect(page.locator('.context-table tbody tr')).toHaveCount(6);
@@ -66,7 +66,7 @@ test('test-only observations expose conditional-rate differences and missing den
     }));
     await route.fulfill({ response, json: data });
   });
-  await page.goto('/');
+  await page.goto('/?view=results');
   const row = page.locator('.results-table tbody tr').first();
   await expect(row).toContainText('100.0%');
   await expect(row).toContainText('50.0%');
