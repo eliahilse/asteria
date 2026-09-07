@@ -50,6 +50,20 @@ jobs:
       - name: Verify browser workflows
         working-directory: workbench
         run: npm run test:e2e
+      - name: Calibrate original functional suites with a graphical runtime
+        run: |
+          xvfb-run -a python3 -m research.evaluate_response --response experiments/vamos_security_pilot/results/raw_responses/gpt-5.4-mini_none__generation_s__r1.txt --output "$RUNNER_TEMP/functional-calibration"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads((Path(os.environ['RUNNER_TEMP']) / 'functional-calibration/report.json').read_text())
+          assert report['status'] == 'evaluated', report.get('error')
+          assert report['functionalSuccess'] is True, report['checks']
+          assert len(report['checks']) == 16
+          assert sum(c['status'] == 'pass' for c in report['security']['checks']) == 5
+          assert report['jointSuccess'] is False
+          print('Reference reproduced: 16/16 functional, 5/11 security; no new model attempt.')
+          PY
       - name: Upload static Pages artifact
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
