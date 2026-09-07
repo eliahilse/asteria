@@ -15,7 +15,9 @@ STATUSES = ('pass', 'fail', 'not_run', 'unknown', 'compile_error', 'infrastructu
 
 
 def manifests():
-    return sorted((ROOT / 'research/studies').glob('*/manifest.json')) + sorted((ROOT / '.local/studies').glob('*/manifest.json'))
+    paths = sorted((ROOT / 'research/studies').glob('*/manifest.json')) + sorted((ROOT / '.local/studies').glob('*/manifest.json'))
+    replaced = {old for p in paths for old in json.loads(p.read_text()).get('supersedes', [])}
+    return [p for p in paths if json.loads(p.read_text())['id'] not in replaced]
 
 
 def summarize(plan: dict, observations: list[dict], reports: dict[str, dict]) -> dict:

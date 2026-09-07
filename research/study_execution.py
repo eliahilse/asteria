@@ -28,8 +28,10 @@ def submit(plan: dict, manifest: Path, row: dict, directory: Path, command: list
     path = directory / f"{row['runId']}.json"
     if path.exists(): return json.loads(path.read_text())
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
+    prompt = (manifest.parent / condition['promptFile']).read_bytes().decode('utf-8')
+    if digest(prompt.encode()) != condition['promptSha256']: raise ValueError('Submission bytes differ from the frozen prompt')
     request = {'protocol_version': 1, 'request_id': row['runId'], 'model': plan['model'],
-               'messages': [{'role': 'user', 'content': (manifest.parent / condition['promptFile']).read_text()}],
+               'messages': [{'role': 'user', 'content': prompt}],
                'settings': {'reasoning_effort': plan['reasoning'], 'temperature': plan['temperature'], 'max_output_tokens': plan['maxOutputTokens']}}
     record = {'schemaVersion': 1, **row, 'status': 'started', 'startedAt': timestamp(),
               'manifestFingerprint': plan['fingerprint'], 'promptSha256': condition['promptSha256'],
