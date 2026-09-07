@@ -1,64 +1,58 @@
+import json
+import tempfile
 import unittest
+from pathlib import Path
 from research.import_evidence import Importer, ROOT, canonical, digest
 
 
 class EvidenceTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.data = Importer().build()
-        cls.fresh = [r for r in cls.data['runs'] if r['cohort'] == 'fresh_pilot']
+    def test_current_study_has_no_historical_runs_or_result_payloads(self):
+        data = Importer().build()
+        self.assertEqual(data['schemaVersion'], 2)
+        self.assertEqual(data['runs'], [])
+        self.assertEqual(len(data['tests']), 27)
+        self.assertEqual(sum(t['kind'] == 'security' for t in data['tests']), 11)
+        self.assertFalse(any('/results/' in a['path'] and ('pilot' in a['path'] or 'meeting' in a['path']) for a in data['artifacts']))
+        self.assertEqual(len(data['experimentPlans'][0]['schedule']), 140)
 
-    def test_preserves_attempt_denominators(self):
-        self.assertEqual(len(self.fresh), 16)
-        self.assertEqual(sum(r['compileStatus'] == 'pass' for r in self.fresh), 4)
-        self.assertEqual(sum(r['functionalSuccess'] for r in self.fresh), 1)
-        self.assertEqual(sum(len(r['findings']) for r in self.fresh), 3)
-
-    def test_plans_and_extracted_facts_are_not_model_observations(self):
-        extraction = self.data['contextExtraction']
-        self.assertEqual(extraction['coverage']['parsedFiles'], 168)
-        self.assertEqual(len(extraction['facts']), 145)
-        plan = self.data['experimentPlans'][0]
-        self.assertEqual(len(plan['schedule']), 140)
-        self.assertTrue(all(c['prompt']['sha256'] == c['promptSha256'] for c in plan['conditions']))
-        self.assertFalse(any(r['model'] == plan['model'] for r in self.data['runs']))
-
-    def test_missing_java_is_not_a_security_failure_or_pass(self):
-        checks = [t for r in self.fresh for t in r['tests'] if t['suite'] == 'security']
-        self.assertEqual(sum(t['status'] == 'infrastructure_error' for t in checks), 24)
-        self.assertFalse(any(t['status'] in ('pass', 'fail') for t in checks))
-
-    def test_no_invented_observations_for_selected_published_runs(self):
-        published = [r for r in self.data['runs'] if r['cohort'] == 'published_selected']
-        self.assertEqual(len(published), 6)
-        self.assertTrue(all(not r['tests'] and r['prompt'] is None for r in published))
-
-    def test_every_artifact_matches_original_bytes(self):
-        for artifact in self.data['artifacts']:
+    def test_source_bytes_and_fingerprint_are_reproducible(self):
+        data = Importer().build()
+        for artifact in data['artifacts']:
             self.assertEqual(digest((ROOT / artifact['path']).read_bytes()), artifact['sha256'])
+        self.assertEqual(data, Importer().build())
+        self.assertEqual(data.pop('fingerprint'), digest(canonical(data)))
 
-    def test_fingerprint_is_reproducible(self):
-        self.assertEqual(self.data, Importer().build())
-        data = dict(self.data)
-        fingerprint = data.pop('fingerprint')
-        self.assertEqual(fingerprint, digest(canonical(data)))
+    def test_deleted_payloads_are_pruned_from_generated_assets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            (out / 'evidence').mkdir()
+            stale = out / 'evidence' / ('0' * 64 + '.txt')
+            stale.write_text('old result')
+            Importer().write(out)
+            self.assertFalse(stale.exists())
 
     def test_rejects_artifacts_outside_repository(self):
-        with self.assertRaises(ValueError):
-            Importer().artifact('../outside.txt')
+        with self.assertRaises(ValueError): Importer().artifact('../outside.txt')
 
-    def test_new_execution_preserves_historical_errors(self):
-        if not self.data['securityProtocols']:
-            self.skipTest('No new security evaluation imported')
-        observed = [r for r in self.fresh if r['securityEvaluation']]
-        self.assertEqual(len(observed), 4)
-        self.assertTrue(all(len(r['securityEvaluation']['checks']) == 11 for r in observed))
-        self.assertTrue(all(t['status'] == 'infrastructure_error' for r in observed for t in r['tests'] if t['suite'] == 'security'))
-        constrained = next(r for r in observed if r['securityContext'])
-        self.assertEqual(constrained['assessment'], 'no_targeted_findings')
-        self.assertEqual(constrained['securityEvaluation']['status'], 'fail')
-        self.assertEqual([t['name'] for t in constrained['securityEvaluation']['checks'] if t['status'] == 'fail'], ['oversizedPhysicalLine'])
+    def test_new_attempts_require_explicit_import_and_missing_checks_stay_unrun(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            out = Path(directory)
+            data = Importer().build(); plan = data['experimentPlans'][0]; row = plan['schedule'][0]
+            condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
+            settings = dict(reasoning_effort=plan['reasoning'], temperature=plan['temperature'], max_output_tokens=plan['maxOutputTokens'])
+            request = dict(protocol_version=1, request_id=row['runId'], model=plan['model'], settings=settings,
+                           messages=[dict(role='user', content=(ROOT / condition['prompt']['path']).read_text())])
+            record = dict(schemaVersion=1, **row, manifestFingerprint=plan['fingerprint'], request=request, requestSha256=digest(canonical(request)))
+            record.update(status='adapter_error', errorCategory='adapter_start_failed')
+            (out / 'attempt.json').write_bytes(canonical(record))
+            self.assertEqual(Importer().build()['runs'], [])
+            runs = Importer(runs_dir=out).build()['runs']
+            self.assertEqual(len(runs), 1)
+            self.assertTrue(all(c['status'] == 'not_run' for c in runs[0]['checks']))
+            self.assertEqual(runs[0]['compileStatus'], 'not_run')
+            record['request']['messages'][0]['content'] = 'tampered'
+            (out / 'attempt.json').write_bytes(canonical(record))
+            with self.assertRaisesRegex(ValueError, 'frozen prompt'): Importer(runs_dir=out).build()
 
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__': unittest.main()
