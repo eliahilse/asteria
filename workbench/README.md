@@ -12,6 +12,12 @@ npm run dev -- --port 5173
 Open http://localhost:5173. Changes update live. No model connection is needed to
 inspect the test definitions, extracted contexts or frozen prompts.
 
+**Context generation** creates fresh Luna security context from a selected game
+repository and a feature task. Its local backend reads the gitignored adapter
+configuration and saves inputs, outputs and traces in `.local/context-generation`.
+See [the acquisition protocol](../research/CONTEXT_GENERATION.md). Generation has
+its own JSON exports; experiment exports do not include private generations.
+
 ## Import new observations locally
 
 The [adapter](../research/ADAPTER.md) writes run records and the
