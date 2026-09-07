@@ -122,3 +122,16 @@ The default **Experiment** tab reads local records without initiating model call
 Its JSON/XLSX exports include condition and test-level counts and observations.
 The static deployment contains only public plans; private requests and responses
 are never included in its assets.
+
+To export a reviewable local results report and evidence-hash snapshot:
+
+```sh
+python3 -m research.report_matrix
+```
+
+The report marks incomplete collection, preserves every test denominator, and
+includes per-cell 95% Wilson intervals for full functional success using the
+[NIST formula](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm).
+Intervals assume independent draws with stable success probability within a cell;
+there is no multiplicity-adjusted confirmatory claim. At 0/5 successes the interval
+still extends to approximately 43.4%. Generated reports stay in `.local/reports`.
