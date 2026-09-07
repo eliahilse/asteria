@@ -1,9 +1,22 @@
 import unittest
-from research.evaluate_response import junit_checks
+import tempfile
+from pathlib import Path
+from types import SimpleNamespace
+from research.evaluate_response import junit_checks, stable_import_index
 from research.import_evidence import TEST_NAMES
 
 
 class FunctionalParserTests(unittest.TestCase):
+    def test_duplicate_class_names_do_not_select_a_package_by_directory_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('z/ApoMarioAnalysis.java', 'a/ApoMarioAnalysis.java', 'game/Unique.java'):
+                path = root / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('')
+            gr = SimpleNamespace(GAME_PROJECTS={'ApoMario': directory})
+            ambiguous = stable_import_index(gr)
+            self.assertEqual(gr.import_index_per_game['ApoMario'], {'Unique': 'game.Unique'})
+            self.assertEqual(ambiguous['ApoMario']['ApoMarioAnalysis'], ['a.ApoMarioAnalysis', 'z.ApoMarioAnalysis'])
+
     def test_pass_requires_complete_count_and_zero_exit(self):
         self.assertTrue(all(c['status'] == 'pass' for c in junit_checks('unit', 'OK (7 tests)', 0)))
         for output, code in [('OK (1 test)', 0), ('OK (7 tests)', 1), ('OK (7 tests)', None), ('JUnit version 4.13.2', -6), ('Tests run: 7, Failures: 0', 1)]:
