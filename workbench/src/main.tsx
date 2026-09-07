@@ -4,9 +4,10 @@ import { diffLines } from 'diff';
 import type { Artifact, Dataset, Run, TestDefinition } from './types';
 import { rate, statusLabel, tally, testComparisons } from './analysis';
 import { ContextGeneration } from './context-generation';
+import { Experiment } from './experiment';
 import './styles.css';
 
-const tabs = ['results', 'runs', 'generation', 'contexts', 'conditions'] as const;
+const tabs = ['experiment', 'results', 'runs', 'generation', 'contexts', 'conditions'] as const;
 type Tab = typeof tabs[number];
 const label = (s: string) => s.replaceAll('_', ' ');
 const read = async (a: Artifact) => { const r = await fetch(a.href); if (!r.ok) throw new Error(`Cannot read ${a.path}`); return r.text(); };
@@ -54,7 +55,7 @@ function Conditions({ data }: { data: Dataset }) {
 }
 function App({ data }: { data: Dataset }) {
   const initial = new URLSearchParams(location.search).get('view') as Tab;
-  const [tab, setTab] = useState<Tab>(tabs.includes(initial) ? initial : 'results');
+  const [tab, setTab] = useState<Tab>(tabs.includes(initial) ? initial : 'experiment');
   const [stage, setStage] = useState('ablation'), [strategy, setStrategy] = useState('Generation'), [condition, setCondition] = useState('generation_security_all'), [suite, setSuite] = useState('security');
   const [exporting, setExporting] = useState(false), [error, setError] = useState('');
   const plan = data.experimentPlans[0], conditions = plan.conditions.filter(c => c.stage === stage && c.strategy === strategy);
@@ -63,9 +64,9 @@ function App({ data }: { data: Dataset }) {
   const selection = { planId: plan.id, baseline: baseline.id, condition: treatment.id, suite };
   useEffect(() => { history.replaceState(null, '', `?view=${tab}`); }, [tab]);
   const download = async (format: 'json' | 'xlsx') => { setError(''); setExporting(true); try { const { exportData } = await import('./export'); await exportData(data, selection, format); } catch (e) { setError(String(e)); } finally { setExporting(false); } };
-  return <main><header><h1>Highscore</h1>{tab !== 'generation' && <div className="exports"><button onClick={() => download('json')} disabled={exporting}>JSON</button><button onClick={() => download('xlsx')} disabled={exporting}>{exporting ? 'Exporting…' : 'Export XLSX'}</button></div>}</header><nav aria-label="Explorer">{tabs.map(t => <button key={t} aria-current={tab === t ? 'page' : undefined} onClick={() => setTab(t)}>{t === 'generation' ? 'Context generation' : t[0].toUpperCase() + t.slice(1)}</button>)}</nav>{error && <p role="alert">{error}</p>}
+  return <main><header><h1>Highscore</h1>{tab !== 'generation' && tab !== 'experiment' && <div className="exports"><button onClick={() => download('json')} disabled={exporting}>JSON</button><button onClick={() => download('xlsx')} disabled={exporting}>{exporting ? 'Exporting…' : 'Export XLSX'}</button></div>}</header><nav aria-label="Explorer">{tabs.map(t => <button key={t} aria-current={tab === t ? 'page' : undefined} onClick={() => setTab(t)}>{t === 'generation' ? 'Context generation' : t[0].toUpperCase() + t.slice(1)}</button>)}</nav>{error && <p role="alert">{error}</p>}
     {tab === 'results' && <><div className="filters"><label>Scenarios<select aria-label="Scenario" value={stage} onChange={e => setStage(e.target.value)}><option value="ablation">Security only</option><option value="bridge">Original prompts</option></select></label><label>Strategy<select aria-label="Strategy" value={strategy} onChange={e => setStrategy(e.target.value)}><option>Generation</option><option>Reuse</option></select></label><label>Treatment<select aria-label="Treatment" value={treatment.id} onChange={e => setCondition(e.target.value)}>{conditions.map(c => <option key={c.id} value={c.id}>{c.contextTypes.join(' + ') || 'No security facts'} · {c.factCount} facts</option>)}</select></label><label>Tests<select aria-label="Tests" value={suite} onChange={e => setSuite(e.target.value)}><option value="security">Security</option><option value="functional">Functional</option><option value="unit">Unit</option><option value="invoked">Invoked integration</option><option value="autonomous">Autonomous integration</option><option value="all">All tests</option></select></label></div><p className="note">{plan.model} · {plan.reasoning} · Baseline: {baseline.id} · Treatment: {treatment.id}</p>{!runs.length && <p className="empty">No new evaluations imported. Rates are unreported until tests run.</p>}<Results data={data} a={a} b={b} suite={suite} /></>}
-    {tab === 'runs' && <Runs data={data} runs={runs} />}{tab === 'generation' && <ContextGeneration />}{tab === 'contexts' && <><p className="note">Earlier static extraction. These records are not supplied to Luna context generation.</p><Contexts data={data} /></>}{tab === 'conditions' && <Conditions data={data} />}
+    {tab === 'experiment' && <Experiment definitions={data.tests} />}{tab === 'runs' && <Runs data={data} runs={runs} />}{tab === 'generation' && <ContextGeneration />}{tab === 'contexts' && <><p className="note">Earlier static extraction. These records are not supplied to Luna context generation.</p><Contexts data={data} /></>}{tab === 'conditions' && <Conditions data={data} />}
   </main>;
 }
 function Loader() {
