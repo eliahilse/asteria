@@ -1,50 +1,59 @@
-# Evidence model, version 1
+# Study data, version 2
 
-The unit of observation is one attempt, one named test execution, or one finding.
-Attempts belong to a cohort and a model × strategy × context condition. Repetition
-numbers identify observations; they do not imply paired random seeds.
+The browser dataset contains current study definitions and explicitly imported
+new attempts. Old pilot and selected published runs are no longer imported,
+rendered or exported. Generation of the static data also removes stale result
+payloads from its evidence directory.
 
-`python3 -m research.import_evidence` builds the browser dataset from preserved
-source files. No source evidence is modified. Its SHA-256 fingerprint is computed
-over canonical JSON excluding the fingerprint itself. Every evidence artifact
-retains a repository path, byte count and content hash. Exact historical prompt
-hashes and character counts are checked against the submitted run state.
+## Test-level records
 
-## Observation semantics
+Each attempt has a frozen condition and one status slot for each of 27 declared
+checks: 11 security checks and 16 functional checks. Test definitions include
+input/scenario, expected outcome, security category, CWE review tags, coverage
+limits and executable source. Descriptions and taxonomy links are human-authored
+metadata, not additional test execution evidence.
 
-- `pass` / `fail`: an observed test outcome.
-- `not_run`: no execution result exists.
-- `compile_error`: a test suite could not compile.
+- `pass` / `fail`: recorded outcome for the declared test.
+- `not_run`: no outcome recorded.
+- `unknown`: inconclusive execution, including unsupported persistence formats.
+- `compile_error`: the relevant evaluation could not compile.
 - `infrastructure_error`: the environment prevented evaluation.
-- Empty tests on the selected published cohort: individual observations were not
-  imported; aggregate reported suite results are retained separately.
-- `source_adjudicated`: a historical source-review conclusion. It does not imply
-  that an exploit was executed.
-- Scanner candidates remain separate from adjudicated findings.
-- `no_targeted_findings` means the fixed historical review found no targeted
-  patterns. It does not mean the implementation is universally secure.
-- Missing cost, reasoning settings or token observations are null/absent, never 0.
 
-The six selected published successes are separated from the complete 16-attempt
-fresh pilot. The interface defaults to the latter and never pools the cohorts.
-Compilation and functional-success rates use all attempts in the selected cell.
-Security results must state the assessed denominator and the missing count.
-Per-test rates describe test coverage; tests within one implementation are not
-independent experimental replicates.
+The main table reports pass / (pass + fail), with unresolved counts beside it.
+Opening a test shows all statuses separately, pass / all imported attempts and a
+95% Wilson interval for the tested proportion. An empty denominator is null,
+rendered as a dash, never 0%. Compilation failures do not invent individual test
+failures. Different evaluator/environment signatures withhold rate differences.
 
-The original missing-Java observations remain historical records. Any rerun is
-stored in `research/results/` with a protocol, environment and evidence, and is
-displayed separately. Queue elapsed seconds include orchestration and collection
-delay and must not be described as model inference latency.
+Differences are unpaired percentage points. Repetition IDs are not shared model
+seeds. Tests within one generation are not independent experimental replicates.
+Different fractions of unresolved tests can bias a comparison of conditional pass
+rates; inspect the all-attempt denominator and reasons before interpreting it.
 
-## Context provenance
+## New run import
 
-The five numbered historical constraints are imported as `legacy_mixed` facts.
-They are not retrospectively relabeled as automatically generated C1–C4 contexts.
-Automatic extraction, proposed conditions and executed conditions are distinct.
+`ASTERIA_RUNS_DIR` and `ASTERIA_EVALUATIONS_DIR`, or corresponding CLI arguments,
+select input directories explicitly. No private directory is discovered by
+default. Each run must match the frozen schedule, exact prompt, request hash and
+model settings. Evaluations must match the observation file and response bytes;
+source hashes and security control outcomes are verified. Calibration reports
+are excluded. Missing evaluation reports leave the check slots unevaluated.
 
-Future observations must freeze source and test revisions, extraction rules,
-threat model, exact prompt, context fact IDs, model settings and raw outputs.
-Evaluation reports should include both vulnerable and corrected controls and
-explain untested properties. Requirements must not be inferred from test results
-and fed back into a supposedly independent generation experiment.
+The dataset fingerprint covers canonical JSON excluding the fingerprint itself.
+Evidence artifacts have exact byte counts, source paths and SHA-256 hashes. XLSX
+preserves individual statuses and both denominators; long evidence is chunked,
+not truncated. Missing usage and billed cost remain unrecorded.
+
+## Contexts and scenarios
+
+C1 records security-relevant syntax, C2 local flow candidates, C3 existing audit
+leads with original status, and C4 declared policy. Counts measure records, not
+vulnerabilities. Type, scope, injection timing and evidence status are separate
+fields. Source facts do not establish receiver binding, effective guards or
+runtime reachability. See [extraction methods](../research/context/README.md).
+
+The current study freezes both the original Highscore prompt scenarios and a
+security-only ablation. Within each strategy, treatments compare against the
+corresponding baseline. The original-prompt bridge and ablation differ in other
+prompt content and must not be pooled. Dynamic reinjection is not part of this
+version. No completed model attempts are implied by a planned schedule.
