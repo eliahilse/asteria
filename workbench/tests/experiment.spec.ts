@@ -51,3 +51,34 @@ test('matrix distinguishes tested rates from all attempts and opens raw diagnost
   await page.getByText('Original model response', { exact: true }).click();
   await expect(page.getByText('Browser test fixture, not a model result', { exact: true })).toBeVisible();
 });
+
+test('follow-up overlays only selected rows and compares their fresh controls', async ({ page }) => {
+  await page.route('**/api/experiment', async route => {
+    const data = await (await page.request.get('/data/matrix.json')).json();
+    data.local = true;
+    const baseline = data.studies[0], selected = ['reuse_b', 'reuse_sb', 'generation_s', 'generation_sfb'];
+    const next = structuredClone(baseline);
+    next.plan.id = 'browser-followup-only'; next.plan.phase = 'security_followup';
+    next.plan.conditions = baseline.plan.conditions.filter((c: { id: string }) => selected.includes(c.id)).flatMap((c: { id: string }) => ['none', 'overview', 'task', 'flows'].map(strategy => ({ ...c, id: `${c.id}__${strategy}`, parentCondition: c.id, securityStrategy: strategy })));
+    next.summary.conditions = next.plan.conditions.map((c: { id: string; parentCondition: string; securityStrategy: string }) => {
+      const r = structuredClone(baseline.summary.conditions.find((r: { id: string }) => r.id === c.parentCondition));
+      r.id = c.id;
+      if (c.parentCondition === 'reuse_b' && ['none', 'flows'].includes(c.securityStrategy)) {
+        r.attempts = 2;
+        Object.assign(r.checks[0], { pass: 1, fail: c.securityStrategy === 'flows' ? 1 : 0, not_run: c.securityStrategy === 'none' ? 1 : 0, attempts: 2, executed: c.securityStrategy === 'flows' ? 2 : 1, passRate: c.securityStrategy === 'flows' ? 0.5 : 1, allAttemptRate: 0.5 });
+      }
+      return r;
+    });
+    data.studies.push(next);
+    await route.fulfill({ json: data });
+  });
+  await page.goto('/');
+  await page.getByLabel('Stage', { exact: true }).selectOption('browser-followup-only');
+  await expect(page.locator('.experiment-matrix tbody tr')).toHaveCount(16);
+  await expect(page.locator('.experiment-matrix tbody button')).toHaveCount(16);
+  await expect(page.getByText('Not selected', { exact: true })).toHaveCount(48);
+  await page.getByRole('button', { name: 'Reuse B Security data flows', exact: true }).click();
+  const row = page.locator('.security-comparison tbody tr').first();
+  await expect(row).toContainText('-50.0');
+  await expect(row.locator('td').last()).toHaveText('0.0');
+});
