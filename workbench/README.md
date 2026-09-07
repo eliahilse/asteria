@@ -1,62 +1,54 @@
-# Asteria research workbench
+# Highscore explorer
 
-An offline-capable React workbench over the preserved Highscore evidence. It
-separates source-review conclusions, scanner candidates and executable tests.
-The selected published successes are never pooled with the complete fresh pilot.
-
-From this directory, with Node.js 22.12+ and Python 3.10+:
+A plain interface for individual test outcomes, security contexts and prompt
+comparisons. The default dataset contains the current study and no old runs.
 
 ```sh
+cd workbench
 npm ci
-npm run dev
+npm run dev -- --port 5173
 ```
 
-The importer runs automatically before development and production builds. It
-checks exact historical prompt hashes and writes content-addressed evidence
-assets. No model calls, credentials or backend are required.
+Open http://localhost:5173. Changes update live. No model connection is needed to
+inspect the test definitions, extracted contexts or frozen prompts.
+
+## Import new observations locally
+
+The [adapter](../research/ADAPTER.md) writes run records and the
+[evaluator](../research/EVALUATION.md) writes separate reports. Select those
+folders explicitly when starting the explorer (paths resolve from the repo root):
+
+```sh
+ASTERIA_RUNS_DIR=.local/runs/luna-highscore-v1 \
+ASTERIA_EVALUATIONS_DIR=.local/evaluations \
+npm run dev -- --port 5173
+```
+
+Both directories and generated browser data are gitignored. A normal build or
+CI deployment imports no private run folders. Calibration outputs cannot become
+study runs. Old generated result payloads are removed when rebuilding the data.
+
+## Read the results
+
+Results compare each test between a baseline and security treatment of the same
+strategy and scenario. Pass, fail and unresolved counts are separate. Open a test
+for its fixture, expected behavior, limits, individual diagnostics and denominator
+breakdown. A missing result never becomes a pass, fail or zero-percent rate.
+
+Runs expose response and evaluation records. Contexts show typed source records,
+source locations and extraction limits. Conditions show context counts, exact
+prompts and their differences from the corresponding baseline.
+
+XLSX contains test comparisons, definitions, runs, individual check observations,
+conditions, context records, schedule and exact evidence text. JSON includes the
+study and current selection. Long text is split without truncation; every embedded
+artifact is checked against its SHA-256. Missing rates/costs remain blank.
 
 ```sh
 npm run build
 npm test
-npx playwright install chromium
-npm run test:e2e
+PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
 ```
 
-An installed Chrome can be used with `PLAYWRIGHT_CHANNEL=chrome npm run test:e2e`.
-The production output in `dist/` can be served as a static directory. The app
-supports a relative base path. All evidence and fonts are bundled locally.
-
-See `../docs/EVIDENCE_MODEL.md` for observation semantics and denominators.
-Shareable URLs identify views, cohorts and individual run records. Browser print
-styles support a meeting handout. Historical billed cost is unavailable and is
-not estimated retrospectively.
-
-## Exports
-
-XLSX exports respect the active filters and contain separate sheets for condition
-statistics, attempts, named historical checks, new security checks, source-reviewed
-findings, scanner candidates, context facts, run-to-fact links, attachments and
-provenance. Exact selected prompts, original responses and generated code are
-embedded as ordered text chunks to respect Excel's cell-size limit. Binary or
-XML-incompatible evidence is base64 encoded. Every embedded artifact is verified
-against its SHA-256 before export; a mismatch fails the export visibly.
-
-The source dataset fingerprint identifies the complete dataset. JSON exports
-declare that fingerprint separately from the filtered selection. Missing values
-remain blank in XLSX. Strings are written as string cells, never formulas.
-
-Automatic context records, extraction coverage, all frozen conditions, fact
-links and the planned schedule are exported on separate global sheets. These
-planned-study sheets are unaffected by historical run filters and contain no
-model outcome observations. Their full extraction record, manifest and exact
-prompts are also embedded and verified.
-
-## Continuous verification and publication
-
-The repository workflow validates Python evidence/adapter tests, security
-controls, TypeScript analysis, XLSX round trips and browser workflows before
-publishing `dist/` to GitHub Pages on `main`. Actions are pinned to immutable
-commits. Pull requests run verification without deployment. CI never invokes
-a model adapter or accesses private `.local/` results.
-
-Deployment follows GitHub's [custom Pages workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+CI verifies data, controls, browser behavior and full functional calibration before
+publishing the static site. See [data semantics](../docs/EVIDENCE_MODEL.md).
