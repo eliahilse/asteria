@@ -32,7 +32,8 @@ export function contextApi(): Plugin {
             const runs = await Promise.all(dirs.filter(id => validId.test(id)).map(async id => {
               const r = await record(id);
               return { id, repository: r.repository, task: r.task, strategy: r.strategy, status: r.status,
-                startedAt: r.startedAt, turns: r.turns.length, items: r.output?.items.length ?? null };
+                startedAt: r.startedAt, turns: r.turns.length, items: r.output?.items.length ?? null,
+                generatorHash: r.generatorHashes?.['research/generate_context.py'] ?? null };
             }));
             send(200, { local: true, adapterReady: ready, targets: Object.keys(targets), runs: runs.sort((a, b) => b.startedAt.localeCompare(a.startedAt)) });
           } else if (req.method === 'GET' && path.length === 1) {
