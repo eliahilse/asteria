@@ -18,7 +18,8 @@ def prepare(output: Path, bridge_repetitions: int = 5, ablation_repetitions: int
     if digest(canonical(check))!=fingerprint:raise ValueError('Context fingerprint mismatch')
     for path,sha in contexts['inputHashes'].items():
         if digest((ROOT/path).read_bytes())!=sha:raise ValueError(f'Context extractor input changed: {path}; regenerate contexts')
-    rows=list(csv.DictReader((ROOT/'vamos-artifact/Pipeline/Prompts.csv').open(encoding='utf-8-sig')))
+    with (ROOT/'vamos-artifact/Pipeline/Prompts.csv').open(encoding='utf-8-sig') as source:
+        rows=list(csv.DictReader(source))
     conditions=[];prompts={}
     def condition(id,stage,strategy,base,types,prompt,facts,repetitions,source):
         sha=digest(prompt.encode());prompts[sha]=prompt

@@ -21,7 +21,10 @@ class ExperimentTests(unittest.TestCase):
                 if condition['stage']=='ablation':
                     self.assertNotIn(b'BEGIN ATTACHED CONTEXT',content)
                     self.assertNotIn(b'Write down your brief internal reasoning',content)
-                    self.assertNotIn(b'1000000',content)
+                    # The original game legitimately uses 1000000 for time conversion.
+                    # Check concrete test-harness identifiers, not incidental numbers.
+                    self.assertFalse(b'SecurityProbe' in content)
+                    self.assertFalse(b'nativeDeserializationCanary' in content)
                     self.assertIn(b'BEGIN ATTACHED TARGET SOURCE',content)
             with self.assertRaises(FileExistsError):prepare(out,bridge_repetitions=1)
 
