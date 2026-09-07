@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import re
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
@@ -163,17 +164,48 @@ class Importer:
                     run["securityEvaluation"] = {**observed, "source": str(evaluation_path), "protocol": evaluation["protocol"], "environment": evaluation["environment"]}
         for suite, filename in (("unit", "ApoMarioHighscoreTest.java"), ("invoked", "ApoMarioHighscoreInvokedTest.java"), ("autonomous", "ApoMarioHighscoreAutonomousTest.java")):
             self.artifact(Path("vamos-artifact/Tests") / filename)
+        context_path = Path('research/results/security-context-v1.json')
+        extraction = self.read(context_path)
+        check = dict(extraction)
+        if digest(canonical({k: v for k, v in check.items() if k != 'fingerprint'})) != check['fingerprint']:
+            raise ValueError('Context extraction fingerprint mismatch')
+        for path, sha in extraction['inputHashes'].items():
+            if self.artifact(path)['sha256'] != sha: raise ValueError('Context input changed')
+        # Verify every parsed unit, including individual archive members and loose files.
+        for source in extraction['sourceManifest'].values():
+            path = (self.root / source['path']).resolve()
+            if not path.is_relative_to(self.root.resolve()): raise ValueError('Context source outside repository')
+            if source['member']:
+                with zipfile.ZipFile(path) as archive: content = archive.read(source['member'])
+            else: content = path.read_bytes()
+            if digest(content) != source['sha256']: raise ValueError('Parsed source changed')
+        extraction['artifact'] = self.artifact(context_path)
+        plans = []
+        for path in sorted((self.root / 'research/experiments').glob('*/manifest.json')):
+            plan = self.read(path.relative_to(self.root))
+            if digest(canonical({k: v for k, v in plan.items() if k != 'fingerprint'})) != plan['fingerprint']:
+                raise ValueError('Experiment fingerprint mismatch')
+            if plan['contextFingerprint'] != extraction['fingerprint']: raise ValueError('Experiment context mismatch')
+            for source, sha in plan['sourceHashes'].items():
+                if self.artifact(source)['sha256'] != sha: raise ValueError('Experiment source changed')
+            for condition in plan['conditions']:
+                artifact = self.artifact(path.parent / condition['promptFile'])
+                if artifact['sha256'] != condition['promptSha256']: raise ValueError('Planned prompt changed')
+                condition['prompt'] = artifact
+            plan['artifact'] = self.artifact(path.relative_to(self.root))
+            plans.append(plan)
         dataset = {
             "schemaVersion": 1, "title": "Highscore · security context study", "artifactCommit": state["artifact_commit"],
             "cohorts": [{"id": "fresh_pilot", "label": "Fresh pilot", "attempts": 16, "selection": "All 16 attempts; two repetitions per model × strategy × intervention cell."},
                         {"id": "published_selected", "label": "Published · selected", "attempts": 80, "selection": "Only the six fully functional outputs are included. Not representative of all 80 attempts; never pool with the fresh pilot."}],
             "threatModel": reviews["threat_model"], "facts": facts, "runs": runs,
             "securityProtocols": security_protocols,
+            "contextExtraction": extraction, "experimentPlans": plans,
             "limitations": ["Exploratory sample: two repetitions per fresh-pilot cell; no causal or general security claims.",
                 "Source adjudication and executable security checks are separate evidence layers.",
                 "The historical six-check security suite did not execute: Java runtime unavailable.",
                 "No historical billed costs were recorded. Queue elapsed time is not model latency.",
-                "New context definitions and Luna experiments are planned, not observed results."],
+                "Automatic contexts have been extracted; their effects in Luna experiments have not been observed."],
             "artifacts": sorted(self.artifacts.values(), key=lambda a: a["path"]),
         }
         dataset["fingerprint"] = digest(canonical(dataset))

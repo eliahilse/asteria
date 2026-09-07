@@ -14,6 +14,15 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(sum(r['functionalSuccess'] for r in self.fresh), 1)
         self.assertEqual(sum(len(r['findings']) for r in self.fresh), 3)
 
+    def test_plans_and_extracted_facts_are_not_model_observations(self):
+        extraction = self.data['contextExtraction']
+        self.assertEqual(extraction['coverage']['parsedFiles'], 168)
+        self.assertEqual(len(extraction['facts']), 145)
+        plan = self.data['experimentPlans'][0]
+        self.assertEqual(len(plan['schedule']), 140)
+        self.assertTrue(all(c['prompt']['sha256'] == c['promptSha256'] for c in plan['conditions']))
+        self.assertFalse(any(r['model'] == plan['model'] for r in self.data['runs']))
+
     def test_missing_java_is_not_a_security_failure_or_pass(self):
         checks = [t for r in self.fresh for t in r['tests'] if t['suite'] == 'security']
         self.assertEqual(sum(t['status'] == 'infrastructure_error' for t in checks), 24)
