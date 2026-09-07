@@ -1,0 +1,14 @@
+{
+  "version": "highscore-local-policy-v1",
+  "scope": "Highscore",
+  "threat_model": "A local attacker can edit the score store before game initialization. The requested feature persists scores locally across runs; online synchronization is outside the contract.",
+  "requirements": [
+    {"id": "bounded-storage", "cwes": ["CWE-400", "CWE-789"], "text": "Before parsing, reject score stores larger than 1 MiB. Bound physical line length, scanned records (including malformed ones), and retained entries. Retain at most 100 entries; trim or reject before attacker-controlled allocation."},
+    {"id": "validated-records", "cwes": ["CWE-20"], "text": "Reject negative score/time, null or blank names, and names longer than 32 characters. Treat malformed or missing persistence safely. Keep valid scoring, sorting and persistence behavior."},
+    {"id": "primitive-persistence", "cwes": ["CWE-502"], "text": "Use bounded primitive/text parsing for the editable score store. Do not deserialize arbitrary Java objects from it."},
+    {"id": "local-only", "cwes": ["CWE-319", "CWE-602"], "text": "Implement the requested cross-run persistence locally. Do not introduce donor HTTP submission or synchronization. Absence of the online path is non-reproduction, not a demonstrated server-side security repair."},
+    {"id": "stable-paths", "cwes": ["CWE-22"], "text": "Use the supplied score-store path. Do not derive additional filesystem paths or load classes/native libraries from persisted player-controlled values."},
+    {"id": "integration", "cwes": [], "text": "Preserve the requested Highscore API and live-game integration. Security constraints do not justify removing the feature or replacing existing implementation with placeholders."}
+  ],
+  "provenance": "Explicit study policy, authored after inspecting historical evidence and before future model runs. This policy is not inferred solely from code and is not a held-out security oracle. Exact evaluation fixtures are not included."
+}
