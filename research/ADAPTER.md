@@ -89,6 +89,10 @@ service. Reconcile uncertain requests with the provider using `request_id` befor
 any explicit rerun; preserve the original attempt and record a new study/attempt
 identity and reason. There is deliberately no automatic retry command.
 
+Evaluate a received observation with the [response evaluation command](EVALUATION.md).
+It verifies the frozen request, runs the original functional suites and the
+controlled security protocol, and writes a separate local report.
+
 The manifest freezes 20 bridge and 120 ablation attempts. These exploratory
 sample sizes are not a power calculation. Run the bridge first and inspect
 integration/tooling before the ablation. Any protocol change after observing

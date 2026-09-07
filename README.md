@@ -1,9 +1,10 @@
 # Asteria — bachelor-thesis workspace
 
-The current [research workbench](workbench/README.md) provides run-level results,
+The live [research workbench](https://eliahilse.github.io/asteria/) provides run-level results,
 individual functional/security checks, source evidence, exact prompt comparisons,
 typed security contexts and XLSX export. Start with the
 [meeting brief](docs/MEETING_BRIEF.md) for the current findings and their limits.
+See [local development instructions](workbench/README.md) to run it yourself.
 
 ```sh
 cd workbench
