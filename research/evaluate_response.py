@@ -61,7 +61,7 @@ def response_from_observation(path: Path, manifest_path: Path) -> tuple[str, dic
     if not row or row['condition'] != observation.get('condition'): raise ValueError('Unknown scheduled attempt')
     condition = next(c for c in manifest['conditions'] if c['id'] == row['condition'])
     expected = {'protocol_version': 1, 'request_id': row['runId'], 'model': manifest['model'],
-                'messages': [{'role': 'user', 'content': (manifest_path.parent / condition['promptFile']).read_text()}],
+                'messages': [{'role': 'user', 'content': (manifest_path.parent / condition['promptFile']).read_bytes().decode('utf-8')}],
                 'settings': {'reasoning_effort': manifest['reasoning'], 'temperature': manifest['temperature'],
                              'max_output_tokens': manifest['maxOutputTokens']}}
     if observation.get('request') != expected or observation.get('requestSha256') != digest(canonical(expected)):

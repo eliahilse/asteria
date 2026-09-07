@@ -10,7 +10,7 @@ from pathlib import Path
 
 from research.import_evidence import ROOT, canonical, digest
 
-STUDY_ID = 'highscore-paper-luna-v1'
+STUDY_ID = 'highscore-paper-luna-v2'
 DEFAULT = ROOT / 'research/studies' / STUDY_ID
 CONTEXTS = {'S': 'Structural', 'F': 'Functional', 'B': 'Behavioral'}
 # Exact suffix assembled by the authors' driver, including its contradiction
@@ -74,10 +74,10 @@ def prepare(output: Path = DEFAULT, repetitions=5) -> dict:
     if len(conditions) != 16: raise ValueError('Expected two methods × eight Highscore context combinations')
     rng, schedule = random.Random(20260908), []
     for repetition in range(1, repetitions + 1):
-        block = [{'runId': f'paper_luna__{c["id"]}__r{repetition}', 'condition': c['id'], 'stage': 'baseline', 'repetition': repetition} for c in conditions]
+        block = [{'runId': f'paper_v2_luna__{c["id"]}__r{repetition}', 'condition': c['id'], 'stage': 'baseline', 'repetition': repetition} for c in conditions]
         rng.shuffle(block)
         schedule.extend(block)
-    plan = {'schemaVersion': 2, 'id': STUDY_ID, 'phase': 'screening', 'task': 'Highscore', 'model': 'gpt-5.6-luna',
+    plan = {'schemaVersion': 2, 'id': STUDY_ID, 'supersedes': ['highscore-paper-luna-v1'], 'phase': 'screening', 'task': 'Highscore', 'model': 'gpt-5.6-luna',
             'reasoning': 'medium', 'temperature': None, 'maxOutputTokens': 65536, 'scheduleSeed': 20260908,
             'allowUnverifiedSettings': True, 'conditions': conditions, 'schedule': schedule,
             'axes': {'method': ['Generation', 'Reuse'], 'paperContext': ['None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B'],
@@ -88,7 +88,8 @@ def prepare(output: Path = DEFAULT, repetitions=5) -> dict:
             'followup': {'repetitions': 5, 'freshControls': True, 'securityStrategies': ['overview', 'task', 'flows'],
                          'contextAcquisition': 'Fresh target repository + original feature task for generation; target and donor repositories + reuse task for reuse. One independently acquired context per method × security strategy, frozen across selected paper-context conditions.',
                          'comparison': 'Each selected method/context × no security, overview, task-focused, data-flow. New code responses in every cell; no model-seed pairing is claimed.'},
-            'deviations': ['Luna with requested medium reasoning replaces the original model/temperature.',
+            'deviations': ['Four v1 transport-calibration attempts are excluded: universal newline conversion altered the submitted text relative to its frozen hash. V2 reads exact UTF-8 prompt bytes and starts 80 new attempts.',
+                           'Luna with requested medium reasoning replaces the original model/temperature.',
                            'Original task text and output suffix retained. Attachment bytes are inlined with boundaries in original attachment order instead of using a provider Files API; UTF-8 replacement decoding is recorded.',
                            'Five exploratory repetitions per cell, randomized dispatch order. Repetition IDs are blocks, not identical model seeds.',
                            'Original author integration plus documented deterministic package/import repairs. Sixteen functional and eleven separate security checks.',

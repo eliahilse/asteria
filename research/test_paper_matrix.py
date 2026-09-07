@@ -44,6 +44,8 @@ class MatrixTests(unittest.TestCase):
             path = runs / (record['runId'] + '.json')
             text, identity = response_from_observation(path, root / 'plan/manifest.json')
             self.assertEqual(record['status'], 'settings_unverified')
+            condition = next(c for c in plan['conditions'] if c['id'] == record['condition'])
+            self.assertEqual(digest(record['request']['messages'][0]['content'].encode()), condition['promptSha256'])
             self.assertFalse(identity['settingsVerified'])
             self.assertEqual(text, 'TEST FIXTURE ONLY')
             plan['allowUnverifiedSettings'] = False
