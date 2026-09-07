@@ -58,6 +58,11 @@ jobs:
           from pathlib import Path
           report = json.loads((Path(os.environ['RUNNER_TEMP']) / 'functional-calibration/report.json').read_text())
           assert report['status'] == 'evaluated', report.get('error')
+          if report['functionalSuccess'] is not True:
+              print(json.dumps(report.get('authorResults', {}), indent=2))
+              for call in report.get('processes', []):
+                  if call['exitCode'] != 0:
+                      print(call['command'][0], call['exitCode'], (call['stderr'] or '')[-8000:])
           assert report['functionalSuccess'] is True, report['checks']
           assert len(report['checks']) == 16
           assert sum(c['status'] == 'pass' for c in report['security']['checks']) == 5
