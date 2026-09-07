@@ -60,12 +60,17 @@ Response:
 }
 ```
 
-Context acquisition also sends `"response_format": {"type": "json_object"}`.
-Adapters used for this workflow must forward the requested structured response
-format. Context requests contain the complete multi-turn message history; each
-invocation still submits exactly one new model request. An adapter must not add
-context from other generations. If effective settings are not reported by the
-service, return `null` settings; context outputs retain that uncertainty.
+Context acquisition also sends `tools`, a forced `tool_choice` for
+`emit_context_action`, and `parallel_tool_calls: false`. Forward these fields.
+For this request shape, return the single matching function call's unmodified
+JSON argument string as `output_text`; `finish_reason: "stop"` means the
+structured action completed. Preserve the provider's original response privately,
+including its original finish reason. Reject missing, extra or differently named
+calls. This avoids treating assistant commentary as executable actions.
+Context requests contain the complete message history; each invocation still
+submits exactly one new model request. Never add context from other generations.
+If effective settings are not reported by the service, return `null` settings;
+context outputs retain that uncertainty.
 
 These are schema examples, not model observations. `null` temperature means omit
 the provider parameter. Return the served model and effective settings honestly;

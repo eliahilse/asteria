@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+import subprocess
 import zipfile
 from pathlib import Path
 
@@ -19,6 +20,17 @@ def snapshot(repo: Path) -> dict:
     repo = repo.resolve(strict=True)
     if not repo.is_dir(): raise ValueError('Repository must be a directory')
     files, omitted, total = [], [], 0
+    candidates = []
+    for directory, dirs, names in os.walk(repo, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not (Path(directory) / d).is_symlink())
+        candidates.extend(Path(directory) / name for name in sorted(names))
+    relative_names = [p.relative_to(repo).as_posix() for p in candidates]
+    ignored = set()
+    try:
+        result = subprocess.run(['git', '-C', str(repo), 'check-ignore', '--stdin', '-z'],
+                                input='\0'.join(relative_names).encode(), capture_output=True, timeout=15)
+        if result.returncode in (0, 1): ignored = set(result.stdout.decode().split('\0'))
+    except FileNotFoundError: pass  # Standalone source folders need no Git installation.
 
     def add(path: str, raw: bytes):
         nonlocal total
@@ -32,31 +44,30 @@ def snapshot(repo: Path) -> dict:
             return
         files.append({'path': path, 'sha256': digest(raw), 'bytes': len(raw), 'encoding': encoding,
                       'lines': len(text.splitlines()), 'text': text})
+        if len(files) > 10000: raise ValueError('Repository exceeds source file budget')
 
-    for directory, dirs, names in os.walk(repo, followlinks=False):
-        dirs[:] = sorted(d for d in dirs if d not in SKIP_DIRS and not (Path(directory) / d).is_symlink())
-        for name in sorted(names):
-            path = Path(directory) / name
-            relative = path.relative_to(repo).as_posix()
-            if path.is_symlink() or name.startswith('.env') or path.suffix.lower() in {'.pem', '.key', '.p12', '.pfx'}:
-                omitted.append({'path': relative, 'reason': 'local configuration or link'})
-                continue
-            if path.suffix.lower() in {'.jar', '.zip'}:
-                with zipfile.ZipFile(path) as archive:
-                    for entry in sorted(archive.infolist(), key=lambda e: e.filename):
-                        member = Path(entry.filename)
-                        if member.is_absolute() or '..' in member.parts: raise ValueError('Unsafe archive member')
-                        # Embedded source is code; compiled classes and assets are not decompiled.
-                        if member.suffix.lower() == '.java' or entry.filename.upper() == 'META-INF/MANIFEST.MF':
-                            if entry.file_size > MAX_FILE_BYTES: raise ValueError('Archive source exceeds file budget')
-                            add(relative + '!/' + entry.filename, archive.read(entry))
-                omitted.append({'path': relative, 'reason': 'binary archive; embedded Java and manifest indexed',
-                                'sha256': digest(path.read_bytes())})
-            elif path.suffix.lower() in TEXT_SUFFIXES or name in {'Dockerfile', 'Makefile', 'LICENSE', 'README'}:
-                if path.stat().st_size > MAX_FILE_BYTES: raise ValueError(f'Source exceeds file budget: {relative}')
-                add(relative, path.read_bytes())
-            else:
-                omitted.append({'path': relative, 'reason': 'unsupported file type', 'sha256': digest(path.read_bytes())})
+    for path in candidates:
+        name = path.name
+        relative = path.relative_to(repo).as_posix()
+        if relative in ignored or path.is_symlink() or name.startswith('.env') or path.suffix.lower() in {'.pem', '.key', '.p12', '.pfx'}:
+            omitted.append({'path': relative, 'reason': 'ignored file, local configuration or link'})
+            continue
+        if path.suffix.lower() in {'.jar', '.zip'}:
+            with zipfile.ZipFile(path) as archive:
+                for entry in sorted(archive.infolist(), key=lambda e: e.filename):
+                    member = Path(entry.filename)
+                    if member.is_absolute() or '..' in member.parts: raise ValueError('Unsafe archive member')
+                    # Embedded source is code; compiled classes and assets are not decompiled.
+                    if member.suffix.lower() == '.java' or entry.filename.upper() == 'META-INF/MANIFEST.MF':
+                        if entry.file_size > MAX_FILE_BYTES: raise ValueError('Archive source exceeds file budget')
+                        add(relative + '!/' + entry.filename, archive.read(entry))
+            omitted.append({'path': relative, 'reason': 'binary archive; embedded Java and manifest indexed',
+                            'sha256': digest(path.read_bytes())})
+        elif path.suffix.lower() in TEXT_SUFFIXES or name in {'Dockerfile', 'Makefile', 'LICENSE', 'README'}:
+            if path.stat().st_size > MAX_FILE_BYTES: raise ValueError(f'Source exceeds file budget: {relative}')
+            add(relative, path.read_bytes())
+        else:
+            omitted.append({'path': relative, 'reason': 'unsupported file type', 'sha256': digest(path.read_bytes())})
     files.sort(key=lambda f: f['path'])
     if not files: raise ValueError('No readable repository source found')
     manifest = [{k: v for k, v in f.items() if k != 'text'} for f in files]
