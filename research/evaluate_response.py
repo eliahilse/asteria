@@ -28,7 +28,7 @@ def junit_checks(suite: str, output: str, exit_code: int | None) -> list[dict]:
     failure = re.search(r'Tests run:\s*(\d+),\s*Failures:\s*(\d+)', output)
     failures = dict(re.findall(r'^\d+\)\s+(\w+)\([^\n]+\)\n([^\n]*)', output, re.M))
     complete = bool((ok and int(ok[1]) == len(names) and exit_code == 0 and not failures) or
-                    (failure and int(failure[1]) == len(names) and int(failure[2]) == len(failures) and
+                    (failure and int(failure[1]) == len(names) and int(failure[2]) > 0 and int(failure[2]) == len(failures) and
                      set(failures).issubset(names) and exit_code not in (None, 0)))
     return [{'suite': suite, 'name': name,
              'status': 'fail' if name in failures else ('pass' if complete else 'unknown'),
