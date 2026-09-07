@@ -1,0 +1,180 @@
+--- a/apoMario/game/panels/ApoMarioHighscore.java
++++ b/apoMario/game/panels/ApoMarioHighscore.java
+@@ -0,0 +1,177 @@
++package apoMario.game.panels;
++
++import apoMario.entity.ApoMarioPlayer;
++import apoMario.game.panels.ApoMarioHighscore;
++
++import java.io.BufferedReader;
++import java.io.BufferedWriter;
++import java.io.IOException;
++import java.nio.charset.StandardCharsets;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.util.ArrayList;
++import java.util.List;
++
++import apoMario.level.ApoMarioLevel;
++import org.apogames.help.ApoHelp;
++
++public class ApoMarioHighscore {
++
++	private static final int MAX_ENTRIES = 100;
++	private static final int MAX_NAME_LENGTH = 32;
++
++	private final Path storeFile;
++	private final List<String> playersNames;
++	private final List<Integer> playersScores;
++	private final List<Integer> survivalTimes;
++
++	public ApoMarioHighscore(Path store) {
++		this.storeFile = store;
++		this.playersNames = new ArrayList<String>();
++		this.playersScores = new ArrayList<Integer>();
++		this.survivalTimes = new ArrayList<Integer>();
++		load();
++	}
++
++	public boolean storeRun(int score, int survivalTime, String playerName) {
++		if (score < 0 || survivalTime < 0) {
++			return false;
++		}
++		if (playerName == null) {
++			return false;
++		}
++		String trimmed = playerName.trim();
++		if (trimmed.isEmpty() || trimmed.length() > MAX_NAME_LENGTH) {
++			return false;
++		}
++
++		int insertIndex = playersScores.size();
++		for (int i = 0; i < playersScores.size(); i++) {
++			if (score > playersScores.get(i)) {
++				insertIndex = i;
++				break;
++			}
++		}
++
++		if (insertIndex >= MAX_ENTRIES) {
++			return false;
++		}
++
++		playersNames.add(insertIndex, trimmed);
++		playersScores.add(insertIndex, score);
++		survivalTimes.add(insertIndex, survivalTime);
++
++		while (playersScores.size() > MAX_ENTRIES) {
++			int last = playersScores.size() - 1;
++			playersNames.remove(last);
++			playersScores.remove(last);
++			survivalTimes.remove(last);
++		}
++
++		persistAcrossRuns();
++		return true;
++	}
++
++	public void recordRunEnd(ApoMarioLevel level) {
++		if (level == null || level.getPlayers() == null || level.getPlayers().isEmpty()) {
++			return;
++		}
++		ApoMarioPlayer p = level.getPlayers().get(0);
++		if (p == null) {
++			return;
++		}
++		int score = p.getPoints();
++		int totalTimeSec = level.getPassedTime() / 1000;
++		if (totalTimeSec < 0) {
++			totalTimeSec = 0;
++		}
++		String name = "Player";
++		if (p.getAi() != null && p.getAi().getTeamName() != null) {
++			name = p.getAi().getTeamName();
++		} else if (level.getReplay() != null && level.getReplay().getPlayerOne() != null && level.getReplay().getPlayerOne().getName() != null) {
++			name = level.getReplay().getPlayerOne().getName();
++		}
++		storeRun(score, totalTimeSec, name);
++	}
++
++	public List<String> getPlayersNames() {
++		return this.playersNames;
++	}
++
++	public List<Integer> getPlayersScores() {
++		return this.playersScores;
++	}
++
++	public List<Integer> getSurvivalTimes() {
++		return this.survivalTimes;
++	}
++
++	public void persistAcrossRuns() {
++		if (this.storeFile == null) {
++			return;
++		}
++		try {
++			Path parent = this.storeFile.getParent();
++			if (parent != null && !Files.exists(parent)) {
++				Files.createDirectories(parent);
++			}
++			BufferedWriter writer = Files.newBufferedWriter(this.storeFile, StandardCharsets.UTF_8);
++			try {
++				int count = Math.min(playersScores.size(), MAX_ENTRIES);
++				for (int i = 0; i < count; i++) {
++					writer.write(playersScores.get(i).toString());
++					writer.newLine();
++					writer.write(survivalTimes.get(i).toString());
++					writer.newLine();
++					writer.write(playersNames.get(i));
++					writer.newLine();
++				}
++			} finally {
++				writer.close();
++			}
++		} catch (IOException e) {
++			// ignore persistence failures gracefully
++		}
++	}
++
++	private void load() {
++		this.playersNames.clear();
++		this.playersScores.clear();
++		this.survivalTimes.clear();
++		if (this.storeFile == null || !Files.exists(this.storeFile)) {
++			return;
++		}
++		try {
++			BufferedReader reader = Files.newBufferedReader(this.storeFile, StandardCharsets.UTF_8);
++			try {
++				String lineScore;
++				while ((lineScore = reader.readLine()) != null) {
++					if (playersScores.size() >= MAX_ENTRIES) {
++						break;
++					}
++					String lineTime = reader.readLine();
++					String lineName = reader.readLine();
++					if (lineTime == null || lineName == null) {
++						break;
++					}
++					try {
++						int score = Integer.parseInt(lineScore.trim());
++						int time = Integer.parseInt(lineTime.trim());
++						String name = lineName.trim();
++						if (score >= 0 && time >= 0 && !name.isEmpty() && name.length() <= MAX_NAME_LENGTH) {
++							playersNames.add(name);
++							playersScores.add(score);
++							survivalTimes.add(time);
++						}
++					} catch (NumberFormatException nfe) {
++						// skip corrupted entry
++					}
++				}
++			} finally {
++				reader.close();
++			}
++		} catch (IOException e) {
++			// ignore load failures gracefully
++		}
++	}
++}

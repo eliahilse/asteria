@@ -1,0 +1,180 @@
+--- a/apoMario/game/panels/ApoMarioHighscoreView.java
++++ b/apoMario/game/panels/ApoMarioHighscoreView.java
+@@ -0,0 +1,177 @@
++package apoMario.game.panels;
++
++import apoMario.entity.ApoMarioPlayer;
++import apoMario.game.panels.ApoMarioHighscore;
++import apoMario.game.panels.ApoMarioHighscoreView;
++import apoMario.game.panels.ApoMarioModelMenu;
++import apoMario.level.ApoMarioLevel;
++import org.apogames.entity.ApoAnimation;
++
++import java.awt.Color;
++import java.awt.Font;
++import java.awt.Graphics2D;
++import java.awt.GraphicsEnvironment;
++import java.awt.RenderingHints;
++import java.awt.image.BufferedImage;
++import java.nio.file.Path;
++import java.util.ArrayList;
++
++import org.apogames.ApoConstants;
++import org.apogames.help.ApoHelp;
++
++import apoMario.ApoMarioConstants;
++import apoMario.ApoMarioImageContainer;
++import apoMario.game.ApoMarioPanel;
++
++/**
++ * Highscore panel for the Mario menu.
++ */
++public class ApoMarioHighscoreView extends ApoMarioModelMenu {
++
++	public static final String FUNCTION_HIGHSCORE_BACK = "backHighscore";
++
++	private final ApoMarioHighscore highscore;
++	private BufferedImage iBackground;
++
++	public ApoMarioHighscoreView(ApoMarioPanel game, Path store) {
++		super(game);
++		this.highscore = new ApoMarioHighscore(store);
++	}
++
++	@Override
++	public void init() {
++		super.init();
++		this.highscore.persistAcrossRuns();
++		this.makeBackground();
++		this.makeBackgroundAnimation();
++		this.makeRunner();
++		this.makeSearch();
++		this.setExcecuteFunction(null);
++	}
++
++	@Override
++	public void makeBackground() {
++		this.iBackground = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
++		Graphics2D g = (Graphics2D)(this.iBackground.getGraphics());
++		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
++		BufferedImage iMenuTile = ApoMarioImageContainer.MENU;
++		int size = ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE;
++		for (int x = 0; x < 20; x++) {
++			for (int y = 0; y < 4; y++) {
++				g.drawImage(iMenuTile.getSubimage(14 * size, 0 * size, size, size), x * size, y * size, null);
++			}
++			for (int y = 4; y < 15; y++) {
++				g.drawImage(iMenuTile.getSubimage(0 * size, 0 * size, size, size), x * size, y * size, null);
++			}
++		}
++		g.setColor(new Color(255, 255, 255, 200));
++		g.fillRoundRect(ApoMarioConstants.GAME_WIDTH / 8, ApoMarioConstants.GAME_HEIGHT / 5, ApoMarioConstants.GAME_WIDTH * 3 / 4, ApoMarioConstants.GAME_HEIGHT * 3 / 5, 10, 10);
++		g.setColor(Color.BLACK);
++		g.drawRoundRect(ApoMarioConstants.GAME_WIDTH / 8, ApoMarioConstants.GAME_HEIGHT / 5, ApoMarioConstants.GAME_WIDTH * 3 / 4, ApoMarioConstants.GAME_HEIGHT * 3 / 5, 10, 10);
++		g.dispose();
++	}
++
++	@Override
++	public void makeBackgroundAnimation() {
++		this.setBackgroundAnimation(new ArrayList<org.apogames.entity.ApoAnimation>());
++	}
++
++	@Override
++	public void makeRunner() {
++		this.setRunner(null);
++	}
++
++	@Override
++	public void makeSearch() {
++		this.setSearch(null);
++	}
++
++	@Override
++	public void keyButtonReleased(int button, char character) {
++		if (button == java.awt.event.KeyEvent.VK_ESCAPE) {
++			this.getGame().setMenu();
++		}
++	}
++
++	@Override
++	public void mouseButtonFunction(String function) {
++		if (FUNCTION_HIGHSCORE_BACK.equals(function)) {
++			this.getGame().setMenu();
++		}
++	}
++
++	@Override
++	public void mouseButtonReleased(int x, int y) {
++	}
++
++	@Override
++	public boolean mouseMoved(int x, int y) {
++		return false;
++	}
++
++	@Override
++	public boolean mouseDragged(int x, int y) {
++		return false;
++	}
++
++	@Override
++	public boolean mousePressed(int x, int y, boolean bRight) {
++		return false;
++	}
++
++	@Override
++	public void think(int delta) {
++	}
++
++	@Override
++	public void render(Graphics2D g) {
++		if (this.iBackground != null) {
++			g.drawImage(this.iBackground, 0, 0, null);
++		}
++		g.setFont(ApoMarioConstants.FONT_MENU);
++		g.setColor(Color.BLACK);
++		String title = "Highscore";
++		int w = g.getFontMetrics().stringWidth(title);
++		g.drawString(title, ApoMarioConstants.GAME_WIDTH / 2 - w / 2, 55);
++
++		g.setFont(ApoMarioConstants.FONT_STATISTICS);
++		int startY = 105;
++		for (int i = 0; i < this.highscore.getPlayersNames().size(); i++) {
++			String name = this.highscore.getPlayersNames().get(i);
++			Integer score = this.highscore.getPlayersScores().get(i);
++			Integer time = this.highscore.getSurvivalTimes().get(i);
++			String timeString = ApoHelp.getTimeToDraw((time == null) ? 0 : time.intValue());
++			String line = String.valueOf(i + 1) + ". " + name;
++			g.drawString(line, 70, startY + i * 25);
++			String right = String.valueOf(score) + "  " + timeString;
++			int rw = g.getFontMetrics().stringWidth(right);
++			g.drawString(right, ApoMarioConstants.GAME_WIDTH - 70 - rw, startY + i * 25);
++		}
++		if (this.highscore.getPlayersNames().size() == 0) {
++			String empty = "No scores yet";
++			int ew = g.getFontMetrics().stringWidth(empty);
++			g.drawString(empty, ApoMarioConstants.GAME_WIDTH / 2 - ew / 2, startY);
++		}
++	}
++
++	public void recordRunEnd(apoMario.level.ApoMarioLevel level) {
++		if (level == null) {
++			return;
++		}
++		if (level.getPlayers() == null || level.getPlayers().size() <= 0) {
++			return;
++		}
++		apoMario.entity.ApoMarioPlayer player = level.getPlayers().get(0);
++		String name = "Player";
++		if (player != null) {
++			if (player.getTeamName() != null && player.getTeamName().trim().length() > 0) {
++				name = player.getTeamName();
++			} else if (player.getAuthor() != null && player.getAuthor().trim().length() > 0) {
++				name = player.getAuthor();
++			}
++		}
++		int score = (player == null) ? 0 : player.getPoints();
++		int survivalTime = Math.max(0, level.getPassedTime());
++		this.highscore.storeRun(score, survivalTime, name);
++	}
++}

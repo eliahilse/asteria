@@ -1,0 +1,71 @@
+--- a/apoMario/game/ApoMarioPanel.java
++++ b/apoMario/game/ApoMarioPanel.java
+@@ -1,4 +1,11 @@
+ package apoMario.game;
++
++import apoMario.game.ApoMarioButtons;
++import apoMario.game.ApoMarioDebugFrame;
++import apoMario.game.ApoMarioMiniMap;
++import apoMario.game.ApoMarioPanel;
++import apoMario.game.ApoMarioReplay;
++import apoMario.game.ApoMarioReplayPlay;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -27,9 +34,10 @@
+ import apoMario.game.panels.ApoMarioModel;
+ import apoMario.game.panels.ApoMarioOptions;
+ import apoMario.game.panels.ApoMarioSimulation;
++import apoMario.game.panels.ApoMarioHighscorePanel;
+ 
+ /**
+- * Klasse, die sich um das eigentliche Spiel k�mmert und alle Objekt �berwacht, anspricht und steuert
++ * Klasse, die sich um das eigentliche Spiel kmmert und alle Objekt berwacht, anspricht und steuert
+  * @author Dirk Aporius
+  *
+  */
+@@ -65,6 +73,8 @@
+ 	private ApoMarioCredits credits;
+ 
+ 	private ApoMarioSimulation simulation;
++
++	private ApoMarioHighscorePanel highscorePanel;
+ 	
+ 	private ApoMarioModel model;
+ 	
+@@ -124,6 +134,9 @@
+ 		if (this.simulation == null) {
+ 			this.simulation = new ApoMarioSimulation(this);
+ 		}
++		if (this.highscorePanel == null) {
++			this.highscorePanel = new ApoMarioHighscorePanel(this);
++		}
+ 		if (this.editorIO == null) {
+ 			this.editorIO = new ApoMarioEditorIO(this.getLevel());
+ 		}
+@@ -239,6 +252,16 @@
+ 		this.simulation.init();
+ 		
+ 		this.setButtons(ApoMarioConstants.BUTTON_SIMULATION);
++	}
++
++	public void setHighscore() {
++		this.setBPause(false);
++		this.model = this.highscorePanel;
++		this.highscorePanel.init();
++
++		boolean[] highscoreButtons = new boolean[50];
++		highscoreButtons[3] = true;
++		this.setButtons(highscoreButtons);
+ 	}
+ 	
+ 	public ApoMarioMiniMap getMiniMap() {
+@@ -660,7 +683,7 @@
+ 	}
+ 
+ 	/**
+-	 * rendert die Anzeige f�r die FPS und die Thinkzeit
++	 * rendert die Anzeige fr die FPS und die Thinkzeit
+ 	 * @param g : das Graphicsobjekt
+ 	 */
+ 	private void renderFPS(Graphics2D g) {

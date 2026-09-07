@@ -1,0 +1,215 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import apoMario.level.ApoMarioLevel;
+
+public class ApoMarioHighscore {
+
+	private static final int MAX_ENTRIES = 100;
+	private static final int MAX_NAME_LENGTH = 32;
+
+	private static final class Entry {
+		private final String name;
+		private final int score;
+		private final int survivalTime;
+
+		private Entry(String name, int score, int survivalTime) {
+			this.name = name;
+			this.score = score;
+			this.survivalTime = survivalTime;
+		}
+	}
+
+	private final Path store;
+	private final ArrayList<Entry> entries;
+
+	public ApoMarioHighscore(Path store) {
+		this.store = store;
+		this.entries = new ArrayList<Entry>();
+		this.load();
+	}
+
+	public boolean storeRun(int score, int survivalTime, String playerName) {
+		if (score < 0 || survivalTime < 0 || playerName == null) {
+			return false;
+		}
+		String name = playerName.trim();
+		if (name.length() <= 0 || name.length() > MAX_NAME_LENGTH) {
+			return false;
+		}
+		this.entries.add(new Entry(name, score, survivalTime));
+		this.sortAndTrim();
+		this.persistAcrossRuns();
+		return true;
+	}
+
+	public List<String> getPlayersNames() {
+		ArrayList<String> result = new ArrayList<String>();
+		for (int i = 0; i < this.entries.size(); i++) {
+			result.add(this.entries.get(i).name);
+		}
+		return result;
+	}
+
+	public List<Integer> getPlayersScores() {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (int i = 0; i < this.entries.size(); i++) {
+			result.add(this.entries.get(i).score);
+		}
+		return result;
+	}
+
+	public List<Integer> getSurvivalTimes() {
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (int i = 0; i < this.entries.size(); i++) {
+			result.add(this.entries.get(i).survivalTime);
+		}
+		return result;
+	}
+
+	public void persistAcrossRuns() {
+		if (this.store == null) {
+			return;
+		}
+		try {
+			Path parent = this.store.getParent();
+			if (parent != null) {
+				Files.createDirectories(parent);
+			}
+			BufferedWriter writer = Files.newBufferedWriter(this.store, StandardCharsets.UTF_8);
+			try {
+				for (int i = 0; i < this.entries.size(); i++) {
+					Entry entry = this.entries.get(i);
+					writer.write(escape(entry.name));
+					writer.write('\t');
+					writer.write(Integer.toString(entry.score));
+					writer.write('\t');
+					writer.write(Integer.toString(entry.survivalTime));
+					writer.newLine();
+				}
+			} finally {
+				writer.close();
+			}
+		} catch (Exception ex) {
+		}
+	}
+
+	private void load() {
+		if (this.store == null || !Files.exists(this.store)) {
+			return;
+		}
+		BufferedReader reader = null;
+		try {
+			reader = Files.newBufferedReader(this.store, StandardCharsets.UTF_8);
+			String line;
+			int count = 0;
+			while ((line = reader.readLine()) != null && count < MAX_ENTRIES * 2) {
+				line = line.trim();
+				if (line.length() <= 0) {
+					continue;
+				}
+				String[] parts = line.split("\t", -1);
+				if (parts.length != 3) {
+					continue;
+				}
+				String name = unescape(parts[0]).trim();
+				if (name.length() <= 0 || name.length() > MAX_NAME_LENGTH) {
+					continue;
+				}
+				int score;
+				int survivalTime;
+				try {
+					score = Integer.parseInt(parts[1]);
+					survivalTime = Integer.parseInt(parts[2]);
+				} catch (NumberFormatException ex) {
+					continue;
+				}
+				if (score < 0 || survivalTime < 0) {
+					continue;
+				}
+				this.entries.add(new Entry(name, score, survivalTime));
+				count++;
+			}
+			this.sortAndTrim();
+		} catch (Exception ex) {
+			this.entries.clear();
+		} finally {
+			try {
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	private void sortAndTrim() {
+		this.entries.sort(new Comparator<Entry>() {
+			@Override
+			public int compare(Entry a, Entry b) {
+				if (a.score != b.score) {
+					return (a.score < b.score) ? 1 : -1;
+				}
+				if (a.survivalTime != b.survivalTime) {
+					return (a.survivalTime < b.survivalTime) ? 1 : -1;
+				}
+				return a.name.compareToIgnoreCase(b.name);
+			}
+		});
+		while (this.entries.size() > MAX_ENTRIES) {
+			this.entries.remove(this.entries.size() - 1);
+		}
+	}
+
+	private String escape(String s) {
+		return s.replace("\\", "\\\\").replace("\t", "\\t").replace("\n", "\\n").replace("\r", "\\r");
+	}
+
+	private String unescape(String s) {
+		StringBuilder builder = new StringBuilder();
+		boolean escaping = false;
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (escaping) {
+				if (c == 't') {
+					builder.append('\t');
+				} else if (c == 'n') {
+					builder.append('\n');
+				} else if (c == 'r') {
+					builder.append('\r');
+				} else {
+					builder.append(c);
+				}
+				escaping = false;
+			} else if (c == '\\') {
+				escaping = true;
+			} else {
+				builder.append(c);
+			}
+		}
+		if (escaping) {
+			builder.append('\\');
+		}
+		return builder.toString();
+	}
+
+	public static Path defaultStore(Path base) {
+		if (base == null) {
+			return null;
+		}
+		return base;
+	}
+}

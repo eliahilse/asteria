@@ -1,0 +1,194 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+import apoMario.game.panels.ApoMarioHighscorePanel;
+import apoMario.game.panels.ApoMarioModelMenu;
+import org.apogames.entity.ApoAnimation;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import org.apogames.help.ApoHelp;
+
+import apoMario.ApoMarioConstants;
+import apoMario.ApoMarioImageContainer;
+import apoMario.game.ApoMarioPanel;
+import apoMario.game.ApoMarioSearch;
+import apoMario.game.ApoMarioSearchNode;
+import apoMario.game.ApoMarioSearchRunner;
+
+public class ApoMarioHighscorePanel extends ApoMarioModelMenu {
+
+	public static final String FUNCTION_BACK = "backHighscore";
+	public static final String LEFT = "highscore_left";
+	public static final String RIGHT = "highscore_right";
+
+	public static final int MAX_X = 10;
+
+	private ApoMarioHighscore highscore;
+	private int curPos;
+
+	public ApoMarioHighscorePanel(ApoMarioPanel game) {
+		super(game);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		this.curPos = 0;
+		if (this.highscore == null) {
+			this.highscore = new ApoMarioHighscore(Paths.get("highscore.dat"));
+		} else {
+			this.highscore.persistAcrossRuns();
+		}
+		if (this.getIBackground() == null) {
+			this.makeBackground();
+		}
+	}
+
+	@Override
+	public void makeBackground() {
+		this.setIBackground(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT, BufferedImage.TYPE_INT_RGB));
+		Graphics2D g = (Graphics2D)this.getIBackground().getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		this.getGame().renderBackground(g);
+		g.drawImage(ApoMarioImageContainer.MENU.getSubimage(0, 0, ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT), 0, 0, null);
+		g.dispose();
+	}
+
+	@Override
+	public void makeBackgroundAnimation() {
+		this.setBackgroundAnimation(new ArrayList<org.apogames.entity.ApoAnimation>());
+	}
+
+	@Override
+	public void makeRunner() {
+		int size = ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE;
+		BufferedImage iMenuTile = ApoMarioImageContainer.MENU;
+		if (this.getRunner() == null) {
+			this.setRunner(new ApoMarioSearchRunner(iMenuTile.getSubimage(0, 0, size, size), 50, 50));
+			this.setCurNode(0);
+		}
+	}
+
+	@Override
+	public void makeSearch() {
+		this.setSearch(new ApoMarioSearch());
+		ApoMarioSearchNode node = new ApoMarioSearchNode(0, 50, 50);
+		this.getSearch().addNode(node);
+	}
+
+	public ApoMarioHighscore getHighscore() {
+		return this.highscore;
+	}
+
+	private void nextHighscore(int plus) {
+		int realPlus = plus * ApoMarioHighscorePanel.MAX_X;
+		this.curPos += realPlus;
+		if (this.curPos >= this.highscore.getPlayersScores().size()) {
+			this.curPos -= realPlus;
+		} else if (this.curPos < 0) {
+			this.curPos = 0;
+		}
+	}
+
+	@Override
+	public void keyButtonReleased(int button, char character) {
+		if (button == KeyEvent.VK_ESCAPE) {
+			this.getGame().setMenu();
+		} else if (button == KeyEvent.VK_LEFT) {
+			this.nextHighscore(-1);
+		} else if (button == KeyEvent.VK_RIGHT) {
+			this.nextHighscore(+1);
+		}
+	}
+
+	@Override
+	public void mouseButtonFunction(String function) {
+		if (function.equals(ApoMarioHighscorePanel.FUNCTION_BACK)) {
+			this.getGame().setMenu();
+		} else if (function.equals(ApoMarioHighscorePanel.LEFT)) {
+			this.nextHighscore(-1);
+		} else if (function.equals(ApoMarioHighscorePanel.RIGHT)) {
+			this.nextHighscore(+1);
+		}
+	}
+
+	@Override
+	public void releasedEnter() {
+		this.getGame().setMenu();
+	}
+
+	@Override
+	public void excecuteFunction() {
+		this.getGame().setMenu();
+	}
+
+	@Override
+	public void mouseButtonReleased(int x, int y) {
+	}
+
+	@Override
+	public boolean mouseMoved(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseDragged(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean mousePressed(int x, int y, boolean bRight) {
+		return false;
+	}
+
+	@Override
+	public void think(int delta) {
+		super.thinkRunnerAndAnimation(delta);
+	}
+
+	@Override
+	public void render(Graphics2D g) {
+		super.renderBackgroundAndAnimation(g);
+
+		g.setFont(ApoMarioConstants.FONT_MENU);
+		g.setColor(Color.BLACK);
+
+		final Font font = ApoMarioConstants.FONT_STATISTICS;
+		g.setFont(font);
+		String s = String.valueOf(this.highscore.getPlayersScores().size()) + " scores recorded";
+		int w = g.getFontMetrics().stringWidth(s);
+		g.drawString(s, (int)(ApoMarioConstants.GAME_WIDTH/2 - w/2), (int)(50));
+
+		for (int i = this.curPos; i < this.highscore.getPlayersScores().size() && i < ApoMarioHighscorePanel.MAX_X + this.curPos; i++) {
+			int y = 90;
+			g.setColor(Color.BLACK);
+			g.setFont(font);
+			s = String.valueOf(i + 1) + ".";
+			g.drawString(s, 60, y + (i - this.curPos) * 22);
+
+			s = String.valueOf(this.highscore.getPlayersScores().get(i));
+			w = g.getFontMetrics().stringWidth(s);
+			g.drawString(s, 180 - w, y + (i - this.curPos) * 22);
+
+			s = String.valueOf(this.highscore.getPlayersNames().get(i));
+			g.drawString(s, 210, y + (i - this.curPos) * 22);
+
+			int tSec = this.highscore.getSurvivalTimes().get(i);
+			int mm = tSec / 60;
+			int ss = tSec % 60;
+			String timeStr = (mm < 10 ? "0" + mm : mm) + ":" + (ss < 10 ? "0" + ss : ss);
+			g.drawString(timeStr, 400, y + (i - this.curPos) * 22);
+		}
+
+		super.renderButtonsAndRunner(g);
+	}
+}

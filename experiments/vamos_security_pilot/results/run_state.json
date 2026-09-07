@@ -1,0 +1,2093 @@
+{
+  "schema_version": 1,
+  "artifact_commit": "314df2ef5befacfb7f90aa3b0a514d1ea47662b7",
+  "created_at": "2026-09-01T09:12:35+0200",
+  "runs": {
+    "gemini-3.5-flash-lite__reuse_sfb__r1": {
+      "run_id": "gemini-3.5-flash-lite__reuse_sfb__r1",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "reuse_sfb",
+      "repetition": 1,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9",
+      "prompt_chars": 677708,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:10:50+0200",
+      "session_id": "ea0c26a7-6352-40d9-ba52-44821778e5dc",
+      "received_at": "2026-09-01T11:13:09+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 204216,
+        "completion_tokens": 49402,
+        "total_tokens": 253618,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 148253,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 85,
+              "code": "reader = new BufferedReader(new FileReader(file));"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 86,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 87,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/panels/ApoMarioHighscore.java:220: error: cannot find symbol\n\t\t\tthis.getGame().renderBackground(g);\n\t\t\t              ^\n  symbol:   method renderBackground(Graphics2D)\n  location: class ApoMarioPanel\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:35: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[0] = new ApoButtonText(x, startY, w, h, ApoMarioMenu.FUNCTION_START, \"Start Game\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:36: error: cannot find symbol\n\t\tbuttons[0].setFont(ApoMarioConstants.FONT_BUTTON_START);\n\t\t          ^\n  symbol:   method setFont(Font)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:42: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[1] = new ApoButtonText(x, startY + diffY, w, h, ApoMarioMenu.FUNCTION_OPTIONS, \"Options\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:43: error: cannot find symbol\n\t\tbuttons[1].setFont(ApoMarioConstants.FONT_BUTTON);\n\t\t          ^\n  symbol:   method setFont(Font)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:49: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[2] = new ApoButtonText(x, startY + diffY * 2, w, h, ApoMarioMenu.FUNCTION_CREDITS, \"Credits\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:50: error: cannot find symbol\n\t\tbuttons[2].setFont(ApoMarioConstants.FONT_BUTTON);\n\t\t          ^\n  symbol:   method setFont(Font)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:56: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[3] = new ApoButtonText(x, startY + diffY * 3, w, h, ApoMarioMenu.FUNCTION_SIMULATE, \"Simulation\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:57: error: cannot find symbol\n\t\tbuttons[3].setFont(ApoMarioConstants.FONT_BUTTON);\n\t\t          ^\n  symbol:   method setFont(Font)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/ApoMarioButtons.java:63: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[4] = new ApoButtonText(x, startY + diffY * 4, w, h, ApoMarioMenu.FUNCTION_QUIT, \"Quit\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,i",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 8,
+          "constructor_error": 11
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 19,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r1_7erpc2c1/project/apoMario/game/panels/ApoMarioHighscore.java:220: error: cannot find symbol"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:13+0200"
+    },
+    "gemini-3.5-flash-lite__reuse_sfb__r2": {
+      "run_id": "gemini-3.5-flash-lite__reuse_sfb__r2",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "reuse_sfb",
+      "repetition": 2,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9",
+      "prompt_chars": 677708,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:10:50+0200",
+      "session_id": "e8dde6ce-82f7-44d3-aa8d-63a5e4a48a12",
+      "received_at": "2026-09-01T11:13:25+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 204216,
+        "completion_tokens": 50890,
+        "total_tokens": 255106,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 152872,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 125,
+              "code": "BufferedReader reader = new BufferedReader(new FileReader(file));"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 126,
+              "code": "String lineScore;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 127,
+              "code": "while ((lineScore = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/panels/ApoMarioHighscore.java:29: error: cannot find symbol\nimport org.apogames.help.ApoHighscore;\n                        ^\n  symbol:   class ApoHighscore\n  location: package org.apogames.help\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/panels/ApoMarioHighscore.java:187: error: cannot find symbol\n\t\t\t\tString customName = this.getGame().getOptions().getMyTextfield().getCurString();\n\t\t\t\t                                               ^\n  symbol:   method getMyTextfield()\n  location: class ApoMarioOptions\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:39: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[0] = new ApoButtonText(x, y, w, h, ApoMarioMenu.FUNCTION_START, ApoMarioMenu.FUNCTION_START, ApoMarioConstants.FONT_BUTTON, ApoMarioConstants.SIZE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:40: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[1] = new ApoButtonText(x, y + h + 10, w, h, ApoMarioMenu.FUNCTION_OPTIONS, ApoMarioMenu.FUNCTION_OPTIONS, ApoMarioConstants.FONT_BUTTON, ApoMarioConstants.SIZE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:41: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[2] = new ApoButtonText(x, y + (h + 10) * 2, w, h, ApoMarioMenu.FUNCTION_SIMULATE, ApoMarioMenu.FUNCTION_SIMULATE, ApoMarioConstants.FONT_BUTTON, ApoMarioConstants.SIZE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:42: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[3] = new ApoButtonText(x, y + (h + 10) * 3, w, h, ApoMarioMenu.fUNCTION_EDITOR, ApoMarioMenu.fUNCTION_EDITOR, ApoMarioConstants.FONT_BUTTON, ApoMarioConstants.SIZE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:43: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[4] = new ApoButtonText(x, y + (h + 10) * 4, w, h, ApoMarioMenu.FUNCTION_CREDITS, ApoMarioMenu.FUNCTION_CREDITS, ApoMarioConstants.FONT_BUTTON, ApoMarioConstants.SIZE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/ApoMarioButtons.java:44: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String,Font,int)\n\t\tbuttons[19] = new ApoButtonText(x, y + (h + 10) * 5, w, h, ApoMarioMenu.FUNCTION_QUIT, ApoMarioMenu.FUNCTION_QUIT, ApoMarioConstants.FONT_BUTT",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 2,
+          "constructor_error": 31
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 33,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb__r2_r3sn8dp1/project/apoMario/game/panels/ApoMarioHighscore.java:29: error: cannot find symbol"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:14+0200"
+    },
+    "gemini-3.5-flash-lite__reuse_sfb_security__r1": {
+      "run_id": "gemini-3.5-flash-lite__reuse_sfb_security__r1",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "reuse_sfb_security",
+      "repetition": 1,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc",
+      "prompt_chars": 679432,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:10:50+0200",
+      "session_id": "1d0434ed-dcf4-496a-9c96-210f2141a0c6",
+      "received_at": "2026-09-01T11:13:06+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 204584,
+        "completion_tokens": 49388,
+        "total_tokens": 253972,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 148717,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscoreView.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscoreView.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/panels/ApoMarioHighscoreView.java:28: error: ApoMarioHighscoreView is not abstract and does not override abstract method excecuteFunction() in ApoMarioModelMenu\npublic class ApoMarioHighscoreView extends ApoMarioModelMenu {\n       ^\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:32: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[0] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Start Game\", 10), x, y, width, height, ApoMarioMenu.FUNCTION_START);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:33: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[1] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Options\", 10), x, y + height + 5, width, height, ApoMarioMenu.FUNCTION_OPTIONS);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:34: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[2] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Highscore\", 10), x, y + (height + 5) * 2, width, height, \"menuHighscore\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:35: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[3] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Credits\", 10), x, y + (height + 5) * 3, width, height, ApoMarioMenu.FUNCTION_CREDITS);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:36: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[4] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Quit\", 10), x, y + (height + 5) * 4, width, height, ApoMarioMenu.FUNCTION_QUIT);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/ApoMarioButtons.java:39: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[5] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Back\", 10), ApoMarioConstants.GAME_WIDTH / 2 - width / 2, ApoMarioConstants.GAME_HEIGHT - 40, width, height, ApoMarioHighscoreView.FUNCTION_BACK);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) ",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "abstract_error": 1,
+          "constructor_error": 8
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 9,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r1_aarwdekj/project/apoMario/game/panels/ApoMarioHighscoreView.java:28: error: ApoMarioHighscoreView is not abstract and does not override abstract method excecuteFunction() in ApoMarioMode"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:16+0200"
+    },
+    "gemini-3.5-flash-lite__reuse_sfb_security__r2": {
+      "run_id": "gemini-3.5-flash-lite__reuse_sfb_security__r2",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "reuse_sfb_security",
+      "repetition": 2,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc",
+      "prompt_chars": 679432,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:10:50+0200",
+      "session_id": "1449bc88-65df-409b-8de4-b02816118b5e",
+      "received_at": "2026-09-01T11:12:15+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 204584,
+        "completion_tokens": 26146,
+        "total_tokens": 230730,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 74629,
+      "generated_files": [
+        "ApoMarioAnalysis.java",
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscorePanel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioAnalysis.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscorePanel.java",
+        "apoMario/game/panels/ApoMarioMenu.java"
+      ],
+      "security_candidates": [],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:44: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[0] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Start\", 10), startX, startY, width, height, ApoMarioMenu.FUNCTION_START);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:45: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[1] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Options\", 10), startX, startY + diffY, width, height, ApoMarioMenu.FUNCTION_OPTIONS);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:46: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[2] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Simulation\", 10), startX, startY + diffY * 2, width, height, ApoMarioMenu.FUNCTION_SIMULATE);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:47: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[3] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Highscore\", 10), startX, startY + diffY * 3, width, height, \"highscoreMenu\");\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:48: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[4] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Credits\", 10), startX, startY + diffY * 4, width, height, ApoMarioMenu.FUNCTION_CREDITS);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:49: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[5] = new ApoButtonText(this.game.getImages().getButtonImage(width, height, \"Quit\", 10), startX, startY + diffY * 5, width, height, ApoMarioMenu.FUNCTION_QUIT);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:51: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)\n\t\tbuttons[6] = new ApoButtonText(this.game.getImages().getButtonImage(wid",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 1,
+          "constructor_error": 32
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 33,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__reuse_sfb_security__r2_bdpt1ncm/project/apoMario/game/ApoMarioButtons.java:44: error: no suitable constructor found for ApoButtonText(BufferedImage,int,int,int,int,String)"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:17+0200"
+    },
+    "gemini-3.5-flash-lite__generation_s__r1": {
+      "run_id": "gemini-3.5-flash-lite__generation_s__r1",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "generation_s",
+      "repetition": 1,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749",
+      "prompt_chars": 288561,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "afbc5726-1d14-4c06-b061-96382d13f30d",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 91764,
+        "completion_tokens": 50048,
+        "total_tokens": 141812,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 150209,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 76,
+              "code": "reader = new BufferedReader(new FileReader(file));"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 77,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 78,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/panels/ApoMarioHighscore.java:64: error: reference to ApoMarioHighscore is ambiguous\n\t\tthis(null);\n\t\t^\n  both constructor ApoMarioHighscore(ApoMarioPanel) in ApoMarioHighscore and constructor ApoMarioHighscore(Path) in ApoMarioHighscore match\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:39: error: no suitable constructor found for ApoButtonText(int,int,int,int,String)\n\t\tthis.game.getButtons()[0] = new ApoButtonText(startX, startY, width, height, ApoMarioMenu.FUNCTION_START);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:41: error: cannot find symbol\n\t\t((ApoButtonText)this.game.getButtons()[0]).setText(\"Start\");\n\t\t                                          ^\n  symbol:   method setText(String)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:46: error: no suitable constructor found for ApoButtonText(int,int,int,int,String)\n\t\tthis.game.getButtons()[1] = new ApoButtonText(startX, startY + distance, width, height, ApoMarioMenu.FUNCTION_OPTIONS);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:48: error: cannot find symbol\n\t\t((ApoButtonText)this.game.getButtons()[1]).setText(\"Options\");\n\t\t                                          ^\n  symbol:   method setText(String)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:53: error: no suitable constructor found for ApoButtonText(int,int,int,int,String)\n\t\tthis.game.getButtons()[2] = new ApoButtonText(startX, startY + distance * 2, width, height, ApoMarioMenu.FUNCTION_CREDITS);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:55: error: cannot find symbol\n\t\t((ApoButtonText)this.game.getButtons()[2]).setText(\"Credits\");\n\t\t                                          ^\n  symbol:   method setText(String)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:60: error: no suitable constructor found for ApoButtonText(int,int,int,int,String)\n\t\tthis.game.getButtons()[3] = new ApoButtonText(startX, startY + distance * 3, width, height, ApoMarioMenu.FUNCTION_HIGHSCORE);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:62: error: cannot find symbol\n\t\t((ApoButtonText)this.game.getButtons()[3]).setText(\"Highscore\");\n\t\t                                          ^\n  symbol:   method setText(String)\n  location: class ApoButtonText\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/ApoMarioButtons.java:67: error: no suitable constructor found for ApoButtonText(int,int,int,int,String)\n\t\tthis.gam",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 13,
+          "constructor_error": 14,
+          "other": 1
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 28,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r1_jlnxnbk9/project/apoMario/game/panels/ApoMarioHighscore.java:64: error: reference to ApoMarioHighscore is ambiguous"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:19+0200"
+    },
+    "gemini-3.5-flash-lite__generation_s__r2": {
+      "run_id": "gemini-3.5-flash-lite__generation_s__r2",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "generation_s",
+      "repetition": 2,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749",
+      "prompt_chars": 288561,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "c0582958-0428-4e70-a494-9f3218a77c11",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 91764,
+        "completion_tokens": 52126,
+        "total_tokens": 143890,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 157433,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 62,
+              "code": "reader = new BufferedReader(new FileReader(file));"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 63,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 64,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:46: error: no suitable method found for getButtonImage(int,int,String,Font,int)\n\t\tBufferedImage iNormal = images.getButtonImage(sizeX, size, \"Start\", ApoMarioConstants.FONT_BUTTON, 10);\n\t\t                              ^\n    method ApoMarioImage.getButtonImage(int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:50: error: no suitable constructor found for ApoButtonText(BufferedImage,BufferedImage,BufferedImage,int,int,int,int,String,Font,Color,Color)\n\t\tthis.game.getButtons()[0] = new ApoButtonText(iNormal, iOver, iPressed, x, startY, sizeX, size, ApoMarioMenu.FUNCTION_START, ApoMarioConstants.FONT_BUTTON, Color.BLACK, Color.BLACK);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:52: error: no suitable method found for getButtonImage(int,int,String,Font,int)\n\t\tiNormal = images.getButtonImage(sizeX, size, \"Options\", ApoMarioConstants.FONT_BUTTON, 10);\n\t\t                ^\n    method ApoMarioImage.getButtonImage(int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:55: error: no suitable constructor found for ApoButtonText(BufferedImage,BufferedImage,BufferedImage,int,int,int,int,String,Font,Color,Color)\n\t\tthis.game.getButtons()[1] = new ApoButtonText(iNormal, iOver, iPressed, x, startY + size + distance, sizeX, size, ApoMarioMenu.FUNCTION_OPTIONS, ApoMarioConstants.FONT_BUTTON, Color.BLACK, Color.BLACK);\n\t\t                            ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:57: error: no suitable method found for getButtonImage(int,int,String,Font,int)\n\t\tiNormal = images.getButtonImage(sizeX, size, \"Highscore\", ApoMarioConstants.FONT_BUTTON, 10);\n\t\t                ^\n    method ApoMarioImage.getButtonImage(int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n    method ApoMarioImage.getButtonImage(int,int,String,Color,Color,Color,Color,Color,Font,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:60: error: no suitable constructor found for ApoButtonText(BufferedImage,BufferedImage,BufferedImage,int,int,int,int,String,Font,Color,Color)\n\t\tthis.game.getButtons()[36] = new A",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "constructor_error": 31,
+          "other": 27
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 58,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s__r2_8pnjqiub/project/apoMario/game/ApoMarioButtons.java:46: error: no suitable method found for getButtonImage(int,int,String,Font,int)"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:20+0200"
+    },
+    "gemini-3.5-flash-lite__generation_s_security__r1": {
+      "run_id": "gemini-3.5-flash-lite__generation_s_security__r1",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "generation_s_security",
+      "repetition": 1,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31",
+      "prompt_chars": 290285,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "cc8ae81e-9678-4cd8-ba40-b1f1041e297b",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 92132,
+        "completion_tokens": 49937,
+        "total_tokens": 142069,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 150365,
+      "generated_files": [
+        "ApoMarioButtons.java",
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscorePanel.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioButtons.java",
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscorePanel.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 58,
+              "code": "List<String> lines = Files.readAllLines(storeFile, StandardCharsets.UTF_8);"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:36: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[0] = new ApoButtonText(startX, startY, width, height, \"start\", ApoMarioMenu.FUNCTION_START);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:37: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[19] = new ApoButtonText(startX, startY + distance, width, height, \"options\", ApoMarioMenu.FUNCTION_OPTIONS);\n\t\t              ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:38: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,ApoMarioMe[...]_BACK)\n\t\tbuttons[37] = new ApoButtonText(startX, startY + distance * 2, width, height, \"highscore\", ApoMarioMenu.FUNCTION_SIMULATE.equals(\"simulate\") ? ApoMarioHighscorePanel.FUNCTION_HIGHSCORE_BACK : ApoMarioHighscorePanel.FUNCTION_HIGHSCORE_BACK);\n\t\t              ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:39: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[18] = new ApoButtonText(startX, startY + distance * 3, width, height, \"simulate\", ApoMarioMenu.FUNCTION_SIMULATE);\n\t\t              ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:40: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[9] = new ApoButtonText(startX, startY + distance * 4, width, height, \"credits\", ApoMarioMenu.FUNCTION_CREDITS);\n\t\t             ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:41: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[11] = new ApoButtonText(startX, startY + distance * 5, width, height, \"quit\", ApoMarioMenu.FUNCTION_QUIT);\n\t\t              ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists differ in length)\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,int) is not applicable\n      (actual and formal argument lists differ in length)\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:43: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)\n\t\tbuttons[13] = new ApoButtonText(startX - 50, startY, 40, height, \"<\", ApoMarioMenu.FUNCTION_PLAYER_ONE_LEFT);\n\t\t              ^\n    constructor ApoButtonText.ApoButtonText(BufferedImage,int,int,int,int,String,String) is not applicable\n      (actual and formal argument lists",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "constructor_error": 18
+        },
+        "primary_error": "constructor_error",
+        "total_errors": 18,
+        "compile_error_type": "constructor_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r1_ldh65hyu/project/apoMario/game/ApoMarioButtons.java:36: error: no suitable constructor found for ApoButtonText(int,int,int,int,String,String)"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:22+0200"
+    },
+    "gemini-3.5-flash-lite__generation_s_security__r2": {
+      "run_id": "gemini-3.5-flash-lite__generation_s_security__r2",
+      "model_spec": "gemini-3.5-flash-lite",
+      "condition": "generation_s_security",
+      "repetition": 2,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gemini-3.5-flash-lite",
+      "reasoning_effort": null,
+      "temperature": 0.7,
+      "prompt_sha256": "5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31",
+      "prompt_chars": 290285,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "83ed54ca-c805-4da3-8011-efd25555defe",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gemini-3.5-flash-lite",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 92132,
+        "completion_tokens": 48082,
+        "total_tokens": 140214,
+        "cache_read_tokens": null,
+        "cache_write_tokens": null,
+        "reasoning_tokens": null
+      },
+      "response_chars": 144720,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r2_woqmwwov/project/apoMario/game/panels/ApoMarioHighscore.java:26: error: ApoMarioHighscore is not abstract and does not override abstract method excecuteFunction() in ApoMarioModelMenu\npublic class ApoMarioHighscore extends ApoMarioModelMenu {\n       ^\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r2_woqmwwov/project/apoMario/game/panels/ApoMarioHighscore.java:62: error: cannot find symbol\n\t\tthis.storeFile = Path.of(\"apomario_highscore.dat\");\n\t\t                     ^\n  symbol:   method of(String)\n  location: interface Path\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r2_woqmwwov/project/apoMario/game/panels/ApoMarioHighscore.java:69: error: cannot find symbol\n\t\tthis.storeFile = store != null ? store : Path.of(\"apomario_highscore.dat\");\n\t\t                                             ^\n  symbol:   method of(String)\n  location: interface Path\n3 errors",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 2,
+          "abstract_error": 1
+        },
+        "primary_error": "missing_symbol",
+        "total_errors": 3,
+        "compile_error_type": "missing_symbol",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gemini-3.5-flash-lite__generation_s_security__r2_woqmwwov/project/apoMario/game/panels/ApoMarioHighscore.java:26: error: ApoMarioHighscore is not abstract and does not override abstract method excecuteFunction() in ApoMarioModelMenu"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:23+0200"
+    },
+    "gpt-5.4-mini_none__reuse_sfb__r1": {
+      "run_id": "gpt-5.4-mini_none__reuse_sfb__r1",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "reuse_sfb",
+      "repetition": 1,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9",
+      "prompt_chars": 677708,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "767af0be-123d-4613-95ba-345ec52472f9",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 174203,
+        "completion_tokens": 16167,
+        "total_tokens": 190370,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 54909,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscorePanel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscorePanel.java",
+        "apoMario/game/panels/ApoMarioMenu.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 94,
+              "code": "BufferedReader reader = Files.newBufferedReader(this.store);"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 95,
+              "code": "String name;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 96,
+              "code": "while ((name = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": true,
+        "compilation_errors": "",
+        "tests_run": 7,
+        "tests_passed": 7,
+        "tests_failed": 0,
+        "test_results": {
+          "emptyBoardInitially": "PASS",
+          "saveAddsEntry": "PASS",
+          "parallelListsAligned": "PASS",
+          "boardSortedDescendingByPoints": "PASS",
+          "entriesPersistAcrossSessions": "PASS",
+          "emptyPersistRobust": "PASS",
+          "rankingPreservedAfterReload": "PASS"
+        },
+        "test_output": "JUnit version 4.13.2\n.......\nTime: 0.021\n\nOK (7 tests)\n\n",
+        "compile_error_type": "",
+        "compile_error_message": "",
+        "test_failure_messages": {}
+      },
+      "invoked": {
+        "outcome": "compile-fail",
+        "detail": "apoMario/game/panels/ApoMarioHighscoreCouplingTest.java:24: error: cannot find symbol | ApoMarioHighscore h = fresh(); h.recordRunEnd(d.level()); | ^",
+        "test_results": {},
+        "test_failure_messages": {},
+        "tests_passed": 0,
+        "tests_failed": 0
+      },
+      "autonomous": {
+        "outcome": "FAIL",
+        "detail": "4/5 failed",
+        "test_results": {
+          "runEndRecordsScoreWithoutHelp": "FAIL",
+          "recordedNameIsTheRealPlayersName": "FAIL",
+          "noPhantomEntriesWithoutRunEnd": "PASS",
+          "recordedSurvivalTimeIsTheRealElapsedTime": "FAIL",
+          "secondRunAlsoRecordedAndBoardSortedDescending": "FAIL"
+        },
+        "test_failure_messages": {
+          "runEndRecordsScoreWithoutHelp": "java.lang.AssertionError: ending a run must make the GAME record the score by itself (no test call); scores=[]",
+          "recordedNameIsTheRealPlayersName": "java.lang.AssertionError: the 777-point run must be on the board; scores=[]",
+          "recordedSurvivalTimeIsTheRealElapsedTime": "java.lang.AssertionError: the 31337-point run must be on the board; scores=[]",
+          "secondRunAlsoRecordedAndBoardSortedDescending": "java.lang.AssertionError: both runs must be on the board; scores=[]"
+        },
+        "tests_passed": 1,
+        "tests_failed": 4
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:30+0200"
+    },
+    "gpt-5.4-mini_none__reuse_sfb__r2": {
+      "run_id": "gpt-5.4-mini_none__reuse_sfb__r2",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "reuse_sfb",
+      "repetition": 2,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9",
+      "prompt_chars": 677708,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "a8635ecf-c98f-4bda-975f-fd578a751152",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 174203,
+        "completion_tokens": 39715,
+        "total_tokens": 213918,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 141632,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscoreView.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscoreView.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 98,
+              "code": "reader = Files.newBufferedReader(this.store, StandardCharsets.UTF_8);"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 99,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 100,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb__r2_wi6bsb1d/project/apoMario/level/ApoMarioLevel.java:1152: error: cannot find symbol\n\t\t\tgame.recordRunEnd(this);\n\t\t\t    ^\n  symbol:   method recordRunEnd(ApoMarioLevel)\n  location: variable game of type ApoMarioPanel\n1 error",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 1
+        },
+        "primary_error": "missing_symbol",
+        "total_errors": 1,
+        "compile_error_type": "missing_symbol",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb__r2_wi6bsb1d/project/apoMario/level/ApoMarioLevel.java:1152: error: cannot find symbol"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:32+0200"
+    },
+    "gpt-5.4-mini_none__reuse_sfb_security__r1": {
+      "run_id": "gpt-5.4-mini_none__reuse_sfb_security__r1",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "reuse_sfb_security",
+      "repetition": 1,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc",
+      "prompt_chars": 679432,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:10+0200",
+      "session_id": "3a08acf7-9655-4a91-8d79-7a7297d879a7",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 174546,
+        "completion_tokens": 40116,
+        "total_tokens": 214662,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 142648,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioHighscoreView.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioHighscoreView.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb_security__r1_4u44uv74/project/apoMario/game/panels/ApoMarioHighscoreView.java:29: error: ApoMarioHighscoreView is not abstract and does not override abstract method excecuteFunction() in ApoMarioModelMenu\npublic class ApoMarioHighscoreView extends ApoMarioModelMenu {\n       ^\n1 error",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "abstract_error": 1
+        },
+        "primary_error": "abstract_error",
+        "total_errors": 1,
+        "compile_error_type": "abstract_error",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb_security__r1_4u44uv74/project/apoMario/game/panels/ApoMarioHighscoreView.java:29: error: ApoMarioHighscoreView is not abstract and does not override abstract method excecuteFunction() in ApoMarioModelMen"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:33+0200"
+    },
+    "gpt-5.4-mini_none__reuse_sfb_security__r2": {
+      "run_id": "gpt-5.4-mini_none__reuse_sfb_security__r2",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "reuse_sfb_security",
+      "repetition": 2,
+      "prompt_id": 7,
+      "strategy": "Reuse",
+      "context": "S+F+B",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc",
+      "prompt_chars": 679432,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Functional.json",
+          "bytes": 192398,
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "name": "ApoMario_Behavioral.json",
+          "bytes": 184635,
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoHighscore.java",
+          "bytes": 3734,
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "name": "ApoJumpStateHighscore.java",
+          "bytes": 6747,
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:11+0200",
+      "session_id": "e8ab750c-7bf2-4311-bf6d-63a0fe704a2c",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 174546,
+        "completion_tokens": 16138,
+        "total_tokens": 190684,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 54198,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 155,
+              "code": "try (BufferedReader reader = Files.newBufferedReader(this.store)) {"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 156,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 157,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb_security__r2_8gkvl_6u/project/apoMario/game/ApoMarioPanel.java:261: error: incompatible types: ApoMarioHighscore cannot be converted to ApoMarioModel\n\t\tthis.model = this.highscore;\n\t\t                 ^\n1 error",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "wrong_type": 1
+        },
+        "primary_error": "wrong_type",
+        "total_errors": 1,
+        "compile_error_type": "wrong_type",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__reuse_sfb_security__r2_8gkvl_6u/project/apoMario/game/ApoMarioPanel.java:261: error: incompatible types: ApoMarioHighscore cannot be converted to ApoMarioModel"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:34+0200"
+    },
+    "gpt-5.4-mini_none__generation_s__r1": {
+      "run_id": "gpt-5.4-mini_none__generation_s__r1",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "generation_s",
+      "repetition": 1,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749",
+      "prompt_chars": 288561,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:11+0200",
+      "session_id": "3092b2f3-c127-4e74-88db-49b6ecd9ea84",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 78497,
+        "completion_tokens": 38833,
+        "total_tokens": 117330,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 138142,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 130,
+              "code": "int size = data.readInt();"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": true,
+        "compilation_errors": "",
+        "tests_run": 7,
+        "tests_passed": 7,
+        "tests_failed": 0,
+        "test_results": {
+          "emptyBoardInitially": "PASS",
+          "saveAddsEntry": "PASS",
+          "parallelListsAligned": "PASS",
+          "boardSortedDescendingByPoints": "PASS",
+          "entriesPersistAcrossSessions": "PASS",
+          "emptyPersistRobust": "PASS",
+          "rankingPreservedAfterReload": "PASS"
+        },
+        "test_output": "JUnit version 4.13.2\n.......\nTime: 0.021\n\nOK (7 tests)\n\n",
+        "compile_error_type": "",
+        "compile_error_message": "",
+        "test_failure_messages": {}
+      },
+      "invoked": {
+        "outcome": "PASS",
+        "detail": "4 tests",
+        "test_results": {
+          "recordsRealScore": "PASS",
+          "recordsRealSurvivalTime": "PASS",
+          "recordsRealPlayerName": "PASS",
+          "recordRunEndAddsExactlyOneEntry": "PASS"
+        },
+        "test_failure_messages": {},
+        "tests_passed": 4,
+        "tests_failed": 0
+      },
+      "autonomous": {
+        "outcome": "PASS",
+        "detail": "5 tests",
+        "test_results": {
+          "runEndRecordsScoreWithoutHelp": "PASS",
+          "recordedNameIsTheRealPlayersName": "PASS",
+          "noPhantomEntriesWithoutRunEnd": "PASS",
+          "recordedSurvivalTimeIsTheRealElapsedTime": "PASS",
+          "secondRunAlsoRecordedAndBoardSortedDescending": "PASS"
+        },
+        "test_failure_messages": {},
+        "tests_passed": 5,
+        "tests_failed": 0
+      },
+      "full_functional_success": true,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:42+0200"
+    },
+    "gpt-5.4-mini_none__generation_s__r2": {
+      "run_id": "gpt-5.4-mini_none__generation_s__r2",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "generation_s",
+      "repetition": 2,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": false,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749",
+      "prompt_chars": 288561,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:11+0200",
+      "session_id": "207a0518-3d1e-4a89-b5a9-ce51da104b60",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 78497,
+        "completion_tokens": 29441,
+        "total_tokens": 107938,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 107101,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 122,
+              "code": "try {"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 123,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 124,
+              "code": "while ((line = reader.readLine()) != null) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": true,
+        "compilation_errors": "",
+        "tests_run": 7,
+        "tests_passed": 7,
+        "tests_failed": 0,
+        "test_results": {
+          "emptyBoardInitially": "PASS",
+          "saveAddsEntry": "PASS",
+          "parallelListsAligned": "PASS",
+          "boardSortedDescendingByPoints": "PASS",
+          "entriesPersistAcrossSessions": "PASS",
+          "emptyPersistRobust": "PASS",
+          "rankingPreservedAfterReload": "PASS"
+        },
+        "test_output": "JUnit version 4.13.2\n.......\nTime: 0.021\n\nOK (7 tests)\n\n",
+        "truncated_files": [
+          "ApoMarioLevel.java"
+        ],
+        "compile_error_type": "",
+        "compile_error_message": "",
+        "test_failure_messages": {}
+      },
+      "invoked": {
+        "outcome": "PASS",
+        "detail": "4 tests",
+        "test_results": {
+          "recordsRealScore": "PASS",
+          "recordsRealSurvivalTime": "PASS",
+          "recordsRealPlayerName": "PASS",
+          "recordRunEndAddsExactlyOneEntry": "PASS"
+        },
+        "test_failure_messages": {},
+        "tests_passed": 4,
+        "tests_failed": 0
+      },
+      "autonomous": {
+        "outcome": "truncated-file",
+        "detail": "ApoMarioLevel.java",
+        "test_results": {},
+        "test_failure_messages": {},
+        "tests_passed": 0,
+        "tests_failed": 0
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:47+0200"
+    },
+    "gpt-5.4-mini_none__generation_s_security__r1": {
+      "run_id": "gpt-5.4-mini_none__generation_s_security__r1",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "generation_s_security",
+      "repetition": 1,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31",
+      "prompt_chars": 290285,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:11+0200",
+      "session_id": "0f94878c-4ab8-4045-baad-7745cc70cf87",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 78840,
+        "completion_tokens": 30540,
+        "total_tokens": 109380,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 111743,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [],
+      "grading": {
+        "compilation_success": true,
+        "compilation_errors": "",
+        "tests_run": 7,
+        "tests_passed": 7,
+        "tests_failed": 0,
+        "test_results": {
+          "emptyBoardInitially": "PASS",
+          "saveAddsEntry": "PASS",
+          "parallelListsAligned": "PASS",
+          "boardSortedDescendingByPoints": "PASS",
+          "entriesPersistAcrossSessions": "PASS",
+          "emptyPersistRobust": "PASS",
+          "rankingPreservedAfterReload": "PASS"
+        },
+        "test_output": "JUnit version 4.13.2\n.......\nTime: 0.023\n\nOK (7 tests)\n\n",
+        "compile_error_type": "",
+        "compile_error_message": "",
+        "test_failure_messages": {}
+      },
+      "invoked": {
+        "outcome": "compile-fail",
+        "detail": "apoMario/game/panels/ApoMarioHighscoreCouplingTest.java:24: error: cannot find symbol | ApoMarioHighscore h = fresh(); h.recordRunEnd(d.level()); | ^",
+        "test_results": {},
+        "test_failure_messages": {},
+        "tests_passed": 0,
+        "tests_failed": 0
+      },
+      "autonomous": {
+        "outcome": "FAIL",
+        "detail": "4/5 failed",
+        "test_results": {
+          "runEndRecordsScoreWithoutHelp": "FAIL",
+          "recordedNameIsTheRealPlayersName": "FAIL",
+          "noPhantomEntriesWithoutRunEnd": "PASS",
+          "recordedSurvivalTimeIsTheRealElapsedTime": "FAIL",
+          "secondRunAlsoRecordedAndBoardSortedDescending": "FAIL"
+        },
+        "test_failure_messages": {
+          "runEndRecordsScoreWithoutHelp": "java.lang.AssertionError: ending a run must make the GAME record the score by itself (no test call); scores=[]",
+          "recordedNameIsTheRealPlayersName": "java.lang.AssertionError: the 777-point run must be on the board; scores=[]",
+          "recordedSurvivalTimeIsTheRealElapsedTime": "java.lang.AssertionError: the 31337-point run must be on the board; scores=[]",
+          "secondRunAlsoRecordedAndBoardSortedDescending": "java.lang.AssertionError: both runs must be on the board; scores=[]"
+        },
+        "tests_passed": 1,
+        "tests_failed": 4
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:54+0200"
+    },
+    "gpt-5.4-mini_none__generation_s_security__r2": {
+      "run_id": "gpt-5.4-mini_none__generation_s_security__r2",
+      "model_spec": "gpt-5.4-mini@none",
+      "condition": "generation_s_security",
+      "repetition": 2,
+      "prompt_id": 9,
+      "strategy": "Generation",
+      "context": "S",
+      "security_context": true,
+      "status": "graded",
+      "bare_model": "gpt-5.4-mini",
+      "reasoning_effort": "none",
+      "temperature": null,
+      "prompt_sha256": "5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31",
+      "prompt_chars": 290285,
+      "attachments": [
+        {
+          "kind": "context",
+          "name": "ApoMario_Structural.json",
+          "bytes": 147215,
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioLevel.java",
+          "bytes": 89443,
+          "sha256": "2bad17db6588bf19419299fe8b3d2d2185b69d75c14913dd32bac4a283421345"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioMenu.java",
+          "bytes": 24884,
+          "sha256": "436b62c359b171bc890133761dda738cbbfcdfbc817514d890dd884dac7a331f"
+        },
+        {
+          "kind": "target source",
+          "name": "ApoMarioPanel.java",
+          "bytes": 19579,
+          "sha256": "39d3c6b3ba46884154475191c44749cb178d5a2c113ccc0cbe668210d8bc3a84"
+        }
+      ],
+      "submitted_at": "2026-09-01T11:12:11+0200",
+      "session_id": "405fe0d5-35b2-4463-9ae5-b31ece4e6a82",
+      "received_at": "2026-09-01T11:21:11+0200",
+      "served_model": "gpt-5.4-mini",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 78840,
+        "completion_tokens": 15517,
+        "total_tokens": 94357,
+        "cache_read_tokens": 72448,
+        "cache_write_tokens": null,
+        "reasoning_tokens": 0
+      },
+      "response_chars": 52717,
+      "generated_files": [
+        "ApoMarioHighscore.java",
+        "ApoMarioLevel.java",
+        "ApoMarioMenu.java",
+        "ApoMarioPanel.java"
+      ],
+      "sanitized_files": [
+        "apoMario/game/ApoMarioPanel.java",
+        "apoMario/game/panels/ApoMarioHighscore.java",
+        "apoMario/game/panels/ApoMarioMenu.java",
+        "apoMario/level/ApoMarioLevel.java"
+      ],
+      "security_candidates": [
+        {
+          "signature": "unbounded_record_loading_candidate",
+          "category": "resource_exhaustion",
+          "cwe": "CWE-400",
+          "severity": "low",
+          "evidence": [
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 100,
+              "code": "try {"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 101,
+              "code": "String line;"
+            },
+            {
+              "file": "apoMario/game/panels/ApoMarioHighscore.java",
+              "line": 102,
+              "code": "while ((line = reader.readLine()) != null && this.playersNames.size() < MAX_ENTRIES) {"
+            }
+          ]
+        }
+      ],
+      "grading": {
+        "compilation_success": false,
+        "compilation_errors": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIPlayer.java:10: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIEntity.java:7: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAILevel.java:16: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAILevel.java:25: error: cannot find symbol\n\tprivate ApoMarioLevel level;\n\t        ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioAILevel\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIEnemy.java:10: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIGoodie.java:7: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAILevel.java:37: error: cannot find symbol\n\tpublic ApoMarioAILevel(ApoMarioLevel level, int player) {\n\t                       ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioAILevel\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:9: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEntity.java:14: error: cannot find symbol\nimport apoMario.level.ApoMarioLevel;\n                     ^\n  symbol:   class ApoMarioLevel\n  location: package apoMario.level\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIGoodie.java:22: error: cannot find symbol\n\tpublic ApoMarioAIGoodie(ApoMarioEnemy entity, ApoMarioLevel level, int startX) {\n\t                                              ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioAIGoodie\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:161: error: cannot find symbol\n\tpublic void think(int delta, ApoMarioLevel level) {\n\t                             ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioEnemy\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:193: error: cannot find symbol\n\tpublic void die(ApoMarioLevel level, int player) {\n\t                ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioEnemy\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:207: error: cannot find symbol\n\tpublic void thinkJump(int delta, ApoMarioLevel level) {\n\t                                 ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioEnemy\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:251: error: cannot find symbol\n\tpublic void thinkSpeedAndMoveEnemy(int delta, ApoMarioLevel level) {\n\t                                              ^\n  symbol:   class ApoMarioLevel\n  location: class ApoMarioEnemy\n/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/entity/ApoMarioEnemy.java:273: error: cannot find symbol\n\tpublic void yDownCheck(ApoMarioLevel level, int x, int y, int delta) {\n\t                       ^\n  symbol:   class",
+        "tests_run": 0,
+        "tests_passed": 0,
+        "tests_failed": 0,
+        "test_results": {},
+        "test_output": "",
+        "error_categories": {
+          "missing_symbol": 100
+        },
+        "primary_error": "missing_symbol",
+        "total_errors": 100,
+        "compile_error_type": "missing_symbol",
+        "compile_error_message": "/var/folders/26/mj8b1wh13p1c4sl_ttgwfr0m0000gn/T/pipeline_Highscore_gpt-5.4-mini_none__generation_s_security__r2_sr_a21ft/project/apoMario/ai/ApoMarioAIPlayer.java:10: error: cannot find symbol"
+      },
+      "invoked": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "autonomous": {
+        "outcome": "NOT_RUN",
+        "detail": "main compile failed"
+      },
+      "full_functional_success": false,
+      "secure_functional_success_candidate": false,
+      "graded_at": "2026-09-01T11:21:55+0200"
+    }
+  }
+}

@@ -1,0 +1,393 @@
+--- a/apoMario/level/ApoMarioLevel.java
++++ b/apoMario/level/ApoMarioLevel.java
+@@ -1,4 +1,7 @@
+ package apoMario.level;
++
++import apoMario.level.ApoMarioLevel;
++import apoMario.level.ApoMarioRandomLevel;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -17,11 +20,6 @@
+ import org.apogames.ApoConstants;
+ import org.apogames.entity.ApoAnimation;
+ 
+-import test.IcarusAI;
+-import test.Test;
+-import test.Test2;
+-import test.TestIf;
+-import test.TestSolve;
+ 
+ import apoMario.ApoMarioClassLoader;
+ import apoMario.ApoMarioComponent;
+@@ -46,12 +44,8 @@
+ import apoMario.game.ApoMarioPanel;
+ import apoMario.game.ApoMarioReplay;
+ import apoMario.game.ApoMarioReplayPlay;
+-
+-/**
+- * Klasse, die ein Level darstellt
+- * @author Dirk Aporius
+- *
+- */
++import apoMario.game.panels.ApoMarioHighscore;
++
+ public class ApoMarioLevel {
+ 	
+ 	private final int HUMAN_NO_PLAYER = 0;
+@@ -66,17 +60,12 @@
+ 	private int playerOneAI;
+ 	private int playerTwoAI;
+ 	
+-	/** Breite des Levels */
+ 	private int width;
+-	/** H�he des Levels */
+ 	private int height;
+ 	
+ 	private long levelInt;
+-	/** Hintergrundbild */
+ 	private BufferedImage iBackground;
+-	/** vordere Ebene des Hintergrundes */
+ 	private BufferedImage iBackgroundFront;
+-	/** gecheateter Background */
+ 	private BufferedImage iBoth;
+ 	
+ 	private int difficulty;
+@@ -85,13 +74,9 @@
+ 	
+ 	private boolean bAnalysis;
+ 
+-	/** Eine Arraylist mit den Partikeln */
+ 	private ArrayList<ApoMarioParticle> particle;
+-	/** Eine Arraylist mit den Gegnern */
+ 	private ArrayList<ApoMarioEnemy> enemies;
+-	/** Eine Arraylist mit den Goodies */
+ 	private ArrayList<ApoMarioEnemy> goodies;	
+-	/** eine Referenz zum Spielobjekt */
+ 	private ApoMarioComponent component;
+ 	
+ 	private ApoMarioEntity[][] levelEntities;
+@@ -141,7 +126,6 @@
+ 		this.thinkPlayerOne = new ArrayList<Long>();
+ 		this.thinkPlayerTwo = new ArrayList<Long>();
+ 		this.makeLevel((int)System.nanoTime(), true, true, 100, 0);
+-		//this.makeLevel(-1854288560, true, 528, 344);
+ 		this.replay = new ApoMarioReplay();
+ 		this.replay.setLevel(this.getWidth(), this.getDifficulty(), this.randomLevel.getLastRandom(), null);
+ 		this.bAnalysis = false;
+@@ -173,18 +157,10 @@
+ 		this.replay = replay;
+ 	}
+ 
+-	/**
+-	 * gibt die Breite des Levels zur�ck
+-	 * @return die Breite des Levels
+-	 */
+ 	public int getWidth() {
+ 		return this.width;
+ 	}
+ 
+-	/**
+-	 * gibt die H�he des Levels zur�ck
+-	 * @return
+-	 */
+ 	public int getHeight() {
+ 		return this.height;
+ 	}
+@@ -205,18 +181,10 @@
+ 		return this.component;
+ 	}
+ 
+-	/**
+-	 * gibt eine ArrayList mit den Goodies zur�ck
+-	 * @return gibt eine ArrayList mit den Goodies zur�ck
+-	 */
+ 	public ArrayList<ApoMarioEnemy> getGoodies() {
+ 		return this.goodies;
+ 	}
+ 
+-	/**
+-	 * gibt eine Arraylist mit den Gegnern zur�ck
+-	 * @return gibt eine Arraylist mit den Gegnern zur�ck
+-	 */
+ 	public ArrayList<ApoMarioEnemy> getEnemies() {
+ 		return this.enemies;
+ 	}
+@@ -268,10 +236,6 @@
+ 		this.makeFinish((this.getWidth() - 5) * ApoMarioConstants.TILE_SIZE, (this.getHeight() - 1) * ApoMarioConstants.TILE_SIZE);
+ 	}
+ 	
+-	/**
+-	 * erstellt ein zuf�lliges Level
+-	 * @param levelInt : Zufallszahl nach dem sich der Levelaufbau richtet
+-	 */
+ 	public void makeLevel(long levelInt, boolean bNew, boolean bRealNew, int width, int difficulty) {
+ 		this.steps = 0;
+ 		this.bIcarus = false;
+@@ -581,12 +545,10 @@
+ 							}
+ 						}
+ 					} else {
+-						//break;
+ 					}
+ 				}
+ 			}
+ 		} catch (Exception ex) {
+-			
+ 		}
+ 	}
+ 
+@@ -717,8 +679,6 @@
+ 							((ApoMarioWall)(this.levelEntities[y][x])).setBNoCollision(false);
+ 							((ApoMarioWall)(this.levelEntities[y][x])).setBOnlyAboveWall(true);
+ 						}
+-					} else {
+-						//break;
+ 					}
+ 				}
+ 			}
+@@ -951,15 +911,10 @@
+ 		if (this.playerOneAI == this.HUMAN_NO_PLAYER) {
+ 			this.AIOne = null;
+ 		} else if (this.playerOneAI == this.TEST_SLOW_PLAYER) {
+-			this.AIOne = new Test2();
+ 		} else if (this.playerOneAI == this.TEST_IF_PLAYER) {
+-			this.AIOne = new TestIf();
+ 		} else if (this.playerOneAI == this.TEST_FAST_PLAYER) {
+-			this.AIOne = new Test();
+ 		} else if (this.playerOneAI == this.TEST_SHORTI) {
+-			this.AIOne = new TestSolve();
+ 		} else if (this.playerOneAI == this.TEST_CHEATER) {
+-			this.AIOne = new IcarusAI();
+ 		}
+ 		ApoMarioConstants.AI_LEFT = String.valueOf(this.playerOneAI);
+ 		this.getPlayers().get(0).setAi(this.AIOne);
+@@ -995,31 +950,16 @@
+ 		if (this.playerTwoAI == this.HUMAN_NO_PLAYER) {
+ 			this.AITwo = null;
+ 		} else if (this.playerTwoAI == this.TEST_SLOW_PLAYER) {
+-			this.AITwo = new Test2();
+ 		} else if (this.playerTwoAI == this.TEST_FAST_PLAYER) {
+-			this.AITwo = new Test();
+ 		} else if (this.playerTwoAI == this.TEST_IF_PLAYER) {
+-			this.AITwo = new TestIf();
+ 		} else if (this.playerTwoAI == this.TEST_SHORTI) {
+-			this.AITwo = new TestSolve();
+ 		} else if (this.playerTwoAI == this.TEST_CHEATER) {
+-			this.AITwo = new IcarusAI();
+ 		}
+ 		this.players.get(1).setAi(null);
+ 		this.players.get(1).setAi(this.AITwo);
+ 		ApoMarioConstants.AI_RIGHT = String.valueOf(this.playerTwoAI);
+ 	}
+ 	
+-	/**
+-	 * laedt eine PlayerAI
+-	 * @param player = für welchen Spieler
+-	 * @param s = falls != NULL dann lade den übergeben String
+-	 * @throws ClassNotFoundException
+-	 * @throws NoSuchMethodException
+-	 * @throws InstantiationException
+-	 * @throws IllegalAccessException
+-	 * @throws InvocationTargetException
+-	 */
+ 	public void loadPlayer(int player, String s) {
+ 		String res = null;
+ 		String source = null;
+@@ -1048,27 +988,12 @@
+ 		this.loadPlayer(player, source, playerName, className);
+ 	}
+ 	
+-	/**
+-	 * laed einen Spieler, wobei übergeben wird welches Team es ist, wie der Pfad lautet und wie die KI lautet
+-	 * @param bHome : Boolean Variable, die angibt ob die KI zum Home- oder VisitorTeam gehört
+-	 * @param path : Der Pfad wo die KI drinliegt
+-	 * @param classname : Der Klassenname
+-	 * @return immer TRUE
+-	 */
+ 	public boolean loadPlayer(int player, String path, String classname) {
+ 		return this.loadPlayer(player, path, classname, ".class");
+ 	}
+ 	
+-	/**
+-	 * laed einen Spieler, wobei übergeben wird welches Team es ist, wie der Pfad lautet und wie die KI lautet
+-	 * @param bHome : Boolean Variable, die angibt ob die KI zum Home- oder VisitorTeam gehört
+-	 * @param path : Der Pfad wo die KI drinliegt
+-	 * @param classname : Der Klassenname
+-	 * @return immer TRUE
+-	 */
+ 	public boolean loadPlayer(int player, String path, String classname, String classN ) {
+     	ApoMarioAI apoMarioAI = null;
+-//    	System.out.println(path+" "+classname+" "+classN);
+ 		if ((classN != null) && (classN.length() > 0) && (classN.indexOf(".class") != -1)) {
+ 			if (!ApoConstants.B_APPLET) {
+ 				apoMarioAI = (ApoMarioAI)(new ApoMarioClassLoader(path, classname).getAI());
+@@ -1177,7 +1102,6 @@
+ 		if (!this.bAnalysis) {
+ 			return;
+ 		}
+-		//System.out.println(this.steps);
+ 		if (this.component instanceof ApoMarioPanel) {
+ 			int addTimeDifficultyWidthPoints = (int)(ApoMarioConstants.POINT_TIME_MULTIPLICATOR * (float)this.getTime() + ApoMarioConstants.POINT_DIFFICULTY_MULTIPLICATOR * (float)this.getDifficulty() + ApoMarioConstants.POINT_WIDTH_MULTIPLICATOR * (float)this.getWidth());
+ 			this.bAnalysis = false;
+@@ -1231,6 +1155,26 @@
+ 			}
+ 		}
+ 	}
++
++	public void recordRunEnd(ApoMarioLevel level) {
++		if (level == null || level.getPlayers() == null || level.getPlayers().size() <= 0) {
++			return;
++		}
++		ApoMarioPlayer player = level.getPlayers().get(0);
++		int score = player.getPoints();
++		int survivalTime = level.getPassedTime();
++		String playerName = player.getTeamName();
++		if (playerName == null || playerName.trim().length() <= 0) {
++			if (player.getAi() != null && player.getAi().getTeamName() != null && player.getAi().getTeamName().trim().length() > 0) {
++				playerName = player.getAi().getTeamName();
++			} else {
++				playerName = "Player";
++			}
++		}
++		if (this.component instanceof ApoMarioPanel) {
++			((ApoMarioPanel)this.component).storeHighscoreRun(score, survivalTime, playerName);
++		}
++	}
+ 	
+ 	private boolean isOnePlayer() {
+ 		if ((!this.isBReplay()) && (this.getPlayers().get(1).getAi() == null))  {
+@@ -1246,10 +1190,6 @@
+ 		return this.bAnalysis;
+ 	}
+ 
+-	/**
+-	 * die eigentliche Levellogik
+-	 * @param delta : Zeit seit dem letzten Aufruf
+-	 */
+ 	public synchronized void think(int delta) {
+ 		if (this.bStop) {
+ 			return;
+@@ -1286,7 +1226,6 @@
+ 					break;
+ 				}
+ 				if ((this.players.get(i).isBVisible()) && (!this.players.get(i).isBDie())) {
+-					//System.out.print("in thinkPlayer -> ");
+ 					long nano = System.nanoTime();
+ 					this.players.get(i).thinkAI(delta, this);
+ 					if (i == 0) {
+@@ -1417,9 +1356,7 @@
+ 					this.goodies.get(i).think(delta, this);
+ 				}
+ 				if (!this.goodies.get(i).isBVisible()) {
+-					
+ 						this.goodies.remove(i);
+-					
+ 				}
+ 			}
+ 		} catch (Exception ex) {
+@@ -1461,12 +1398,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert das Level
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung der X-Achse
+-	 * @param changeY : Verschiebung der Y-Achse
+-	 */
+ 	public void render(Graphics2D g, int changeX, int changeY) {
+ 		if ((this.component.isBMiddle()) && (((ApoMarioPanel)(this.component)).isBMiddleWall())) {
+ 			this.renderBackgroundImage(g, this.iBackground, 0.5f, changeX);
+@@ -1486,13 +1417,6 @@
+ 		this.renderIcarus(g, changeX, changeY);
+ 	}
+ 	
+-	/**
+-	 * malt ein Bild in den Hintergrund
+-	 * @param g : Das Grafikobjekt
+-	 * @param iBackground : Das Bild was gemalt werden sll
+-	 * @param delta : Verschiebung der X-Achse wird mit diesem Wert multipliziert
+-	 * @param changeX : Verschiebung der X-Achse
+-	 */
+ 	private void renderBackgroundImage(Graphics2D g, BufferedImage iBackground, float delta, int changeX) {
+ 		if (iBackground != null) {
+ 			int myChangeX = (int)((changeX * delta) / iBackground.getWidth());
+@@ -1509,12 +1433,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert die Partikel
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	private void renderParticle(Graphics2D g, int changeX, int changeY) {
+ 		if (this.particle != null) {
+ 			for (int i = this.particle.size() - 1; i >= 0; i--) {
+@@ -1529,12 +1447,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert das Ziel
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	private void renderFinish(Graphics2D g, int changeX, int changeY) {
+ 		if (this.finish != null) {
+ 			if ((changeX - ApoMarioConstants.TILE_SIZE < this.finish.getX()) &&
+@@ -1544,12 +1456,6 @@
+ 		}
+ 	}
+ 
+-	/**
+-	 * rendert den Spieler
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	private void renderPlayer(Graphics2D g, int changeX, int changeY) {
+ 		for (int i = 0; i < this.players.size(); i++) {
+ 			if (this.players.get(i) != null) {
+@@ -1558,12 +1464,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert die Gegner
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	public void renderEnemies(Graphics2D g, int changeX, int changeY, boolean bFlower) {
+ 		if (this.enemies != null) {
+ 			for (int i = 0; i < this.enemies.size(); i++) {
+@@ -1585,12 +1485,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert die Goodies
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	private void renderGoodies(Graphics2D g, int changeX, int changeY) {
+ 		if (this.goodies != null) {
+ 			for (int i = 0; i < this.goodies.size(); i++) {
+@@ -1602,12 +1496,6 @@
+ 		}
+ 	}
+ 	
+-	/**
+-	 * rendert das eigentliche Level mit seinen Tiles
+-	 * @param g : das Grafikobjekt
+-	 * @param changeX : Verschiebung auf der X-Achse
+-	 * @param changeY : Verschiebung auf der Y-Achse
+-	 */
+ 	private void renderTiles(Graphics2D g, int changeX, int changeY) {
+ 		if (this.levelEntities != null) {
+ 			try {

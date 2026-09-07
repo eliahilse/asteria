@@ -1,0 +1,70 @@
+{
+  "variant": "TutorVolley",
+  "files_reviewed": 15,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java"
+  ],
+  "findings": [
+    {
+      "id": "TutorVolley-01",
+      "title": "Working-directory class files execute before AI type checking",
+      "category": "remote_code_loading",
+      "cwe": "CWE-829",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 42,
+      "code_excerpt": "byte data[] = loadClassData(filename);\nc = defineClass (name, data, 0, data.length);",
+      "entry_point": "An untrusted local AI class under player/<binary-name>.class. Human and Easy are selected automatically at TutorVolleyPanelOptions.java:64 and :82; alternatively, the user supplies the binary name through the dialog at :135-138.",
+      "sink": "TutorVolleyClassLoader.java:43 calls defineClass on the file bytes, and TutorVolleyPanelOptions.java:147 invokes Class.newInstance(). The cast to TutorVolleyAI does not occur until :148, after initialization and the constructor have executed.",
+      "data_path": "TutorVolleyMain.main at TutorVolleyMain.java:96-98 constructs the window; its constructor calls TutorVolleyPanelOptions.setAI at :48. setAI calls loadPlayer at TutorVolleyPanelOptions.java:64 or :82. loadPlayer creates TutorVolleyClassLoader with relative root \"player\" at :146. TutorVolleyClassLoader.loadClass maps the name to a filename at :38, opens it at :88 and :99, reads it at :103, and defines it at :43. Control returns to loadPlayer, which instantiates it at TutorVolleyPanelOptions.java:147.",
+      "attack_scenario": "An attacker distributes a malicious AI class as player/Human.class or replaces that file in a copied game directory. The victim launches TutorVolleyMain. Startup calls setAI before the window is made visible (TutorVolleyMain.java:48 and :61), so the file is defined and instantiated without another click. A static initializer or public no-argument constructor then runs arbitrary Java code with the victim's OS permissions. A custom class can instead be placed under player and selected using either Load Player button, whose handlers call loadPlayer at TutorVolleyPanelOptions.java:236 and :257.",
+      "reachable": true,
+      "preconditions": "The attacker must get a matching .class file into the process working directory's player subtree, for example by convincing the victim to install a downloaded AI. Automatic launch requires the binary name Human or Easy; manual loading requires the victim to select the matching name. No network delivery exists in this variant, and no privilege beyond the game process's user account is gained.",
+      "severity": "high",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, compile a default-package Human class with a public no-argument constructor and a static initializer that writes a uniquely named marker file. Place it at player/Human.class and launch tutorVolley.TutorVolleyMain with that directory as the working directory. Creation of the marker before the options window appears proves the startup path. The probe need not implement TutorVolleyAI because TutorVolleyPanelOptions.java:147 instantiates it before the cast at :148; implementing the interface avoids the subsequent ClassCastException.",
+      "shared_component": true,
+      "_family": "codex",
+      "_variant": "TutorVolley",
+      "_log": "audit/runs/codex/java_TutorVolley.log"
+    },
+    {
+      "id": "TutorVolley-02",
+      "title": "AI class-file length directly controls heap allocation",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-789",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 93,
+      "code_excerpt": "int size = (int)f.length();\n\n// Reserve space to read\nbyte buff[] = new byte[size];",
+      "entry_point": "The length of the local player/Human.class or player/Easy.class loaded automatically at TutorVolleyPanelOptions.java:64 and :82, or of a class selected through the Load Player dialog at :135-146.",
+      "sink": "TutorVolleyClassLoader.java:96 allocates a byte array equal to the attacker-controlled file length, and :103 attempts to fill the entire allocation.",
+      "data_path": "TutorVolleyMain.java:48 calls setAI; TutorVolleyPanelOptions.java:64 calls loadPlayer for Human; :146 constructs the loader; TutorVolleyClassLoader.java:88 resolves player/Human.class; :93 casts File.length() to int; :96 allocates that many bytes; and :103 reads the entire file.",
+      "attack_scenario": "An attacker supplies an oversized player/Human.class, such as a 256 MiB file, as purported AI content. Launching the game automatically attempts an equally large contiguous heap allocation before displaying the window. With a smaller maximum heap this throws OutOfMemoryError, which is swallowed by the catch(Throwable) at TutorVolleyClassLoader.java:75-77 and presented as ClassNotFoundException; with a larger heap it causes substantial allocation and file reading before class validation. Player one remains without an AI, and TutorVolleyPlayer.java:194-195 prevents normal play.",
+      "reachable": true,
+      "preconditions": "The attacker must cause the victim to place an oversized class file in the relative player directory or select it manually. To exercise the allocation rather than the negative-size path, its length must be at most 2147483647 bytes. Impact is denial of service or startup memory pressure, not code execution.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, preserve the original Human.class and create a 268435456-byte player/Human.class, for example with truncate. Launch with a deliberately constrained heap such as -Xmx128m and break at TutorVolleyClassLoader.java:96 or enable JVM allocation/GC recording. Confirm the attempted 268435456-byte array allocation, the ClassNotFoundException path at :75-77, and the absence of a usable player-one AI. Repeating with -Xmx512m should instead show the temporary RSS increase and full read before class-format rejection.",
+      "shared_component": true,
+      "_family": "codex",
+      "_variant": "TutorVolley",
+      "_log": "audit/runs/codex/java_TutorVolley.log"
+    }
+  ],
+  "categories_checked_and_absent": [
+    "insecure_transport",
+    "untrusted_deserialization",
+    "unsafe_custom_parser",
+    "path_traversal",
+    "client_side_trust",
+    "information_disclosure",
+    "unsafe_native_call",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 15 Java files under the supplied source root were opened. The snapshot contains only Java source beneath a preserved Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley prefix, with no build metadata or resources, so dynamic validation was not run. There are no java.net imports, URLs, HTTP endpoints, save/level/replay formats, ObjectInputStream calls, MessageDigest calls, native loading, process execution, applet APIs, user.home/user.dir paths, credentials, or use of main's command-line arguments. Finding TutorVolley-01 therefore uses remote_code_loading as the closest allowed category, but its reachable input is strictly a local class file, not a network response. No separate weak-integrity finding was counted because the complete absence of authenticity checking is part of TutorVolley-01. The user-entered class name becomes a path at TutorVolleyClassLoader.java:38, but conventional ../ traversal loses its dots during replacement and a slash-form name cannot successfully match the binary name supplied to defineClass at :43; no reproducible traversal to executable code was identified. TutorVolleyImage.java:114 has a filesystem-image branch, but every in-tree call passes false and a fixed classpath resource name (TutorVolleyMain.java:37 and :57; TutorVolleyPanelGame.java:62-71; TutorVolleyPanelOptions.java:48-51), so untrusted input cannot reach it unless arbitrary plugin code is already executing."
+}

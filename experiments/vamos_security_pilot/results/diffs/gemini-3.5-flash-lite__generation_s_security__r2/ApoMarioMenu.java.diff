@@ -1,0 +1,69 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,7 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -22,7 +25,7 @@
+ 
+ /**
+  * Menupanelklasse<br />
+- * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin k�mmert<br />
++ * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin kmmert<br />
+  * @author Dirk Aporius
+  */
+ public class ApoMarioMenu extends ApoMarioModelMenu {
+@@ -41,6 +44,7 @@
+ 	public static final String FUNCTION_REPLAYLOAD = "loadReplay";
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
++	public static final String FUNCTION_HIGHSCORE = "highscore";
+ 	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
+@@ -322,6 +326,8 @@
+ 			this.getGame().setEditor();
+ 		} else if (button == KeyEvent.VK_C) {
+ 			this.getGame().setCredits();
++		} else if (button == KeyEvent.VK_H) {
++			this.getGame().setHighscore();
+ 		} else if (button == KeyEvent.VK_S) {
+ 			this.getGame().setSimulation();
+ 		} else if (button == KeyEvent.VK_T) {
+@@ -377,6 +383,8 @@
+ 			this.setEndNode(24);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_EDITORLOAD)) {
+ 			this.setEndNode(25);
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.setEndNode(7);
+ 		}
+ 		if ((oldEndNode == this.getEndNode()) && (this.getEndNode() != -1)) {
+ 			this.getRunner().setX(this.getSearch().getNodes().get(oldEndNode).getX());
+@@ -409,6 +417,8 @@
+ 			}
+ 		}else if (this.getCurNode() == 9) {
+ 			this.getGame().setCredits();
++		} else if (this.getCurNode() == 7) {
++			this.getGame().setHighscore();
+ 		} else if (this.getCurNode() == 18) {
+ 			this.getGame().setSimulation();
+ 		} else if (this.getCurNode() == 15) {
+@@ -448,6 +458,8 @@
+ 			this.getGame().getLevel().changePlayerTwoAI(+1);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_CREDITS)) {
+ 			this.getGame().setCredits();
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.getGame().setHighscore();
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_SIMULATE)) {
+ 			this.getGame().setSimulation();
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_REPLAYLOAD)) {
+@@ -550,4 +562,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

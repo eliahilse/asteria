@@ -1,0 +1,361 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+import apoMario.game.panels.ApoMarioModelMenu;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import apoMario.ApoMarioConstants;
+import apoMario.entity.ApoMarioPlayer;
+import apoMario.level.ApoMarioLevel;
+import apoMario.game.ApoMarioPanel;
+
+public class ApoMarioHighscore extends ApoMarioModelMenu {
+
+	public static final String FUNCTION_HIGHSCORE_BACK = "backHighscore";
+
+	private static final int MAX_ENTRIES = 50;
+	private static final int MAX_NAME_LENGTH = 32;
+
+	private final Path storeFile;
+	private final List<ScoreRecord> records;
+
+	public static class ScoreRecord {
+		private final String playerName;
+		private final int score;
+		private final int survivalTimeSeconds;
+
+		public ScoreRecord(String playerName, int score, int survivalTimeSeconds) {
+			this.playerName = playerName;
+			this.score = score;
+			this.survivalTimeSeconds = survivalTimeSeconds;
+		}
+
+		public String getPlayerName() {
+			return playerName;
+		}
+
+		public int getScore() {
+			return score;
+		}
+
+		public int getSurvivalTimeSeconds() {
+			return survivalTimeSeconds;
+		}
+	}
+
+	public ApoMarioHighscore(ApoMarioPanel game) {
+		super(game);
+		this.storeFile = Path.of("apomario_highscore.dat");
+		this.records = new ArrayList<>();
+		loadPersistence();
+	}
+
+	public ApoMarioHighscore(Path store) {
+		super(null);
+		this.storeFile = store != null ? store : Path.of("apomario_highscore.dat");
+		this.records = new ArrayList<>();
+		loadPersistence();
+	}
+
+	private void loadPersistence() {
+		records.clear();
+		if (storeFile == null || !Files.exists(storeFile)) {
+			return;
+		}
+		try (BufferedReader reader = Files.newBufferedReader(storeFile, StandardCharsets.UTF_8)) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (records.size() >= MAX_ENTRIES) {
+					break;
+				}
+				line = line.trim();
+				if (line.isEmpty() || line.startsWith("#")) {
+					continue;
+				}
+				String[] parts = line.split(";", 3);
+				if (parts.length != 3) {
+					continue;
+				}
+				String name = parts[0].trim();
+				if (name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
+					continue;
+				}
+				int score;
+				int timeSec;
+				try {
+					score = Integer.parseInt(parts[1].trim());
+					timeSec = Integer.parseInt(parts[2].trim());
+				} catch (NumberFormatException e) {
+					continue;
+				}
+				if (score < 0 || timeSec < 0) {
+					continue;
+				}
+				records.add(new ScoreRecord(name, score, timeSec));
+			}
+		} catch (IOException | SecurityException e) {
+			records.clear();
+		}
+		sortAndTrim();
+	}
+
+	public void persistAcrossRuns() {
+		if (storeFile == null) {
+			return;
+		}
+		try {
+			Path parent = storeFile.getParent();
+			if (parent != null && !Files.exists(parent)) {
+				Files.createDirectories(parent);
+			}
+			try (BufferedWriter writer = Files.newBufferedWriter(storeFile, StandardCharsets.UTF_8)) {
+				synchronized (records) {
+					int count = 0;
+					for (ScoreRecord rec : records) {
+						if (count >= MAX_ENTRIES) {
+							break;
+						}
+						writer.write(rec.getPlayerName() + ";" + rec.getScore() + ";" + rec.getSurvivalTimeSeconds());
+						writer.newLine();
+						count++;
+					}
+				}
+			}
+		} catch (IOException | SecurityException e) {
+		}
+	}
+
+	private void sortAndTrim() {
+		synchronized (records) {
+			records.sort(new Comparator<ScoreRecord>() {
+				@Override
+				public int compare(ScoreRecord o1, ScoreRecord o2) {
+					return Integer.compare(o2.getScore(), o1.getScore());
+				}
+			});
+			while (records.size() > MAX_ENTRIES) {
+				records.remove(records.size() - 1);
+			}
+		}
+	}
+
+	public boolean storeRun(int score, int survivalTime, String playerName) {
+		if (score < 0 || survivalTime < 0 || playerName == null) {
+			return false;
+		}
+		String cleanName = playerName.trim();
+		if (cleanName.isEmpty() || cleanName.length() > MAX_NAME_LENGTH) {
+			return false;
+		}
+		synchronized (records) {
+			records.add(new ScoreRecord(cleanName, score, survivalTime));
+			sortAndTrim();
+		}
+		persistAcrossRuns();
+		return true;
+	}
+
+	public List<String> getPlayersNames() {
+		List<String> list = new ArrayList<>();
+		synchronized (records) {
+			for (ScoreRecord r : records) {
+				list.add(r.getPlayerName());
+			}
+		}
+		return list;
+	}
+
+	public List<Integer> getPlayersScores() {
+		List<Integer> list = new ArrayList<>();
+		synchronized (records) {
+			for (ScoreRecord r : records) {
+				list.add(r.getScore());
+			}
+		}
+		return list;
+	}
+
+	public List<Integer> getSurvivalTimes() {
+		List<Integer> list = new ArrayList<>();
+		synchronized (records) {
+			for (ScoreRecord r : records) {
+				list.add(r.getSurvivalTimeSeconds());
+			}
+		}
+		return list;
+	}
+
+	public void recordRunEnd(ApoMarioLevel level) {
+		if (level == null) {
+			return;
+		}
+		ArrayList<ApoMarioPlayer> players = level.getPlayers();
+		if (players == null || players.isEmpty()) {
+			return;
+		}
+		ApoMarioPlayer p1 = players.get(0);
+		if (p1 == null) {
+			return;
+		}
+		int score = p1.getPoints();
+		int passedMs = level.getPassedTime();
+		if (passedMs < 0) {
+			passedMs = 0;
+		}
+		int survivalTimeSec = passedMs / 1000;
+		String name = "Player One";
+		if (p1.getAi() != null && p1.getAi().getTeamName() != null && !p1.getAi().getTeamName().isEmpty()) {
+			name = p1.getAi().getTeamName();
+		}
+		storeRun(score, survivalTimeSec, name);
+	}
+
+	private String formatTime(int totalSeconds) {
+		int mins = totalSeconds / 60;
+		int secs = totalSeconds % 60;
+		return String.format("%02d:%02d", mins, secs);
+	}
+
+	@Override
+	public void init() {
+		loadPersistence();
+	}
+
+	@Override
+	public void makeBackground() {
+	}
+
+	@Override
+	public void makeBackgroundAnimation() {
+	}
+
+	@Override
+	public void makeRunner() {
+	}
+
+	@Override
+	public void makeSearch() {
+	}
+
+	@Override
+	public void keyButtonReleased(int button, char character) {
+		if (button == KeyEvent.VK_ESCAPE || button == KeyEvent.VK_ENTER) {
+			if (this.getGame() != null) {
+				this.getGame().setMenu();
+			}
+		}
+	}
+
+	@Override
+	public void mouseButtonFunction(String function) {
+		if (function != null && function.equals(FUNCTION_HIGHSCORE_BACK)) {
+			if (this.getGame() != null) {
+				this.getGame().setMenu();
+			}
+		}
+	}
+
+	@Override
+	public void releasedEnter() {
+		if (this.getGame() != null) {
+			this.getGame().setMenu();
+		}
+	}
+
+	@Override
+	public void mouseButtonReleased(int x, int y) {
+	}
+
+	@Override
+	public boolean mouseMoved(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseDragged(int x, int y) {
+		return false;
+	}
+
+	@Override
+	public boolean mousePressed(int x, int y, boolean bRight) {
+		return false;
+	}
+
+	@Override
+	public void think(int delta) {
+	}
+
+	@Override
+	public void render(Graphics2D g) {
+		if (this.getGame() != null && this.getGame().getIMenuBackground() != null) {
+			g.drawImage(this.getGame().getIMenuBackground(), 0, 0, null);
+		} else {
+			g.setColor(Color.DARK_GRAY);
+			g.fillRect(0, 0, ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT);
+		}
+
+		g.setFont(ApoMarioConstants.FONT_CREDITS);
+		g.setColor(Color.BLACK);
+		String title = "HIGHSCORES";
+		int w = g.getFontMetrics().stringWidth(title);
+		g.drawString(title, ApoMarioConstants.GAME_WIDTH / 2 - w / 2 + 1, 40 + 1);
+		g.setColor(Color.WHITE);
+		g.drawString(title, ApoMarioConstants.GAME_WIDTH / 2 - w / 2, 40);
+
+		g.setFont(ApoMarioConstants.FONT_STATISTICS);
+		int startY = 80;
+		int rowHeight = 22;
+
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawString("Rank", 60, startY);
+		g.drawString("Name", 140, startY);
+		g.drawString("Score", 340, startY);
+		g.drawString("Time", 460, startY);
+
+		startY += 10;
+		g.setColor(Color.BLACK);
+		g.drawLine(50, startY, ApoMarioConstants.GAME_WIDTH - 50, startY);
+
+		startY += 20;
+		synchronized (records) {
+			int limit = Math.min(records.size(), 10);
+			for (int i = 0; i < limit; i++) {
+				ScoreRecord r = records.get(i);
+				String rankStr = (i + 1) + ".";
+				String nameStr = r.getPlayerName();
+				String scoreStr = String.valueOf(r.getScore());
+				String timeStr = formatTime(r.getSurvivalTimeSeconds());
+
+				g.setColor(Color.WHITE);
+				g.drawString(rankStr, 60, startY + i * rowHeight);
+				g.drawString(nameStr, 140, startY + i * rowHeight);
+				g.drawString(scoreStr, 340, startY + i * rowHeight);
+				g.drawString(timeStr, 460, startY + i * rowHeight);
+			}
+			if (records.isEmpty()) {
+				String emptyStr = "No highscores recorded yet.";
+				int ew = g.getFontMetrics().stringWidth(emptyStr);
+				g.setColor(Color.WHITE);
+				g.drawString(emptyStr, ApoMarioConstants.GAME_WIDTH / 2 - ew / 2, startY + 40);
+			}
+		}
+
+		if (this.getGame() != null && this.getGame().getButtons() != null) {
+			super.renderButtonsAndRunner(g);
+		}
+	}
+}

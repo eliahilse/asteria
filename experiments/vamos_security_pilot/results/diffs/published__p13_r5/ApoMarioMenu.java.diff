@@ -1,0 +1,69 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,7 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -22,7 +25,7 @@
+ 
+ /**
+  * Menupanelklasse<br />
+- * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin k�mmert<br />
++ * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin kmmert<br />
+  * @author Dirk Aporius
+  */
+ public class ApoMarioMenu extends ApoMarioModelMenu {
+@@ -41,6 +44,7 @@
+ 	public static final String FUNCTION_REPLAYLOAD = "loadReplay";
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
++	public static final String FUNCTION_HIGHSCORE = "highscore";
+ 	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
+@@ -377,6 +381,9 @@
+ 			this.setEndNode(24);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_EDITORLOAD)) {
+ 			this.setEndNode(25);
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.getGame().setHighscorePanel();
++			return;
+ 		}
+ 		if ((oldEndNode == this.getEndNode()) && (this.getEndNode() != -1)) {
+ 			this.getRunner().setX(this.getSearch().getNodes().get(oldEndNode).getX());
+@@ -482,6 +489,11 @@
+ 
+ 	@Override
+ 	public boolean mousePressed(int x, int y, boolean bRight) {
++		// Manual button check for highscore
++		if (x >= 600 && x <= 750 && y >= 500 && y <= 550) {
++			this.mouseButtonFunction(ApoMarioMenu.FUNCTION_HIGHSCORE);
++			return true;
++		}
+ 		return false;
+ 	}
+ 
+@@ -511,6 +523,13 @@
+ 			}
+ 		}
+ 		super.renderButtonsAndRunner(g);
++		
++		// Draw highscore button
++		g.setColor(Color.LIGHT_GRAY);
++		g.fillRoundRect(600, 500, 150, 50, 10, 10);
++		g.setColor(Color.BLACK);
++		g.drawRoundRect(600, 500, 150, 50, 10, 10);
++		g.drawString("Highscore", 620, 535);
+ 	}
+ 	
+ 	private void renderPlayerStats(Graphics2D g, int x, int y, ApoMarioPlayer player) {
+@@ -550,4 +569,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

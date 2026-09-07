@@ -1,0 +1,84 @@
+--- a/apoMario/game/panels/ApoMarioHighscore.java
++++ b/apoMario/game/panels/ApoMarioHighscore.java
+@@ -0,0 +1,81 @@
++package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioHighscore;
++
++import java.io.*;
++import java.nio.file.Path;
++import java.util.*;
++import apoMario.level.ApoMarioLevel;
++import apoMario.entity.ApoMarioPlayer;
++
++public class ApoMarioHighscore {
++    private List<String> names = new ArrayList<>();
++    private List<Integer> scores = new ArrayList<>();
++    private List<Integer> times = new ArrayList<>();
++    private Path store;
++
++    public ApoMarioHighscore(Path store) {
++        this.store = store;
++        load();
++    }
++
++    public boolean storeRun(int score, int survivalTime, String playerName) {
++        names.add(playerName);
++        scores.add(score);
++        times.add(survivalTime);
++        sort();
++        return true;
++    }
++
++    public List<String> getPlayersNames() { return names; }
++    public List<Integer> getPlayersScores() { return scores; }
++    public List<Integer> getSurvivalTimes() { return times; }
++
++    public void persistAcrossRuns() {
++        try (PrintWriter pw = new PrintWriter(new FileWriter(store.toFile()))) {
++            for (int i = 0; i < names.size(); i++) {
++                pw.println(names.get(i) + "," + scores.get(i) + "," + times.get(i));
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    public void recordRunEnd(ApoMarioLevel level) {
++        if (level.getPlayers() != null && !level.getPlayers().isEmpty()) {
++            ApoMarioPlayer player = level.getPlayers().get(0);
++            storeRun(player.getPoints(), level.getPassedTime(), player.getTeamName() == null ? "Player" : player.getTeamName());
++            persistAcrossRuns();
++        }
++    }
++
++    private void sort() {
++        for (int i = 0; i < scores.size() - 1; i++) {
++            for (int j = i + 1; j < scores.size(); j++) {
++                if (scores.get(j) > scores.get(i)) {
++                    Collections.swap(scores, i, j);
++                    Collections.swap(names, i, j);
++                    Collections.swap(times, i, j);
++                }
++            }
++        }
++    }
++
++    private void load() {
++        File file = store.toFile();
++        if (!file.exists()) return;
++        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
++            String line;
++            while ((line = br.readLine()) != null) {
++                String[] parts = line.split(",");
++                if (parts.length == 3) {
++                    names.add(parts[0]);
++                    scores.add(Integer.parseInt(parts[1]));
++                    times.add(Integer.parseInt(parts[2]));
++                }
++            }
++        } catch (IOException | NumberFormatException e) {
++            e.printStackTrace();
++        }
++    }
++}

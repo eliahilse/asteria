@@ -1,0 +1,65 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscorePanel;
+import apoMario.game.panels.ApoMarioModel;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import apoMario.ApoMarioConstants;
+import apoMario.game.ApoMarioPanel;
+
+public class ApoMarioHighscorePanel extends ApoMarioModel {
+
+    public ApoMarioHighscorePanel(ApoMarioPanel game) {
+        super(game);
+    }
+
+    @Override
+    public void init() {}
+
+    @Override
+    public void keyButtonReleased(int button, char character) {
+        if (button == KeyEvent.VK_ESCAPE) {
+            getGame().setMenu();
+        }
+    }
+
+    @Override
+    public void mouseButtonFunction(String function) {}
+
+    @Override
+    public void mouseButtonReleased(int x, int y) {}
+
+    @Override
+    public boolean mouseMoved(int x, int y) { return false; }
+
+    @Override
+    public boolean mouseDragged(int x, int y) { return false; }
+
+    @Override
+    public boolean mousePressed(int x, int y, boolean bRight) { return false; }
+
+    @Override
+    public void think(int delta) {}
+
+    @Override
+    public void render(Graphics2D g) {
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT);
+        g.setColor(Color.BLACK);
+        g.setFont(ApoMarioConstants.FONT_MENU);
+        g.drawString("Highscore", 50, 50);
+
+        List<String> names = getGame().getHighscores().getPlayersNames();
+        List<Integer> scores = getGame().getHighscores().getPlayersScores();
+        List<Integer> times = getGame().getHighscores().getSurvivalTimes();
+
+        g.setFont(ApoMarioConstants.FONT_STATISTICS);
+        for (int i = 0; i < Math.min(names.size(), 10); i++) {
+            String entry = (i + 1) + ". " + names.get(i) + " - " + scores.get(i) + " pts (" + (times.get(i)/60000) + ":" + ((times.get(i)/1000)%60) + ")";
+            g.drawString(entry, 50, 100 + i * 30);
+        }
+    }
+}

@@ -1,0 +1,3989 @@
+Reading additional input from stdin...
+OpenAI Codex v0.145.0
+--------
+[1mworkdir:[0m /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[1mmodel:[0m gpt-5.6-sol
+[1mprovider:[0m openai
+[1mapproval:[0m on-request
+[1msandbox:[0m read-only
+[1mreasoning effort:[0m max
+[1mreasoning summaries:[0m none
+[1msession id:[0m 01a033d7-90e6-7462-bb9f-af16c20b1add
+--------
+[36muser[0m
+You are performing a SECURITY AUDIT of one variant of the Apo-Games corpus, a
+family of ~26 cloned Java/Android games used as an academic case study for
+software product line research.
+
+TARGET VARIANT: ApoSnake
+SOURCE ROOT:    /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+
+Read the source yourself. Do not guess: every claim must cite a real file and
+line number that you actually opened.
+
+## What we are trying to learn
+
+This audit feeds research on how much *security-relevant context* an LLM needs
+in order to generate or reuse code safely. We therefore care about the
+CATEGORIES and the REACHABILITY of weaknesses, not a raw bug count. A finding is
+only useful to us if it is concrete enough that someone could try to reproduce
+it.
+
+## Ground rules (important)
+
+1. NO GENERIC ADVICE. "Input should be validated" with no specific call site is
+   worthless. Every finding must name the sink, the entry point, and the path
+   between them.
+2. DISTINGUISH REACHABLE FROM THEORETICAL. State plainly whether untrusted input
+   (network response, file on disk the user can edit, level/save file,
+   command-line arg) can actually reach the sink. If it cannot, say so and mark
+   it theoretical.
+3. THIS IS A DESKTOP/ANDROID GAME, NOT A SERVER. The relevant threat model is:
+   a malicious server or network attacker (these games talk plain HTTP), a
+   malicious/user-edited local file (saves, levels, replays), malicious
+   user-generated content downloaded from the shared level server, and a local
+   user tampering to cheat. Judge severity against THAT model. Do not inflate
+   findings by pretending there is a web endpoint.
+4. BE HONEST ABOUT ABSENCE. If a category genuinely does not appear in this
+   variant, say so. A credible "not present" is as valuable as a finding.
+5. NO DUPLICATES. Collapse the same root cause in the same file into one
+   finding.
+
+## Areas known to exist in this corpus (verify, do not assume)
+
+- Custom class loaders that fetch bytes and call `defineClass` (possible remote
+  or local code loading).
+- Plain-HTTP calls to `apo-games.de` endpoints such as `save_highscore.php`,
+  `save_level.php`, `get_level.php` (no TLS; score/level submission).
+- Custom binary/text save, level, and replay formats parsed by hand
+  (`.cheat`, `.mar`, `.skunk`, `.defence`, `.rep`).
+- `java.io.ObjectInputStream` use in at least one variant.
+- `MessageDigest` (often MD5) used around highscore/validation logic.
+- Applet entry points, JNI `System.load`, and file paths built from
+  `user.home` / `user.dir`.
+
+## Output format
+
+Think first, then emit ONE JSON object between the exact markers below and
+nothing after it. No markdown fences inside the markers.
+
+<<<JSON_BEGIN>>>
+{
+  "variant": "ApoSnake",
+  "files_reviewed": 0,
+  "notable_files": ["path relative to source root"],
+  "findings": [
+    {
+      "id": "ApoSnake-01",
+      "title": "short specific title",
+      "category": "one of: remote_code_loading | insecure_transport | untrusted_deserialization | unsafe_custom_parser | path_traversal | weak_integrity_check | client_side_trust | information_disclosure | resource_exhaustion | unsafe_native_call | legacy_sandbox_assumption | credential_or_secret_exposure | other",
+      "cwe": "CWE-XXX",
+      "file": "path relative to source root",
+      "line": 0,
+      "code_excerpt": "the actual line(s), verbatim, max 300 chars",
+      "entry_point": "where untrusted data originates",
+      "sink": "the dangerous operation reached",
+      "data_path": "how input reaches the sink; name the intermediate methods",
+      "attack_scenario": "concrete: what an attacker does, step by step, and what they gain",
+      "reachable": true,
+      "preconditions": "what must hold for this to work",
+      "severity": "critical | high | medium | low",
+      "confidence": "high | medium | low",
+      "validation_plan": "concrete steps to PROVE this is real: what to craft, what to run, what observable result confirms it",
+      "shared_component": true
+    }
+  ],
+  "categories_checked_and_absent": ["category names you actively looked for and did not find"],
+  "notes": "anything about this variant that matters but is not a finding"
+}
+<<<JSON_END>>>
+
+Set "shared_component" to true if the vulnerable file looks like cloned
+infrastructure shared with sibling variants (e.g. ApoClassLoader.java,
+ApoIO.java, ApoHelp.java), rather than logic unique to this game. This matters:
+we are measuring how flaws propagate through clone-and-own reuse.
+
+If you find nothing credible, return an empty "findings" array and explain why
+in "notes". An honest empty result is acceptable and useful.
+[35m[3mcodex[0m[0m
+I’m tracing actual entry points to sinks across the full source tree, then I’ll return only the requested JSON audit artifact.
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '"'!build'"' -g '"'!target'"' .. | sed -n '1,80p' && rg --files . | sed -n '1,240p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 103ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/level/ApoSnakeLevel.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeButtons.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeModel.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeMenu.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeSolve.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeEditor.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoSnakeEntity.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoButton.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoSnakeString.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoEntity.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoLevelChooserButton.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeComponent.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/BuildConfig.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/R.java
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "find . -maxdepth 8 -type f -o -type l | sed -n '1,320p'; find . -type f | wc -l; find . -type f -print0 | xargs -0 file | sed -n '1,240p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 237ms:[0m
+      21
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/R.java:                             ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/BuildConfig.java:                   ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java:                      Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeComponent.java:             Java source, ISO-8859 text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoLevelChooserButton.java:  Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoEntity.java:              Java source, ISO-8859 text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoSnakeString.java:         Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoButton.java:              Java source, ISO-8859 text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/entity/ApoSnakeEntity.java:         Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:    Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java:       Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeEditor.java:           Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeSolve.java:            Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeMenu.java:             Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java:            Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java:             ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeModel.java:                 Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeButtons.java:               Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/level/ApoSnakeLevel.java:           ISO-8859 text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java: Java source, ASCII text
+./Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java:     Java source, ASCII text
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "SRC='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake'; wc -l \""'$SRC"/src/net/apogames/aposnake/**/*.java "$SRC"/src/net/apogames/aposnake/*.java "$SRC"/gen/net/apogames/aposnake/*.java; rg -n -i '"'http|url|socket|URLConnection|InputStream|OutputStream|File|RandomAccess|ObjectInput|ObjectOutput|MessageDigest|MD5|SHA|defineClass|ClassLoader|System\\.load|Runtime|getRuntime|exec\\(|user\\.home|user\\.dir|SharedPreferences|openFile|deserialize|Serializable|readLine|readInt|readByte|readUTF|parseInt|parseLong|Scanner|Zip|GZIP|Base64|Cipher|Digest|secret|password|token|credential|WebView|Intent|Uri|loadUrl|setJavaScriptEnabled|permission' \""'$SRC" | sed -n '"'1,400p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 124ms:[0m
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/BuildConfig.java:1:/** Automatically generated file. DO NOT MODIFY */
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:3:import java.io.DataInputStream;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:4:import java.io.DataOutputStream;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:6:import java.net.MalformedURLException;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:7:import java.net.URL;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:8:import java.net.URLConnection;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:9:import java.net.URLEncoder;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:116:				URL url;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:117:				URLConnection urlConn;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:118:				DataOutputStream printout;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:119:				DataInputStream input;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:121:				url = new URL(ApoSnakeConstants.USERLEVELS_SAVEPHP);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:122:				urlConn = url.openConnection();
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:124:				urlConn.setDoInput(true);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:125:				urlConn.setDoOutput(true);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:127:				urlConn.setUseCaches(false);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:128:				urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:130:				printout = new DataOutputStream(urlConn.getOutputStream());
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:132:				String content = "level=" + URLEncoder.encode(String.valueOf(level), "UTF-8");
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:137:				input = new DataInputStream(urlConn.getInputStream());
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:140:				while (null != ((str = input.readLine()))) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:144:			} catch (MalformedURLException me) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:145:				System.err.println("MalformedURLException: " + me);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:157:				URL url;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:158:				URLConnection urlConn;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:159:				DataOutputStream printout;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:160:				DataInputStream input;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:162:				url = new URL(ApoSnakeConstants.USERLEVELS_GETPHP);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:163:				urlConn = url.openConnection();
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:165:				urlConn.setDoInput(true);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:166:				urlConn.setDoOutput(true);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:168:				urlConn.setUseCaches(false);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:169:				urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:171:				printout = new DataOutputStream(urlConn.getOutputStream());
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:173:				String content = "Get=" + URLEncoder.encode("", "UTF-8");
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:179:				input = new DataInputStream(urlConn.getInputStream());
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:182:				while (null != ((str = input.readLine()))) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:210:			} catch (MalformedURLException me) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java:211:				System.err.println("MalformedURLException: " + me);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/gen/net/apogames/aposnake/R.java:1:/* AUTO-GENERATED FILE.  DO NOT MODIFY.
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java:5:	public final static String USERLEVELS_GETPHP = "http://www.apo-games.de/apoSn4ke/get_level.php";
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java:6:	public final static String USERLEVELS_SAVEPHP = "http://www.apo-games.de/apoSn4ke/save_level.php";
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:38:			int curLevel = 0;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:41:					this.levels[curLevel] = new ApoLevelChooserButton(null, xPos, yPos, radius, radius, String.valueOf(curLevel + 1));
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:44:					curLevel += 1;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:45:					if (curLevel >= this.levels.length) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:51:				if (curLevel >= this.levels.length) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java:54:				if (curLevel % 30 == 0) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java:4:import android.content.SharedPreferences;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java:16:	public static SharedPreferences settings;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java:43:		ApoSnake.settings = this.getSharedPreferences(ApoSnakeConstants.PREFS_NAME, 0);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java:3:import android.content.SharedPreferences;
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java:67:	protected final void loadPreferences(SharedPreferences settings) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java:72:	protected final void savePreferences(SharedPreferences settings) {
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java:73:		SharedPreferences.Editor editor = settings.edit();
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java:52:			String curLevel = this.userlevels.getLevels().get(this.sortByUpload.get(level));
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java:53:			BitsLog.d("level", curLevel);
+Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java:54:			levels[level] = curLevel;
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "SRC='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake'; nl -ba \""'$SRC/editor/ApoSnakeUserlevelsLoad.java"; nl -ba "$SRC/editor/ApoSnakeUserlevels.java"; nl -ba "$SRC/level/ApoSnakeLevel.java"; nl -ba "$SRC/ApoSnakeConstants.java"'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 0ms:[0m
+     1	package net.apogames.aposnake.editor;
+     2	
+     3	import java.io.DataInputStream;
+     4	import java.io.DataOutputStream;
+     5	import java.io.IOException;
+     6	import java.net.MalformedURLException;
+     7	import java.net.URL;
+     8	import java.net.URLConnection;
+     9	import java.net.URLEncoder;
+    10	import java.util.ArrayList;
+    11	
+    12	import net.apogames.aposnake.ApoSnake;
+    13	import net.apogames.aposnake.ApoSnakeConstants;
+    14	
+    15	public class ApoSnakeUserlevelsLoad {
+    16		
+    17		private ArrayList<String> levels;
+    18		private ArrayList<String> names;
+    19		private ArrayList<Integer> count;
+    20		private ArrayList<Integer> all;
+    21		private ArrayList<Integer> id;
+    22		private ArrayList<Integer> fun;
+    23		private ArrayList<Integer> creative;
+    24		private ArrayList<Integer> easy;
+    25		private ArrayList<Integer> hard;
+    26		private ArrayList<Float> times;
+    27		private ArrayList<Float> curTimes;
+    28	
+    29		private static ApoSnakeUserlevelsLoad singleInstance = new ApoSnakeUserlevelsLoad();
+    30	
+    31		public static ApoSnakeUserlevelsLoad getInstance() {
+    32			if (null == singleInstance) {
+    33				singleInstance = new ApoSnakeUserlevelsLoad();
+    34			}
+    35			return singleInstance;
+    36		}
+    37	
+    38		private ApoSnakeUserlevelsLoad() {
+    39			this.levels = new ArrayList<String>();
+    40			this.names = new ArrayList<String>();
+    41			this.count = new ArrayList<Integer>();
+    42			this.all = new ArrayList<Integer>();
+    43			this.id = new ArrayList<Integer>();
+    44			this.easy = new ArrayList<Integer>();
+    45			this.hard = new ArrayList<Integer>();
+    46			this.fun = new ArrayList<Integer>();
+    47			this.creative = new ArrayList<Integer>();
+    48			this.times = new ArrayList<Float>();
+    49			this.curTimes = new ArrayList<Float>();
+    50			clear();
+    51		}
+    52	
+    53		public ArrayList<Float> getTimes() {
+    54			return this.times;
+    55		}
+    56	
+    57		public ArrayList<Float> getCurTimes() {
+    58			return this.curTimes;
+    59		}
+    60	
+    61		public ArrayList<String> getLevels() {
+    62			return this.levels;
+    63		}
+    64		
+    65		public ArrayList<String> getNames() {
+    66			return this.names;
+    67		}
+    68	
+    69		public ArrayList<Integer> getCount() {
+    70			return this.count;
+    71		}
+    72	
+    73		public ArrayList<Integer> getAll() {
+    74			return this.all;
+    75		}
+    76	
+    77		public ArrayList<Integer> getId() {
+    78			return this.id;
+    79		}
+    80	
+    81		public ArrayList<Integer> getFun() {
+    82			return this.fun;
+    83		}
+    84	
+    85		public ArrayList<Integer> getCreative() {
+    86			return this.creative;
+    87		}
+    88	
+    89		public ArrayList<Integer> getEasy() {
+    90			return this.easy;
+    91		}
+    92	
+    93		public ArrayList<Integer> getHard() {
+    94			return this.hard;
+    95		}
+    96	
+    97		private void clear() {
+    98			this.all.clear();
+    99			this.levels.clear();
+   100			this.id.clear();
+   101			this.names.clear();
+   102	
+   103			this.fun.clear();
+   104			this.easy.clear();
+   105			this.hard.clear();
+   106			this.creative.clear();
+   107			
+   108			this.count.clear();
+   109			this.times.clear();
+   110			this.curTimes.clear();
+   111		}
+   112	
+   113		public boolean save(String level) {
+   114			if (ApoSnake.isOnline()) {
+   115				try {
+   116					URL url;
+   117					URLConnection urlConn;
+   118					DataOutputStream printout;
+   119					DataInputStream input;
+   120	
+   121					url = new URL(ApoSnakeConstants.USERLEVELS_SAVEPHP);
+   122					urlConn = url.openConnection();
+   123	
+   124					urlConn.setDoInput(true);
+   125					urlConn.setDoOutput(true);
+   126	
+   127					urlConn.setUseCaches(false);
+   128					urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+   129	
+   130					printout = new DataOutputStream(urlConn.getOutputStream());
+   131					
+   132					String content = "level=" + URLEncoder.encode(String.valueOf(level), "UTF-8");
+   133					printout.writeBytes(content);
+   134					printout.flush();
+   135					printout.close();
+   136	
+   137					input = new DataInputStream(urlConn.getInputStream());
+   138					@SuppressWarnings("unused")
+   139					String str;
+   140					while (null != ((str = input.readLine()))) {
+   141					}
+   142					input.close();
+   143					return true;
+   144				} catch (MalformedURLException me) {
+   145					System.err.println("MalformedURLException: " + me);
+   146				} catch (IOException ioe) {
+   147					System.err.println("IOException: " + ioe.getMessage());
+   148				}
+   149			}
+   150			return false;
+   151		}
+   152	
+   153		public boolean load() {
+   154			clear();
+   155			if (ApoSnake.isOnline()) {
+   156				try {
+   157					URL url;
+   158					URLConnection urlConn;
+   159					DataOutputStream printout;
+   160					DataInputStream input;
+   161	
+   162					url = new URL(ApoSnakeConstants.USERLEVELS_GETPHP);
+   163					urlConn = url.openConnection();
+   164	
+   165					urlConn.setDoInput(true);
+   166					urlConn.setDoOutput(true);
+   167	
+   168					urlConn.setUseCaches(false);
+   169					urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+   170	
+   171					printout = new DataOutputStream(urlConn.getOutputStream());
+   172	
+   173					String content = "Get=" + URLEncoder.encode("", "UTF-8");
+   174	
+   175					printout.writeBytes(content);
+   176					printout.flush();
+   177					printout.close();
+   178					
+   179					input = new DataInputStream(urlConn.getInputStream());
+   180					String str;
+   181					int i = 0;
+   182					while (null != ((str = input.readLine()))) {
+   183						if (i % 11 == 0) {
+   184							this.levels.add(str);
+   185						} else if (i % 11 == 1) {
+   186							this.times.add(Float.valueOf(str));
+   187						} else if (i % 11 == 2) {
+   188							this.count.add(Integer.valueOf(str));
+   189						} else if (i % 11 == 3) {
+   190							this.all.add(Integer.valueOf(str));
+   191						} else if (i % 11 == 4) {
+   192							this.names.add(str);
+   193						} else if (i % 11 == 5) {
+   194							this.fun.add(Integer.valueOf(str));
+   195						} else if (i % 11 == 6) {
+   196							this.easy.add(Integer.valueOf(str));
+   197						} else if (i % 11 == 7) {
+   198							this.hard.add(Integer.valueOf(str));
+   199						} else if (i % 11 == 8) {
+   200							this.creative.add(Integer.valueOf(str));
+   201						} else if (i % 11 == 9) {
+   202							this.id.add(Integer.valueOf(str));
+   203						} else if (i % 11 == 10) {
+   204							this.curTimes.add(Float.valueOf(str));
+   205						}
+   206						i = i + 1;
+   207					}
+   208					input.close();
+   209					return true;
+   210				} catch (MalformedURLException me) {
+   211					System.err.println("MalformedURLException: " + me);
+   212				} catch (IOException ioe) {
+   213					System.err.println("IOException: " + ioe.getMessage());
+   214				}
+   215			}
+   216			return false;
+   217		}
+   218	}
+     1	package net.apogames.aposnake.editor;
+     2	
+     3	import java.util.ArrayList;
+     4	
+     5	import net.apogames.aposnake.game.ApoSnakePanel;
+     6	import net.apogames.aposnake.level.ApoSnakeLevel;
+     7	import net.gliblybits.bitsengine.utils.BitsLog;
+     8	
+     9	public class ApoSnakeUserlevels {
+    10		
+    11		private ArrayList<Integer> sortByUpload;
+    12		
+    13		private ApoSnakeUserlevelsLoad userlevels;
+    14		
+    15		protected final ApoSnakePanel game;
+    16		
+    17		public ApoSnakeUserlevels(final ApoSnakePanel game) {
+    18			this.game = game;
+    19			this.sortByUpload = new ArrayList<Integer>();
+    20		}
+    21		
+    22		public void loadUserlevels() {
+    23			try {
+    24				this.userlevels = ApoSnakeUserlevelsLoad.getInstance();
+    25				this.userlevels.load();
+    26				
+    27				if (this.userlevels.getLevels().size() > 0) {
+    28					this.sortByUpload();
+    29					
+    30					ApoSnakeLevel.editorLevels = this.getAllLevelsSorted();
+    31					
+    32					this.game.setUserlevelsVisible();
+    33				}
+    34			} catch (Exception ex) {
+    35				this.sortByUpload = new ArrayList<Integer>();
+    36				BitsLog.d("editor", "Exception ex: "+ex.getMessage());
+    37			}
+    38		}
+    39		
+    40		public int getMaxLevel() {
+    41			return this.userlevels.getLevels().size();
+    42		}
+    43		
+    44		private String[] getAllLevelsSorted() {
+    45			BitsLog.d("level", ""+this.userlevels.getLevels().size());
+    46			if (this.userlevels.getLevels().size() <= 0) {
+    47				return null;
+    48			}
+    49			int size = this.sortByUpload.size();
+    50			String[] levels = new String[size];
+    51			for (int level = 0; level < levels.length; level++) {
+    52				String curLevel = this.userlevels.getLevels().get(this.sortByUpload.get(level));
+    53				BitsLog.d("level", curLevel);
+    54				levels[level] = curLevel;
+    55			}
+    56			return levels;
+    57		}
+    58		
+    59		private void sortByUpload() {
+    60			this.sortByUpload.clear();
+    61			for (int i = 0; i < this.userlevels.getLevels().size(); i++) {
+    62				if (!ApoSnakeLevel.isIn(this.userlevels.getLevels().get(i))) {
+    63					float time = this.userlevels.getTimes().get(i);
+    64					boolean bAdd = false;
+    65					for (int k = 0; k < this.sortByUpload.size(); k++) {
+    66						float sortTime = this.userlevels.getTimes().get(this.sortByUpload.get(k));
+    67						if (time > sortTime) {
+    68							this.sortByUpload.add(k, i);
+    69							bAdd = true;
+    70							break;
+    71						}
+    72					}
+    73					if (!bAdd) {
+    74						this.sortByUpload.add(i);
+    75					}
+    76				}
+    77			}
+    78		}
+    79	
+    80		public ArrayList<Integer> getSortByUpload() {
+    81			return this.sortByUpload;
+    82		}
+    83		
+    84		public boolean addLevel(String level) {
+    85			for (int i = 0; i < this.userlevels.getLevels().size(); i++) {
+    86				if (this.userlevels.getLevels().get(i).equals(level)) {
+    87					return false;
+    88				}
+    89			}
+    90			return ApoSnakeUserlevelsLoad.getInstance().save(level);
+    91		}
+    92		
+    93		public float getStars(int level) {
+    94			if (this.userlevels.getCount().get(this.sortByUpload.get(level)) <= 0) {
+    95				return 0;
+    96			}
+    97			return (float)((float)this.userlevels.getAll().get(this.sortByUpload.get(level)) / (float)this.userlevels.getCount().get(this.sortByUpload.get(level)));
+    98		}
+    99		
+   100		public String getStatistics(int level) {		
+   101			int[] values = new int[4];
+   102			values[0] = this.userlevels.getFun().get(this.sortByUpload.get(level));
+   103			values[1] = this.userlevels.getCreative().get(this.sortByUpload.get(level));
+   104			values[2] = this.userlevels.getEasy().get(this.sortByUpload.get(level));
+   105			values[3] = this.userlevels.getHard().get(this.sortByUpload.get(level));
+   106			
+   107			int max = this.getHighest(-1, values);
+   108			int maxTwo = this.getHighest(max, values);
+   109			String result = "";
+   110			for (int i = 0; i < values.length; i++) {
+   111				if ((i != max) && (i != maxTwo)) {
+   112					result += "0";
+   113				} else {
+   114					if (values[i] > 0) {
+   115						result += "1";
+   116					} else {
+   117						result += "0";
+   118					}
+   119				}
+   120			}
+   121	
+   122			return result;
+   123		}
+   124		
+   125		private int getHighest(int not, int[] values) {
+   126			int curValue = 0;
+   127			if (not == 0) {
+   128				curValue = 1;
+   129			}
+   130			int max = values[curValue];
+   131			for (int i = 0; i < values.length; i++) {
+   132				if ((max < values[i]) && (i != not)) {
+   133					max = values[i];
+   134					curValue = i;
+   135				}
+   136			}
+   137			return curValue;
+   138		}
+   139		
+   140		public int getID(int level) {
+   141			return this.userlevels.getId().get(this.sortByUpload.get(level));
+   142		}
+   143	}
+     1	package net.apogames.aposnake.level;
+     2	
+     3	public class ApoSnakeLevel {
+     4	
+     5		/**
+     6		 * 0 = free
+     7		 * 1 = head red left
+     8		 * 2 = head red down
+     9		 * 3 = head red right
+    10		 * 4 = head red up
+    11		 * 5 = red coin
+    12		 * 6 = red wall
+    13		 * 7 = head blue left
+    14		 * 8 = head blue down
+    15		 * 9 = head blue right
+    16		 * a = head blue up
+    17		 * b = blue coin
+    18		 * c = blue wall
+    19		 * d = head green left
+    20		 * e = head green down
+    21		 * f = head green right
+    22		 * g = head green up
+    23		 * h = green coin
+    24		 * i = green wall
+    25		 * 
+    26		 * 19 = rot Wand (ex Schlange)
+    27		 * 20 = blau Wand (ex Schlange)
+    28		 * 21 = gr�ne Wand (ex Schlange)
+    29		 */
+    30		private static final String[] levelsString = new String[] {
+    31				"de"+
+    32				"0000"+
+    33				"0660"+
+    34				"0650"+
+    35				"0666"+
+    36				"0001",
+    37			
+    38	//			"de"+
+    39	//			"5555"+
+    40	//			"0666"+
+    41	//			"5005"+
+    42	//			"6660"+
+    43	//			"3555",
+    44				
+    45				"ed"+
+    46				"56000"+
+    47				"56b65"+
+    48				"06060"+
+    49				"0h064",
+    50				
+    51				"gd"+
+    52				"5056b0b"+
+    53				"0606060"+
+    54				"0606660"+
+    55				"4650b6b",
+    56				
+    57				"ee"+
+    58				"50005"+
+    59				"06560"+
+    60				"05450"+
+    61				"06560"+
+    62				"50005",
+    63				
+    64				"cchi5c36b5b",
+    65				
+    66				"cf"+
+    67				"0bc"+
+    68				"0c0"+
+    69				"bab"+
+    70				"545"+
+    71				"060"+
+    72				"650",
+    73	
+    74				"ddebbb6ii656b5b65i",
+    75				
+    76	//			"ge"+
+    77	//			"00bcb0b"+
+    78	//			"0ccccc0"+
+    79	//			"00b666b"+
+    80	//			"ccccbcb"+
+    81	//			"000646a",
+    82				
+    83				"efcihiccccccbiiibbigibiiiiibbabb",
+    84				
+    85				"fhb000000ccccc0cbbbb0cbc2b0cbabb0cb6bb00ccc50cbbbb",
+    86				
+    87				"gg00c0c000hhhhh0chihihc0hhghh0chihihc0hhhhh000c0c00",
+    88				
+    89				"eg"+
+    90				"05450"+
+    91				"06660"+
+    92				"06060"+
+    93				"05550"+
+    94				"5ccc5"+
+    95				"66566"+
+    96				"06460",
+    97				
+    98				"ggh60006h60i0i0660ihi0650hgh0560ihi0660i0i06h60006h",	
+    99	
+   100				"ee5i5cb6i6c6hi5c56i6c6hi5c4",
+   101				
+   102				"gghcbbbchhc666chhc646chhc666chhcbabchhccccchicbbbci",
+   103				
+   104				"hc"+
+   105				"06b60c5c"+
+   106				"b5456b0b"+
+   107				"06b60c5c",
+   108				
+   109				"ee5b5b6b5b6b5b6b566b5bg65b5",
+   110				
+   111				"dffh655h666655b6546666ihhh",
+   112				
+   113				"eeh25bhb6i659cbc7hi6ib5bhg5",
+   114				
+   115				"cjch15ch9bchc5cbd5ch3bchc5ch75ch",
+   116				
+   117				"edcccechcbchcc6h00h4i5",
+   118				
+   119				"eebh5b65666bc626hcb6hiabihi",
+   120				
+   121				"ggbhb5hbhh8iciebbciciihh66666bbcc6cchh6c4c6bbh555bh",
+   122				
+   123				"ic65chc5chi3c5bcb5cd6hc5chc5i",
+   124				
+   125				"hechb565hb566cbi61h5iib6c7bbbcbi6dh665hbbi",
+   126				
+   127				"ee05cb00hc50cc20b59c560ihih",
+   128				
+   129				"fe"+
+   130				"b555bc"+
+   131				"b565bc"+
+   132				"b455ac"+
+   133				"h666ch"+
+   134				"i6555i",
+   135				
+   136				"fd855558b6ii6b55cc555h665h",
+   137				
+   138				"ghibehicbbb656bhbiei6bib666bcbb666bcb0cac6hhb06bcbbcba0ci5",
+   139				
+   140				"ehc666i6bbb6hacb56bbb5hi6i56b6b4h626icb6bi",
+   141				
+   142				"fe"+
+   143				"c5c556"+
+   144				"cbbcii"+
+   145				"h6b6ie"+
+   146				"h4a5ii"+
+   147				"h655bb",
+   148		};
+   149		
+   150		public static String[] editorLevels = null;
+   151		
+   152		public static final String getLevel(int level) {
+   153			if ((level < 0) || (level >= levelsString.length)) {
+   154				return null;
+   155			}
+   156			return levelsString[level];
+   157		}
+   158		
+   159		public static final int MAX_LEVELS = levelsString.length;
+   160		
+   161		public static boolean isIn(String level) {
+   162			for (int i = 0; i < levelsString.length; i++) {
+   163				if (level.equals(levelsString[i])) {
+   164					return true;
+   165				}
+   166			}
+   167			return false;
+   168		}
+   169	}
+     1	package net.apogames.aposnake;
+     2	
+     3	public class ApoSnakeConstants {
+     4	
+     5		public final static String USERLEVELS_GETPHP = "http://www.apo-games.de/apoSn4ke/get_level.php";
+     6		public final static String USERLEVELS_SAVEPHP = "http://www.apo-games.de/apoSn4ke/save_level.php";
+     7		
+     8		public static final int GAME_WIDTH = 480;
+     9		public static final int GAME_HEIGHT = 640;
+    10		
+    11		public static final String PREFS_NAME = "ApoSnakePref";
+    12		
+    13		public static final boolean[] BUTTON_MENU = new boolean[] {true, true, true, true, false, false, false, false, false, false, false, false, false};
+    14		public static final boolean[] BUTTON_GAME = new boolean[] {false, false, false, false, false, true, false, false, false, false, false, false, false};
+    15		public static final boolean[] BUTTON_PUZZLE = new boolean[] {false, false, false, false, true, false, false, false, false, false, false, false, false};
+    16		public static final boolean[] BUTTON_EDITOR = new boolean[] {false, false, false, false, false, false, true, true, true, true, true, true, true};
+    17		
+    18	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "SRC='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake'; nl -ba \""'$SRC/game/ApoSnakePanel.java"; nl -ba "$SRC/game/ApoSnakePuzzleChooser.java"; nl -ba "$SRC/game/ApoSnakeMenu.java"; nl -ba "$SRC/ApoSnake.java"; nl -ba "$SRC/ApoSnakeModel.java"'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 278ms:[0m
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import android.content.SharedPreferences;
+     4	
+     5	import net.apogames.aposnake.ApoSnake;
+     6	import net.apogames.aposnake.ApoSnakeButtons;
+     7	import net.apogames.aposnake.ApoSnakeComponent;
+     8	import net.apogames.aposnake.ApoSnakeConstants;
+     9	import net.apogames.aposnake.editor.ApoSnakeUserlevels;
+    10	
+    11	import net.gliblybits.bitsengine.core.BitsFont;
+    12	import net.gliblybits.bitsengine.core.BitsGame;
+    13	import net.gliblybits.bitsengine.render.BitsGraphics;
+    14	
+    15	public class ApoSnakePanel extends ApoSnakeComponent {
+    16		
+    17		private ApoSnakeMenu menu;
+    18		
+    19		private ApoSnakePuzzleChooser puzzle;
+    20	
+    21		private ApoSnakePuzzleGame game;
+    22		
+    23		private ApoSnakeEditor editor;
+    24		
+    25		private int think;
+    26		
+    27		private ApoSnakeUserlevels userlevels;
+    28		
+    29		public ApoSnakePanel(int id) {
+    30			super(id);
+    31		}
+    32		
+    33		public void init() {
+    34			super.init();
+    35			
+    36			BitsGame.getIt().setClearColor(192f/255f, 192f/255f, 192f/255f, 1f);
+    37			
+    38			ApoSnakeButtons buttons = new ApoSnakeButtons(this);
+    39			buttons.init();
+    40			
+    41			this.think = 0;
+    42			
+    43			if (this.menu == null) {
+    44				this.menu = new ApoSnakeMenu(this);
+    45			}
+    46			if (this.puzzle == null) {
+    47				this.puzzle = new ApoSnakePuzzleChooser(this);
+    48			}
+    49			if (this.game == null) {
+    50				this.game = new ApoSnakePuzzleGame(this);
+    51			}
+    52			if (this.editor == null) {
+    53				this.editor = new ApoSnakeEditor(this);
+    54			}
+    55			
+    56			this.setMenu();
+    57			
+    58			if (this.userlevels == null) {
+    59				this.userlevels = new ApoSnakeUserlevels(this);
+    60				this.loadUserlevels();
+    61			}
+    62			this.puzzle.init();
+    63			
+    64			this.loadPreferences(ApoSnake.settings);
+    65		}
+    66		
+    67		protected final void loadPreferences(SharedPreferences settings) {
+    68			int solved = settings.getInt("solved", 0);
+    69			this.solvedLevel(solved);
+    70		}
+    71		
+    72		protected final void savePreferences(SharedPreferences settings) {
+    73			SharedPreferences.Editor editor = settings.edit();
+    74			editor.putInt("solved", this.getMaxCanChoosen());
+    75			
+    76			editor.commit();
+    77		}
+    78		
+    79		public final void loadUserlevels() {
+    80			Thread t = new Thread(new Runnable() {
+    81	
+    82				public void run() {
+    83					ApoSnakePanel.this.userlevels.loadUserlevels();
+    84				}
+    85	 		});
+    86	 		t.start();
+    87		}
+    88		
+    89		public void setUserlevelsVisible() {
+    90			if (this.getModel().equals(this.menu)) {
+    91				this.menu.setUserlevels();
+    92			}
+    93		}
+    94		
+    95		public final ApoSnakeUserlevels getUserlevels() {
+    96			return this.userlevels;
+    97		}
+    98	
+    99		protected final void setMenu() {
+   100			if (super.getModel() != null) {
+   101				super.getModel().close();
+   102			}
+   103			
+   104			super.setModel(this.menu);
+   105			
+   106			this.setButtonVisible(ApoSnakeConstants.BUTTON_MENU);
+   107			
+   108			super.getModel().init();
+   109		}
+   110		
+   111		protected final void setEditor(boolean bSolvedLevel) {
+   112			if (super.getModel() != null) {
+   113				super.getModel().close();
+   114			}
+   115			
+   116			super.setModel(this.editor);
+   117			
+   118			this.setButtonVisible(ApoSnakeConstants.BUTTON_EDITOR);
+   119			
+   120			this.editor.setLevelSolved(bSolvedLevel);
+   121			super.getModel().init();
+   122		}
+   123		
+   124		protected final void setPuzzleChooser() {
+   125			if (super.getModel() != null) {
+   126				super.getModel().close();
+   127			}
+   128			
+   129			super.setModel(this.puzzle);
+   130			
+   131			this.setButtonVisible(ApoSnakeConstants.BUTTON_PUZZLE);
+   132			
+   133			super.getModel().init();
+   134		}
+   135		
+   136		protected final void setPuzzleGame(final int level, final String levelString, final boolean bUserLevel) {
+   137			if (super.getModel() != null) {
+   138				super.getModel().close();
+   139			}
+   140			
+   141			super.setModel(this.game);
+   142			
+   143			this.setButtonVisible(ApoSnakeConstants.BUTTON_GAME);
+   144			
+   145			super.getModel().init();
+   146			this.game.loadLevel(level, bUserLevel, levelString);
+   147		}
+   148		
+   149		public final void setButtonVisible(boolean[] bVisibile) {
+   150			for (int i = 0; i < this.getButtons().length && i < bVisibile.length; i++) {
+   151				this.getButtons()[i].setVisible(bVisibile[i]);
+   152			}
+   153		}
+   154		
+   155		@Override
+   156		public void setButtonFunction(final String function) {
+   157			if (super.getModel() != null) {
+   158				super.getModel().touchedButton(function);
+   159			}
+   160		}
+   161		
+   162		@Override
+   163		public void onResume() {
+   164			if (super.getModel() != null) {
+   165				super.getModel().onResume();
+   166			}
+   167		}
+   168		
+   169		public void onBackButtonPressed() {
+   170			if (super.getModel() != null) {
+   171				super.getModel().onBackButtonPressed();
+   172			}
+   173		}
+   174		
+   175		public int getMaxCanChoosen() {
+   176			return this.puzzle.getSolved();
+   177		}
+   178		
+   179		public void solvedLevel(int level) {
+   180			this.puzzle.setSolved(level);
+   181		}
+   182		
+   183		public void onUpdate(float delta) {
+   184			super.onUpdate(delta);
+   185			
+   186			this.think += delta * 1000;
+   187			
+   188			this.checkTouchInput();
+   189			
+   190			// Update / think
+   191			// Wenn 10 ms vergangen sind, dann denke nach
+   192			while (this.think >= 10) {
+   193				this.think -= 10;
+   194				if (super.getModel() != null) {
+   195					super.getModel().think((int)10);
+   196				}	
+   197			}
+   198		}
+   199	
+   200		@Override
+   201		public void onDrawFrame(BitsGraphics g) {
+   202			if (super.getModel() != null) {
+   203				super.getModel().render(g);
+   204			}
+   205			super.renderButtons(g);
+   206			if (super.getModel() != null) {
+   207				super.getModel().drawOverlay(g);
+   208			}
+   209		}
+   210	
+   211		protected void drawString(BitsGraphics g, final String s, final int x, final int y, final BitsFont font) {
+   212			this.drawString(g, s, x, y, font, new float[] {0, 0, 0, 1}, new float[] {1, 1, 1, 1});
+   213		}
+   214		
+   215		protected void drawString(BitsGraphics g, final String s, final int x, final int y, final BitsFont font, float[] colorBack, float[] colorFront) {
+   216			int w = 0;
+   217			if (super.getModel().getStringWidth().containsKey(s)) {
+   218				w = super.getModel().getStringWidth().get(s);
+   219			}
+   220			
+   221			g.setColor(colorBack[0], colorBack[1], colorBack[2], colorBack[3]);
+   222			g.drawText(s, font, x - w/2 + 1, y + 2);
+   223			g.setColor(colorFront[0], colorFront[1], colorFront[2], colorFront[3]);
+   224			g.drawText(s, font, x - w/2 + 0, y + 0);
+   225		}
+   226		
+   227		public void renderButtons(BitsGraphics g) {
+   228			this.renderButtons(g, ApoSnakeMenu.font);
+   229		}
+   230		
+   231		public void renderButtons(BitsGraphics g, final BitsFont font) {
+   232			if (this.getButtons() != null) {
+   233				for (int i = 0; i < this.getButtons().length; i++) {
+   234					if (this.getButtons()[i].isBVisible()) {
+   235						int x = (int)(this.getButtons()[i].getX());
+   236						int y = (int)(this.getButtons()[i].getY());
+   237						int width = (int)(this.getButtons()[i].getWidth());
+   238						int height = (int)(this.getButtons()[i].getHeight());
+   239						
+   240						g.setColor(160, 160, 160, 255);
+   241						g.drawFilledRoundRect(x, y, width, height, 6, 10);
+   242						g.setLineSize(2.0f);
+   243						g.setColor(48f/255f, 48f/255f, 48f/255f, 1.0f);
+   244						g.drawRoundRect(x, y, width, height, 6, 10);
+   245						g.setLineSize(1.0f);
+   246						
+   247						this.drawString(g, this.getButtons()[i].getFunction(), x + width/2, y + height/2 - font.mCharCellHeight/2 - 3, font);
+   248					}
+   249				}
+   250			}
+   251		}
+   252	}
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import net.apogames.aposnake.ApoSnake;
+     4	import net.apogames.aposnake.ApoSnakeModel;
+     5	import net.apogames.aposnake.entity.ApoLevelChooserButton;
+     6	import net.apogames.aposnake.level.ApoSnakeLevel;
+     7	import net.gliblybits.bitsengine.render.BitsGraphics;
+     8	
+     9	public class ApoSnakePuzzleChooser extends ApoSnakeModel {
+    10	
+    11		public static final String BACK = "back";
+    12		public static final String LEVEL_CHOOSER = "ApoSnake - Levelchooser";
+    13		
+    14		private ApoLevelChooserButton[] levels;
+    15		
+    16		private int solved = 0;
+    17		
+    18		private int curShow = 0;
+    19		
+    20		public ApoSnakePuzzleChooser(ApoSnakePanel game) {
+    21			super(game);
+    22		}
+    23	
+    24		@Override
+    25		public void init() {
+    26			this.getStringWidth().put(ApoSnakePuzzleChooser.BACK, (int)(ApoSnakeMenu.font.getLength(ApoSnakePuzzleChooser.BACK)));
+    27			this.getStringWidth().put(ApoSnakePuzzleChooser.LEVEL_CHOOSER, (int)(ApoSnakeMenu.title_font.getLength(ApoSnakePuzzleChooser.LEVEL_CHOOSER)));
+    28			
+    29			this.curShow = 0;
+    30			
+    31			if (this.levels == null) {
+    32				this.levels = new ApoLevelChooserButton[ApoSnakeLevel.MAX_LEVELS];
+    33				
+    34				int xPos = 20;
+    35				int yPos = 50;
+    36				int radius = 70;
+    37				int add = 20;
+    38				int curLevel = 0;
+    39				for (int y = 0; y < 6; y++) {
+    40					for (int x = 0; x < 5; x++) {
+    41						this.levels[curLevel] = new ApoLevelChooserButton(null, xPos, yPos, radius, radius, String.valueOf(curLevel + 1));
+    42						
+    43						xPos += radius + add;
+    44						curLevel += 1;
+    45						if (curLevel >= this.levels.length) {
+    46							break;
+    47						}
+    48					}
+    49					xPos = 20;
+    50					yPos += radius + add;
+    51					if (curLevel >= this.levels.length) {
+    52						break;
+    53					}
+    54					if (curLevel % 30 == 0) {
+    55						yPos = 70;
+    56					}
+    57				}
+    58				this.setSolved(0);
+    59			}
+    60		}
+    61		
+    62		public final int getSolved() {
+    63			return this.solved;
+    64		}
+    65	
+    66		public final void setSolved(int solved) {
+    67			if (this.solved < solved) {
+    68				this.solved = solved;
+    69				if (this.solved > ApoSnakeLevel.MAX_LEVELS - 1) {
+    70					this.solved = ApoSnakeLevel.MAX_LEVELS - 1;
+    71				}
+    72				if (this.solved < this.levels.length) {
+    73					for (int i = 0; i < this.solved && i < this.levels.length; i++) {
+    74						this.levels[i].setSolved(true);
+    75					}
+    76				}
+    77				this.getGame().savePreferences(ApoSnake.settings);
+    78			}
+    79		}	
+    80	
+    81		@Override
+    82		public void touchedPressed(int x, int y, int finger) {
+    83			if (this.levels != null) {
+    84				for (int i = this.curShow; i < this.curShow + 64 && i < this.levels.length && i <= this.solved; i++) {
+    85					if (this.levels[i].intersects(x, y)) {
+    86						this.getGame().setPuzzleGame(i, "", false);
+    87					}
+    88				}
+    89			}
+    90		}
+    91	
+    92		@Override
+    93		public void touchedReleased(int x, int y, int finger) {
+    94			
+    95		}
+    96	
+    97		@Override
+    98		public void touchedDragged(int x, int y, int oldX, int oldY, int finger) {
+    99			
+   100		}
+   101	
+   102		@Override
+   103		public void touchedButton(String function) {
+   104			if (function.equals(ApoSnakePuzzleChooser.BACK)) {
+   105				this.onBackButtonPressed();
+   106			}
+   107		}
+   108		
+   109		public void onBackButtonPressed() {
+   110			this.getGame().setMenu();
+   111		}
+   112	
+   113		@Override
+   114		public void think(int delta) {
+   115			
+   116		}
+   117	
+   118		@Override
+   119		public void render(BitsGraphics g) {
+   120			this.getGame().drawString(g, ApoSnakePuzzleChooser.LEVEL_CHOOSER, 240, 2, ApoSnakeMenu.title_font, new float[] {1, 1, 1, 1}, new float[] {0, 0, 0, 1});
+   121			
+   122			this.getGame().renderButtons(g);
+   123			
+   124			if (this.levels != null) {
+   125				for (int i = this.curShow; i < this.curShow + 64 && i < this.levels.length; i++) {
+   126					int x = (int)(this.levels[i].getX());
+   127					int y = (int)(this.levels[i].getY());
+   128					int radius = (int)(this.levels[i].getWidth());
+   129					
+   130					g.setColor(255, 255, 255, 255);
+   131					if (this.levels[i].isSolved()) {
+   132						g.setColor(102, 135, 89, 255);
+   133					} else if (this.solved < i) {
+   134						g.setColor(128, 128, 128, 255);
+   135					}
+   136					g.drawFilledCircle(x + radius/2, y + radius/2, radius/2, 120);
+   137	
+   138					g.setLineSize(2.5f);
+   139					g.setColor(48, 48, 48);
+   140					g.drawCircle(x + radius/2, y + radius/2, radius/2, 120);
+   141					g.drawFilledRect(x + radius/2 - 4, y + 10, 3, 6);
+   142					g.drawFilledRect(x + radius/2 + 1, y + 10, 3, 6);
+   143					
+   144					if (this.solved == i) {
+   145						this.getGame().drawString(g, this.levels[i].getFunction(), x + radius/2 - (int)ApoSnakeMenu.font.getLength(this.levels[i].getFunction())/2, y + radius/2 - ApoSnakeMenu.font.mCharCellHeight/2, ApoSnakeMenu.font, new float[] {1, 1, 1, 1}, new float[] {0, 0, 0, 1});
+   146					} else {
+   147						this.getGame().drawString(g, this.levels[i].getFunction(), x + radius/2 - (int)ApoSnakeMenu.font.getLength(this.levels[i].getFunction())/2, y + radius/2 - ApoSnakeMenu.font.mCharCellHeight/2, ApoSnakeMenu.font);
+   148					}
+   149					
+   150					g.setLineSize(1.0f);
+   151				}
+   152			}
+   153		}
+   154	
+   155	}
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import net.apogames.aposnake.ApoSnakeModel;
+     4	import net.apogames.aposnake.level.ApoSnakeLevel;
+     5	import net.gliblybits.bitsengine.core.BitsFactory;
+     6	import net.gliblybits.bitsengine.core.BitsFont;
+     7	import net.gliblybits.bitsengine.core.BitsGame;
+     8	import net.gliblybits.bitsengine.render.BitsGraphics;
+     9	
+    10	public class ApoSnakeMenu extends ApoSnakeModel {
+    11	
+    12		public static final String QUIT = "quit";
+    13		public static final String PUZZLE = "puzzle";
+    14		public static final String USERLEVELS = "userlevels";
+    15		public static final String EDITOR = "editor";
+    16		public static final String TITLE = "ApoSnake";
+    17		
+    18		public static BitsFont font;
+    19		public static BitsFont game_font;
+    20		public static BitsFont title_font;
+    21		
+    22		private float clockRotate;
+    23		
+    24		public ApoSnakeMenu(ApoSnakePanel game) {
+    25			super(game);
+    26		}
+    27	
+    28		@Override
+    29		public void init() {
+    30			this.loadFonts();
+    31			
+    32			this.getStringWidth().put(ApoSnakeMenu.QUIT, (int)(ApoSnakeMenu.font.getLength(ApoSnakeMenu.QUIT)));
+    33			this.getStringWidth().put(ApoSnakeMenu.PUZZLE, (int)(ApoSnakeMenu.font.getLength(ApoSnakeMenu.PUZZLE)));
+    34			this.getStringWidth().put(ApoSnakeMenu.USERLEVELS, (int)(ApoSnakeMenu.font.getLength(ApoSnakeMenu.USERLEVELS)));
+    35			this.getStringWidth().put(ApoSnakeMenu.EDITOR, (int)(ApoSnakeMenu.font.getLength(ApoSnakeMenu.EDITOR)));
+    36			this.getStringWidth().put(ApoSnakeMenu.TITLE, (int)(ApoSnakeMenu.title_font.getLength(ApoSnakeMenu.TITLE)));
+    37			
+    38			this.setUserlevels();
+    39		}
+    40		
+    41		public void onResume() {
+    42			this.loadFonts();
+    43		}
+    44		
+    45		private void loadFonts() {
+    46			ApoSnakeMenu.font = BitsFactory.getIt().getFont("reprise.ttf", 30);
+    47			ApoSnakeMenu.title_font = BitsFactory.getIt().getFont("reprise.ttf", 38);
+    48				
+    49			ApoSnakeMenu.game_font = BitsFactory.getIt().getFont("reprise.ttf", 26);
+    50		}
+    51	
+    52		@Override
+    53		public void touchedPressed(int x, int y, int finger) {
+    54			
+    55		}
+    56	
+    57		@Override
+    58		public void touchedReleased(int x, int y, int finger) {
+    59			
+    60		}
+    61	
+    62		@Override
+    63		public void touchedDragged(int x, int y, int oldX, int oldY, int finger) {
+    64			
+    65		}
+    66	
+    67		@Override
+    68		public void touchedButton(String function) {
+    69			if (function.equals(ApoSnakeMenu.QUIT)) {
+    70				this.onBackButtonPressed();
+    71			} else if (function.equals(ApoSnakeMenu.PUZZLE)) {
+    72				this.getGame().setPuzzleChooser();
+    73			} else if (function.equals(ApoSnakeMenu.EDITOR)) {
+    74				this.getGame().setEditor(false);
+    75			} else if (function.equals(ApoSnakeMenu.USERLEVELS)) {
+    76				this.getGame().setPuzzleGame(-1, "", true);
+    77			}
+    78		}
+    79		
+    80		public void onBackButtonPressed() {
+    81			BitsGame.getIt().finish();
+    82		}
+    83		
+    84		public void setUserlevels() {
+    85			this.getGame().getButtons()[2].setVisible(true);
+    86			if (ApoSnakeLevel.editorLevels == null) {
+    87				this.getGame().getButtons()[2].setVisible(false);
+    88			}
+    89		}
+    90		
+    91		@Override
+    92		public void think(int delta) {
+    93			this.clockRotate += delta / 10f;
+    94			if (this.clockRotate >= 360) {
+    95				this.clockRotate -= 360;
+    96			}
+    97		}
+    98	
+    99		@Override
+   100		public void render(final BitsGraphics g) {
+   101			
+   102			this.getGame().drawString(g, ApoSnakeMenu.TITLE, 240, 45, ApoSnakeMenu.title_font, new float[] {1, 1, 1, 1}, new float[] {0, 0, 0, 1});
+   103			
+   104			int number = 1;
+   105			if (this.getGame().getButtons() != null) {
+   106				for (int i = 0; i < this.getGame().getButtons().length; i++) {
+   107					if (this.getGame().getButtons()[i].isBVisible()) {
+   108						int x = (int)(this.getGame().getButtons()[i].getX());
+   109						int y = (int)(this.getGame().getButtons()[i].getY());
+   110						int width = (int)(this.getGame().getButtons()[i].getWidth());
+   111						int height = (int)(this.getGame().getButtons()[i].getHeight());
+   112						
+   113						g.setColor(128, 128, 128, 255);
+   114						g.drawFilledRect(x, y, width, height);
+   115						g.setColor(48f/255f, 48f/255f, 48f/255f, 1.0f);
+   116						g.drawRect(x, y, width, height);
+   117						
+   118						this.getGame().drawString(g, this.getGame().getButtons()[i].getFunction(), x + width/2, y + height/2 - ApoSnakeMenu.font.mCharCellHeight/2, ApoSnakeMenu.font);
+   119						
+   120						for (int circle = 0; circle < 2; circle++) {
+   121							x += circle * width;
+   122							
+   123							g.setColor(255, 0, 0, 255);
+   124							if (number == 2) {
+   125								g.setColor(0, 255, 0);
+   126							} else if (number == 3) {
+   127								g.setColor(0, 90, 200);
+   128							} else if (number == 4) {
+   129								g.setColor(255, 255, 0);
+   130							}
+   131							g.drawFilledCircle(x, y + height/2, height/2, height/2);
+   132	
+   133							g.setLineSize(3.0f);
+   134							g.setColor(48, 48, 48);
+   135							g.drawCircle(x, y + height/2, height/2, height/2);
+   136							
+   137							g.drawFilledRect(x - 5, y + 5, 4, 15);
+   138							g.drawFilledRect(x + 1, y + 5, 4, 15);
+   139							
+   140							g.setLineSize(1.0f);
+   141						}
+   142						number += 1;
+   143					}
+   144				}
+   145			}
+   146		}
+   147	
+   148	}
+     1	package net.apogames.aposnake;
+     2	
+     3	import android.content.Context;
+     4	import android.content.SharedPreferences;
+     5	import android.net.ConnectivityManager;
+     6	import android.net.NetworkInfo;
+     7	
+     8	import net.apogames.aposnake.game.ApoSnakePanel;
+     9	
+    10	import net.gliblybits.bitsengine.core.BitsApp;
+    11	import net.gliblybits.bitsengine.core.BitsGame;
+    12	import net.gliblybits.bitsengine.utils.BitsLog;
+    13	
+    14	public class ApoSnake extends BitsApp {
+    15	
+    16		public static SharedPreferences settings;
+    17		
+    18		public static NetworkInfo ni;
+    19		
+    20		@Override
+    21		protected void onCreate( ) 
+    22		{
+    23			BitsLog.setLogType(BitsLog.TYPE_NONE);
+    24			
+    25			BitsGame.sWantFullscreen = true;
+    26			BitsGame.sOrientationMode = BitsGame.ORIENTATION_PORTRAIT;
+    27			BitsGame.sGameWidth = 480;
+    28			BitsGame.sGameHeight = 640;
+    29			BitsGame.sWantTitleBar = false;
+    30			BitsGame.sMaxRenderCommands = 1000;
+    31			BitsGame.sMaxImageCount = 10;
+    32			BitsGame.sMaxCirclePoints = 180;
+    33			BitsGame.sMaxFPS = 60;
+    34			BitsGame.sMaxTouchPointer = 3;
+    35			BitsGame.sSleepMode = BitsGame.SLEEP_MODE_OFF;
+    36			BitsGame.sWantMusic = false;
+    37			BitsGame.sWantSound = false;
+    38			BitsGame.sMaxFontCount = 3;
+    39			
+    40			ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    41			ApoSnake.ni = cm.getActiveNetworkInfo();
+    42			
+    43			ApoSnake.settings = this.getSharedPreferences(ApoSnakeConstants.PREFS_NAME, 0);
+    44			
+    45			BitsGame.getIt().addScreen(new ApoSnakePanel(1));
+    46		}
+    47		
+    48		public static boolean isOnline() {
+    49			if (ApoSnake.ni == null) {
+    50				return false;
+    51			}
+    52			return ApoSnake.ni.isConnected();
+    53		}
+    54	
+    55		@Override
+    56		protected void onFinish( ) {
+    57		}
+    58	}     1	package net.apogames.aposnake;
+     2	
+     3	import java.util.HashMap;
+     4	import java.util.Map;
+     5	
+     6	import net.apogames.aposnake.game.ApoSnakePanel;
+     7	import net.gliblybits.bitsengine.render.BitsGraphics;
+     8	
+     9	public abstract class ApoSnakeModel {
+    10	
+    11		private ApoSnakePanel game;
+    12		
+    13		private final Map<String, Integer> stringWidth = new HashMap<String, Integer>();
+    14		
+    15		public ApoSnakeModel(ApoSnakePanel game) {
+    16			this.game = game;
+    17		}
+    18		
+    19		public Map<String, Integer> getStringWidth() {
+    20			return this.stringWidth;
+    21		}
+    22	
+    23		public ApoSnakePanel getGame() {
+    24			return this.game;
+    25		}
+    26		
+    27		public abstract void init();
+    28		
+    29		public void close() {}
+    30		
+    31		public abstract void touchedPressed(int x, int y, int finger);
+    32		
+    33		public abstract void touchedReleased(int x, int y, int finger);
+    34		
+    35		public abstract void touchedDragged(int x, int y, int oldX, int oldY, int finger);
+    36		
+    37		public abstract void touchedButton(String function);
+    38		
+    39		public void onBackButtonPressed() {	
+    40		}
+    41		
+    42		public void onPause() {
+    43		}
+    44	
+    45		public void onResume() {		
+    46		}
+    47		
+    48		public abstract void think(int delta);
+    49		
+    50		public abstract void render(BitsGraphics g);
+    51		
+    52		public void drawOverlay(BitsGraphics g) {
+    53		}
+    54		
+    55	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "F='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java'; nl -ba \""'$F" | sed -n '"'1,260p'; nl -ba \""'$F" | sed -n '"'261,520p'; nl -ba \""'$F" | sed -n '"'521,780p'; nl -ba \""'$F" | sed -n '"'781,980p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 0ms:[0m
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import java.util.ArrayList;
+     4	
+     5	import net.apogames.aposnake.ApoSnakeModel;
+     6	import net.apogames.aposnake.entity.ApoSnakeEntity;
+     7	import net.apogames.aposnake.level.ApoSnakeLevel;
+     8	import net.gliblybits.bitsengine.render.BitsGraphics;
+     9	
+    10	public class ApoSnakePuzzleGame extends ApoSnakeModel {
+    11	
+    12		public static final String BACK = "back";
+    13		
+    14		/**
+    15		 * p[0] == aktuelles Level
+    16		 * p[1] == aktuelle Moveanzahl
+    17		 * p[2] == level geloest
+    18		 * p[3] == change X Levelsize
+    19		 * p[4] == change Y Levelsize
+    20		 * p[5] == left key
+    21		 * p[6] == down key
+    22		 * p[7] == right key
+    23		 * p[8] == up key
+    24		 * p[9] == some key pressed
+    25		 * p[10] == some key pressed ole
+    26		 */
+    27		private final int[] p = new int[11];
+    28		
+    29		private int[][] level;
+    30		
+    31		private boolean bEditor = false;
+    32		private boolean bUserlevel = false;
+    33		
+    34		private String levelString = "";
+    35		
+    36		@SuppressWarnings("unchecked")
+    37		private ArrayList<ApoSnakeEntity>[] players = new ArrayList[3];
+    38		
+    39		public static final byte changeY = 25;
+    40		
+    41		public ApoSnakePuzzleGame(ApoSnakePanel game) {
+    42			super(game);
+    43		}
+    44	
+    45		@Override
+    46		public void init() {		
+    47			this.getStringWidth().put(ApoSnakePuzzleGame.BACK, (int)(ApoSnakeMenu.font.getLength(ApoSnakePuzzleGame.BACK)));
+    48			
+    49			String s = "ApoSnake";
+    50			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    51			s = "Congratulation";
+    52			this.getStringWidth().put(s, (int) ApoSnakeMenu.title_font.getLength(s));
+    53			s = "Touch to start the next level";
+    54			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    55			s = "Please try again";
+    56			this.getStringWidth().put(s, (int) ApoSnakeMenu.title_font.getLength(s));
+    57			s = "restart";
+    58			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    59			s = "Touch to restart the level";
+    60			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    61			s = "controls";
+    62			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    63		}
+    64		
+    65		@Override
+    66		public void touchedPressed(int x, int y, int finger) {
+    67			if (((x > 5) && (x < 65) && (y > 575) && (y < 635)) ||
+    68				((x > 0) && (x < 60) && (y > ApoSnakePuzzleGame.changeY) && (y < ApoSnakePuzzleGame.changeY + 480))) {
+    69				p[5] = 1;
+    70			} else if (((x > 70) && (x < 130) && (y > 575) && (y < 635)) ||
+    71					((x > 420) && (x < 480) && (y > ApoSnakePuzzleGame.changeY) && (y < ApoSnakePuzzleGame.changeY + 480)))  {
+    72				p[7] = 1;
+    73			}
+    74			
+    75			if (((x > 415) && (x < 475) && (y > 575) && (y < 635)) ||
+    76				((x > 60) && (x < 420) && (y > ApoSnakePuzzleGame.changeY + 420) && (y < ApoSnakePuzzleGame.changeY + 480))) {
+    77				p[6] = 1;
+    78			} else if (((x > 350) && (x < 410) && (y > 575) && (y < 635)) ||
+    79					((x > 60) && (x < 420) && (y > ApoSnakePuzzleGame.changeY) && (y < ApoSnakePuzzleGame.changeY + 60))) {
+    80				p[8] = 1;
+    81			}
+    82			p[9] = 1;
+    83			
+    84			if ((x > 15) && (x < 55) && (y > 520) && (y < 560)) {
+    85				p[0] -= 1;
+    86				level[0][0] = -1;
+    87			} else if ((x > 310) && (x < 350) && (y > 520) && (y < 560)) {
+    88				p[0] += 1;
+    89				level[0][0] = -1;
+    90			} else if ((x > 142) && (x < 222) && (y > 520) && (y < 560)) {
+    91				level[0][0] = -1;
+    92			}
+    93		}
+    94	
+    95		@Override
+    96		public void touchedReleased(int x, int y, int finger) {
+    97			
+    98		}
+    99	
+   100		@Override
+   101		public void touchedDragged(int x, int y, int oldX, int oldY, int finger) {
+   102			
+   103		}
+   104	
+   105		@Override
+   106		public void touchedButton(String function) {
+   107			if (function.equals(ApoSnakePuzzleGame.BACK)) {
+   108				this.onBackButtonPressed();
+   109			}
+   110		}
+   111		
+   112		public void onBackButtonPressed() {
+   113			if (this.bEditor) {
+   114				this.getGame().setEditor(false);
+   115			} else {
+   116				if (this.bUserlevel) {
+   117					this.getGame().setMenu();
+   118				} else {
+   119					this.getGame().setPuzzleChooser();
+   120				}
+   121			}
+   122		}
+   123		
+   124		@SuppressWarnings("unchecked")
+   125		public void loadLevel(int nextLevel, boolean bUserLevel, String levelString) {
+   126			this.bUserlevel = bUserLevel;
+   127			if (ApoSnakeLevel.editorLevels == null) {
+   128				this.bUserlevel = false;
+   129			}
+   130			p[0] = nextLevel;
+   131			if (p[0] < 0) {
+   132				if (this.bUserlevel) {
+   133					p[0] = ApoSnakeLevel.editorLevels.length - 1;
+   134				} else {
+   135					p[0] = this.getGame().getMaxCanChoosen();
+   136				}
+   137			}
+   138			if (this.bUserlevel) {
+   139				if (p[0] >= ApoSnakeLevel.editorLevels.length) {
+   140					p[0] = 0;
+   141				}
+   142			} else if (p[0] >= this.getGame().getMaxCanChoosen() + 1) {
+   143				p[0] = 0;
+   144			}
+   145			this.bEditor = false;
+   146			String l = "";
+   147			if ((levelString != null) && (levelString.length() > 0)) {
+   148				l = levelString;
+   149				this.bEditor = true;
+   150			} else {
+   151				if (this.bUserlevel) {
+   152					l = ApoSnakeLevel.editorLevels[p[0]];
+   153				} else {
+   154					l = ApoSnakeLevel.getLevel(p[0]);
+   155				}
+   156			}
+   157			this.levelString = levelString;
+   158			
+   159			int width = l.substring(0, 1).charAt(0) - 96;
+   160			int height = l.substring(1, 2).charAt(0) - 96;
+   161			level = new int[height][width];
+   162			
+   163			// count the snakes in the level
+   164			int count = 0;
+   165			for (int y = 0; y < level.length; y++) {
+   166				for (int x = 0; x < level[0].length; x++) {
+   167					int value = l.charAt(y * level[0].length + x + 2);
+   168					if (value < 60) {
+   169						value -= 48;
+   170					} else {
+   171						value -= 87;
+   172					}
+   173					if ((value >= 1) && (value <= 4)) {
+   174					} else if ((value >= 7) && (value <= 10)) {
+   175						value -= 6;
+   176					} else if ((value >= 13) && (value <= 16)) {
+   177						value -= 12;
+   178					}
+   179					if ((value >= 1) && (value <= 4)) {
+   180						count += 1;
+   181					}
+   182				}
+   183			}
+   184			// create an array with the countsize of snakes
+   185			players = new ArrayList[count];
+   186			for (int i = 0; i < players.length; i++) {
+   187				players[i] = new ArrayList<ApoSnakeEntity>();
+   188			}
+   189	
+   190			p[2] = 0;
+   191			p[1] = 0;
+   192			int schlange = 0;
+   193			for (int y = 0; y < level.length; y++) {
+   194				for (int x = 0; x < level[0].length; x++) {
+   195					int value = l.charAt(y * level[0].length + x + 2);
+   196					if (value < 60) {
+   197						value -= 48;
+   198					} else {
+   199						value -= 87;
+   200					}
+   201					int color = 0;
+   202					if ((value >= 1) && (value <= 4)) {
+   203					} else if ((value >= 7) && (value <= 10)) {
+   204						color = 1;
+   205						value -= 6;
+   206					} else if ((value >= 13) && (value <= 16)) {
+   207						color = 2;
+   208						value -= 12;
+   209					} else {
+   210						level[y][x] = value;
+   211					}
+   212					if ((value >= 1) && (value <= 4)) {
+   213						if (schlange < this.players.length) {
+   214							ApoSnakeEntity entity = new ApoSnakeEntity(x, y, value, color);
+   215							players[schlange].add(entity);
+   216							schlange += 1;
+   217						}
+   218					}
+   219				}
+   220			}
+   221			p[3] = (480 - level[0].length * 30)/2;
+   222			p[4] = (480 - level.length * 30)/2 + ApoSnakePuzzleGame.changeY;
+   223		}
+   224		
+   225		private boolean canMoveNextStep() {
+   226			boolean bJumpResult = false;
+   227			boolean[] bPlayerJump = new boolean[this.players.length];
+   228			for (int j = 0; j < 4; j++) {
+   229				if (bJumpResult) {
+   230					return true;
+   231				}
+   232				for (int z = 0; z < 2; z++) {
+   233					for (int i = 0; i < players.length; i++) {
+   234						if (bPlayerJump[i]) {
+   235							continue;
+   236						}
+   237						if (players[i].size() == 0) {
+   238							continue;
+   239						}
+   240						int value = this.players[i].get(0).getDirection();
+   241						int color = this.players[i].get(0).getColor();
+   242						int x = this.players[i].get(0).getX();
+   243						int y = this.players[i].get(0).getY();
+   244						int checkX = x;
+   245						int checkY = y;
+   246						if (j == 0) {
+   247							checkX = x - 1;
+   248						} else if (j == 1) {
+   249							checkX = x + 1;
+   250						} else if (j == 2) {
+   251							checkY = y + 1;
+   252						} else if (j == 3) {
+   253							checkY = y - 1;
+   254						}
+   255						if ((value == 1) && (j == 1)) {
+   256							continue;
+   257						}
+   258						if ((value == 2) && (j == 3)) {
+   259							continue;
+   260						}
+   261						if ((value == 3) && (j == 0)) {
+   262							continue;
+   263						}
+   264						if ((value == 4) && (j == 2)) {
+   265							continue;
+   266						}
+   267						boolean bJump = false;
+   268						while ((checkX >= 0) && (checkY >= 0) && (checkX < level[0].length) && (checkY < level.length)) {
+   269							boolean bBreak = false;
+   270							boolean bIsThere = false;
+   271							for (int l = 0; l < players.length; l++) {
+   272								if (players[l].size() > 0) {
+   273									ApoSnakeEntity checkEntity = players[l].get(0);
+   274		
+   275									int otherX = checkEntity.getX();
+   276									int otherY = checkEntity.getY();
+   277									
+   278									if (l != i) {
+   279										if ((otherX == checkX) && (otherY == checkY)) {
+   280											bBreak = true;
+   281											bJump = false;
+   282											break;
+   283										}
+   284									}
+   285									
+   286									int otherColor = checkEntity.getColor();
+   287									for (int k = 1; k < players[l].size(); k++) {
+   288										checkEntity = players[l].get(k);
+   289										otherX = checkEntity.getX();
+   290										otherY = checkEntity.getY();
+   291										if ((otherX == checkX) && (otherY == checkY)) {
+   292											if ((i == l) && (k >= players[l].size() - 1)) {
+   293											} else if (otherColor == color) {
+   294												bBreak = true;
+   295												break;
+   296											} else {
+   297												bIsThere = true;
+   298												break;
+   299											}
+   300										}
+   301									}
+   302								}
+   303							}
+   304							if (bBreak) {
+   305								break;
+   306							}
+   307							if (bIsThere) {
+   308								
+   309							} else if ((level[checkY][checkX] == 0) || (level[checkY][checkX] == 5) || (level[checkY][checkX] == 11) || (level[checkY][checkX] == 17)) {
+   310								bJump = true;
+   311								bJumpResult = true;
+   312								return true;
+   313							} else if (color == 0) {
+   314								if ((level[checkY][checkX] == 6) || (level[checkY][checkX] == 19)) {
+   315									break;
+   316								}
+   317							} else if (color == 1) {
+   318								if ((level[checkY][checkX] == 12) || (level[checkY][checkX] == 20)) {
+   319									break;
+   320								}
+   321							} else if (color == 2) {
+   322								if ((level[checkY][checkX] == 18) || (level[checkY][checkX] == 21)) {
+   323									break;
+   324								}
+   325							}
+   326							
+   327							if (j == 0) {
+   328								checkX -= 1;
+   329							} else if (j == 1) {
+   330								checkX += 1;
+   331							} else if (j == 2) {
+   332								checkY += 1;
+   333							} else if (j == 3) {
+   334								checkY -= 1;
+   335							}
+   336						}
+   337						
+   338						if (bJump) {
+   339							bPlayerJump[i] = true;
+   340						}
+   341					}
+   342				}
+   343			}
+   344			
+   345			return bJumpResult;
+   346		}
+   347	
+   348		@Override
+   349		public void think(int delta) {
+   350			if (level[0][0] == -1) {
+   351				this.loadLevel(p[0], this.bUserlevel, this.levelString);
+   352			} else {
+   353				if ((p[2] > 0) && (p[9] > 0)) {
+   354					if (p[2] == 1) {
+   355						p[0] += 1;
+   356					}
+   357					level[0][0] = -1;
+   358					if ((this.bEditor) && (p[2] == 1)) {
+   359						this.getGame().setEditor(true);
+   360					} else {
+   361						this.loadLevel(p[0], this.bUserlevel, this.levelString);
+   362					}
+   363				} else {
+   364					int addJump = 0;
+   365					boolean[] bPlayerJump = new boolean[this.players.length];
+   366					if ((p[5] > 0) || (p[6] > 0) || (p[7] > 0) || (p[8] > 0)) {
+   367						for (int z = 0; z < 2; z++) {
+   368							for (int i = 0; i < players.length; i++) {
+   369								if (bPlayerJump[i]) {
+   370									continue;
+   371								}
+   372								if (players[i].size() == 0) {
+   373									continue;
+   374								}
+   375								int value = this.players[i].get(0).getDirection();
+   376								int color = this.players[i].get(0).getColor();
+   377								int x = this.players[i].get(0).getX();
+   378								int y = this.players[i].get(0).getY();
+   379								int checkX = x;
+   380								int checkY = y;
+   381								if (p[5] > 0) {
+   382									checkX = x - 1;
+   383								} else if (p[7] > 0) {
+   384									checkX = x + 1;
+   385								} else if (p[6] > 0) {
+   386									checkY = y + 1;
+   387								} else if (p[8] > 0) {
+   388									checkY = y - 1;
+   389								}
+   390								if ((value == 1) && (p[7] > 0)) {
+   391									continue;
+   392								}
+   393								if ((value == 2) && (p[8] > 0)) {
+   394									continue;
+   395								}
+   396								if ((value == 3) && (p[5] > 0)) {
+   397									continue;
+   398								}
+   399								if ((value == 4) && (p[6] > 0)) {
+   400									continue;
+   401								}
+   402								boolean bJump = false;
+   403								int add = 1;
+   404								while ((checkX >= 0) && (checkY >= 0) && (checkX < level[0].length) && (checkY < level.length)) {
+   405									boolean bBreak = false;
+   406									boolean bIsThere = false;
+   407									for (int l = 0; l < players.length; l++) {
+   408										if (players[l].size() > 0) {
+   409											ApoSnakeEntity checkEntity = players[l].get(0);
+   410		
+   411											int otherX = checkEntity.getX();
+   412											int otherY = checkEntity.getY();
+   413											
+   414											if (l != i) {
+   415												if ((otherX == checkX) && (otherY == checkY)) {
+   416													bBreak = true;
+   417													bJump = false;
+   418													break;
+   419												}
+   420											}
+   421											
+   422											int otherColor = checkEntity.getColor();
+   423											for (int k = 1; k < players[l].size(); k++) {
+   424												checkEntity = players[l].get(k);
+   425												otherX = checkEntity.getX();
+   426												otherY = checkEntity.getY();
+   427												if ((otherX == checkX) && (otherY == checkY)) {
+   428													if ((i == l) && (k >= players[l].size() - 1)) {
+   429													} else if (otherColor == color) {
+   430														bBreak = true;
+   431														break;
+   432													} else {
+   433														bIsThere = true;
+   434														break;
+   435													}
+   436												}
+   437											}
+   438										}
+   439									}
+   440									if (bBreak) {
+   441										break;
+   442									}
+   443									if (bIsThere) {
+   444										
+   445									} else if ((level[checkY][checkX] == 0) || (level[checkY][checkX] == 5) || (level[checkY][checkX] == 11) || (level[checkY][checkX] == 17)) {
+   446										bJump = true;
+   447										if (level[checkY][checkX] == 5) {
+   448											color = 0;
+   449										} else if (level[checkY][checkX] == 11) {
+   450											color = 1;
+   451										} else if (level[checkY][checkX] == 17) {
+   452											color = 2;
+   453										}
+   454										if (level[checkY][checkX] == 0) {
+   455											add = 0;
+   456										}
+   457										break;
+   458									} else if (color == 0) {
+   459										if ((level[checkY][checkX] == 6) || (level[checkY][checkX] == 19)) {
+   460											break;
+   461										}
+   462									} else if (color == 1) {
+   463										if ((level[checkY][checkX] == 12) || (level[checkY][checkX] == 20)) {
+   464											break;
+   465										}
+   466									} else if (color == 2) {
+   467										if ((level[checkY][checkX] == 18) || (level[checkY][checkX] == 21)) {
+   468											break;
+   469										}
+   470									}
+   471									
+   472									if (p[5] > 0) {
+   473										checkX -= 1;
+   474									} else if (p[7] > 0) {
+   475										checkX += 1;
+   476									} else if (p[6] > 0) {
+   477										checkY += 1;
+   478									} else if (p[8] > 0) {
+   479										checkY -= 1;
+   480									}
+   481								}
+   482								if (bJump) {
+   483									bPlayerJump[i] = true;
+   484									addJump = 1;
+   485									players[i].get(0).setDirection(5);
+   486	
+   487									if (checkX < x) {
+   488										for (int k = x - 1; k >= checkX; k--) {
+   489											int v = 5;
+   490											if (k == checkX) {
+   491												v = 1;
+   492											}
+   493											a(k, y, add, i);
+   494											ApoSnakeEntity newEntity = new ApoSnakeEntity(k, y, v, color);
+   495											players[i].add(0, newEntity);
+   496										}
+   497									} else if (checkX > x) {
+   498										for (int k = x + 1; k <= checkX; k++) {
+   499											int v = 5;
+   500											if (k == checkX) {
+   501												v = 3;
+   502											}
+   503											a(k, y, add, i);
+   504											ApoSnakeEntity newEntity = new ApoSnakeEntity(k, y, v, color);
+   505											players[i].add(0, newEntity);
+   506										}
+   507									} else if (checkY < y) {
+   508										for (int k = y - 1; k >= checkY; k--) {
+   509											int v = 5;
+   510											if (k == checkY) {
+   511												v = 4;
+   512											}
+   513											a(x, k, add, i);
+   514											ApoSnakeEntity newEntity = new ApoSnakeEntity(x, k, v, color);
+   515											players[i].add(0, newEntity);
+   516										}
+   517									} else if (checkY > y) {
+   518										for (int k = y + 1; k <= checkY; k++) {
+   519											int v = 5;
+   520											if (k == checkY) {
+   521												v = 2;
+   522											}
+   523											a(x, k, add, i);
+   524											ApoSnakeEntity newEntity = new ApoSnakeEntity(x, k, v, color);
+   525											players[i].add(0, newEntity);
+   526										}
+   527									}
+   528									for (int t = 1; t < players[i].size(); t++) {
+   529										players[i].get(t).setColor(color);
+   530									}
+   531									if (add <= 0) {
+   532										players[i].remove(players[i].size() - 1);
+   533									}
+   534									boolean bWin = true;
+   535									for (y = 0; y < level.length; y++) {
+   536										for (x = 0; x < level[0].length; x++) {
+   537											if ((level[y][x] == 5) || (level[y][x] == 11) || (level[y][x] == 17)) {
+   538												bWin = false;
+   539												break;
+   540											}
+   541										}
+   542										if (!bWin) {
+   543											break;
+   544										}
+   545									}
+   546									if (bWin) {
+   547										p[2] = 1;
+   548										if ((!this.bUserlevel) && (!this.bEditor)) {
+   549											this.getGame().solvedLevel(p[0] + 1);
+   550										}
+   551									} else if (!this.canMoveNextStep()) {
+   552										p[2] = 2;
+   553									}
+   554								}
+   555							}
+   556						}
+   557					}
+   558					p[1] += addJump;
+   559				}
+   560				for (int i = 5; i < 10; i++) {
+   561					p[i] = 0;
+   562				}
+   563			}
+   564		}
+   565		
+   566		private final void a(int x, int y, int add, int snake) {		
+   567			for (int j = 0; j < players.length; j++) {
+   568				for (int l = 1; l < players[j].size(); l++) {
+   569					ApoSnakeEntity entity = this.players[j].get(l);
+   570					int otherColor = entity.getColor();
+   571					int otherX = entity.getX();
+   572					int otherY = entity.getY();
+   573					if ((otherX == x) && (otherY == y)) {
+   574						int minus = 1;
+   575						if (add > 0) {
+   576							minus = 0;
+   577						}
+   578						if (snake != j) {
+   579							minus = 0;
+   580						}
+   581						for (int f = players[j].size() - 1 - minus; f >= l; f--) {
+   582							entity = players[j].get(f);
+   583							int removeX = entity.getX();
+   584							int removeY = entity.getY();
+   585							level[removeY][removeX] = 19 + otherColor;
+   586							players[j].remove(f);
+   587						}
+   588						break;
+   589					}
+   590				}
+   591			}
+   592	
+   593			level[y][x] = 0;
+   594		}
+   595	
+   596		@Override
+   597		public void render(BitsGraphics g) {	
+   598			g.setColor(128, 128, 128, 255);
+   599			g.drawFilledRect(0,0,480,changeY);
+   600			g.drawFilledRect(0,480 + changeY,480,160 - changeY);
+   601			
+   602			g.setColor(0f/255f, 0f/255f, 0f/255f, 1.0f);
+   603			g.drawRect(0,0,480,changeY);
+   604			g.drawRect(0,480 + changeY,480,160 - changeY);
+   605	
+   606			String s = "ApoSnake";
+   607			this.getGame().drawString(g, s, 240, - 4, ApoSnakeMenu.game_font);
+   608			
+   609			if (!this.bEditor) {
+   610				if (this.bUserlevel) {
+   611					s = "Level "+(p[0] + 1)+" / "+(ApoSnakeLevel.editorLevels.length);
+   612				} else {
+   613					s = "Level "+(p[0] + 1)+" / "+(this.getGame().getMaxCanChoosen() + 1);
+   614				}
+   615			} else {
+   616				s = "Editorlevel";
+   617			}
+   618			this.getGame().drawString(g, s, 5, - 4, ApoSnakeMenu.game_font);
+   619			
+   620			s = "Moves: "+p[1];
+   621			this.getGame().drawString(g, s, 360, - 4, ApoSnakeMenu.game_font);
+   622	
+   623			int changeX = p[3];
+   624			int changeY = p[4];
+   625			g.setColor(210, 210, 210, 255);
+   626			g.drawFilledRect(changeX, changeY, level[0].length * 30, level.length * 30);
+   627			g.setColor(0, 0, 0, 255);
+   628			g.drawRect(changeX, changeY, level[0].length * 30, level.length * 30);
+   629	
+   630			for (int y = 0; y < level.length; y++) {
+   631				for (int x = 0; x < level[0].length; x++) {
+   632					if ((level[y][x] == 5) || (level[y][x] == 11) || (level[y][x] == 17)) {
+   633						g.setColor(255, 0, 0);
+   634						if (level[y][x] == 11) {
+   635							g.setColor(0, 120, 255);							
+   636						} else if (level[y][x] == 17) {
+   637							g.setColor(0, 255, 0);							
+   638						}
+   639						g.drawFilledOval(changeX + 15 + x * 30, changeY + 15 + y * 30, 5, 5);
+   640						g.setColor(0, 0, 0, 255);
+   641						g.drawOval(changeX + 15 + x * 30, changeY + 15 + y * 30, 5, 5);
+   642					}
+   643					if ((level[y][x] == 6) || (level[y][x] == 12) || (level[y][x] == 18)) {
+   644						g.setColor(200, 0, 0);
+   645						if (level[y][x] == 12) {
+   646							g.setColor(90, 165, 200);
+   647						} else if (level[y][x] == 18) {
+   648							g.setColor(0, 200, 0);							
+   649						}
+   650						g.drawFilledRect(changeX + 4 + x * 30, changeY + 4 + y * 30, 22, 22);
+   651						g.setColor(150, 0, 0);
+   652						if (level[y][x] == 12) {
+   653							g.setColor(0, 90, 200);
+   654						} else if (level[y][x] == 18) {
+   655							g.setColor(0, 150, 0);							
+   656						}
+   657						g.drawFilledRect(changeX + 8 + x * 30, changeY + 8 + y * 30, 15, 15);
+   658						g.setColor(0, 0, 0, 255);
+   659						g.drawRect(changeX + 4 + x * 30, changeY + 4 + y * 30, 22, 22);
+   660					}
+   661					if ((level[y][x] == 19) || (level[y][x] == 20) || (level[y][x] == 21)) {
+   662						int[] c = new int[] {255, 45, 45};
+   663						if (level[y][x] == 20) {
+   664							c = new int[] {45, 165, 255};
+   665						}
+   666						if (level[y][x] == 21) {
+   667							c = new int[] {45, 255, 45};
+   668						}
+   669						g.setColor(c[0], c[1], c[2], 255);
+   670						g.drawFilledOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   671						g.setColor(0, 0, 0, 255);
+   672						g.drawOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   673					}
+   674				}
+   675			}
+   676	
+   677			for (int i = 0; i < players.length; i++) {
+   678				for (int p = players[i].size() - 1; p >= 0; p--) {
+   679					ApoSnakeEntity entity = players[i].get(p);
+   680					int w = entity.getColor();
+   681					
+   682					int x = entity.getX();
+   683					int y = entity.getY();
+   684					
+   685					int nextX = -1;
+   686					int nextY = -1;
+   687					if (p > 0) {
+   688						nextX = players[i].get(p - 1).getX();
+   689						nextY = players[i].get(p - 1).getY();
+   690					}
+   691					
+   692					int[] c = new int[] {255, 90, 90};
+   693					if (w == 1) {
+   694						c = new int[] {90, 165, 255};
+   695					}
+   696					if (w == 2) {
+   697						c = new int[] {90, 255, 90};
+   698					}
+   699	
+   700					g.setColor(c[0], c[1], c[2], 255);
+   701					if (nextX >= 0) {
+   702						if (nextX < x) {
+   703							g.drawFilledOval(changeX + nextX * 30 + 30, changeY + nextY * 30 + 15, 9, 9);
+   704						} else if (nextX > x) {
+   705							g.drawFilledOval(changeX + nextX * 30, changeY + nextY * 30 + 15, 9, 9);
+   706						} else if (nextY < y) {
+   707							g.drawFilledOval(changeX + nextX * 30 + 15, changeY + nextY * 30 + 30, 9, 9);
+   708						} else if (nextY > y) {
+   709							g.drawFilledOval(changeX + nextX * 30 + 15, changeY + nextY * 30, 9, 9);
+   710						}
+   711					}
+   712	
+   713					g.setColor(0, 0, 0, 255);
+   714					if (nextX >= 0) {
+   715						if (nextX < x) {
+   716							g.drawOval(changeX + nextX * 30 + 30, changeY + nextY * 30 + 15, 9, 9);
+   717						} else if (nextX > x) {
+   718							g.drawOval(changeX + nextX * 30, changeY + nextY * 30 + 15, 9, 9);
+   719						} else if (nextY < y) {
+   720							g.drawOval(changeX + nextX * 30 + 15, changeY + nextY * 30 + 30, 9, 9);
+   721						} else if (nextY > y) {
+   722							g.drawOval(changeX + nextX * 30 + 15, changeY + nextY * 30, 9, 9);
+   723						}
+   724					}
+   725				}
+   726			}
+   727			
+   728			for (int i = 0; i < players.length; i++) {
+   729				for (int p = players[i].size() - 1; p >= 0; p--) {
+   730					int[] c = new int[] {0, 0, 0, 255};
+   731					ApoSnakeEntity entity = players[i].get(p);
+   732					int w = entity.getColor();
+   733					int value = entity.getDirection();;				
+   734					int x = entity.getX();
+   735					int y = entity.getY();
+   736					
+   737					c = new int[] {255, 0, 0};
+   738					if (w == 1) {
+   739						c = new int[] {0, 90, 255};
+   740					}
+   741					if (w == 2) {
+   742						c = new int[] {0, 255, 0};
+   743					}
+   744	
+   745					g.setColor(c[0], c[1], c[2], 255);
+   746					g.drawFilledOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   747	
+   748					g.setColor(0, 0, 0, 255);
+   749					g.drawOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   750					
+   751					if (value == 1) {
+   752						g.drawFilledRect(changeX + x * 30 + 2, changeY + y * 30 + 11, 9, 3);
+   753						g.drawFilledRect(changeX + x * 30 + 2, changeY + y * 30 + 16, 9, 3);
+   754					} else if (value == 3) {
+   755						g.drawFilledRect(changeX + (x + 1) * 30 - 11, changeY + y * 30 + 11, 9, 3);
+   756						g.drawFilledRect(changeX + (x + 1) * 30 - 11, changeY + y * 30 + 16, 9, 3);
+   757					} else if (value == 2) {
+   758						g.drawFilledRect(changeX + (x) * 30 + 11, changeY + (y + 1) * 30 - 11, 3, 9);
+   759						g.drawFilledRect(changeX + (x) * 30 + 16, changeY + (y + 1) * 30 - 11, 3, 9);
+   760					} else if (value == 4) {
+   761						g.drawFilledRect(changeX + (x) * 30 + 11, changeY + (y) * 30 + 2, 3, 9);
+   762						g.drawFilledRect(changeX + (x) * 30 + 16, changeY + (y) * 30 + 2, 3, 9);
+   763					}
+   764				}
+   765			}		
+   766			
+   767			if (p[2] > 0) {
+   768				String s2 = "";
+   769				s2 = "Congratulation";					
+   770				s = "Touch to start the next level";
+   771				if (p[2] > 0) {
+   772					float w = ApoSnakeMenu.title_font.getLength(s2);
+   773					g.setColor(128, 128, 128, 255);
+   774					g.drawFilledRect(240 - w/2 - 10, 137, w + 20, 46);
+   775					g.setColor(0, 0, 0, 255);
+   776					g.drawRect(240 - w/2 - 10, 137, w + 20, 46);
+   777					
+   778					this.getGame().drawString(g, s2, 240, 133, ApoSnakeMenu.title_font);
+   779					
+   780					this.getGame().drawString(g, s, 190, 595, ApoSnakeMenu.game_font);
+   781				}
+   782			} else {
+   783				String[] string = null;
+   784				if ((this.bEditor) || (this.bUserlevel)) {
+   785				} else if (p[0] == 0) {
+   786					string = new String[] {
+   787						"Guide the snake to the red coin. Move with",
+   788						"the cursor buttons or touch on the side of",
+   789						"the level screen to move in that direction"
+   790					};
+   791				} else if (p[0] == 1) {
+   792					string = new String[] {
+   793						"Eat all coins to solve the level"
+   794					};
+   795				} else if (p[0] == 2) {
+   796					string = new String[] {
+   797						"You are what you eat"
+   798					};
+   799				} else if (p[0] == 3) {
+   800					string = new String[] {
+   801						"You can eat walls with a different color"
+   802					};
+   803				} else if (p[0] == 4) {
+   804					string = new String[] {
+   805						"You can't go backwards with your snake",
+   806						"Touch 'restart' to restart a level"
+   807					};
+   808				} else if (p[0] == 9) {
+   809					string = new String[] {
+   810						"You control all snakes at once"
+   811					};
+   812				} else if (p[0] == 20) {
+   813					string = new String[] {
+   814						"You can eat parts of a snake",
+   815						"with a different color"
+   816					};
+   817				}
+   818				if (string != null) {
+   819					g.setColor(128, 128, 128, 255);
+   820					int w = (int)(ApoSnakeMenu.game_font.getLength(string[0]));
+   821					for (int i = 1; i < string.length; i++) {
+   822						int newW = (int)(ApoSnakeMenu.game_font.getLength(string[i]));
+   823						if (newW > w) {
+   824							w = newW;
+   825						}
+   826					}
+   827					int x = (480 - w) / 2;
+   828					g.drawFilledRect(x - 10,410,w + 20,30 * string.length);
+   829					for (int i = 0; i < string.length; i++) {
+   830						this.getGame().drawString(g, string[i], 240 - w/2, 405 + i*30, ApoSnakeMenu.game_font);
+   831					}
+   832				}
+   833				
+   834				g.setColor(160, 160, 160, 255);
+   835				g.drawFilledRoundRect(142, 520, 80, 40, 6, 10);
+   836				if (!this.bEditor) {
+   837					g.drawFilledRoundRect(15, 520, 40, 40, 6, 10);
+   838					g.drawFilledRoundRect(310, 520, 40, 40, 6, 10);
+   839				}
+   840				g.setLineSize(2.0f);
+   841				g.setColor(0, 0, 0, 255);
+   842				g.drawRoundRect(142, 520, 80, 40, 6, 10);
+   843				if (!this.bEditor) {
+   844					g.drawRoundRect(15, 520, 40, 40, 6, 10);
+   845					g.drawRoundRect(310, 520, 40, 40, 6, 10);
+   846				}
+   847	
+   848				if (!this.bEditor) {
+   849					g.drawLine(25, 540, 45, 530);
+   850					g.drawLine(25, 540, 45, 550);
+   851	
+   852					g.drawLine(340, 540, 320, 530);
+   853					g.drawLine(340, 540, 320, 550);
+   854				}
+   855				g.setLineSize(1.0f);
+   856				
+   857				this.getGame().drawString(g, "restart", 182, 520, ApoSnakeMenu.game_font);
+   858	
+   859				this.drawMoveButtons(g);
+   860			}
+   861			
+   862			this.getGame().renderButtons(g);
+   863		}
+   864	
+   865		private void drawMoveButtons(BitsGraphics g) {
+   866			this.getGame().drawString(g, "controls", 240, 590, ApoSnakeMenu.game_font);
+   867			
+   868			g.setColor(160, 160, 160, 255);
+   869			g.drawFilledRoundRect(5, 575, 60, 60, 6, 10);
+   870			g.drawFilledRoundRect(70, 575, 60, 60, 6, 10);
+   871			g.drawFilledRoundRect(415, 575, 60, 60, 6, 10);
+   872			g.drawFilledRoundRect(350, 575, 60, 60, 6, 10);
+   873			
+   874			g.setLineSize(2.0f);
+   875			g.setColor(0, 0, 0, 255);
+   876			g.drawRoundRect(5, 575, 60, 60, 6, 10);
+   877			g.drawRoundRect(70, 575, 60, 60, 6, 10);
+   878			g.drawRoundRect(415, 575, 60, 60, 6, 10);
+   879			g.drawRoundRect(350, 575, 60, 60, 6, 10);
+   880			
+   881			// draw left button ( 5, 575)
+   882			g.drawLine(15, 605, 30, 620);
+   883			g.drawLine(30, 620, 30, 610);
+   884			g.drawLine(30, 610, 55, 610);
+   885			g.drawLine(55, 610, 55, 600);
+   886			g.drawLine(55, 600, 30, 600);
+   887			g.drawLine(30, 600, 30, 590);
+   888			g.drawLine(30, 590, 15, 605);
+   889			
+   890			// draw right button (70, 575)
+   891			g.drawLine(120, 605, 105, 620);
+   892			g.drawLine(105, 620, 105, 610);
+   893			g.drawLine(105, 610, 80, 610);
+   894			g.drawLine(80, 610, 80, 600);
+   895			g.drawLine(80, 600, 105, 600);
+   896			g.drawLine(105, 600, 105, 590);
+   897			g.drawLine(105, 590, 120, 605);
+   898			
+   899			// draw down button (415, 575)
+   900			g.drawLine(445, 625, 430, 610);
+   901			g.drawLine(430, 610, 440, 610);
+   902			g.drawLine(440, 610, 440, 585);
+   903			g.drawLine(440, 585, 450, 585);
+   904			g.drawLine(450, 585, 450, 610);
+   905			g.drawLine(450, 610, 460, 610);
+   906			g.drawLine(460, 610, 445, 625);
+   907			
+   908			// draw up button (350, 575)
+   909			g.drawLine(380, 585, 365, 600);
+   910			g.drawLine(365, 600, 375, 600);
+   911			g.drawLine(375, 600, 375, 625);
+   912			g.drawLine(375, 625, 385, 625);
+   913			g.drawLine(385, 625, 385, 600);
+   914			g.drawLine(385, 600, 395, 600);
+   915			g.drawLine(395, 600, 380, 585);
+   916	
+   917			g.setLineSize(1.0f);
+   918		}
+   919	}
+
+[35m[3mcodex[0m[0m
+The concrete attack surface is concentrated in the shared-level workflow: startup HTTP retrieval, hand-parsed 11-line records, and the compact level-string decoder. I’m checking the remaining game and framework files now so the absent-category claims are evidence-based.
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "SRC='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake'; nl -ba \""'$SRC/game/ApoSnakeEditor.java" | sed -n '"'1,240p'; nl -ba \""'$SRC/game/ApoSnakeEditor.java" | sed -n '"'241,500p'; nl -ba \""'$SRC/game/ApoSnakeSolve.java"; nl -ba "$SRC/ApoSnakeComponent.java"; nl -ba "$SRC/ApoSnakeButtons.java"'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 0ms:[0m
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import net.apogames.aposnake.ApoSnake;
+     4	import net.apogames.aposnake.ApoSnakeModel;
+     5	import net.apogames.aposnake.entity.ApoSnakeString;
+     6	
+     7	import net.gliblybits.bitsengine.render.BitsGraphics;
+     8	import net.gliblybits.bitsengine.utils.BitsLog;
+     9	
+    10	public class ApoSnakeEditor extends ApoSnakeModel {
+    11	
+    12		private final int EMPTY = 0;
+    13		private final int RED_SNAKE = 1;
+    14		private final int RED_WALL = 2;
+    15		private final int RED_COIN = 3;
+    16		private final int BLUE_SNAKE = 4;
+    17		private final int BLUE_WALL = 5;
+    18		private final int BLUE_COIN = 6;
+    19		private final int GREEN_SNAKE = 7;
+    20		private final int GREEN_WALL = 8;
+    21		private final int GREEN_COIN = 9;
+    22		
+    23		public static final String BACK = "back";
+    24		public static final String UPLOAD = "upload";
+    25		public static final String TEST = "test";
+    26		public static final String XPLUS = "+";
+    27		public static final String XMINUS = "-";
+    28		public static final String YPLUS = " + ";
+    29		public static final String YMINUS = " - ";
+    30	
+    31		private ApoSnakeString uploadString;
+    32		
+    33		private int[][] level = null;
+    34		
+    35		private int curSelect;
+    36		
+    37		public ApoSnakeEditor(ApoSnakePanel game) {
+    38			super(game);
+    39		}
+    40	
+    41		@Override
+    42		public void init() {
+    43			this.getStringWidth().put(ApoSnakeEditor.BACK, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.BACK)));
+    44			this.getStringWidth().put(ApoSnakeEditor.TEST, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.TEST)));
+    45			this.getStringWidth().put(ApoSnakeEditor.UPLOAD, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.UPLOAD)));
+    46			this.getStringWidth().put(ApoSnakeEditor.XMINUS, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.XMINUS)));
+    47			this.getStringWidth().put(ApoSnakeEditor.XPLUS, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.XPLUS)));
+    48			this.getStringWidth().put(ApoSnakeEditor.YMINUS, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.YMINUS)));
+    49			this.getStringWidth().put(ApoSnakeEditor.YPLUS, (int)(ApoSnakeMenu.game_font.getLength(ApoSnakeEditor.YPLUS)));
+    50			
+    51			String s = "ApoSnake - Editor";
+    52			this.getStringWidth().put(s, (int) ApoSnakeMenu.game_font.getLength(s));
+    53			
+    54			if (this.level == null) {
+    55				this.makeLevel();
+    56			}
+    57			
+    58			this.checkTestLevel();
+    59		}
+    60		
+    61		private void makeLevel() {
+    62			this.level = new int[][] {
+    63					{6,6,6,5,0},
+    64					{6,3,6,6,0},
+    65					{6,0,0,6,0},
+    66					{6,6,0,0,0}
+    67			};
+    68		}
+    69		
+    70		public void setLevelSolved(boolean bSolved) {
+    71			if ((!bSolved) || (!ApoSnake.isOnline())) {
+    72				this.getGame().getButtons()[8].setVisible(false);
+    73			} else {
+    74				this.getGame().getButtons()[8].setVisible(true);
+    75			}
+    76		}
+    77		
+    78		private void checkTestLevel() {
+    79			int snakes = 0;
+    80			int coins = 0;
+    81			for (int y = 0; y < this.level.length; y += 1) {
+    82				for (int x = 0; x < this.level[y].length; x += 1) {
+    83					if ((this.level[y][x] >= 1) && (this.level[y][x] <= 4)) {
+    84						snakes += 1;
+    85					}
+    86					if ((this.level[y][x] >= 7) && (this.level[y][x] <= 10)) {
+    87						snakes += 1;
+    88					}
+    89					if ((this.level[y][x] >= 13) && (this.level[y][x] <= 16)) {
+    90						snakes += 1;
+    91					}
+    92					if ((this.level[y][x] == 5) || (this.level[y][x] == 11) || (this.level[y][x] == 17)) {
+    93						coins += 1;
+    94					}
+    95				}
+    96			}
+    97			if ((snakes > 0) && (coins > 0)) {
+    98				this.getGame().getButtons()[7].setVisible(true);
+    99			} else {
+   100				this.getGame().getButtons()[7].setVisible(false);
+   101				this.getGame().getButtons()[8].setVisible(false);
+   102			}
+   103		}
+   104	
+   105		@Override
+   106		public void touchedPressed(int x, int y, int finger) {
+   107			if (y > 505) {
+   108				for (int i = 0; i <= this.GREEN_COIN; i++) {
+   109					if ((x >= 5 + i * 47) && (x < 45 + i * 47) && (y >= 520) && (y < 560)) {
+   110						this.curSelect = i;
+   111					}
+   112				}
+   113			} else {
+   114				int changeX = (480 - level[0].length * 30)/2;
+   115				int changeY = (480 - level.length * 30)/2 + ApoSnakePuzzleGame.changeY;
+   116				
+   117				if ((y >= changeY) && (y < changeY + level.length * 30) &&
+   118					(x >= changeX) && (x < changeX + level[0].length * 30)) {
+   119					int newY = (y - changeY)/30;
+   120					int newX = (x - changeX)/30;
+   121					if (this.curSelect == this.EMPTY) {
+   122						level[newY][newX] = 0;
+   123					} else if (this.curSelect == this.RED_SNAKE) {
+   124						if ((level[newY][newX] >= 1) && (level[newY][newX] <= 4)) {
+   125							level[newY][newX] += 1;
+   126							if (level[newY][newX] > 4) {
+   127								level[newY][newX] = 1;
+   128							}
+   129						} else {
+   130							level[newY][newX] = 1;
+   131						}
+   132					} else if (this.curSelect == this.RED_COIN) {
+   133						level[newY][newX] = 5;
+   134					} else if (this.curSelect == this.RED_WALL) {
+   135						level[newY][newX] = 6;
+   136					} else if (this.curSelect == this.BLUE_SNAKE) {
+   137						if ((level[newY][newX] >= 7) && (level[newY][newX] <= 10)) {
+   138							level[newY][newX] += 1;
+   139							if (level[newY][newX] > 10) {
+   140								level[newY][newX] = 7;
+   141							}
+   142						} else {
+   143							level[newY][newX] = 7;
+   144						}
+   145					} else if (this.curSelect == this.BLUE_COIN) {
+   146						level[newY][newX] = 11;
+   147					} else if (this.curSelect == this.BLUE_WALL) {
+   148						level[newY][newX] = 12;
+   149					} else if (this.curSelect == this.GREEN_SNAKE) {
+   150						if ((level[newY][newX] >= 13) && (level[newY][newX] <= 16)) {
+   151							level[newY][newX] += 1;
+   152							if (level[newY][newX] > 16) {
+   153								level[newY][newX] = 13;
+   154							}
+   155						} else {
+   156							level[newY][newX] = 13;
+   157						}
+   158					} else if (this.curSelect == this.GREEN_COIN) {
+   159						level[newY][newX] = 17;
+   160					} else if (this.curSelect == this.GREEN_WALL) {
+   161						level[newY][newX] = 18;
+   162					}
+   163					this.checkTestLevel();
+   164				}
+   165			}
+   166		}
+   167	
+   168		@Override
+   169		public void touchedReleased(int x, int y, int finger) {
+   170			
+   171		}
+   172	
+   173		@Override
+   174		public void touchedDragged(int x, int y, int oldX, int oldY, int finger) {
+   175			
+   176		}
+   177		
+   178		@Override
+   179		public void touchedButton(String function) {
+   180			if (function.equals(ApoSnakeEditor.BACK)) {
+   181				this.onBackButtonPressed();
+   182			} else if (function.equals(ApoSnakeEditor.TEST)) {
+   183				String levelString = this.getLevelString();
+   184				BitsLog.d("levelString", levelString);
+   185				this.getGame().setPuzzleGame(-1, levelString, false);
+   186			} else if (function.equals(ApoSnakeEditor.UPLOAD)) {
+   187				this.setLevelSolved(false);
+   188				this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading ...", true, 200, true);
+   189				
+   190				Thread t = new Thread(new Runnable() {
+   191	
+   192					public void run() {
+   193						ApoSnakeEditor.this.uploadString();
+   194					}
+   195		 		});
+   196		 		t.start();
+   197			} else if (function.equals(ApoSnakeEditor.XMINUS)) {
+   198				if (this.level[0].length - 1 >= 3) {
+   199					this.newLevelSize(this.level[0].length - 1, this.level.length);
+   200				}
+   201			} else if (function.equals(ApoSnakeEditor.XPLUS)) {
+   202				if (this.level[0].length + 1 <= 14) {
+   203					this.newLevelSize(this.level[0].length + 1, this.level.length);
+   204				}
+   205			} else if (function.equals(ApoSnakeEditor.YMINUS)) {
+   206				if (this.level.length - 1 >= 3) {
+   207					this.newLevelSize(this.level[0].length, this.level.length - 1);
+   208				}
+   209			} else if (function.equals(ApoSnakeEditor.YPLUS)) {
+   210				if (this.level.length + 1 <= 14) {
+   211					this.newLevelSize(this.level[0].length, this.level.length + 1);
+   212				}
+   213			}
+   214		}
+   215		
+   216		private void newLevelSize(int newWidth, int newHeight) {
+   217			int[][] newLevel = new int[newHeight][newWidth];
+   218			for (int y = 0; y < newHeight && y < level.length; y++) {
+   219				for (int x = 0; x < newWidth && x < level[y].length; x++) {
+   220					newLevel[y][x] = this.level[y][x];
+   221				}
+   222			}
+   223			this.level = newLevel;
+   224			this.checkTestLevel();
+   225		}
+   226		
+   227		private void uploadString() {
+   228			if (this.getGame().getUserlevels().addLevel(this.getLevelString())) {
+   229				this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading successfully", true, 20, true);
+   230				this.getGame().loadUserlevels();
+   231			} else {
+   232				this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading failed", true, 20, true);
+   233			}
+   234		}
+   235		
+   236		public void onBackButtonPressed() {
+   237			this.getGame().setMenu();
+   238		}
+   239		
+   240		private String getLevelString() {
+   241			String level = "";
+   242			char c = (char)(this.level[0].length + 96);
+   243			level += String.valueOf(c);
+   244			c = (char)(this.level.length + 96);
+   245			level += String.valueOf(c);
+   246			for (int y = 0; y < this.level.length; y++) {
+   247				for (int x = 0; x < this.level[0].length; x++) {
+   248					if (this.level[y][x] >= 10) {
+   249						c = (char)(87 + this.level[y][x]);
+   250						level += String.valueOf(c);
+   251					} else {
+   252						level += String.valueOf(this.level[y][x]);
+   253					}
+   254				}
+   255			}
+   256			return level;
+   257		}
+   258	
+   259		@Override
+   260		public void think(int delta) {
+   261	
+   262			if (this.uploadString != null) {
+   263				this.uploadString.think(delta);
+   264				
+   265				if (!this.uploadString.isVisible()) {
+   266					this.uploadString = null;
+   267				}
+   268			}
+   269		}
+   270	
+   271		@Override
+   272		public void render(BitsGraphics g) {
+   273			g.setColor(128, 128, 128, 255);
+   274			g.drawFilledRect(0,0,480,ApoSnakePuzzleGame.changeY);
+   275			g.drawFilledRect(0,480 + ApoSnakePuzzleGame.changeY,480,160 - ApoSnakePuzzleGame.changeY);
+   276			
+   277			g.setColor(0f/255f, 0f/255f, 0f/255f, 1.0f);
+   278			g.drawRect(0,0,480,ApoSnakePuzzleGame.changeY);
+   279			g.drawRect(0,480 + ApoSnakePuzzleGame.changeY,480,160 - ApoSnakePuzzleGame.changeY);
+   280			
+   281			String s = "ApoSnake - Editor";
+   282			this.getGame().drawString(g, s, 240, -4, ApoSnakeMenu.game_font);
+   283			
+   284			this.getGame().renderButtons(g, ApoSnakeMenu.game_font);
+   285			
+   286			int changeX = (480 - level[0].length * 30)/2;
+   287			int changeY = (480 - level.length * 30)/2 + ApoSnakePuzzleGame.changeY;
+   288			g.setColor(0, 0, 0, 255);
+   289			g.drawRect(changeX, changeY, level[0].length * 30, level.length * 30);
+   290	
+   291			for (int y = 0; y < level.length; y++) {
+   292				for (int x = 0; x < level[0].length; x++) {
+   293					g.setColor(0, 0, 0, 255);
+   294					g.drawRect(changeX + x * 30, changeY + y * 30, 30, 30);
+   295					if ((level[y][x] == 5) || (level[y][x] == 11) || (level[y][x] == 17)) {
+   296						g.setColor(255, 0, 0);
+   297						if (level[y][x] == 11) {
+   298							g.setColor(0, 120, 255);							
+   299						} else if (level[y][x] == 17) {
+   300							g.setColor(0, 255, 0);							
+   301						}
+   302						g.drawFilledOval(changeX + 15 + x * 30, changeY + 15 + y * 30, 5, 5);
+   303						g.setColor(0, 0, 0, 255);
+   304						g.drawOval(changeX + 15 + x * 30, changeY + 15 + y * 30, 5, 5);
+   305					}
+   306					if ((level[y][x] == 6) || (level[y][x] == 12) || (level[y][x] == 18)) {
+   307						if (level[y][x] == 6) {
+   308							this.drawWall(g, x, y, changeX, changeY, 0);
+   309						} else if (level[y][x] == 12) {
+   310							this.drawWall(g, x, y, changeX, changeY, 1);
+   311						} else {
+   312							this.drawWall(g, x, y, changeX, changeY, 2);
+   313						}
+   314					}
+   315					if ((level[y][x] == 19) || (level[y][x] == 20) || (level[y][x] == 21)) {
+   316						int[] c = new int[] {255, 45, 45};
+   317						if (level[y][x] == 20) {
+   318							c = new int[] {45, 165, 255};
+   319						}
+   320						if (level[y][x] == 21) {
+   321							c = new int[] {45, 255, 45};
+   322						}
+   323						g.setColor(c[0], c[1], c[2], 255);
+   324						g.drawFilledOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   325						g.setColor(0, 0, 0, 255);
+   326						g.drawOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   327					}
+   328					if ((level[y][x] >= 1) && (level[y][x] <= 4)) {
+   329						g.setColor(255, 0, 0);
+   330						this.drawSnakeEyes(g, x, y, changeX, changeY, level[y][x]);
+   331					} else if ((level[y][x] >= 7) && (level[y][x] <= 10)) {
+   332						g.setColor(0, 90, 255);
+   333						this.drawSnakeEyes(g, x, y, changeX, changeY, level[y][x] - 6);
+   334					} else if ((level[y][x] >= 13) && (level[y][x] <= 16)) {
+   335						g.setColor(0, 255, 0);
+   336						this.drawSnakeEyes(g, x, y, changeX, changeY, level[y][x] - 12);
+   337					}
+   338				}
+   339			}
+   340			
+   341			if (this.uploadString != null) {
+   342				this.uploadString.render(g, 0, 0);
+   343			}
+   344			
+   345			this.getGame().drawString(g, String.valueOf(this.level[0].length), 46, 595, ApoSnakeMenu.game_font);
+   346			this.getGame().drawString(g, String.valueOf(this.level.length), 161, 595, ApoSnakeMenu.game_font);
+   347			
+   348			g.setLineSize(3f);
+   349			g.setColor(255, 0, 0, 255);
+   350			g.drawRoundRect(5 + this.curSelect * 47, 520, 40, 40, 6, 10);
+   351			g.setLineSize(1f);
+   352			
+   353			//draw empty
+   354			g.setColor(192, 192, 192, 255);
+   355			g.drawFilledRoundRect(10, 525, 30, 30, 6, 10);
+   356			
+   357			for (int i = 1; i <= this.GREEN_COIN; i++) {
+   358				if (i == this.RED_SNAKE) {
+   359					g.setColor(255, 0, 0, 255);
+   360					this.drawSnakeEyes(g, 0, 0, 10 + i * 47, 525, 2);
+   361				} else if (i == this.BLUE_SNAKE) {
+   362					g.setColor(0, 90, 255, 255);
+   363					this.drawSnakeEyes(g, 0, 0, 10 + i * 47, 525, 2);
+   364				} else if (i == this.GREEN_SNAKE) {
+   365					g.setColor(0, 255, 0, 255);
+   366					this.drawSnakeEyes(g, 0, 0, 10 + i * 47, 525, 2);
+   367				}
+   368				if (i == this.RED_COIN) {
+   369					g.setColor(255, 0, 0, 255);
+   370					g.drawFilledOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   371					g.setColor(0, 0, 0, 255);
+   372					g.drawOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   373				} else if (i == this.BLUE_COIN) {
+   374					g.setColor(0, 90, 255, 255);
+   375					g.drawFilledOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   376					g.setColor(0, 0, 0, 255);
+   377					g.drawOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   378				} else if (i == this.GREEN_COIN) {
+   379					g.setColor(0, 255, 0, 255);
+   380					g.drawFilledOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   381					g.setColor(0, 0, 0, 255);
+   382					g.drawOval(10 + i * 47 + 15, 525 + 15, 5, 5);
+   383				}
+   384				if (i == this.RED_WALL) {
+   385					this.drawWall(g, 0, 0, 10 + i * 47, 525, 0);
+   386				} else if (i == this.BLUE_WALL) {
+   387					this.drawWall(g, 0, 0, 10 + i * 47, 525, 1);
+   388				} else if (i == this.GREEN_WALL) {
+   389					this.drawWall(g, 0, 0, 10 + i * 47, 525, 2);
+   390				}
+   391			}
+   392	
+   393		}
+   394		
+   395		private void drawWall(BitsGraphics g, int x, int y, int changeX, int changeY, int value) {
+   396			g.setColor(200, 0, 0);
+   397			if (value == 1) {
+   398				g.setColor(90, 165, 200);
+   399			} else if (value == 2) {
+   400				g.setColor(0, 200, 0);							
+   401			}
+   402			g.drawFilledRect(changeX + 4 + x * 30, changeY + 4 + y * 30, 22, 22);
+   403			g.setColor(150, 0, 0);
+   404			if (value == 1) {
+   405				g.setColor(0, 90, 200);
+   406			} else if (value == 2) {
+   407				g.setColor(0, 150, 0);							
+   408			}
+   409			g.drawFilledRect(changeX + 8 + x * 30, changeY + 8 + y * 30, 15, 15);
+   410			g.setColor(0, 0, 0, 255);
+   411			g.drawRect(changeX + 4 + x * 30, changeY + 4 + y * 30, 22, 22);
+   412		}
+   413		
+   414		private void drawSnakeEyes(BitsGraphics g, int x, int y, int changeX, int changeY, int value) {
+   415			g.drawFilledOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   416	
+   417			g.setColor(0, 0, 0, 255);
+   418			g.drawOval(changeX + x * 30 + 15, changeY + y * 30 + 15, 12, 12);
+   419			
+   420			if (value == 1) {
+   421				g.drawFilledRect(changeX + x * 30 + 2, changeY + y * 30 + 11, 9, 3);
+   422				g.drawFilledRect(changeX + x * 30 + 2, changeY + y * 30 + 16, 9, 3);
+   423			} else if (value == 3) {
+   424				g.drawFilledRect(changeX + (x + 1) * 30 - 11, changeY + y * 30 + 11, 9, 3);
+   425				g.drawFilledRect(changeX + (x + 1) * 30 - 11, changeY + y * 30 + 16, 9, 3);
+   426			} else if (value == 2) {
+   427				g.drawFilledRect(changeX + (x) * 30 + 11, changeY + (y + 1) * 30 - 11, 3, 9);
+   428				g.drawFilledRect(changeX + (x) * 30 + 16, changeY + (y + 1) * 30 - 11, 3, 9);
+   429			} else if (value == 4) {
+   430				g.drawFilledRect(changeX + (x) * 30 + 11, changeY + (y) * 30 + 2, 3, 9);
+   431				g.drawFilledRect(changeX + (x) * 30 + 16, changeY + (y) * 30 + 2, 3, 9);
+   432			}
+   433		}
+   434	
+   435	}
+     1	package net.apogames.aposnake.game;
+     2	
+     3	import net.gliblybits.bitsengine.utils.BitsLog;
+     4	
+     5	public class ApoSnakeSolve {
+     6	
+     7		private boolean bSolved;
+     8		
+     9		private boolean bBreak;
+    10		
+    11		private int count;
+    12		
+    13		public boolean shouldBreak() {
+    14			return bBreak;
+    15		}
+    16	
+    17		public void setBreak(boolean bBreak) {
+    18			this.bBreak = bBreak;
+    19		}
+    20	
+    21		public boolean canBeSolved(final int[][] level) {
+    22			this.bSolved = false;
+    23			this.bBreak = false;
+    24			this.count = 0;
+    25			
+    26			this.checkLevel(this.getClone(level));
+    27			
+    28			return this.bSolved;
+    29		}
+    30		
+    31		private void checkLevel(final int[][] level) {
+    32			if (this.isLevelDone(level)) {
+    33				this.bSolved = true;
+    34			}
+    35			if (this.bSolved) {
+    36				return;
+    37			}
+    38			if (this.bBreak) {
+    39				return;
+    40			}
+    41			this.count += 1;
+    42	//		BitsLog.d("count", "count: "+count);
+    43			for (int y = 0; y < 8; y++) {
+    44				for (int x = 0; x < level[y].length; x++) {
+    45					if (level[y + 8][x] >= 3) {
+    46						int north = this.isNorthFree(level, x, y);
+    47						if (north > 0) {
+    48	//						BitsLog.d("test", level[13][0]+" "+level[14][0]+" "+level[15][0]);
+    49							int[][] clone = this.getClone(level);
+    50							clone[y + 8][x] = (byte)(clone[y + 8][x] - 1);
+    51							setNorth(clone, x, y, north);
+    52							this.checkLevel(clone);
+    53							if ((this.bSolved) || (this.bBreak)) {
+    54								return;
+    55							}
+    56	//						BitsLog.d("test", level[13][0]+" "+level[14][0]+" "+level[15][0]);
+    57	//						this.setNorthBack(level, x, y, north);
+    58	//						BitsLog.d("test", level[13][0]+" "+level[14][0]+" "+level[15][0]);
+    59						}
+    60						int east = this.isEastFree(level, x, y);
+    61						if (east > 0) {
+    62	//						BitsLog.d("test", "before "+level[15][0]+" "+level[15][1]+" "+level[15][2]);
+    63							int[][] clone = this.getClone(level);
+    64							clone[y + 8][x] = (byte)(clone[y + 8][x] - 1);
+    65							setEast(clone, x, y, east);
+    66							this.checkLevel(clone);
+    67							if ((this.bSolved) || (this.bBreak)) {
+    68								return;
+    69							}
+    70	//						BitsLog.d("test", "mid "+level[15][0]+" "+level[15][1]+" "+level[15][2]);
+    71	//						this.setEastBack(level, x, y, east);
+    72	//						BitsLog.d("test", "after "+level[15][0]+" "+level[15][1]+" "+level[15][2]);
+    73						}
+    74						int south = this.isSouthFree(level, x, y);
+    75						if (south > 0) {
+    76							int[][] clone = this.getClone(level);
+    77							clone[y + 8][x] = (byte)(clone[y + 8][x] - 1);
+    78							setSouth(clone, x, y, south);
+    79							this.checkLevel(clone);
+    80							if ((this.bSolved) || (this.bBreak)) {
+    81								return;
+    82							}
+    83	//						this.setSouthBack(level, x, y, south);
+    84	//						BitsLog.d("test", level[13][0]+" "+level[14][0]+" "+level[15][0]);
+    85						}
+    86						int west = this.isWestFree(level, x, y);
+    87						if (west > 0) {
+    88							int[][] clone = this.getClone(level);
+    89							clone[y + 8][x] = (byte)(clone[y + 8][x] - 1);
+    90							this.setWest(clone, x, y, west);
+    91							this.checkLevel(clone);
+    92							if ((this.bSolved) || (this.bBreak)) {
+    93								return;
+    94							}
+    95	//						this.setWestBack(level, x, y, west);
+    96						}
+    97					}
+    98				}
+    99			}
+   100		}
+   101		
+   102		private int isSouthFree(final int[][] level, final int x, final int y) {
+   103			int i = 1;
+   104			for (int curY = y + 1; curY < 8; curY++) {
+   105				if (level[curY + 8][x] < 2) {
+   106					return i;
+   107				} else {
+   108					i += 1;
+   109				}
+   110			}
+   111			return -1;
+   112		}
+   113		
+   114		private void setSouth(final int[][] level, final int x, final int y, final int south) {
+   115			for (int curY = y + south; curY > y; curY--) {
+   116				level[curY + 8][x] = level[curY + 8 - 1][x];
+   117			}
+   118			level[y + 8][x] = 0;
+   119		}
+   120		
+   121		private void setSouthBack(final int[][] level, final int x, final int y, final int south) {
+   122			for (int curY = y; curY < y + south; curY++) {
+   123				level[curY + 8][x] = level[curY + 8 + 1][x];
+   124			}
+   125			level[y + 8][x] = (byte)(level[y + 8][x] + 1);
+   126			level[y + 8 + south][x] = 0;
+   127		}
+   128		
+   129		private int isNorthFree(final int[][] level, final int x, final int y) {
+   130			int i = 1;
+   131			for (int curY = y - 1; curY >= 0; curY--) {
+   132				if (level[curY + 8][x] < 2) {
+   133					return i;
+   134				} else {
+   135					i += 1;
+   136				}
+   137			}
+   138			return -1;
+   139		}
+   140		
+   141		private void setNorth(final int[][] level, final int x, final int y, final int north) {
+   142			for (int curY = y - north; curY < y; curY++) {
+   143				level[curY + 8][x] = level[curY + 8 + 1][x];
+   144			}
+   145			level[y + 8][x] = 0;
+   146		}
+   147		
+   148		private void setNorthBack(final int[][] level, final int x, final int y, final int north) {
+   149			for (int curY = y; curY > y - north; curY--) {
+   150				level[curY + 8][x] = level[curY + 8 - 1][x];
+   151			}
+   152			level[y + 8][x] = (byte)(level[y + 8][x] + 1);
+   153			level[y + 8 - north][x] = 0;
+   154		}
+   155		
+   156		private int isWestFree(final int[][] level, final int x, final int y) {
+   157			int i = 1;
+   158			for (int curX = x - 1; curX >= 0; curX--) {
+   159				if (level[y + 8][curX] < 2) {
+   160					return i;
+   161				} else {
+   162					i += 1;
+   163				}
+   164			}
+   165			return -1;
+   166		}
+   167		
+   168		private void setWest(final int[][] level, final int x, final int y, final int west) {
+   169			for (int curX = x - west; curX < x; curX++) {
+   170				level[y + 8][curX] = level[y + 8][curX + 1];
+   171			}
+   172			level[y + 8][x] = 0;
+   173		}
+   174		
+   175		private void setWestBack(final int[][] level, final int x, final int y, final int west) {
+   176			for (int curX = x; curX > x - west; curX--) {
+   177				level[y + 8][curX] = level[y + 8][curX - 1];
+   178			}
+   179			level[y + 8][x] = (byte)(level[y + 8][x] + 1);
+   180			level[y + 8][x - west] = 0;
+   181		}
+   182		
+   183		private int isEastFree(final int[][] level, final int x, final int y) {
+   184			int i = 1;
+   185			for (int curX = x + 1; curX < 8; curX++) {
+   186				if (level[y + 8][curX] < 2) {
+   187					return i;
+   188				} else {
+   189					i += 1;
+   190				}
+   191			}
+   192			return -1;
+   193		}
+   194		
+   195		private void setEast(final int[][] level, final int x, final int y, final int east) {
+   196			for (int curX = x + east; curX > x; curX--) {
+   197				level[y + 8][curX] = level[y + 8][curX - 1];
+   198			}
+   199			level[y + 8][x] = 0;
+   200		}
+   201		
+   202		private void setEastBack(final int[][] level, final int x, final int y, final int east) {
+   203			for (int curX = x; curX < x + east; curX++) {
+   204				level[y + 8][curX] = level[y + 8][x + 1];
+   205			}
+   206			level[y + 8][x] = (byte)(level[y + 8][x] + 1);
+   207			level[y + 8][x + east] = 0;
+   208		}
+   209		
+   210		private boolean isLevelDone(final int[][] level) {
+   211			for (int y = 0; y < 8; y++) {
+   212				for (int x = 0; x < level[y].length; x++) {
+   213					if ((level[y + 8][x] == 2) && (level[y][x] <= 0)) {
+   214						return false;
+   215					}
+   216					if (((level[y + 8][x] < 2) || (level[y + 8][x] > 2)) && (level[y][x] == 1)) {
+   217						return false;
+   218					}
+   219					if (level[y + 8][x] >= 3) {
+   220						return false;
+   221					}
+   222				}
+   223			}
+   224			return true;
+   225		}
+   226		
+   227		private int[][] getClone(final int[][] copy) {
+   228			int[][] clone = new int[copy.length][copy[0].length];
+   229			for (int y = 0; y < clone.length; y++) {
+   230				for (int x = 0; x < clone[y].length; x++) {
+   231					clone[y][x] = copy[y][x];
+   232				}
+   233			}
+   234			return clone;
+   235		}
+   236	}
+     1	package net.apogames.aposnake;
+     2	
+     3	import net.apogames.aposnake.entity.ApoButton;
+     4	import net.gliblybits.bitsengine.gui.BitsButton;
+     5	import net.gliblybits.bitsengine.gui.BitsScreen;
+     6	import net.gliblybits.bitsengine.input.touch.BitsTouchPointer;
+     7	import net.gliblybits.bitsengine.input.touch.BitsTouchPointerManager;
+     8	import net.gliblybits.bitsengine.render.BitsGraphics;
+     9	
+    10	public abstract class ApoSnakeComponent extends BitsScreen {
+    11	
+    12		/** Array der ganzen Buttons im Spiel */
+    13		private ApoButton[] buttons;
+    14	
+    15		private int oldX, oldY;
+    16		
+    17		private final boolean[] touched = new boolean[3];
+    18		
+    19		private ApoSnakeModel model;
+    20		
+    21		protected ApoSnakeComponent(int id) {
+    22			super(id);
+    23		}
+    24	
+    25		public void onButtonPressed(BitsButton button) {
+    26			
+    27		}
+    28	
+    29		public ApoSnakeModel getModel() {
+    30			return this.model;
+    31		}
+    32	
+    33		public void setModel(ApoSnakeModel model) {
+    34			this.model = model;
+    35		}
+    36	
+    37		/**
+    38		 * gibt das Array mit den Buttons zur�ck
+    39		 * @return gibt das Array mit den Buttons zur�ck
+    40		 */
+    41		public final ApoButton[] getButtons() {
+    42			return this.buttons;
+    43		}
+    44	
+    45		/**
+    46		 * setzt das Array mit den Buttons auf den �bergebenen Wert
+    47		 * @param buttons : neues Array mit Buttons
+    48		 */
+    49		public void setButtons(ApoButton[] buttons) {
+    50			this.buttons = buttons;
+    51		}
+    52		
+    53		public void checkTouchInput() {
+    54			for (int i = 0; i < this.touched.length; i++) {
+    55				final BitsTouchPointer pointer = BitsTouchPointerManager.getIt().get(i);
+    56				boolean newTouched = false;
+    57				if (pointer == null) {
+    58					newTouched = false;
+    59				} else {
+    60					newTouched = pointer.isDown;
+    61				}
+    62				if ((newTouched) && (!this.touched[i])) {
+    63					if (pointer != null) {
+    64						int x = pointer.mX;
+    65						int y = pointer.mY;
+    66						this.oldX = x;
+    67						this.oldY = y;
+    68						
+    69						boolean bButton = false;
+    70						if (this.getButtons() != null) {
+    71							for (int b = 0; b < this.getButtons().length; b++) {
+    72								if ((this.getButtons()[b].isBVisible()) && (this.getButtons()[b].intersects(x, y, 1, 1))) {
+    73									String function = this.getButtons()[b].getFunction();
+    74									this.setButtonFunction(function);
+    75									bButton = true;
+    76									break;
+    77								}
+    78							}
+    79						}
+    80						if (!bButton) {
+    81							if (this.model != null) {
+    82								this.model.touchedPressed(x, y, i);
+    83							}
+    84						}
+    85					}
+    86				} else if ((!newTouched) && (this.touched[i])) {
+    87					int x = 0;
+    88					int y = 0;
+    89					if (pointer != null) {
+    90						x = pointer.mX;
+    91						y = pointer.mY;
+    92					}
+    93					if (this.model != null) {
+    94						this.model.touchedReleased(x, y, i);
+    95					}
+    96				} else if ((newTouched) && (this.touched[i])) {
+    97					if (pointer != null) {
+    98						int x = pointer.mX;
+    99						int y = pointer.mY;
+   100						
+   101						if ((this.model != null) && ((this.oldX != x) || (this.oldY != y))) {
+   102							this.model.touchedDragged(x, y, this.oldX, this.oldY, i);
+   103						}
+   104						this.oldX = x;
+   105						this.oldY = y;
+   106					}
+   107				}
+   108				this.touched[i] = newTouched; 
+   109			}
+   110		}
+   111		
+   112		/**
+   113		 * rendert die Buttons
+   114		 * @param g : das Graphics2D Object
+   115		 */
+   116		public void renderButtons(BitsGraphics g) {
+   117			if (this.buttons != null) {
+   118				for (int i = 0; i < this.buttons.length; i++) {
+   119					this.buttons[i].render(g, 0, 0);
+   120				}
+   121			}
+   122		}
+   123	
+   124		/**
+   125		 * wird aufgerufen, wenn ein Button gedr�ckt wurde
+   126		 * @param function : Funktion, die der Button ausf�hren soll und ihn einzigartig macht
+   127		 */
+   128		public abstract void setButtonFunction(String function);
+   129		
+   130		@Override
+   131		public void onInit() {
+   132			init();
+   133		}
+   134		
+   135		public void init() {
+   136			
+   137		}
+   138	
+   139		@Override
+   140		public void onPause() {
+   141			
+   142		}
+   143	
+   144		@Override
+   145		public void onResume() {
+   146			
+   147		}
+   148	
+   149		@Override
+   150		public void onFinish() {
+   151			
+   152		}
+   153	
+   154		@Override
+   155		public void onBackButtonPressed() {
+   156			
+   157		}
+   158	
+   159	}
+     1	package net.apogames.aposnake;
+     2	
+     3	import net.apogames.aposnake.ApoSnakeConstants;
+     4	import net.apogames.aposnake.entity.ApoButton;
+     5	import net.apogames.aposnake.game.ApoSnakeEditor;
+     6	import net.apogames.aposnake.game.ApoSnakeMenu;
+     7	import net.apogames.aposnake.game.ApoSnakePanel;
+     8	import net.apogames.aposnake.game.ApoSnakePuzzleChooser;
+     9	import net.apogames.aposnake.game.ApoSnakePuzzleGame;
+    10	
+    11	public class ApoSnakeButtons {
+    12		
+    13		private final ApoSnakePanel game;
+    14		
+    15		public ApoSnakeButtons(final ApoSnakePanel game) {
+    16			this.game = game;
+    17		}
+    18	
+    19		public void init() {
+    20			if (this.game.getButtons() == null) {
+    21				this.game.setButtons(new ApoButton[13]);
+    22	
+    23				String function = ApoSnakeMenu.QUIT;
+    24				int width = 200;
+    25				int height = 60;
+    26				int x = ApoSnakeConstants.GAME_WIDTH/2 - width/2;
+    27				int y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 5;
+    28				this.game.getButtons()[0] = new ApoButton(null, x, y, width, height, function);
+    29	
+    30				function = ApoSnakeMenu.PUZZLE;
+    31				width = 300;
+    32				height = 60;
+    33				x = ApoSnakeConstants.GAME_WIDTH/2 - width/2;
+    34				y = 150;
+    35				this.game.getButtons()[1] = new ApoButton(null, x, y, width, height, function);
+    36				
+    37				function = ApoSnakeMenu.USERLEVELS;
+    38				width = 300;
+    39				height = 60;
+    40				x = ApoSnakeConstants.GAME_WIDTH/2 - width/2;
+    41				y = 150 + height * 1 + 20 * 1;
+    42				this.game.getButtons()[2] = new ApoButton(null, x, y, width, height, function);
+    43				
+    44				function = ApoSnakeMenu.EDITOR;
+    45				width = 300;
+    46				height = 60;
+    47				x = ApoSnakeConstants.GAME_WIDTH/2 - width/2;
+    48				y = 150 + height * 2 + 20 * 2;
+    49				this.game.getButtons()[3] = new ApoButton(null, x, y, width, height, function);
+    50				
+    51				function = ApoSnakePuzzleChooser.BACK;
+    52				width = 70;
+    53				height = 40;
+    54				x = ApoSnakeConstants.GAME_WIDTH - width - 5;
+    55				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    56				this.game.getButtons()[4] = new ApoButton(null, x, y, width, height, function);
+    57				
+    58				function = ApoSnakePuzzleGame.BACK;
+    59				width = 70;
+    60				height = 40;
+    61				x = ApoSnakeConstants.GAME_WIDTH - width - 5;
+    62				y = ApoSnakeConstants.GAME_HEIGHT - 60 - 1 * height - 20;
+    63				this.game.getButtons()[5] = new ApoButton(null, x, y, width, height, function);
+    64				
+    65				function = ApoSnakeEditor.BACK;
+    66				width = 70;
+    67				height = 40;
+    68				x = ApoSnakeConstants.GAME_WIDTH - width - 5;
+    69				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    70				this.game.getButtons()[6] = new ApoButton(null, x, y, width, height, function);
+    71				
+    72				function = ApoSnakeEditor.TEST;
+    73				width = 70;
+    74				height = 40;
+    75				x = ApoSnakeConstants.GAME_WIDTH - 3 * width - 10 * 3;
+    76				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    77				this.game.getButtons()[7] = new ApoButton(null, x, y, width, height, function);
+    78				
+    79				function = ApoSnakeEditor.UPLOAD;
+    80				width = 70;
+    81				height = 40;
+    82				x = ApoSnakeConstants.GAME_WIDTH - 2 * width - 10 * 2;
+    83				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    84				this.game.getButtons()[8] = new ApoButton(null, x, y, width, height, function);
+    85				
+    86				function = ApoSnakeEditor.XMINUS;
+    87				width = 40;
+    88				height = 40;
+    89				x = 5;
+    90				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    91				this.game.getButtons()[9] = new ApoButton(null, x, y, width, height, function);
+    92				
+    93				function = ApoSnakeEditor.XPLUS;
+    94				width = 40;
+    95				height = 40;
+    96				x = 5 + 70;
+    97				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+    98				this.game.getButtons()[10] = new ApoButton(null, x, y, width, height, function);
+    99				
+   100				function = ApoSnakeEditor.YMINUS;
+   101				width = 40;
+   102				height = 40;
+   103				x = 120;
+   104				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+   105				this.game.getButtons()[11] = new ApoButton(null, x, y, width, height, function);
+   106				
+   107				function = ApoSnakeEditor.YPLUS;
+   108				width = 40;
+   109				height = 40;
+   110				x = 120 + 70;
+   111				y = ApoSnakeConstants.GAME_HEIGHT - 1 * height - 10;
+   112				this.game.getButtons()[12] = new ApoButton(null, x, y, width, height, function);
+   113				
+   114				for (int i = 0; i < this.game.getButtons().length; i++) {
+   115					this.game.getButtons()[i].setBOpaque(true);
+   116				}
+   117			}
+   118		}
+   119	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "SRC='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake'; nl -ba \""'$SRC/src/net/apogames/aposnake/entity/ApoEntity.java" | sed -n '"'1,240p'; nl -ba \""'$SRC/src/net/apogames/aposnake/entity/ApoEntity.java" | sed -n '"'241,500p'; nl -ba \""'$SRC/src/net/apogames/aposnake/entity/ApoButton.java" | sed -n '"'1,280p'; nl -ba \""'$SRC/src/net/apogames/aposnake/entity/ApoSnakeEntity.java"; nl -ba "$SRC/src/net/apogames/aposnake/entity/ApoSnakeString.java"; nl -ba "$SRC/src/net/apogames/aposnake/entity/ApoLevelChooserButton.java"; nl -ba "$SRC/gen/net/apogames/aposnake/BuildConfig.java"; nl -ba "$SRC/gen/net/apogames/aposnake/R.java"'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 40 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 86 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 137 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 37 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 104 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 3 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[32m succeeded in 146ms:[0m
+     1	package net.apogames.aposnake.entity;
+     2	
+     3	import net.gliblybits.bitsengine.core.BitsImage;
+     4	import net.gliblybits.bitsengine.render.BitsGraphics;
+     5	
+     6	/**
+     7	 * Diese Klasse handelt einen Button, die ein 3geteiltes Bild enth�lt
+     8	 * das erste wird angezeigt, wenn die Maus nicht dadr�ber ist
+     9	 * das zweite wird angezeigt, wenn die Maus �ber der Entity ist
+    10	 * das dritte wird angezeigt, wenn die Maus auf das Entity geklickt hat
+    11	 * @author Dirk Aporius
+    12	 *
+    13	 */
+    14	public class ApoButton extends ApoEntity {
+    15		
+    16		private int				WAIT_DELAY = 70;
+    17		private int				wait, maxWait;
+    18		private boolean			bWait, bFirstWait;
+    19		private String			function;
+    20		private boolean 		bOver, bPressed;
+    21		
+    22		public ApoButton( BitsImage iBackground, int x, int y, int width, int height, String function )	{
+    23			super( iBackground, x, y, width, height );
+    24			
+    25			this.function	= function;
+    26			this.bOver		= false;
+    27			this.bPressed	= false;
+    28			
+    29			super.setBOpaque(false);
+    30			this.wait		= 0;
+    31			this.maxWait 	= 0;
+    32			this.bWait		= false;
+    33			this.bFirstWait	= true;
+    34		}
+    35		
+    36	//	/**
+    37	//	 * gibt das aktuelle Rechteck der Entity zur�ck
+    38	//	 * @return gibt das aktuelle Rechteck der Entity zur�ck
+    39	//	 */
+    40	//	public final Rect getRec() {
+    41	//		return this.rec;
+    42	//	}
+    43		
+    44		/**
+    45		 * gibt zur�ck, ob wenn eine Maustaste gehalten wird, auch alle paar Millisekunden
+    46		 * gecheckt werden soll, ob sich was ver�ndern soll
+    47		 * @return gibt zur�ck, ob wenn eine Maustaste gehalten wird, auch alle paar Millisekunden
+    48		 * gecheckt werden soll, ob sich was ver�ndern soll
+    49		 */
+    50		public boolean isBWait() {
+    51			return this.bWait;
+    52		}
+    53	
+    54		/**
+    55		 * setzt den boolean Wert ob wenn die Maustaste gehalten wird, alle paar Millisekunden
+    56		 * gecheckt werden soll, ob sich was ver�nder soll, auf den �bergebenen Wert
+    57		 * @param bWait
+    58		 */
+    59		public void setBWait(boolean bWait) {
+    60			this.bWait = bWait;
+    61		}
+    62		
+    63		/**
+    64		 * gibt die Wartezeit zwischen 2 Funktionsaufrufen, wenn die Maus
+    65		 * gedr�ckt gehalten wird, zur�ck
+    66		 * @return gibt die Wartezeit zwischen 2 Funktionsaufrufen, wenn die Maus
+    67		 * gedr�ckt gehalten wird, zur�ck
+    68		 */
+    69		public int getWAIT_DELAY() {
+    70			return this.WAIT_DELAY;
+    71		}
+    72	
+    73		/**
+    74		 * setzt die Wartezeit zwischen 2 Funktionsaufrufen auf den
+    75		 * �bergebenen Wert
+    76		 * @param wait_delay = neue Wartezeit in Millisekunden
+    77		 */
+    78		public void setWAIT_DELAY(int wait_delay) {
+    79			this.WAIT_DELAY = wait_delay;
+    80		}
+    81	
+    82		/**
+    83		 * gibt zur�ck, ob die Maus �ber dem Button ist oder nicht
+    84		 * @return TRUE, falls Maus dr�ber, sonst FALSE
+    85		 */
+    86		public boolean isBOver() {
+    87			return this.bOver;
+    88		}
+    89	
+    90		/**
+    91		 * setzt den boolean-Wert f�r bOver auf den �bergebenen Wert
+    92		 * @param bOver
+    93		 */
+    94		public void setBOver(boolean bOver) {
+    95			this.bOver = bOver;
+    96		}
+    97	
+    98		/**
+    99		 * gibt zur�ck, ob eine Maustaste �ber dem Button gedr�ckt ist oder nicht
+   100		 * @return TRUE, falls Maustaste gedr�ckt, sonst FALSE
+   101		 */
+   102		public boolean isBPressed()	{
+   103			return this.bPressed;
+   104		}
+   105	
+   106		/**
+   107		 * setzt den boolean-Wert f�r bPressed auf den �bergebenen Wert 
+   108		 * @param bPressed
+   109		 */
+   110		public void setBPressed(boolean bPressed) {
+   111			this.bPressed = bPressed;
+   112		}
+   113	
+   114		/**
+   115		 * gibt die Funktion des Buttons zur�ck
+   116		 * @return function
+   117		 */
+   118		public String getFunction()	{
+   119			return this.function;
+   120		}
+   121	
+   122		/**
+   123		 * sezt die Funktion des Buttons auf den �bergebenen Wert
+   124		 * @param function
+   125		 */
+   126		public void setFunction(String function) {
+   127			this.function = function;
+   128		}
+   129		
+   130		/**
+   131		 * was passiert, wenn die Maus im Spielfeld bewegt wurde
+   132		 * @param x: x-Koordinate der Maus
+   133		 * @param y: y-Koordinate der Maus
+   134		 * @return TRUE, falls Maus dr�ber, sonst FALSE
+   135		 */
+   136		public boolean getMove( int x, int y ) {
+   137			if ((!this.isBOver()) && (this.intersects(x, y)) && (this.isBVisible())) {
+   138				this.setBOver( true );
+   139				return true;
+   140			} else if ((this.isBOver()) && (!this.intersects(x, y))) {
+   141				this.notOver();
+   142				return true;
+   143			}
+   144			return false;
+   145		}
+   146		
+   147		public void setVisible(boolean bVisible) {
+   148			super.setVisible(bVisible);
+   149			if (!bVisible) {
+   150				this.notOver();
+   151			}
+   152		}
+   153		
+   154		private void notOver() {
+   155			this.bOver		= false;
+   156			this.bPressed	= false;
+   157			this.wait 		= 0;
+   158			this.maxWait	= 0;
+   159			this.bFirstWait	= true;
+   160		}
+   161		
+   162		/**
+   163		 * was passiert, wenn eine Maustaste im Spielfeld gedr�ckt wurde wurde
+   164		 * @param x: x-Koordinate der Maus
+   165		 * @param y: y-Koordinate der Maus
+   166		 * @return TRUE, falls �ber Button Maus gedr�ckt, sonst FALSE
+   167		 */
+   168		public boolean getPressed( int x, int y ) {
+   169			if ( ( this.isBOver() ) && ( this.intersects( x, y ) ) && ( this.isBVisible() ) ) {
+   170				this.setBPressed( true );
+   171				return true;
+   172			}
+   173			return false;
+   174		}
+   175		
+   176		/**
+   177		 * was passiert, wenn eine Maustaste im Spielfeld losgelassen wurde
+   178		 * @param x: x-Koordinate der Maus
+   179		 * @param y: y-Koordinate der Maus
+   180		 * @return TRUE, wenn die Maustaste losgelassen wurde und der Spieler auch diesen Button gedr�ckt hatte, sonst FALSE
+   181		 */
+   182		public boolean getReleased( int x, int y ) {
+   183			if ((this.isBPressed()) && (this.intersects(x, y)) && (this.isBVisible())) {
+   184				this.setBPressed(false);
+   185				this.setBOver(true);
+   186				this.wait 		= 0;
+   187				this.maxWait	= 0;
+   188				this.bFirstWait	= true;
+   189				return true;
+   190			}
+   191			return false;
+   192		}
+   193		
+   194		public int getWait() {
+   195			return this.wait;
+   196		}
+   197	
+   198		/**
+   199		 * was passiert, wenn eine Maustaste gedr�ckt wurde und gehalten wird
+   200		 * @param delay
+   201		 */
+   202		public void think( int delay ) {
+   203			if ( !this.isBWait() ) {
+   204				return;
+   205			}
+   206			if ( this.isBPressed() ) {
+   207				this.wait += delay;
+   208				this.maxWait += delay;
+   209				if ( this.bFirstWait ) {
+   210					if ( this.wait > 400) {
+   211						this.wait -= 400;
+   212						this.bFirstWait = false;
+   213						return;
+   214					}
+   215				} else {
+   216					if (this.maxWait > 2500) {
+   217						if (this.wait > this.WAIT_DELAY/5) {
+   218							this.wait -= this.WAIT_DELAY/5;
+   219						}
+   220					} else {
+   221						if (this.wait > this.WAIT_DELAY) {
+   222							this.wait -= this.WAIT_DELAY;
+   223						}
+   224					}
+   225				}
+   226			}
+   227		}
+   228		
+   229		/**
+   230		 * malt den Button an die Stelle getX() + changeX und getY() + changeY hin
+   231		 * @param changeX: Verschiebung in x-Richtung
+   232		 * @param changeY: Verschiebung in y-Richtung
+   233		 */
+   234		public void render(BitsGraphics g, int changeX, int changeY ) {
+   235			if ( this.isBVisible() ) {
+   236				super.render(g, changeX, changeY);
+   237			}
+   238		}
+   239	
+   240	}
+   241	
+     1	package net.apogames.aposnake.entity;
+     2	
+     3	import net.gliblybits.bitsengine.render.BitsGraphics;
+     4	
+     5	public class ApoSnakeEntity {
+     6	
+     7		private int x, y, direction, color;
+     8		
+     9		private boolean bVisible;
+    10		
+    11		public ApoSnakeEntity(int x, int y, int direction, int color) {
+    12			this.x = x;
+    13			this.y = y;
+    14			this.direction = direction;
+    15			this.color = color;
+    16			this.bVisible = true;
+    17		}
+    18	
+    19		public int getX() {
+    20			return this.x;
+    21		}
+    22	
+    23		public void setX(int x) {
+    24			this.x = x;
+    25		}
+    26	
+    27		public int getY() {
+    28			return this.y;
+    29		}
+    30	
+    31		public void setY(int y) {
+    32			this.y = y;
+    33		}
+    34	
+    35		public int getDirection() {
+    36			return this.direction;
+    37		}
+    38	
+    39		public void setDirection(int direction) {
+    40			this.direction = direction;
+    41		}
+    42	
+    43		public int getColor() {
+    44			return this.color;
+    45		}
+    46	
+    47		public void setColor(int color) {
+    48			this.color = color;
+    49		}
+    50	
+    51		public boolean isVisible() {
+    52			return bVisible;
+    53		}
+    54	
+    55		public void setVisible(final boolean bVisible) {
+    56			this.bVisible = bVisible;
+    57		}
+    58		
+    59		public void think(final int delta) {
+    60		}
+    61		
+    62		public void render(final BitsGraphics g) {
+    63			this.render(g, 0, 0);
+    64		}
+    65		
+    66		public void render(final BitsGraphics g, int changeX, int changeY) {
+    67			if (this.isVisible()) {
+    68				
+    69			}
+    70		}
+    71		
+    72	}
+     1	package net.apogames.aposnake.entity;
+     2	
+     3	import net.apogames.aposnake.game.ApoSnakeMenu;
+     4	import net.gliblybits.bitsengine.render.BitsGraphics;
+     5	
+     6	public class ApoSnakeString extends ApoSnakeEntity {
+     7	
+     8		public static final int TIME_DECREASE = 10;
+     9		
+    10		private String drawString;
+    11		
+    12		private int invisible;
+    13		
+    14		private int curTime;
+    15		
+    16		private boolean bWithBackground;
+    17		
+    18		private int timeDecrease;
+    19		
+    20		private boolean bFade;
+    21		
+    22		public ApoSnakeString(float x, float y, float width, String s, boolean bWithBackground, int timeDecrease, boolean bFade) {
+    23			super((int)x, (int)y, (int)width, 0);
+    24			
+    25			this.bWithBackground = bWithBackground;
+    26			this.drawString = s;
+    27			this.invisible = 255;
+    28			this.curTime = 0;
+    29			this.timeDecrease = timeDecrease;
+    30			this.curTime = this.timeDecrease;
+    31			this.bFade = bFade;
+    32		}
+    33		
+    34		public void think(int delta) {
+    35			this.curTime -= delta;
+    36			if (this.curTime <= 0) {
+    37				if (this.bFade) {
+    38					this.curTime = this.timeDecrease;
+    39					this.invisible -= 1;
+    40					if (this.invisible <= 50) {
+    41						this.invisible = 0;
+    42						super.setVisible(false);
+    43					}
+    44				} else {
+    45					super.setVisible(false);
+    46				}
+    47			}
+    48		}
+    49		
+    50		public void render(final BitsGraphics g, int changeX, int changeY) {
+    51			if (this.isVisible()) {
+    52				
+    53				String s = this.drawString;
+    54				int w = (int)(ApoSnakeMenu.font.getLength(s) + 10);
+    55				int h = ApoSnakeMenu.font.mCharCellHeight;
+    56				int x = (int)(this.getX() + this.getDirection()/2 - w/2) - changeX;
+    57				int change = 10;
+    58				int y = (int)(this.getY() + this.getDirection()/2 + h/2) - changeY;
+    59				if (this.bWithBackground) {
+    60					g.setColor(255, 255, 255, this.invisible);
+    61					g.drawFilledRect((int)(x - change), (int)(y - h - change), (int)(w + 2 * change), (int)(h + 2 * change));
+    62					g.setColor(0, 0, 0, this.invisible);
+    63					g.setLineSize(3);
+    64					g.drawRect((int)(x - change), (int)(y - h - change), (int)(w + 2 * change), (int)(h + 2 * change));
+    65					g.setLineSize(1);
+    66				}
+    67				g.setColor(0, 0, 0, this.invisible);
+    68				g.drawText(s, ApoSnakeMenu.font, x, y - h);
+    69			}
+    70		}
+    71	
+    72	}
+     1	package net.apogames.aposnake.entity;
+     2	
+     3	import net.gliblybits.bitsengine.core.BitsImage;
+     4	
+     5	public class ApoLevelChooserButton extends ApoButton {
+     6	
+     7		private boolean bSolved;
+     8		
+     9		public ApoLevelChooserButton(BitsImage iBackground, int x, int y, int width, int height, String function) {
+    10			super(iBackground, x, y, width, height, function);
+    11			
+    12			this.bSolved = false;
+    13		}
+    14	
+    15		public boolean isSolved() {
+    16			return this.bSolved;
+    17		}
+    18	
+    19		public void setSolved(boolean bSolved) {
+    20			this.bSolved = bSolved;
+    21		}
+    22	
+    23	}
+     1	/** Automatically generated file. DO NOT MODIFY */
+     2	package net.apogames.aposnake;
+     3	
+     4	public final class BuildConfig {
+     5	    public final static boolean DEBUG = true;
+     6	}     1	/* AUTO-GENERATED FILE.  DO NOT MODIFY.
+     2	 *
+     3	 * This class was automatically generated by the
+     4	 * aapt tool from the resource data it found.  It
+     5	 * should not be modified by hand.
+     6	 */
+     7	
+     8	package net.apogames.aposnake;
+     9	
+    10	public final class R {
+    11	    public static final class attr {
+    12	    }
+    13	    public static final class drawable {
+    14	        public static final int ic_launcher=0x7f020000;
+    15	    }
+    16	    public static final class layout {
+    17	        public static final int main=0x7f030000;
+    18	    }
+    19	    public static final class string {
+    20	        public static final int app_name=0x7f040001;
+    21	        public static final int hello=0x7f040000;
+    22	    }
+    23	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "ROOT='Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake'; rg -n 'ApoSnakeSolve|canBeSolved|ClassLoader|defineClass|ObjectInputStream|ObjectOutputStream|MessageDigest|System\\.load|loadLibrary|Runtime\\.getRuntime|\\.exec\\(|java\\.io\\.File|FileInputStream|FileOutputStream|RandomAccessFile|user\\.home|user\\.dir|Applet|WebView|Cipher|SecretKey|Base64|SharedPreferences|BitsLog\\.|System\\.(out|err)' \""'$ROOT"; find "$ROOT" -type f -print | sort'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/android/ApoSnake
+[32m succeeded in 102ms:[0m
+[35m[3mcodex[0m[0m
+I’ve completed the full 21-file review. I’m now normalizing the four non-duplicate findings and explicitly separating runtime-reachable paths from conditions the missing Android manifest or server code prevents us from proving.
+[35m[3mcodex[0m[0m
+<<<JSON_BEGIN>>>
+{
+  "variant": "ApoSnake",
+  "files_reviewed": 21,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeEditor.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java"
+  ],
+  "findings": [
+    {
+      "id": "ApoSnake-01",
+      "title": "Shared levels use unauthenticated cleartext HTTP",
+      "category": "insecure_transport",
+      "cwe": "CWE-319",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java",
+      "line": 5,
+      "code_excerpt": "\tpublic final static String USERLEVELS_GETPHP = \"http://www.apo-games.de/apoSn4ke/get_level.php\";\n\tpublic final static String USERLEVELS_SAVEPHP = \"http://www.apo-games.de/apoSn4ke/save_level.php\";",
+      "entry_point": "Downloaded bytes enter through urlConn.getInputStream()/input.readLine() at ApoSnakeUserlevelsLoad.java:179-182; a locally authored level enters save(String level) at ApoSnakeUserlevelsLoad.java:113 and is encoded at line 132.",
+      "sink": "The fixed http URLs at ApoSnakeConstants.java:5-6 are passed to URL/openConnection and cleartext request/response streams at ApoSnakeUserlevelsLoad.java:121-137 and 162-179.",
+      "data_path": "Download: ApoSnakePanel.init() automatically calls loadUserlevels() at ApoSnakePanel.java:58-60; its thread at lines 79-86 calls ApoSnakeUserlevels.loadUserlevels() at ApoSnakeUserlevels.java:22-30, then ApoSnakeUserlevelsLoad.load() at lines 153-209. Upload: ApoSnakeEditor.uploadString() at ApoSnakeEditor.java:227-230 calls ApoSnakeUserlevels.addLevel() at ApoSnakeUserlevels.java:84-90, then save() at ApoSnakeUserlevelsLoad.java:113-143.",
+      "attack_scenario": "An attacker controlling the level server, DNS/route, or the victim's Wi-Fi answers the startup HTTP request with altered 11-line level records; the client accepts them as shared levels. The same attacker can read, change, or drop the level= POST during upload. This gives control over downloaded game content and enables the parser and availability attacks described below.",
+      "reachable": true,
+      "preconditions": "The build must grant network access and the Android version/network-security policy must permit cleartext HTTP; ApoSnake.isOnline() must return true (ApoSnake.java:48-52). A network-position attacker or malicious endpoint is needed; upload interception additionally requires the user to upload a solved editor level.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Run the app/emulator with an HTTP-intercepting proxy or map www.apo-games.de to a controlled HTTP server. Launch while connected and observe the POST to get_level.php, then create, solve, and upload a level and observe the readable level= body sent to save_level.php. Modify the download response and confirm the altered level reaches the user-level menu; packet capture showing plaintext requests and successful response substitution proves the issue.",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-02",
+      "title": "Malformed downloaded level strings crash the level decoder",
+      "category": "unsafe_custom_parser",
+      "cwe": "CWE-20",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java",
+      "line": 159,
+      "code_excerpt": "\t\tint width = l.substring(0, 1).charAt(0) - 96;\n\t\tint height = l.substring(1, 2).charAt(0) - 96;\n\t\tlevel = new int[height][width];",
+      "entry_point": "Every line with index 0 modulo 11 from the HTTP response is stored verbatim as a level at ApoSnakeUserlevelsLoad.java:182-185.",
+      "sink": "ApoSnakePuzzleGame.loadLevel() derives array dimensions without checking length or range at lines 159-161, then indexes every declared cell with l.charAt(...) at line 167 and again at line 195.",
+      "data_path": "ApoSnakeUserlevelsLoad.load() stores the response at ApoSnakeUserlevelsLoad.java:179-205; ApoSnakeUserlevels.getAllLevelsSorted() copies it at ApoSnakeUserlevels.java:44-56 and assigns ApoSnakeLevel.editorLevels at line 30. The userlevels button invokes setPuzzleGame(-1, \"\", true) at ApoSnakeMenu.java:75-76; ApoSnakePanel.setPuzzleGame() calls loadLevel() at ApoSnakePanel.java:136-146, which selects editorLevels[p[0]] at ApoSnakePuzzleGame.java:138-155 and reaches the unchecked decoder.",
+      "attack_scenario": "A malicious server or HTTP man-in-the-middle returns one otherwise valid 11-line record whose level line is aa. Loading succeeds and exposes the userlevels button. When the victim taps it, width and height become 1, but l.charAt(2) at ApoSnakePuzzleGame.java:167 reads past the two-character string. The exception escapes every supplied caller and yields a repeatable game crash. A header byte such as _ produces a negative array dimension at line 161.",
+      "reachable": true,
+      "preconditions": "The network path in ApoSnake-01 must operate, the attacker must supply valid numeric values for the other ten record lines so sorting completes, and the victim must open userlevels. Direct poisoning by an ordinary UGC author is not established because save_level.php is not in the supplied source.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Intercept get_level.php and serve these 11 lines in order: aa, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0. Launch, wait for userlevels to appear, and tap it. An IndexOutOfBoundsException/StringIndexOutOfBoundsException with ApoSnakePuzzleGame.java:167 in the stack, or process termination at that action, confirms reachability.",
+      "shared_component": false
+    },
+    {
+      "id": "ApoSnake-03",
+      "title": "Unbounded shared-level response can exhaust memory and CPU",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-400",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java",
+      "line": 182,
+      "code_excerpt": "\t\t\t\twhile (null != ((str = input.readLine()))) {\n\t\t\t\t\tif (i % 11 == 0) {\n\t\t\t\t\t\tthis.levels.add(str);\n\t\t\t\t\t} else if (i % 11 == 1) {\n\t\t\t\t\t\tthis.times.add(Float.valueOf(str));",
+      "entry_point": "The server-controlled HTTP body enters DataInputStream at ApoSnakeUserlevelsLoad.java:179 and is consumed until EOF at lines 182-207.",
+      "sink": "There is no response, line-length, or record-count bound before readLine() and the eleven ArrayList.add/valueOf branches at ApoSnakeUserlevelsLoad.java:182-205; after reading, sortByUpload() performs nested insertion scanning at ApoSnakeUserlevels.java:61-75.",
+      "data_path": "ApoSnakePanel.init() starts the download without a user gesture at ApoSnakePanel.java:58-60 and 79-86. ApoSnakeUserlevels.loadUserlevels() calls load() and then sortByUpload() at ApoSnakeUserlevels.java:22-30, so attacker-controlled response size directly controls retained strings, boxed numbers, and the quadratic sort workload.",
+      "attack_scenario": "A malicious endpoint or HTTP man-in-the-middle streams a very long first line or hundreds of thousands of syntactically valid 11-line records. readLine() and the lists keep allocating until heap exhaustion; if EOF is sent first, equal timestamps make the nested insertion sort scan all prior entries and consume quadratic CPU. Because loading starts during initialization, the attacker can freeze or kill the game on launch without a menu selection.",
+      "reachable": true,
+      "preconditions": "The network and cleartext preconditions from ApoSnake-01 must hold and the attacker must control or replace the get_level.php response. A sufficiently large body relative to the Android heap is required.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Use a controlled get_level.php response that repeatedly emits the valid 11-line record aa0, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0, preferably on an emulator with a constrained heap. Repeat until the body contains enough records to exceed the heap, then launch the app. OutOfMemoryError or process death during lines 182-205 proves the memory path; a smaller completed body with equal timestamps and a profiler showing rapidly superlinear time in ApoSnakeUserlevels.sortByUpload() proves the CPU path.",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-04",
+      "title": "Editable local solved counter unlocks all built-in levels",
+      "category": "client_side_trust",
+      "cwe": "CWE-602",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java",
+      "line": 84,
+      "code_excerpt": "\t\t\tfor (int i = this.curShow; i < this.curShow + 64 && i < this.levels.length && i <= this.solved; i++) {\n\t\t\t\tif (this.levels[i].intersects(x, y)) {\n\t\t\t\t\tthis.getGame().setPuzzleGame(i, \"\", false);\n\t\t\t\t}",
+      "entry_point": "The local solved integer comes from the app-private ApoSnakePref SharedPreferences opened at ApoSnake.java:43 and read directly at ApoSnakePanel.java:67-69.",
+      "sink": "The solved value is the only access decision in the touch loop at ApoSnakePuzzleChooser.java:84-87, which calls setPuzzleGame() for any index at or below it.",
+      "data_path": "ApoSnake.onCreate() obtains ApoSnakePref at ApoSnake.java:43; ApoSnakePanel.init() calls loadPreferences() at ApoSnakePanel.java:64; loadPreferences() reads solved and calls solvedLevel() at lines 67-69 and 179-181; ApoSnakePuzzleChooser.setSolved() accepts a larger value and only clamps it to MAX_LEVELS-1 at ApoSnakePuzzleChooser.java:66-77; touchedPressed() then uses it at lines 82-87.",
+      "attack_scenario": "A local user with root, app-UID instrumentation, or equivalent access stops the app and changes solved in ApoSnakePref to 999. On restart, setSolved() clamps it to the final level rather than rejecting it, and the chooser permits every built-in level. The gain is local progression cheating only, not code execution or a server-side privilege.",
+      "reachable": true,
+      "preconditions": "The attacker needs access beyond an ordinary unprivileged Android app because getSharedPreferences(..., 0) at ApoSnake.java:43 is app-private. Rooted-emulator or rooted-device access, or instrumentation under the app UID, is sufficient.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "On a rooted test emulator, force-stop the app, locate its ApoSnakePref.xml under the app data directory, and set the solved integer to 999, or use app-UID instrumentation to write the same preference. Relaunch and open the puzzle chooser. Being able to select the final built-in level, while a clean profile permits only the initial level, confirms the trust path.",
+      "shared_component": false
+    }
+  ],
+  "categories_checked_and_absent": [
+    "remote_code_loading",
+    "untrusted_deserialization",
+    "path_traversal",
+    "weak_integrity_check",
+    "information_disclosure",
+    "unsafe_native_call",
+    "legacy_sandbox_assumption",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 21 files actually present under the supplied source root were opened: 19 handwritten source files and two generated Java files. The snapshot places them below Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/, which is why paths retain that root-relative prefix. It contains no AndroidManifest.xml, build script, resource files, PHP endpoint source, or gliblybits engine source; therefore network permission, cleartext policy, and server-side validation cannot be verified from this variant. The client sends only level= plus the encoded level at ApoSnakeUserlevelsLoad.java:132-133, but absent save_level.php source I did not claim that arbitrary direct submissions are accepted. BuildConfig.java:5 has DEBUG=true, but that alone does not prove manifest debuggability. Downloaded levels are passed to BitsLog at ApoSnakeUserlevels.java:53, but startup requests BitsLog.TYPE_NONE at ApoSnake.java:23 and the logger implementation is absent, so this was not reported as reachable information disclosure. ApoSnakeSolve.canBeSolved() exists at ApoSnakeSolve.java:21 but has no caller anywhere in the supplied tree, so its recursive search was treated as unreachable rather than another resource-exhaustion finding."
+}
+<<<JSON_END>>>
+[2mtokens used[0m
+120,043
+<<<JSON_BEGIN>>>
+{
+  "variant": "ApoSnake",
+  "files_reviewed": 21,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnake.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevels.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakeEditor.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePanel.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java"
+  ],
+  "findings": [
+    {
+      "id": "ApoSnake-01",
+      "title": "Shared levels use unauthenticated cleartext HTTP",
+      "category": "insecure_transport",
+      "cwe": "CWE-319",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/ApoSnakeConstants.java",
+      "line": 5,
+      "code_excerpt": "\tpublic final static String USERLEVELS_GETPHP = \"http://www.apo-games.de/apoSn4ke/get_level.php\";\n\tpublic final static String USERLEVELS_SAVEPHP = \"http://www.apo-games.de/apoSn4ke/save_level.php\";",
+      "entry_point": "Downloaded bytes enter through urlConn.getInputStream()/input.readLine() at ApoSnakeUserlevelsLoad.java:179-182; a locally authored level enters save(String level) at ApoSnakeUserlevelsLoad.java:113 and is encoded at line 132.",
+      "sink": "The fixed http URLs at ApoSnakeConstants.java:5-6 are passed to URL/openConnection and cleartext request/response streams at ApoSnakeUserlevelsLoad.java:121-137 and 162-179.",
+      "data_path": "Download: ApoSnakePanel.init() automatically calls loadUserlevels() at ApoSnakePanel.java:58-60; its thread at lines 79-86 calls ApoSnakeUserlevels.loadUserlevels() at ApoSnakeUserlevels.java:22-30, then ApoSnakeUserlevelsLoad.load() at lines 153-209. Upload: ApoSnakeEditor.uploadString() at ApoSnakeEditor.java:227-230 calls ApoSnakeUserlevels.addLevel() at ApoSnakeUserlevels.java:84-90, then save() at ApoSnakeUserlevelsLoad.java:113-143.",
+      "attack_scenario": "An attacker controlling the level server, DNS/route, or the victim's Wi-Fi answers the startup HTTP request with altered 11-line level records; the client accepts them as shared levels. The same attacker can read, change, or drop the level= POST during upload. This gives control over downloaded game content and enables the parser and availability attacks described below.",
+      "reachable": true,
+      "preconditions": "The build must grant network access and the Android version/network-security policy must permit cleartext HTTP; ApoSnake.isOnline() must return true (ApoSnake.java:48-52). A network-position attacker or malicious endpoint is needed; upload interception additionally requires the user to upload a solved editor level.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Run the app/emulator with an HTTP-intercepting proxy or map www.apo-games.de to a controlled HTTP server. Launch while connected and observe the POST to get_level.php, then create, solve, and upload a level and observe the readable level= body sent to save_level.php. Modify the download response and confirm the altered level reaches the user-level menu; packet capture showing plaintext requests and successful response substitution proves the issue.",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-02",
+      "title": "Malformed downloaded level strings crash the level decoder",
+      "category": "unsafe_custom_parser",
+      "cwe": "CWE-20",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleGame.java",
+      "line": 159,
+      "code_excerpt": "\t\tint width = l.substring(0, 1).charAt(0) - 96;\n\t\tint height = l.substring(1, 2).charAt(0) - 96;\n\t\tlevel = new int[height][width];",
+      "entry_point": "Every line with index 0 modulo 11 from the HTTP response is stored verbatim as a level at ApoSnakeUserlevelsLoad.java:182-185.",
+      "sink": "ApoSnakePuzzleGame.loadLevel() derives array dimensions without checking length or range at lines 159-161, then indexes every declared cell with l.charAt(...) at line 167 and again at line 195.",
+      "data_path": "ApoSnakeUserlevelsLoad.load() stores the response at ApoSnakeUserlevelsLoad.java:179-205; ApoSnakeUserlevels.getAllLevelsSorted() copies it at ApoSnakeUserlevels.java:44-56 and assigns ApoSnakeLevel.editorLevels at line 30. The userlevels button invokes setPuzzleGame(-1, \"\", true) at ApoSnakeMenu.java:75-76; ApoSnakePanel.setPuzzleGame() calls loadLevel() at ApoSnakePanel.java:136-146, which selects editorLevels[p[0]] at ApoSnakePuzzleGame.java:138-155 and reaches the unchecked decoder.",
+      "attack_scenario": "A malicious server or HTTP man-in-the-middle returns one otherwise valid 11-line record whose level line is aa. Loading succeeds and exposes the userlevels button. When the victim taps it, width and height become 1, but l.charAt(2) at ApoSnakePuzzleGame.java:167 reads past the two-character string. The exception escapes every supplied caller and yields a repeatable game crash. A header byte such as _ produces a negative array dimension at line 161.",
+      "reachable": true,
+      "preconditions": "The network path in ApoSnake-01 must operate, the attacker must supply valid numeric values for the other ten record lines so sorting completes, and the victim must open userlevels. Direct poisoning by an ordinary UGC author is not established because save_level.php is not in the supplied source.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Intercept get_level.php and serve these 11 lines in order: aa, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0. Launch, wait for userlevels to appear, and tap it. An IndexOutOfBoundsException/StringIndexOutOfBoundsException with ApoSnakePuzzleGame.java:167 in the stack, or process termination at that action, confirms reachability.",
+      "shared_component": false
+    },
+    {
+      "id": "ApoSnake-03",
+      "title": "Unbounded shared-level response can exhaust memory and CPU",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-400",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/editor/ApoSnakeUserlevelsLoad.java",
+      "line": 182,
+      "code_excerpt": "\t\t\t\twhile (null != ((str = input.readLine()))) {\n\t\t\t\t\tif (i % 11 == 0) {\n\t\t\t\t\t\tthis.levels.add(str);\n\t\t\t\t\t} else if (i % 11 == 1) {\n\t\t\t\t\t\tthis.times.add(Float.valueOf(str));",
+      "entry_point": "The server-controlled HTTP body enters DataInputStream at ApoSnakeUserlevelsLoad.java:179 and is consumed until EOF at lines 182-207.",
+      "sink": "There is no response, line-length, or record-count bound before readLine() and the eleven ArrayList.add/valueOf branches at ApoSnakeUserlevelsLoad.java:182-205; after reading, sortByUpload() performs nested insertion scanning at ApoSnakeUserlevels.java:61-75.",
+      "data_path": "ApoSnakePanel.init() starts the download without a user gesture at ApoSnakePanel.java:58-60 and 79-86. ApoSnakeUserlevels.loadUserlevels() calls load() and then sortByUpload() at ApoSnakeUserlevels.java:22-30, so attacker-controlled response size directly controls retained strings, boxed numbers, and the quadratic sort workload.",
+      "attack_scenario": "A malicious endpoint or HTTP man-in-the-middle streams a very long first line or hundreds of thousands of syntactically valid 11-line records. readLine() and the lists keep allocating until heap exhaustion; if EOF is sent first, equal timestamps make the nested insertion sort scan all prior entries and consume quadratic CPU. Because loading starts during initialization, the attacker can freeze or kill the game on launch without a menu selection.",
+      "reachable": true,
+      "preconditions": "The network and cleartext preconditions from ApoSnake-01 must hold and the attacker must control or replace the get_level.php response. A sufficiently large body relative to the Android heap is required.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Use a controlled get_level.php response that repeatedly emits the valid 11-line record aa0, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0, preferably on an emulator with a constrained heap. Repeat until the body contains enough records to exceed the heap, then launch the app. OutOfMemoryError or process death during lines 182-205 proves the memory path; a smaller completed body with equal timestamps and a profiler showing rapidly superlinear time in ApoSnakeUserlevels.sortByUpload() proves the CPU path.",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-04",
+      "title": "Editable local solved counter unlocks all built-in levels",
+      "category": "client_side_trust",
+      "cwe": "CWE-602",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/src/net/apogames/aposnake/game/ApoSnakePuzzleChooser.java",
+      "line": 84,
+      "code_excerpt": "\t\t\tfor (int i = this.curShow; i < this.curShow + 64 && i < this.levels.length && i <= this.solved; i++) {\n\t\t\t\tif (this.levels[i].intersects(x, y)) {\n\t\t\t\t\tthis.getGame().setPuzzleGame(i, \"\", false);\n\t\t\t\t}",
+      "entry_point": "The local solved integer comes from the app-private ApoSnakePref SharedPreferences opened at ApoSnake.java:43 and read directly at ApoSnakePanel.java:67-69.",
+      "sink": "The solved value is the only access decision in the touch loop at ApoSnakePuzzleChooser.java:84-87, which calls setPuzzleGame() for any index at or below it.",
+      "data_path": "ApoSnake.onCreate() obtains ApoSnakePref at ApoSnake.java:43; ApoSnakePanel.init() calls loadPreferences() at ApoSnakePanel.java:64; loadPreferences() reads solved and calls solvedLevel() at lines 67-69 and 179-181; ApoSnakePuzzleChooser.setSolved() accepts a larger value and only clamps it to MAX_LEVELS-1 at ApoSnakePuzzleChooser.java:66-77; touchedPressed() then uses it at lines 82-87.",
+      "attack_scenario": "A local user with root, app-UID instrumentation, or equivalent access stops the app and changes solved in ApoSnakePref to 999. On restart, setSolved() clamps it to the final level rather than rejecting it, and the chooser permits every built-in level. The gain is local progression cheating only, not code execution or a server-side privilege.",
+      "reachable": true,
+      "preconditions": "The attacker needs access beyond an ordinary unprivileged Android app because getSharedPreferences(..., 0) at ApoSnake.java:43 is app-private. Rooted-emulator or rooted-device access, or instrumentation under the app UID, is sufficient.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "On a rooted test emulator, force-stop the app, locate its ApoSnakePref.xml under the app data directory, and set the solved integer to 999, or use app-UID instrumentation to write the same preference. Relaunch and open the puzzle chooser. Being able to select the final built-in level, while a clean profile permits only the initial level, confirms the trust path.",
+      "shared_component": false
+    }
+  ],
+  "categories_checked_and_absent": [
+    "remote_code_loading",
+    "untrusted_deserialization",
+    "path_traversal",
+    "weak_integrity_check",
+    "information_disclosure",
+    "unsafe_native_call",
+    "legacy_sandbox_assumption",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 21 files actually present under the supplied source root were opened: 19 handwritten source files and two generated Java files. The snapshot places them below Users/eliahilse/Documents/GitHub/B/apogames/Android/ApoSnake/, which is why paths retain that root-relative prefix. It contains no AndroidManifest.xml, build script, resource files, PHP endpoint source, or gliblybits engine source; therefore network permission, cleartext policy, and server-side validation cannot be verified from this variant. The client sends only level= plus the encoded level at ApoSnakeUserlevelsLoad.java:132-133, but absent save_level.php source I did not claim that arbitrary direct submissions are accepted. BuildConfig.java:5 has DEBUG=true, but that alone does not prove manifest debuggability. Downloaded levels are passed to BitsLog at ApoSnakeUserlevels.java:53, but startup requests BitsLog.TYPE_NONE at ApoSnake.java:23 and the logger implementation is absent, so this was not reported as reachable information disclosure. ApoSnakeSolve.canBeSolved() exists at ApoSnakeSolve.java:21 but has no caller anywhere in the supplied tree, so its recursive search was treated as unreachable rather than another resource-exhaustion finding."
+}
+<<<JSON_END>>>

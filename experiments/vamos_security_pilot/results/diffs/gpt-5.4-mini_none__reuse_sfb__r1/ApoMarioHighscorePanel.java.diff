@@ -1,0 +1,203 @@
+--- a/apoMario/game/panels/ApoMarioHighscorePanel.java
++++ b/apoMario/game/panels/ApoMarioHighscorePanel.java
+@@ -0,0 +1,200 @@
++package apoMario.game.panels;
++
++import apoMario.game.ApoMarioSearch;
++import apoMario.game.ApoMarioSearchNode;
++import apoMario.game.ApoMarioSearchRunner;
++import apoMario.game.panels.ApoMarioHighscore;
++import apoMario.game.panels.ApoMarioHighscorePanel;
++import apoMario.game.panels.ApoMarioModelMenu;
++import apoMario.level.ApoMarioLevel;
++import org.apogames.entity.ApoAnimation;
++
++import java.awt.Color;
++import java.awt.Font;
++import java.awt.Graphics2D;
++import java.awt.GraphicsEnvironment;
++import java.awt.RenderingHints;
++import java.awt.event.KeyEvent;
++import java.awt.image.BufferedImage;
++import java.nio.file.Path;
++import java.nio.file.Paths;
++import java.util.ArrayList;
++import java.util.List;
++
++import org.apogames.ApoConstants;
++import org.apogames.help.ApoHelp;
++
++import apoMario.ApoMarioConstants;
++import apoMario.ApoMarioImageContainer;
++import apoMario.entity.ApoMarioPlayer;
++import apoMario.game.ApoMarioPanel;
++
++public class ApoMarioHighscorePanel extends ApoMarioModelMenu {
++
++	public static final String FUNCTION_HIGHSCORE_BACK = "backHighscore";
++
++	private final Path store;
++	private final ApoMarioHighscore highscore;
++	private BufferedImage iBackground;
++	private ArrayList<ApoMarioSearchNode> dummyWay;
++
++	public ApoMarioHighscorePanel(ApoMarioPanel game) {
++		this(game, Paths.get(System.getProperty("user.dir"), "highscore.dat"));
++	}
++
++	public ApoMarioHighscorePanel(ApoMarioPanel game, Path store) {
++		super(game);
++		this.store = store;
++		this.highscore = new ApoMarioHighscore(store);
++	}
++
++	public void init() {
++		super.init();
++		if (this.iBackground == null) {
++			this.makeBackground();
++		}
++		if (this.getBackgroundAnimation() == null) {
++			this.makeBackgroundAnimation();
++		}
++		if (this.getSearch() == null) {
++			this.makeSearch();
++		}
++		if (this.getRunner() == null) {
++			this.makeRunner();
++		}
++	}
++
++	public void makeBackground() {
++		this.iBackground = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
++		Graphics2D g = (Graphics2D)this.iBackground.getGraphics();
++		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
++		g.drawImage(ApoMarioImageContainer.MENU, 0, 0, ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT, null);
++		g.setColor(new Color(255, 255, 255, 210));
++		g.fillRoundRect(35, 35, ApoMarioConstants.GAME_WIDTH - 70, ApoMarioConstants.GAME_HEIGHT - 70, 20, 20);
++		g.setColor(Color.BLACK);
++		g.setStroke(new java.awt.BasicStroke(2));
++		g.drawRoundRect(35, 35, ApoMarioConstants.GAME_WIDTH - 70, ApoMarioConstants.GAME_HEIGHT - 70, 20, 20);
++		g.setFont(ApoMarioConstants.FONT_MENU);
++		String title = "Highscore";
++		int w = g.getFontMetrics().stringWidth(title);
++		g.drawString(title, ApoMarioConstants.GAME_WIDTH / 2 - w / 2, 70);
++		g.dispose();
++	}
++
++	public void makeBackgroundAnimation() {
++		this.setBackgroundAnimation(new ArrayList<org.apogames.entity.ApoAnimation>());
++	}
++
++	public void makeRunner() {
++		if (this.getRunner() == null) {
++			int x = 60;
++			int y = 100;
++			this.setRunner(new apoMario.game.ApoMarioSearchRunner(ApoMarioImageContainer.MENU.getSubimage(0, 0, 1, 1), x, y));
++			this.setCurNode(0);
++		}
++	}
++
++	public void makeSearch() {
++		this.setSearch(new apoMario.game.ApoMarioSearch());
++		this.getSearch().addNode(new ApoMarioSearchNode(0, 60, 100));
++		this.dummyWay = new ArrayList<ApoMarioSearchNode>();
++		this.dummyWay.add(new ApoMarioSearchNode(0, 60, 100));
++	}
++
++	public void keyButtonReleased(int button, char character) {
++		if (button == KeyEvent.VK_ESCAPE) {
++			this.getGame().setMenu();
++		} else if (button == KeyEvent.VK_LEFT || button == KeyEvent.VK_BACK_SPACE) {
++			this.getGame().setMenu();
++		} else if (button == KeyEvent.VK_ENTER) {
++			this.getGame().setMenu();
++		}
++	}
++
++	public void mouseButtonFunction(String function) {
++		if (FUNCTION_HIGHSCORE_BACK.equals(function)) {
++			this.getGame().setMenu();
++		}
++	}
++
++	public void releasedEnter() {
++		this.getGame().setMenu();
++	}
++
++	public void excecuteFunction() {
++		String function = this.getExcecuteFunction();
++		if (FUNCTION_HIGHSCORE_BACK.equals(function)) {
++			this.getGame().setMenu();
++		}
++	}
++
++	public void mouseButtonReleased(int x, int y) {
++	}
++
++	public boolean mouseDragged(int x, int y) {
++		return false;
++	}
++
++	public boolean mouseMoved(int x, int y) {
++		return false;
++	}
++
++	public boolean mousePressed(int x, int y, boolean bRight) {
++		return false;
++	}
++
++	public void think(int delta) {
++		super.thinkRunnerAndAnimation(delta);
++	}
++
++	public void render(Graphics2D g) {
++		if (this.iBackground != null) {
++			g.drawImage(this.iBackground, 0, 0, null);
++		}
++		g.setColor(Color.BLACK);
++		g.setFont(ApoMarioConstants.FONT_MENU);
++		String title = "Highscore Board";
++		int w = g.getFontMetrics().stringWidth(title);
++		g.drawString(title, ApoMarioConstants.GAME_WIDTH / 2 - w / 2, 80);
++
++		List<String> names = this.highscore.getPlayersNames();
++		List<Integer> scores = this.highscore.getPlayersScores();
++		List<Integer> times = this.highscore.getSurvivalTimes();
++
++		Font font = ApoMarioConstants.FONT_STATISTICS;
++		g.setFont(font);
++		int startY = 125;
++		for (int i = 0; i < names.size(); i++) {
++			int y = startY + i * 20;
++			String time = ApoHelp.getTimeToDraw(times.get(i).intValue());
++			String line = String.valueOf(i + 1) + ". " + names.get(i) + "  " + scores.get(i).intValue() + " pts  " + time;
++			g.drawString(line, 55, y);
++		}
++
++		g.setFont(ApoMarioConstants.FONT_MENU);
++		String back = "Press ESC / ENTER to return";
++		w = g.getFontMetrics().stringWidth(back);
++		g.drawString(back, ApoMarioConstants.GAME_WIDTH / 2 - w / 2, ApoMarioConstants.GAME_HEIGHT - 40);
++	}
++
++	public void recordRunEnd(ApoMarioLevel level) {
++		if (level == null || level.getPlayers() == null || level.getPlayers().size() <= 0) {
++			return;
++		}
++		ApoMarioPlayer player = level.getPlayers().get(0);
++		String name = player.getTeamName();
++		if (name == null || name.trim().length() <= 0) {
++			name = player.getAuthor();
++		}
++		if (name == null || name.trim().length() <= 0) {
++			name = "Player";
++		}
++		int score = player.getPoints();
++		int survivalTime = level.getPassedTime();
++		this.highscore.storeRun(score, survivalTime, name);
++	}
++
++	public ApoMarioHighscore getHighscore() {
++		return this.highscore;
++	}
++}

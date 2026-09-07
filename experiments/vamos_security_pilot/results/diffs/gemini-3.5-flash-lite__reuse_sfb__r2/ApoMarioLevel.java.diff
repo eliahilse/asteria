@@ -1,0 +1,144 @@
+--- a/apoMario/level/ApoMarioLevel.java
++++ b/apoMario/level/ApoMarioLevel.java
+@@ -1,4 +1,7 @@
+ package apoMario.level;
++
++import apoMario.level.ApoMarioLevel;
++import apoMario.level.ApoMarioRandomLevel;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -17,11 +20,6 @@
+ import org.apogames.ApoConstants;
+ import org.apogames.entity.ApoAnimation;
+ 
+-import test.IcarusAI;
+-import test.Test;
+-import test.Test2;
+-import test.TestIf;
+-import test.TestSolve;
+ 
+ import apoMario.ApoMarioClassLoader;
+ import apoMario.ApoMarioComponent;
+@@ -68,7 +66,7 @@
+ 	
+ 	/** Breite des Levels */
+ 	private int width;
+-	/** H�he des Levels */
++	/** Hhe des Levels */
+ 	private int height;
+ 	
+ 	private long levelInt;
+@@ -174,7 +172,7 @@
+ 	}
+ 
+ 	/**
+-	 * gibt die Breite des Levels zur�ck
++	 * gibt die Breite des Levels zurck
+ 	 * @return die Breite des Levels
+ 	 */
+ 	public int getWidth() {
+@@ -182,7 +180,7 @@
+ 	}
+ 
+ 	/**
+-	 * gibt die H�he des Levels zur�ck
++	 * gibt die Hhe des Levels zurck
+ 	 * @return
+ 	 */
+ 	public int getHeight() {
+@@ -206,16 +204,16 @@
+ 	}
+ 
+ 	/**
+-	 * gibt eine ArrayList mit den Goodies zur�ck
+-	 * @return gibt eine ArrayList mit den Goodies zur�ck
++	 * gibt eine ArrayList mit den Goodies zurck
++	 * @return gibt eine ArrayList mit den Goodies zurck
+ 	 */
+ 	public ArrayList<ApoMarioEnemy> getGoodies() {
+ 		return this.goodies;
+ 	}
+ 
+ 	/**
+-	 * gibt eine Arraylist mit den Gegnern zur�ck
+-	 * @return gibt eine Arraylist mit den Gegnern zur�ck
++	 * gibt eine Arraylist mit den Gegnern zurck
++	 * @return gibt eine Arraylist mit den Gegnern zurck
+ 	 */
+ 	public ArrayList<ApoMarioEnemy> getEnemies() {
+ 		return this.enemies;
+@@ -269,7 +267,7 @@
+ 	}
+ 	
+ 	/**
+-	 * erstellt ein zuf�lliges Level
++	 * erstellt ein zuflliges Level
+ 	 * @param levelInt : Zufallszahl nach dem sich der Levelaufbau richtet
+ 	 */
+ 	public void makeLevel(long levelInt, boolean bNew, boolean bRealNew, int width, int difficulty) {
+@@ -548,7 +546,7 @@
+ 							if (((!this.isGroundWall(x + 1, y))) && ((!this.isGroundWall(x - 1, y))) && (y < endY - 1) && (!this.isGroundWall(x, y + 1))) {
+ 								BufferedImage wall = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(1 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, BufferedImage.TYPE_INT_ARGB_PRE);
+ 								Graphics2D g = wall.createGraphics();
+-								g.drawImage(ApoMarioImageContainer.TILES_LEVEL.getSubimage(4 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, 0 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, 1 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE), 0, 0, null);
++								g.drawImage(ApoMarioImageContainer.TILES_LEVEL.getSubimage(4 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, 0 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, 1 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE, 1 * ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE), 0, 0, null);
+ 								g.dispose();
+ 								this.levelEntities[y][x].setIBackground(wall);
+ 							} else if (((!this.isGroundWall(x + 1, y))) && ((!this.isGroundWall(x - 1, y)))) {
+@@ -951,15 +949,10 @@
+ 		if (this.playerOneAI == this.HUMAN_NO_PLAYER) {
+ 			this.AIOne = null;
+ 		} else if (this.playerOneAI == this.TEST_SLOW_PLAYER) {
+-			this.AIOne = new Test2();
+ 		} else if (this.playerOneAI == this.TEST_IF_PLAYER) {
+-			this.AIOne = new TestIf();
+ 		} else if (this.playerOneAI == this.TEST_FAST_PLAYER) {
+-			this.AIOne = new Test();
+ 		} else if (this.playerOneAI == this.TEST_SHORTI) {
+-			this.AIOne = new TestSolve();
+ 		} else if (this.playerOneAI == this.TEST_CHEATER) {
+-			this.AIOne = new IcarusAI();
+ 		}
+ 		ApoMarioConstants.AI_LEFT = String.valueOf(this.playerOneAI);
+ 		this.getPlayers().get(0).setAi(this.AIOne);
+@@ -995,15 +988,10 @@
+ 		if (this.playerTwoAI == this.HUMAN_NO_PLAYER) {
+ 			this.AITwo = null;
+ 		} else if (this.playerTwoAI == this.TEST_SLOW_PLAYER) {
+-			this.AITwo = new Test2();
+ 		} else if (this.playerTwoAI == this.TEST_FAST_PLAYER) {
+-			this.AITwo = new Test();
+ 		} else if (this.playerTwoAI == this.TEST_IF_PLAYER) {
+-			this.AITwo = new TestIf();
+ 		} else if (this.playerTwoAI == this.TEST_SHORTI) {
+-			this.AITwo = new TestSolve();
+ 		} else if (this.playerTwoAI == this.TEST_CHEATER) {
+-			this.AITwo = new IcarusAI();
+ 		}
+ 		this.players.get(1).setAi(null);
+ 		this.players.get(1).setAi(this.AITwo);
+@@ -1173,6 +1161,15 @@
+ 		return (this.randomLevel.getTime() - this.time);
+ 	}
+ 	
++	public void recordRunEnd(ApoMarioLevel level) {
++		if (this.component instanceof ApoMarioPanel) {
++			ApoMarioPanel game = (ApoMarioPanel)(this.component);
++			if (game.getHighscore() != null) {
++				game.getHighscore().recordRunEnd(level);
++			}
++		}
++	}
++
+ 	public void setAnalysis(boolean bWin) {
+ 		if (!this.bAnalysis) {
+ 			return;
+@@ -1224,6 +1221,7 @@
+ 					playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+ 				}
+ 			}
++			this.recordRunEnd(this);
+ 			if (game.isBEditor()) {
+ 				game.setEditor();
+ 			} else {

@@ -1,0 +1,221 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import apoMario.ApoMarioConstants;
+import apoMario.game.ApoMarioPanel;
+import apoMario.level.ApoMarioLevel;
+import org.apogames.help.ApoHelp;
+
+public class ApoMarioHighscore {
+
+    private static final int MAX_ENTRIES = 10;
+
+    private final Path store;
+
+    private final List<String> playersNames;
+    private final List<Integer> playersScores;
+    private final List<Integer> survivalTimes;
+
+    public ApoMarioHighscore(Path store) {
+        this.store = store;
+        this.playersNames = new ArrayList<String>();
+        this.playersScores = new ArrayList<Integer>();
+        this.survivalTimes = new ArrayList<Integer>();
+        this.load();
+    }
+
+    public boolean storeRun(int score, int survivalTime, String playerName) {
+        if (playerName == null || playerName.trim().isEmpty()) {
+            playerName = "Player";
+        }
+        this.playersNames.add(playerName.trim());
+        this.playersScores.add(Integer.valueOf(score));
+        this.survivalTimes.add(Integer.valueOf(Math.max(0, survivalTime)));
+        this.sortAndTrim();
+        this.persistAcrossRuns();
+        return true;
+    }
+
+    public List<String> getPlayersNames() {
+        return Collections.unmodifiableList(new ArrayList<String>(this.playersNames));
+    }
+
+    public List<Integer> getPlayersScores() {
+        return Collections.unmodifiableList(new ArrayList<Integer>(this.playersScores));
+    }
+
+    public List<Integer> getSurvivalTimes() {
+        return Collections.unmodifiableList(new ArrayList<Integer>(this.survivalTimes));
+    }
+
+    public void persistAcrossRuns() {
+        if (this.store == null) {
+            return;
+        }
+        try {
+            Path parent = this.store.getParent();
+            if (parent != null && !Files.exists(parent)) {
+                Files.createDirectories(parent);
+            }
+            BufferedWriter writer = Files.newBufferedWriter(this.store);
+            try {
+                for (int i = 0; i < this.playersNames.size(); i++) {
+                    writer.write(this.escape(this.playersNames.get(i)) + "\t" + this.playersScores.get(i) + "\t" + this.survivalTimes.get(i));
+                    writer.newLine();
+                }
+            } finally {
+                writer.close();
+            }
+        } catch (IOException ex) {
+            this.playersNames.clear();
+            this.playersScores.clear();
+            this.survivalTimes.clear();
+        }
+    }
+
+    public void recordRunEnd(ApoMarioLevel level) {
+        if (level == null) {
+            return;
+        }
+        String playerName = "Player";
+        int score = 0;
+        int survivalTime = 0;
+        try {
+            if (level.getPlayers() != null && level.getPlayers().size() > 0 && level.getPlayers().get(0) != null) {
+                if (level.getPlayers().get(0).getAuthor() != null && level.getPlayers().get(0).getAuthor().trim().length() > 0) {
+                    playerName = level.getPlayers().get(0).getAuthor().trim();
+                } else if (level.getPlayers().get(0).getTeamName() != null && level.getPlayers().get(0).getTeamName().trim().length() > 0) {
+                    playerName = level.getPlayers().get(0).getTeamName().trim();
+                }
+                score = level.getPlayers().get(0).getPoints();
+            }
+            survivalTime = level.getPassedTime();
+        } catch (Exception ex) {
+        }
+        this.storeRun(score, survivalTime, playerName);
+    }
+
+    private void load() {
+        if (this.store == null || !Files.exists(this.store)) {
+            return;
+        }
+        try {
+            BufferedReader reader = Files.newBufferedReader(this.store);
+            try {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split("\t");
+                    if (parts.length >= 3) {
+                        this.playersNames.add(this.unescape(parts[0]));
+                        this.playersScores.add(Integer.valueOf(Integer.parseInt(parts[1])));
+                        this.survivalTimes.add(Integer.valueOf(Integer.parseInt(parts[2])));
+                    }
+                }
+            } finally {
+                reader.close();
+            }
+            this.sortAndTrim();
+        } catch (Exception ex) {
+            this.playersNames.clear();
+            this.playersScores.clear();
+            this.survivalTimes.clear();
+        }
+    }
+
+    private void sortAndTrim() {
+        ArrayList<HighscoreEntry> entries = new ArrayList<HighscoreEntry>();
+        for (int i = 0; i < this.playersNames.size(); i++) {
+            entries.add(new HighscoreEntry(this.playersNames.get(i), this.playersScores.get(i).intValue(), this.survivalTimes.get(i).intValue()));
+        }
+        Collections.sort(entries, new Comparator<HighscoreEntry>() {
+            @Override
+            public int compare(HighscoreEntry a, HighscoreEntry b) {
+                return Integer.valueOf(b.score).compareTo(Integer.valueOf(a.score));
+            }
+        });
+        this.playersNames.clear();
+        this.playersScores.clear();
+        this.survivalTimes.clear();
+        for (int i = 0; i < entries.size() && i < MAX_ENTRIES; i++) {
+            HighscoreEntry e = entries.get(i);
+            this.playersNames.add(e.name);
+            this.playersScores.add(Integer.valueOf(e.score));
+            this.survivalTimes.add(Integer.valueOf(e.time));
+        }
+    }
+
+    private String escape(String s) {
+        return s.replace("\\", "\\\\").replace("\t", "\\t");
+    }
+
+    private String unescape(String s) {
+        return s.replace("\\t", "\t").replace("\\\\", "\\");
+    }
+
+    private static class HighscoreEntry {
+        final String name;
+        final int score;
+        final int time;
+
+        HighscoreEntry(String name, int score, int time) {
+            this.name = name;
+            this.score = score;
+            this.time = time;
+        }
+    }
+
+    public static class View {
+        private final ApoMarioHighscore highscore;
+
+        public View(ApoMarioHighscore highscore) {
+            this.highscore = highscore;
+        }
+
+        public void render(Graphics2D g, int x, int y, int width, int height) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setColor(new Color(255, 255, 255, 220));
+            g.fillRoundRect(x, y, width, height, 20, 20);
+            g.setColor(Color.BLACK);
+            g.drawRoundRect(x, y, width, height, 20, 20);
+
+            Font titleFont = ApoMarioConstants.FONT_MENU;
+            Font rowFont = ApoMarioConstants.FONT_STATISTICS;
+            g.setFont(titleFont);
+            String title = "Highscore";
+            int titleWidth = g.getFontMetrics().stringWidth(title);
+            g.drawString(title, x + width / 2 - titleWidth / 2, y + 35);
+
+            g.setFont(rowFont);
+            int startY = y + 70;
+            int lineHeight = g.getFontMetrics().getHeight() + 4;
+            for (int i = 0; i < this.highscore.getPlayersNames().size() && i < 10; i++) {
+                String name = this.highscore.getPlayersNames().get(i);
+                Integer score = this.highscore.getPlayersScores().get(i);
+                Integer time = this.highscore.getSurvivalTimes().get(i);
+                String line = String.format("%2d. %-16s %8d   %s", i + 1, name, score.intValue(), ApoHelp.getTimeToDraw(time.intValue()));
+                g.drawString(line, x + 20, startY + i * lineHeight);
+            }
+            if (this.highscore.getPlayersNames().isEmpty()) {
+                g.drawString("No highscores yet", x + 20, startY);
+            }
+        }
+    }
+}
