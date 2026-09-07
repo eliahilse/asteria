@@ -1,0 +1,4521 @@
+{
+  "coverage": {
+    "factsByType": {
+      "C1": 122,
+      "C2": 4,
+      "C3": 13,
+      "C4": 6
+    },
+    "parseErrors": [],
+    "parsedFiles": 168,
+    "sourceFiles": 168
+  },
+  "extractor": "java-ast-context-v1",
+  "facts": [
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-17de6d3c16b764c9",
+      "scope": "feature",
+      "source": {
+        "line": 110,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "url.openConnection()",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in load: url.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-373b047fc9a0f395",
+      "scope": "feature",
+      "source": {
+        "line": 3,
+        "lines": 151,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-4424b65979da0c88",
+      "scope": "feature",
+      "source": {
+        "line": 4,
+        "lines": 151,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "java.io.DataOutputStream",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-698f3e8d8805f300",
+      "scope": "feature",
+      "source": {
+        "line": 7,
+        "lines": 151,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-9492f0eab87af60b",
+      "scope": "feature",
+      "source": {
+        "line": 63,
+        "lines": 151,
+        "member": null,
+        "method": "save",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "URL(ApoConstants.HIGHSCORE_SAVEPHP)",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: URL(ApoConstants.HIGHSCORE_SAVEPHP). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-b56f9c0ff137332b",
+      "scope": "feature",
+      "source": {
+        "line": 72,
+        "lines": 151,
+        "member": null,
+        "method": "save",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "DataOutputStream(urlConn.getOutputStream())",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: DataOutputStream(urlConn.getOutputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-b61d782f8c8b8daf",
+      "scope": "feature",
+      "source": {
+        "line": 126,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "DataInputStream(urlConn.getInputStream())",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: DataInputStream(urlConn.getInputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-b69aa2c2b0d9651a",
+      "scope": "feature",
+      "source": {
+        "line": 118,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "DataOutputStream(urlConn.getOutputStream())",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: DataOutputStream(urlConn.getOutputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-c302147b36cfc7dd",
+      "scope": "feature",
+      "source": {
+        "line": 81,
+        "lines": 151,
+        "member": null,
+        "method": "save",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "DataInputStream(urlConn.getInputStream())",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: DataInputStream(urlConn.getInputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-cf7fcb37f2a0cb2a",
+      "scope": "feature",
+      "source": {
+        "line": 8,
+        "lines": 151,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "java.net.URLConnection",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URLConnection. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-dddfbcb32eab1efd",
+      "scope": "feature",
+      "source": {
+        "line": 109,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "URL(ApoConstants.HIGHSCORE_GETPHP)",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: URL(ApoConstants.HIGHSCORE_GETPHP). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-e99ba7cf50081c88",
+      "scope": "feature",
+      "source": {
+        "line": 64,
+        "lines": 151,
+        "member": null,
+        "method": "save",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "url.openConnection()",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in save: url.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-00ebbf4babf43080",
+      "scope": "repository",
+      "source": {
+        "line": 296,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "load",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "BufferedReader(new InputStreamReader(new FileInputStream(fileName)))",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: BufferedReader(new InputStreamReader(new FileInputStream(fileName))). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-0616582e74853c4f",
+      "scope": "repository",
+      "source": {
+        "line": 216,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "FileInputStream(fileName)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: FileInputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-097af8614c2e840e",
+      "scope": "repository",
+      "source": {
+        "line": 12,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.net.HttpURLConnection",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.HttpURLConnection. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-0a6fc34a34934244",
+      "scope": "repository",
+      "source": {
+        "line": 64,
+        "lines": 169,
+        "member": "org/apogames/sound/ApoMidiPlayer.java",
+        "method": "getSequence",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "db9f4f09ef3f14a271d36d1bd77821aa30b630fd4a23872dbaa4bb8cbaf1a056",
+        "snippet": "FileInputStream(filename)",
+        "unit": "ApoMario/org/apogames/sound/ApoMidiPlayer.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getSequence: FileInputStream(filename). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-0b53f3b32b8afc5b",
+      "scope": "repository",
+      "source": {
+        "line": 6,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "java.net.URLClassLoader",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URLClassLoader. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-0c01e75e63c7ae1e",
+      "scope": "repository",
+      "source": {
+        "line": 296,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "load",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "InputStreamReader(new FileInputStream(fileName))",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: InputStreamReader(new FileInputStream(fileName)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-0f5af4a2d7f3957a",
+      "scope": "repository",
+      "source": {
+        "line": 334,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "save",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "OutputStreamWriter(new FileOutputStream(fileName))",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: OutputStreamWriter(new FileOutputStream(fileName)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-13006fc0e06062fe",
+      "scope": "repository",
+      "source": {
+        "line": 76,
+        "lines": 369,
+        "member": "apoMario/ApoMarioConstants.java",
+        "method": "saveProperties",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731",
+        "snippet": "FileOutputStream(MARIO_PROPERTIES)",
+        "unit": "ApoMario/apoMario/ApoMarioConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in saveProperties: FileOutputStream(MARIO_PROPERTIES). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-185648d659c6f1d0",
+      "scope": "repository",
+      "source": {
+        "line": 11,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.net.HttpURLConnection",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.HttpURLConnection. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-18e8ea9ae50a20a4",
+      "scope": "repository",
+      "source": {
+        "line": 218,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataInputStream(buff)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: DataInputStream(buff). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-19ee01d6780a6374",
+      "scope": "repository",
+      "source": {
+        "line": 144,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "hasNextLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "URL(this.getLevelName() + Integer.toString(this.getCurrentLevel()) + this.getFileEnding())",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in hasNextLevel: URL(this.getLevelName() + Integer.toString(this.getCurrentLevel()) + this.getFileEnding()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-1e779b6657c1bc30",
+      "scope": "repository",
+      "source": {
+        "line": 454,
+        "lines": 475,
+        "member": null,
+        "method": "loadData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "url.openConnection()",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in loadData: url.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-1f71ca9339736ce8",
+      "scope": "repository",
+      "source": {
+        "line": 64,
+        "lines": 169,
+        "member": "org/apogames/sound/ApoMidiPlayer.java",
+        "method": "getSequence",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "db9f4f09ef3f14a271d36d1bd77821aa30b630fd4a23872dbaa4bb8cbaf1a056",
+        "snippet": "getSequence(new FileInputStream(filename))",
+        "unit": "ApoMario/org/apogames/sound/ApoMidiPlayer.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getSequence: getSequence(new FileInputStream(filename)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-21373f56ad0f54a6",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 76,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoCopy.java",
+        "sha256": "8eacb99ccbc1ad6aa0ea47e544ed15cc8cc8cbc4784700d107c7bc4a634d3be9",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoIcarus/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-21a40f47b4c95159",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 76,
+        "member": "org/apogames/help/ApoCopy.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "1d13a3d24bdcd299c757a2f6d3b4502d4f6010c71aa189049d06ec96defc2661",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-255f0202bad136bc",
+      "scope": "repository",
+      "source": {
+        "line": 9,
+        "lines": 194,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+        "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "cryptography",
+      "cwes": [
+        "CWE-328"
+      ],
+      "id": "c1-276a4af2cbe40c1d",
+      "scope": "repository",
+      "source": {
+        "line": 26,
+        "lines": 475,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "java.security.MessageDigest",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.security.MessageDigest. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-27e781dedd07b9a2",
+      "scope": "repository",
+      "source": {
+        "line": 119,
+        "lines": 130,
+        "member": "apoMario/ApoMarioClassLoader.java",
+        "method": "loadClassData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c",
+        "snippet": "DataInputStream(fis)",
+        "unit": "ApoMario/apoMario/ApoMarioClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadClassData: DataInputStream(fis). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-28abe4a2ca5acf36",
+      "scope": "repository",
+      "source": {
+        "line": 12,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-2a195397f0b3d114",
+      "scope": "repository",
+      "source": {
+        "line": 8,
+        "lines": 60,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpConstants.java",
+        "sha256": "9edbeafee3653f80bd582d7ab7abf8a10105e08cb43e00f83ff36ff6d79b8fec",
+        "snippet": "http://www.apo-games.de/apoIcarus/",
+        "unit": "ApoIcarus/apoJump/ApoJumpConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed endpoint in <class>: http://www.apo-games.de/apoIcarus/. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-2c0f14c157927a00",
+      "scope": "repository",
+      "source": {
+        "line": 43,
+        "lines": 106,
+        "member": null,
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "DataOutputStream(connection.getOutputStream())",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: DataOutputStream(connection.getOutputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-2c204dc4c46aebc8",
+      "scope": "repository",
+      "source": {
+        "line": 93,
+        "lines": 117,
+        "member": "org/apogames/image/ApoImage.java",
+        "method": "getImage",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "fb7b7a3519865f30a848bf4bde9682d8a4d29b07b5ae9fc19d6275a74c153346",
+        "snippet": "ImageIO.read(new URL(pic))",
+        "unit": "ApoMario/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getImage: ImageIO.read(new URL(pic)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-2dbea74335ca9110",
+      "scope": "repository",
+      "source": {
+        "line": 165,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataOutputStream(buff)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: DataOutputStream(buff). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-2e80b99904d04bae",
+      "scope": "repository",
+      "source": {
+        "line": 79,
+        "lines": 106,
+        "member": null,
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "FileInputStream(fileName)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: FileInputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-2fd6b654e9b85ab1",
+      "scope": "repository",
+      "source": {
+        "line": 64,
+        "lines": 194,
+        "member": null,
+        "method": "loadAchievements",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+        "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d",
+        "snippet": "ApoHelp.loadData(new URL(ApoJumpConstants.PROGRAM_URL), ApoJumpConstants.COOKIE_NAME)",
+        "unit": "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in loadAchievements: ApoHelp.loadData(new URL(ApoJumpConstants.PROGRAM_URL), ApoJumpConstants.COOKIE_NAME). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-31733e3895ec97ca",
+      "scope": "repository",
+      "source": {
+        "line": 90,
+        "lines": 369,
+        "member": "apoMario/ApoMarioConstants.java",
+        "method": "loadProperties",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731",
+        "snippet": "props.load(new FileInputStream(MARIO_PROPERTIES))",
+        "unit": "ApoMario/apoMario/ApoMarioConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in loadProperties: props.load(new FileInputStream(MARIO_PROPERTIES)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-365caeb96ac47685",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 91,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-3a233db86d43d9b7",
+      "scope": "repository",
+      "source": {
+        "line": 3,
+        "lines": 130,
+        "member": "apoMario/ApoMarioClassLoader.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoMario/apoMario/ApoMarioClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-3adb2e6975e8f25e",
+      "scope": "repository",
+      "source": {
+        "line": 13,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.net.URL",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-4186f36e812fb19a",
+      "scope": "repository",
+      "source": {
+        "line": 170,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataOutputStream(connection.getOutputStream())",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: DataOutputStream(connection.getOutputStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-435bf0d37665aaf8",
+      "scope": "repository",
+      "source": {
+        "line": 38,
+        "lines": 106,
+        "member": null,
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "DataOutputStream(buff)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: DataOutputStream(buff). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-466381d52f54c787",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 369,
+        "member": "apoMario/ApoMarioConstants.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoMario/apoMario/ApoMarioConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-47735c2d3fe16096",
+      "scope": "repository",
+      "source": {
+        "line": 3,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "java.io.BufferedReader",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.BufferedReader. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-4828d2cfa929b2de",
+      "scope": "repository",
+      "source": {
+        "line": 81,
+        "lines": 106,
+        "member": null,
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "DataInputStream(buff)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: DataInputStream(buff). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-4b5c7af82413558b",
+      "scope": "repository",
+      "source": {
+        "line": 68,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "URL(this.getPath())",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URL(this.getPath()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-4c1ffa03004bbfc0",
+      "scope": "repository",
+      "source": {
+        "line": 90,
+        "lines": 369,
+        "member": "apoMario/ApoMarioConstants.java",
+        "method": "loadProperties",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731",
+        "snippet": "FileInputStream(MARIO_PROPERTIES)",
+        "unit": "ApoMario/apoMario/ApoMarioConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadProperties: FileInputStream(MARIO_PROPERTIES). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-4cbe2aa58c025d1f",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 369,
+        "member": "apoMario/ApoMarioConstants.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/apoMario/ApoMarioConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-4f70b6b70896f76c",
+      "scope": "repository",
+      "source": {
+        "line": 167,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "URL(fileName)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: URL(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-52d91bf64b16ddc3",
+      "scope": "repository",
+      "source": {
+        "line": 6,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-599b8905a23a31b8",
+      "scope": "repository",
+      "source": {
+        "line": 24,
+        "lines": 475,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-59d8cbd1cb186bbe",
+      "scope": "repository",
+      "source": {
+        "line": 9,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-5a856323612f30f1",
+      "scope": "repository",
+      "source": {
+        "line": 142,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "hasNextLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataInputStream(buff)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in hasNextLevel: DataInputStream(buff). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-5cf2b4a473a62b18",
+      "scope": "repository",
+      "source": {
+        "line": 8,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-61ede6916cf26651",
+      "scope": "repository",
+      "source": {
+        "line": 69,
+        "lines": 91,
+        "member": null,
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "URLClassLoader(new URL[]{url})",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URLClassLoader(new URL[]{url}). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-63b57a77de8e070a",
+      "scope": "repository",
+      "source": {
+        "line": 69,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "URLClassLoader(new URL[]{url})",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URLClassLoader(new URL[]{url}). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-6658e8a84da37408",
+      "scope": "repository",
+      "source": {
+        "line": 10,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-6d782735a069b774",
+      "scope": "repository",
+      "source": {
+        "line": 97,
+        "lines": 194,
+        "member": null,
+        "method": "saveAchievements",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+        "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d",
+        "snippet": "ApoHelp.saveData(new URL(ApoJumpConstants.PROGRAM_URL), ApoJumpConstants.COOKIE_NAME, cookie)",
+        "unit": "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in saveAchievements: ApoHelp.saveData(new URL(ApoJumpConstants.PROGRAM_URL), ApoJumpConstants.COOKIE_NAME, cookie). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-73a55821cb9a8cfd",
+      "scope": "repository",
+      "source": {
+        "line": 15,
+        "lines": 128,
+        "member": "org/apogames/help/ApoSplashScreen.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "84e3d418be26f3e0c213d94e513150d0af9e2439011468289967c6f8f5af8fd3",
+        "snippet": "java.net.URL",
+        "unit": "ApoMario/org/apogames/help/ApoSplashScreen.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-75c1535c2251afbf",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 76,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoCopy.java",
+        "sha256": "8eacb99ccbc1ad6aa0ea47e544ed15cc8cc8cbc4784700d107c7bc4a634d3be9",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoIcarus/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-7653778fbc30da80",
+      "scope": "repository",
+      "source": {
+        "line": 68,
+        "lines": 91,
+        "member": null,
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "URL(this.getPath())",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URL(this.getPath()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-79175d6bd40afe42",
+      "scope": "repository",
+      "source": {
+        "line": 140,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "hasNextLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "FileInputStream(this.getLevelName() + Integer.toString(this.getCurrentLevel()) + this.getFileEnding())",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in hasNextLevel: FileInputStream(this.getLevelName() + Integer.toString(this.getCurrentLevel()) + this.getFileEnding()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-791b4a66506a4b76",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 130,
+        "member": "apoMario/ApoMarioClassLoader.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/apoMario/ApoMarioClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-7b23a2d2925f3c4d",
+      "scope": "repository",
+      "source": {
+        "line": 221,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "URL(fileName)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: URL(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-7cbce876c576e770",
+      "scope": "repository",
+      "source": {
+        "line": 22,
+        "lines": 475,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "java.net.HttpURLConnection",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.HttpURLConnection. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-7d2d9cde8d9ce51a",
+      "scope": "repository",
+      "source": {
+        "line": 73,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "cl.loadClass(this.getClassname())",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getMyClass: cl.loadClass(this.getClassname()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-7e85494d69e74c67",
+      "scope": "repository",
+      "source": {
+        "line": 435,
+        "lines": 475,
+        "member": null,
+        "method": "saveData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "BufferedReader(new InputStreamReader(con.getInputStream()))",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in saveData: BufferedReader(new InputStreamReader(con.getInputStream())). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-888be051742e10d9",
+      "scope": "repository",
+      "source": {
+        "line": 57,
+        "lines": 76,
+        "member": "org/apogames/help/ApoCopy.java",
+        "method": "copyFile",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "1d13a3d24bdcd299c757a2f6d3b4502d4f6010c71aa189049d06ec96defc2661",
+        "snippet": "FileInputStream(pSrcFile)",
+        "unit": "ApoMario/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in copyFile: FileInputStream(pSrcFile). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-89358e63fc0ce14f",
+      "scope": "repository",
+      "source": {
+        "line": 37,
+        "lines": 521,
+        "member": "apoMario/ApoMarioComponent.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "67d183307b5a5ceec28ac78e4365eb183576674a485262f2465374da5d3c78a1",
+        "snippet": "http://apo-games.de/apoMario/",
+        "unit": "ApoMario/apoMario/ApoMarioComponent.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed endpoint in <class>: http://apo-games.de/apoMario/. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-8a8bdf71cf5f034f",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "java.net.URL",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-8e2fa05cc6e98e74",
+      "scope": "repository",
+      "source": {
+        "line": 426,
+        "lines": 475,
+        "member": null,
+        "method": "saveData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "((HttpURLConnection)con).setRequestMethod(\"GET\")",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in saveData: ((HttpURLConnection)con).setRequestMethod(\"GET\"). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-8fa4731e8d0f7f9a",
+      "scope": "repository",
+      "source": {
+        "line": 73,
+        "lines": 91,
+        "member": null,
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "cl.loadClass(this.getClassname())",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getMyClass: cl.loadClass(this.getClassname()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-8fe7b9ea7fa8a2ca",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-91ae00d4435a4589",
+      "scope": "repository",
+      "source": {
+        "line": 24,
+        "lines": 27,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoConstants.java",
+        "sha256": "5d272e52b702c09e577d25347d1ca6887ca503c682d31a0e6df912adcd7977ae",
+        "snippet": "http://www.apo-games.de/apoIcarus/get_highscore.php",
+        "unit": "ApoIcarus/org/apogames/ApoConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed endpoint in <class>: http://www.apo-games.de/apoIcarus/get_highscore.php. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-91e1622f67e24ab0",
+      "scope": "repository",
+      "source": {
+        "line": 93,
+        "lines": 117,
+        "member": "org/apogames/image/ApoImage.java",
+        "method": "getImage",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "fb7b7a3519865f30a848bf4bde9682d8a4d29b07b5ae9fc19d6275a74c153346",
+        "snippet": "URL(pic)",
+        "unit": "ApoMario/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getImage: URL(pic). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-958e3162fe1d9090",
+      "scope": "repository",
+      "source": {
+        "line": 145,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "hasNextLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataInputStream(connection.openStream())",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in hasNextLevel: DataInputStream(connection.openStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-9e2c163e961926e4",
+      "scope": "repository",
+      "source": {
+        "line": 6,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.io.DataOutputStream",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-9e8271318305eabb",
+      "scope": "repository",
+      "source": {
+        "line": 58,
+        "lines": 76,
+        "member": null,
+        "method": "copyFile",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoCopy.java",
+        "sha256": "8eacb99ccbc1ad6aa0ea47e544ed15cc8cc8cbc4784700d107c7bc4a634d3be9",
+        "snippet": "FileOutputStream(pCopyFile)",
+        "unit": "ApoIcarus/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in copyFile: FileOutputStream(pCopyFile). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-9efbfc58ca56103e",
+      "scope": "repository",
+      "source": {
+        "line": 25,
+        "lines": 475,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "java.net.URLConnection",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URLConnection. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-9fc9f6e4839d644d",
+      "scope": "repository",
+      "source": {
+        "line": 118,
+        "lines": 130,
+        "member": "apoMario/ApoMarioClassLoader.java",
+        "method": "loadClassData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c",
+        "snippet": "FileInputStream(f)",
+        "unit": "ApoMario/apoMario/ApoMarioClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadClassData: FileInputStream(f). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-a17cbdab49313e65",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 76,
+        "member": "org/apogames/help/ApoCopy.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "1d13a3d24bdcd299c757a2f6d3b4502d4f6010c71aa189049d06ec96defc2661",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoMario/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-a3ea53dd0bc35c88",
+      "scope": "repository",
+      "source": {
+        "line": 83,
+        "lines": 106,
+        "member": null,
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "URL(fileName)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: URL(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-a4c5f948f49f2459",
+      "scope": "repository",
+      "source": {
+        "line": 36,
+        "lines": 106,
+        "member": null,
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "FileOutputStream(fileName)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: FileOutputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-a5f0f01cbe6fa3ea",
+      "scope": "repository",
+      "source": {
+        "line": 452,
+        "lines": 475,
+        "member": null,
+        "method": "loadData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "URL(codebase + \"cookies.php\")",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadData: URL(codebase + \"cookies.php\"). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-abd8df7dd72b53d1",
+      "scope": "repository",
+      "source": {
+        "line": 296,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "load",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "FileInputStream(fileName)",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in load: FileInputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-ac574094abc9ddbd",
+      "scope": "repository",
+      "source": {
+        "line": 91,
+        "lines": 109,
+        "member": null,
+        "method": "getImage",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImage.java",
+        "sha256": "c5268a179d324930fb06a4ed42da827d38648a2d27f84abb1a1561c150c94050",
+        "snippet": "ImageIO.read(new URL(pic))",
+        "unit": "ApoIcarus/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getImage: ImageIO.read(new URL(pic)). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-aca750db9a49ba5f",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 200,
+        "member": "apoMario/level/ApoMarioLevelIO.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "2d990530a5e79e3cbac8f965609234bbe0085dfb62843ea74c8b0d550a8199f1",
+        "snippet": "java.io.DataOutputStream",
+        "unit": "ApoMario/apoMario/level/ApoMarioLevelIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-b0b3f1b5d95e1cf2",
+      "scope": "repository",
+      "source": {
+        "line": 168,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "connectionURL.openConnection()",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in writeLevel: connectionURL.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-b2c9c21d73066479",
+      "scope": "repository",
+      "source": {
+        "line": 222,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "DataInputStream(connection.openStream())",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: DataInputStream(connection.openStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-b46304e467e3583a",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-b56ddab0ff336bfb",
+      "scope": "repository",
+      "source": {
+        "line": 69,
+        "lines": 91,
+        "member": "org/apogames/help/ApoClassLoader.java",
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069",
+        "snippet": "URLClassLoader(new URL[]{url})",
+        "unit": "ApoMario/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URLClassLoader(new URL[]{url}). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-ba8fcc89b2c188fb",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-bab5a9734c1827e9",
+      "scope": "repository",
+      "source": {
+        "line": 16,
+        "lines": 475,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "java.io.BufferedReader",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.BufferedReader. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-c2152577fdfb2e38",
+      "scope": "repository",
+      "source": {
+        "line": 425,
+        "lines": 475,
+        "member": null,
+        "method": "saveData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "url.openConnection()",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in saveData: url.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-c2548726d6f209f1",
+      "scope": "repository",
+      "source": {
+        "line": 57,
+        "lines": 76,
+        "member": null,
+        "method": "copyFile",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoCopy.java",
+        "sha256": "8eacb99ccbc1ad6aa0ea47e544ed15cc8cc8cbc4784700d107c7bc4a634d3be9",
+        "snippet": "FileInputStream(pSrcFile)",
+        "unit": "ApoIcarus/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in copyFile: FileInputStream(pSrcFile). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-c403b055660104e2",
+      "scope": "repository",
+      "source": {
+        "line": 41,
+        "lines": 106,
+        "member": null,
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "connectionURL.openConnection()",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in writeLevel: connectionURL.openConnection(). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-c713063e512cb817",
+      "scope": "repository",
+      "source": {
+        "line": 334,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "save",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName)))",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-c84b2f5f034fcf9f",
+      "scope": "repository",
+      "source": {
+        "line": 97,
+        "lines": 194,
+        "member": null,
+        "method": "saveAchievements",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+        "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d",
+        "snippet": "URL(ApoJumpConstants.PROGRAM_URL)",
+        "unit": "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in saveAchievements: URL(ApoJumpConstants.PROGRAM_URL). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-ca333d4a963c91d6",
+      "scope": "repository",
+      "source": {
+        "line": 464,
+        "lines": 475,
+        "member": null,
+        "method": "loadData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "BufferedReader(new InputStreamReader(con.getInputStream()))",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadData: BufferedReader(new InputStreamReader(con.getInputStream())). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-cb487b9a807c254d",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 265,
+        "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoMario/apoMario/game/panels/ApoMarioEditorIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-cc7f3ca9a9c9ab64",
+      "scope": "repository",
+      "source": {
+        "line": 9,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.io.FileOutputStream",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "cryptography",
+      "cwes": [
+        "CWE-328"
+      ],
+      "id": "c1-ce81e2d6fc474c2c",
+      "scope": "repository",
+      "source": {
+        "line": 303,
+        "lines": 475,
+        "member": null,
+        "method": "getMd5Digest",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "MessageDigest.getInstance(\"MD5\")",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in getMd5Digest: MessageDigest.getInstance(\"MD5\"). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-cfee40f60b227688",
+      "scope": "repository",
+      "source": {
+        "line": 163,
+        "lines": 245,
+        "member": "org/apogames/ApoIO.java",
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8",
+        "snippet": "FileOutputStream(fileName)",
+        "unit": "ApoMario/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: FileOutputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-d227100b1aad515d",
+      "scope": "repository",
+      "source": {
+        "line": 10,
+        "lines": 109,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImage.java",
+        "sha256": "c5268a179d324930fb06a4ed42da827d38648a2d27f84abb1a1561c150c94050",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-d36d7c9ad4f26485",
+      "scope": "repository",
+      "source": {
+        "line": 6,
+        "lines": 91,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "java.net.URLClassLoader",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URLClassLoader. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-d52783f1ab9d21d9",
+      "scope": "repository",
+      "source": {
+        "line": 64,
+        "lines": 194,
+        "member": null,
+        "method": "loadAchievements",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+        "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d",
+        "snippet": "URL(ApoJumpConstants.PROGRAM_URL)",
+        "unit": "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in loadAchievements: URL(ApoJumpConstants.PROGRAM_URL). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-d66f88f5c58b2f49",
+      "scope": "repository",
+      "source": {
+        "line": 15,
+        "lines": 128,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoSplashScreen.java",
+        "sha256": "5dd97fa9eac08186790eb1a25c5278bfda4f3e23cbe0aec2dfe18167c7363e8c",
+        "snippet": "java.net.URL",
+        "unit": "ApoIcarus/org/apogames/help/ApoSplashScreen.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "code_loading",
+      "cwes": [
+        "CWE-470",
+        "CWE-829"
+      ],
+      "id": "c1-d870b68f89dcc5bc",
+      "scope": "repository",
+      "source": {
+        "line": 69,
+        "lines": 91,
+        "member": null,
+        "method": "getMyClass",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+        "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16",
+        "snippet": "URLClassLoader(new URL[]{url})",
+        "unit": "ApoIcarus/org/apogames/help/ApoClassLoader.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getMyClass: URLClassLoader(new URL[]{url}). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-da09f61fefb36146",
+      "scope": "repository",
+      "source": {
+        "line": 91,
+        "lines": 109,
+        "member": null,
+        "method": "getImage",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImage.java",
+        "sha256": "c5268a179d324930fb06a4ed42da827d38648a2d27f84abb1a1561c150c94050",
+        "snippet": "URL(pic)",
+        "unit": "ApoIcarus/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in getImage: URL(pic). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-da52f3209b557da8",
+      "scope": "repository",
+      "source": {
+        "line": 25,
+        "lines": 27,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoConstants.java",
+        "sha256": "5d272e52b702c09e577d25347d1ca6887ca503c682d31a0e6df912adcd7977ae",
+        "snippet": "http://www.apo-games.de/apoIcarus/save_highscore.php",
+        "unit": "ApoIcarus/org/apogames/ApoConstants.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed endpoint in <class>: http://www.apo-games.de/apoIcarus/save_highscore.php. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-db3cf33e8c07bf37",
+      "scope": "repository",
+      "source": {
+        "line": 334,
+        "lines": 369,
+        "member": "apoMario/game/ApoMarioReplay.java",
+        "method": "save",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241",
+        "snippet": "FileOutputStream(fileName)",
+        "unit": "ApoMario/apoMario/game/ApoMarioReplay.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in save: FileOutputStream(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-de9c9bfdb10e55d1",
+      "scope": "repository",
+      "source": {
+        "line": 455,
+        "lines": 475,
+        "member": null,
+        "method": "loadData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "((HttpURLConnection)con).setRequestMethod(\"GET\")",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed call in loadData: ((HttpURLConnection)con).setRequestMethod(\"GET\"). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-e414681642b90dc5",
+      "scope": "repository",
+      "source": {
+        "line": 5,
+        "lines": 265,
+        "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a",
+        "snippet": "java.io.DataOutputStream",
+        "unit": "ApoMario/apoMario/game/panels/ApoMarioEditorIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-e4f04d9b207aec90",
+      "scope": "repository",
+      "source": {
+        "line": 6,
+        "lines": 106,
+        "member": null,
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "java.io.DataOutputStream",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataOutputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-e5a19d574f651c2f",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 169,
+        "member": "org/apogames/sound/ApoMidiPlayer.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "db9f4f09ef3f14a271d36d1bd77821aa30b630fd4a23872dbaa4bb8cbaf1a056",
+        "snippet": "java.io.FileInputStream",
+        "unit": "ApoMario/org/apogames/sound/ApoMidiPlayer.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.FileInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-e94ccc8e2bc39556",
+      "scope": "repository",
+      "source": {
+        "line": 12,
+        "lines": 117,
+        "member": "org/apogames/image/ApoImage.java",
+        "method": "<class>",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "fb7b7a3519865f30a848bf4bde9682d8a4d29b07b5ae9fc19d6275a74c153346",
+        "snippet": "java.net.URL",
+        "unit": "ApoMario/org/apogames/image/ApoImage.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.net.URL. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-ee8bbea27f062303",
+      "scope": "repository",
+      "source": {
+        "line": 4,
+        "lines": 200,
+        "member": "apoMario/level/ApoMarioLevelIO.java",
+        "method": "<class>",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "2d990530a5e79e3cbac8f965609234bbe0085dfb62843ea74c8b0d550a8199f1",
+        "snippet": "java.io.DataInputStream",
+        "unit": "ApoMario/apoMario/level/ApoMarioLevelIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed import in <class>: java.io.DataInputStream. Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-f219c067c683dd85",
+      "scope": "repository",
+      "source": {
+        "line": 84,
+        "lines": 106,
+        "member": null,
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "DataInputStream(connection.openStream())",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in readLevel: DataInputStream(connection.openStream()). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-f9a17ba321a552c8",
+      "scope": "repository",
+      "source": {
+        "line": 40,
+        "lines": 106,
+        "member": null,
+        "method": "writeLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+        "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb",
+        "snippet": "URL(fileName)",
+        "unit": "ApoIcarus/org/apogames/ApoIO.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in writeLevel: URL(fileName). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "network",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c1-f9b38633c82c58ec",
+      "scope": "repository",
+      "source": {
+        "line": 424,
+        "lines": 475,
+        "member": null,
+        "method": "saveData",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+        "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563",
+        "snippet": "URL(codebase + \"cookies.php\")",
+        "unit": "ApoIcarus/org/apogames/help/ApoHelp.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in saveData: URL(codebase + \"cookies.php\"). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "persistence",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c1-fcce32339c4f35e3",
+      "scope": "repository",
+      "source": {
+        "line": 58,
+        "lines": 76,
+        "member": "org/apogames/help/ApoCopy.java",
+        "method": "copyFile",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "1d13a3d24bdcd299c757a2f6d3b4502d4f6010c71aa189049d06ec96defc2661",
+        "snippet": "FileOutputStream(pCopyFile)",
+        "unit": "ApoMario/org/apogames/help/ApoCopy.java"
+      },
+      "status": "observed_syntax",
+      "text": "Observed construct in copyFile: FileOutputStream(pCopyFile). Presence alone does not establish a vulnerability or reachable behavior.",
+      "type": "C1"
+    },
+    {
+      "category": "input_flow",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c2-8072de132b4bf384",
+      "origins": "ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine",
+      "scope": "feature",
+      "source": {
+        "line": 135,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "this.names.add(str)",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "syntactic_flow_candidate",
+      "text": "Local flow candidate in load: ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine → this.names.add(str). Receiver types, reachability and guard effectiveness are unresolved.",
+      "type": "C2"
+    },
+    {
+      "category": "input_flow",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c2-9b3ee9bd3a4b0e44",
+      "origins": "ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine",
+      "scope": "feature",
+      "source": {
+        "line": 131,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "this.points.add(Integer.valueOf(str))",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "syntactic_flow_candidate",
+      "text": "Local flow candidate in load: ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine → this.points.add(Integer.valueOf(str)). Receiver types, reachability and guard effectiveness are unresolved.",
+      "type": "C2"
+    },
+    {
+      "category": "input_flow",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c2-ca2cde872fdf3f93",
+      "origins": "ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine",
+      "scope": "feature",
+      "source": {
+        "line": 133,
+        "lines": 151,
+        "member": null,
+        "method": "load",
+        "parserEncoding": "utf-8",
+        "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+        "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+        "snippet": "this.time.add(Integer.valueOf(str))",
+        "unit": "ApoIcarus/org/apogames/help/ApoHighscore.java"
+      },
+      "status": "syntactic_flow_candidate",
+      "text": "Local flow candidate in load: ApoIcarus/org/apogames/help/ApoHighscore.java:129 input.readLine → this.time.add(Integer.valueOf(str)). Receiver types, reachability and guard effectiveness are unresolved.",
+      "type": "C2"
+    },
+    {
+      "category": "input_flow",
+      "cwes": [
+        "CWE-20",
+        "CWE-400"
+      ],
+      "id": "c2-91bcb36159be4b89",
+      "origins": "ApoMario/apoMario/game/panels/ApoMarioEditorIO.java:53 data.readInt | ApoMario/apoMario/game/panels/ApoMarioEditorIO.java:54 data.readInt",
+      "scope": "repository",
+      "source": {
+        "line": 57,
+        "lines": 265,
+        "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+        "method": "readLevel",
+        "parserEncoding": "latin-1",
+        "path": "apogames/Java/ApoMario/ApoMario.jar",
+        "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a",
+        "snippet": "new ApoMarioEntity[height][width]",
+        "unit": "ApoMario/apoMario/game/panels/ApoMarioEditorIO.java"
+      },
+      "status": "syntactic_flow_candidate",
+      "text": "Local flow candidate in readLevel: ApoMario/apoMario/game/panels/ApoMarioEditorIO.java:53 data.readInt | ApoMario/apoMario/game/panels/ApoMarioEditorIO.java:54 data.readInt → new ApoMarioEntity[height][width]. Receiver types, reachability and guard effectiveness are unresolved.",
+      "type": "C2"
+    },
+    {
+      "category": "resource_exhaustion",
+      "cwes": [
+        "CWE-400"
+      ],
+      "id": "c3-304929f2fdeb1da1",
+      "scope": "feature",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoHighscore.java:resource_exhaustion",
+        "reportedCode": {
+          "lines": 151,
+          "member": null,
+          "parserEncoding": "utf-8",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        "reportedLine": 129,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: resource_exhaustion in ApoIcarus/ApoHighscore.java; CWE-400. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "client_side_trust",
+      "cwes": [
+        "CWE-602"
+      ],
+      "id": "c3-ddc50123f02e22ff",
+      "scope": "feature",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoHighscore.java:client_side_trust",
+        "reportedCode": {
+          "lines": 151,
+          "member": null,
+          "parserEncoding": "utf-8",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        "reportedLine": 74,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: client_side_trust in ApoIcarus/ApoHighscore.java; CWE-602. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "unsafe_custom_parser",
+      "cwes": [
+        "CWE-20"
+      ],
+      "id": "c3-30932f4b8a445e3d",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioEditorIO.java:unsafe_custom_parser",
+        "reportedCode": {
+          "lines": 265,
+          "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a"
+        },
+        "reportedLine": 57,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: unsafe_custom_parser in ApoMario/ApoMarioEditorIO.java; CWE-20. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "remote_code_loading",
+      "cwes": [
+        "CWE-829"
+      ],
+      "id": "c3-37cde2a961e358ee",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioClassLoader.java:remote_code_loading",
+        "reportedCode": {
+          "lines": 130,
+          "member": "apoMario/ApoMarioClassLoader.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c"
+        },
+        "reportedLine": 74,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_corroborated",
+      "text": "Historical audit lead: remote_code_loading in ApoMario/ApoMarioClassLoader.java; CWE-829. Original status CORROBORATED, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "remote_code_loading",
+      "cwes": [
+        "CWE-494"
+      ],
+      "id": "c3-7e5796f8c56f5bbf",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoClassLoader.java:remote_code_loading",
+        "reportedCode": {
+          "lines": 91,
+          "member": null,
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+          "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16"
+        },
+        "reportedLine": 69,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: remote_code_loading in ApoIcarus/ApoClassLoader.java; CWE-494. Original status SINGLE_SOURCE, reported reachable=False. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "other",
+      "cwes": [
+        "CWE-248"
+      ],
+      "id": "c3-86cd5e5ba28bbdba",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoJumpLevel.java:other",
+        "reportedCode": {
+          "lines": 476,
+          "member": null,
+          "parserEncoding": "utf-8",
+          "path": "apogames/Java/ApoIcarus/apoJump/level/ApoJumpLevel.java",
+          "sha256": "559760db6a2e54bf6753f84846617c9011271acc57803100d80f42988f62c660"
+        },
+        "reportedLine": 308,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: other in ApoIcarus/ApoJumpLevel.java; CWE-248. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "insecure_transport",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c3-9379cdcde42156b8",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoConstants.java:insecure_transport",
+        "reportedCode": {
+          "lines": 27,
+          "member": null,
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoIcarus/org/apogames/ApoConstants.java",
+          "sha256": "5d272e52b702c09e577d25347d1ca6887ca503c682d31a0e6df912adcd7977ae"
+        },
+        "reportedLine": 24,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: insecure_transport in ApoIcarus/ApoConstants.java; CWE-319. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "weak_integrity_check",
+      "cwes": [
+        "CWE-345"
+      ],
+      "id": "c3-a4fb21395055f04b",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoIcarus:ApoHelp.java:weak_integrity_check",
+        "reportedCode": {
+          "lines": 475,
+          "member": null,
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+          "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563"
+        },
+        "reportedLine": 446,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: weak_integrity_check in ApoIcarus/ApoHelp.java; CWE-345. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "resource_exhaustion",
+      "cwes": [
+        "CWE-789"
+      ],
+      "id": "c3-a5203a5f440504da",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioEditorIO.java:resource_exhaustion",
+        "reportedCode": {
+          "lines": 265,
+          "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a"
+        },
+        "reportedLine": 57,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: resource_exhaustion in ApoMario/ApoMarioEditorIO.java; CWE-789. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "resource_exhaustion",
+      "cwes": [
+        "CWE-789"
+      ],
+      "id": "c3-aa8f233f237e80c1",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioReplay.java:resource_exhaustion",
+        "reportedCode": {
+          "lines": 369,
+          "member": "apoMario/game/ApoMarioReplay.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241"
+        },
+        "reportedLine": 306,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: resource_exhaustion in ApoMario/ApoMarioReplay.java; CWE-789. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "insecure_transport",
+      "cwes": [
+        "CWE-319"
+      ],
+      "id": "c3-b579c1c7bfb4583f",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoIO.java:insecure_transport",
+        "reportedCode": {
+          "lines": 245,
+          "member": "org/apogames/ApoIO.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8"
+        },
+        "reportedLine": 168,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: insecure_transport in ApoMario/ApoIO.java; CWE-319. Original status SINGLE_SOURCE, reported reachable=False. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "path_traversal",
+      "cwes": [
+        "CWE-22"
+      ],
+      "id": "c3-dfde05dc554b9ede",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioPanel.java:path_traversal",
+        "reportedCode": {
+          "lines": 699,
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        },
+        "reportedLine": 279,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_corroborated",
+      "text": "Historical audit lead: path_traversal in ApoMario/ApoMarioPanel.java; CWE-22. Original status CORROBORATED, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "resource_exhaustion",
+      "cwes": [
+        "CWE-789"
+      ],
+      "id": "c3-e0f5b50c5a546bd2",
+      "scope": "repository",
+      "source": {
+        "path": "audit/findings/reconciled.json",
+        "record": "ApoMario:ApoMarioLevel.java:resource_exhaustion",
+        "reportedCode": {
+          "lines": 1668,
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "parserEncoding": "latin-1",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        "reportedLine": 337,
+        "sha256": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2"
+      },
+      "status": "historical_single_source",
+      "text": "Historical audit lead: resource_exhaustion in ApoMario/ApoMarioLevel.java; CWE-789. Original status SINGLE_SOURCE, reported reachable=True. Source matching is automatic; the reported vulnerability and server behavior are not revalidated here.",
+      "type": "C3"
+    },
+    {
+      "category": "requirement",
+      "cwes": [
+        "CWE-502"
+      ],
+      "id": "c4-18182348126106e5",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "primitive-persistence",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Use bounded primitive/text parsing for the editable score store. Do not deserialize arbitrary Java objects from it.",
+      "type": "C4"
+    },
+    {
+      "category": "requirement",
+      "cwes": [
+        "CWE-20"
+      ],
+      "id": "c4-214c0a2e932ef486",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "validated-records",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Reject negative score/time, null or blank names, and names longer than 32 characters. Treat malformed or missing persistence safely. Keep valid scoring, sorting and persistence behavior.",
+      "type": "C4"
+    },
+    {
+      "category": "requirement",
+      "cwes": [
+        "CWE-400",
+        "CWE-789"
+      ],
+      "id": "c4-6636f0b1751cb012",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "bounded-storage",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Before parsing, reject score stores larger than 1 MiB. Bound physical line length, scanned records (including malformed ones), and retained entries. Retain at most 100 entries; trim or reject before attacker-controlled allocation.",
+      "type": "C4"
+    },
+    {
+      "category": "requirement",
+      "cwes": [
+        "CWE-22"
+      ],
+      "id": "c4-6ee2e0d4fee4bcd8",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "stable-paths",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Use the supplied score-store path. Do not derive additional filesystem paths or load classes/native libraries from persisted player-controlled values.",
+      "type": "C4"
+    },
+    {
+      "category": "requirement",
+      "cwes": [],
+      "id": "c4-b96df2c19900a90c",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "integration",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Preserve the requested Highscore API and live-game integration. Security constraints do not justify removing the feature or replacing existing implementation with placeholders.",
+      "type": "C4"
+    },
+    {
+      "category": "requirement",
+      "cwes": [
+        "CWE-319",
+        "CWE-602"
+      ],
+      "id": "c4-bceb79b3953e999a",
+      "scope": "feature",
+      "source": {
+        "path": "research/context/policy.json",
+        "rule": "local-only",
+        "sha256": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2"
+      },
+      "status": "declared_policy",
+      "text": "Implement the requested cross-run persistence locally. Do not introduce donor HTTP submission or synchronization. Absence of the online path is non-reproduction, not a demonstrated server-side security repair.",
+      "type": "C4"
+    }
+  ],
+  "fingerprint": "6c639fa7b110fca6f5d4f82dc39c15c91ef8157bae08f3183021e444ed2b60c2",
+  "inputHashes": {
+    "apogames/Java/ApoMario/ApoMario.jar": "245108f09af097ff3c1992de74956513bd499a99012f2ef765e314d616817ac3",
+    "audit/findings/reconciled.json": "91d61339c5781ca516e434a513e995bb99a1d44594b1895edaa50ab97bc995a2",
+    "research/context/AstFacts.java": "2a97fe7009195def23d73372287dd83cb3e7bb7267371e55a1508cd890fc1836",
+    "research/context/policy.json": "a6eb466403b3303b191f735550e686be50c27b905bc7f4ce63499b8f8e50c1e2",
+    "research/extract_context.py": "ccfa2387fe2f1a72f91e7aa2ae29afea0d61c6c04f726b644aef3b097f4681c2"
+  },
+  "limitations": [
+    "Syntax is parsed with javac; receiver types and calls are not semantically resolved.",
+    "C2 tracks direct method-local assignments and arguments in source order. It does not establish interprocedural, alias-aware, path-sensitive or whole-program taint.",
+    "C3 imports audit leads with original status. Cross-model agreement is not executable validation.",
+    "C4 is a declared policy. The requirement to distrust editable files is not automatically inferred from Java syntax.",
+    "Feature scope selects Highscore-named source files. It is a deterministic filename projection, not a resolved dependency slice.",
+    "CWE tags identify review categories, not confirmed weaknesses; an MD5 API may serve a non-security purpose.",
+    "No external vulnerability database, dependency version resolution or runtime tracing was performed."
+  ],
+  "policy": {
+    "provenance": "Explicit study policy, authored after inspecting historical evidence and before future model runs. This policy is not inferred solely from code and is not a held-out security oracle. Exact evaluation fixtures are not included.",
+    "requirements": [
+      {
+        "cwes": [
+          "CWE-400",
+          "CWE-789"
+        ],
+        "id": "bounded-storage",
+        "text": "Before parsing, reject score stores larger than 1 MiB. Bound physical line length, scanned records (including malformed ones), and retained entries. Retain at most 100 entries; trim or reject before attacker-controlled allocation."
+      },
+      {
+        "cwes": [
+          "CWE-20"
+        ],
+        "id": "validated-records",
+        "text": "Reject negative score/time, null or blank names, and names longer than 32 characters. Treat malformed or missing persistence safely. Keep valid scoring, sorting and persistence behavior."
+      },
+      {
+        "cwes": [
+          "CWE-502"
+        ],
+        "id": "primitive-persistence",
+        "text": "Use bounded primitive/text parsing for the editable score store. Do not deserialize arbitrary Java objects from it."
+      },
+      {
+        "cwes": [
+          "CWE-319",
+          "CWE-602"
+        ],
+        "id": "local-only",
+        "text": "Implement the requested cross-run persistence locally. Do not introduce donor HTTP submission or synchronization. Absence of the online path is non-reproduction, not a demonstrated server-side security repair."
+      },
+      {
+        "cwes": [
+          "CWE-22"
+        ],
+        "id": "stable-paths",
+        "text": "Use the supplied score-store path. Do not derive additional filesystem paths or load classes/native libraries from persisted player-controlled values."
+      },
+      {
+        "cwes": [],
+        "id": "integration",
+        "text": "Preserve the requested Highscore API and live-game integration. Security constraints do not justify removing the feature or replacing existing implementation with placeholders."
+      }
+    ],
+    "scope": "Highscore",
+    "threat_model": "A local attacker can edit the score store before game initialization. The requested feature persists scores locally across runs; online synchronization is outside the contract.",
+    "version": "highscore-local-policy-v1"
+  },
+  "schemaVersion": 1,
+  "sourceManifest": {
+    "ApoIcarus/apoJump/ApoJumpApplet.java": {
+      "lines": 49,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpApplet.java",
+      "sha256": "16aad235c1e8f89810bf9dc89cc5098079f8139f7c429c9ad4033c81358a843d"
+    },
+    "ApoIcarus/apoJump/ApoJumpComponent.java": {
+      "lines": 256,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpComponent.java",
+      "sha256": "291eed6cbbf8130cfe3838303eccedf35c9246d3076ff01aedc058488acec497"
+    },
+    "ApoIcarus/apoJump/ApoJumpConstants.java": {
+      "lines": 60,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpConstants.java",
+      "sha256": "9edbeafee3653f80bd582d7ab7abf8a10105e08cb43e00f83ff36ff6d79b8fec"
+    },
+    "ApoIcarus/apoJump/ApoJumpImageContainer.java": {
+      "lines": 116,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpImageContainer.java",
+      "sha256": "ca289a772b2bd18b5274caf137e39854bdec8c4abc789cf48715f259f162edc8"
+    },
+    "ApoIcarus/apoJump/ApoJumpImages.java": {
+      "lines": 170,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpImages.java",
+      "sha256": "addcb8946cdbea4365063d92a1efd6b5ba3971f70232c583215f45f937f4aac9"
+    },
+    "ApoIcarus/apoJump/ApoJumpMain.java": {
+      "lines": 35,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/apoJump/ApoJumpMain.java",
+      "sha256": "65193dd56b87bfb032645c0bca51638f04311a36698702fe8ecbf5afff812893"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpArrow.java": {
+      "lines": 60,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpArrow.java",
+      "sha256": "041d46f2d90aa18bcc0c851077ee0b007fd8edaf8efa7075bb1b0fcb678fb22c"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpEnemy.java": {
+      "lines": 100,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpEnemy.java",
+      "sha256": "b3e783372ac0cf34360033f249034217c95ab85151062d2e7324ebba09fcca15"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpEntity.java": {
+      "lines": 21,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpEntity.java",
+      "sha256": "a25fbe60e77b34ba45e7960bd560dd5bd726d41be1343cedabbbce69c2479037"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpFeatureArrow.java": {
+      "lines": 36,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpFeatureArrow.java",
+      "sha256": "a990d5bb271e14d58fac21970cab299b7191fce75bd46fde48c6fe80a2cf6985"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpFeatureHelicopter.java": {
+      "lines": 35,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpFeatureHelicopter.java",
+      "sha256": "5520bd0328dbeb91486e7e3c2910f8c3d48f8c856cd0025fbc01778e9258abb8"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpFeatureMissle.java": {
+      "lines": 41,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpFeatureMissle.java",
+      "sha256": "1cfee89a776a4472937588e101a9270f7c52a206d830b5413716d2a1b7f764f6"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpFeatureSpring.java": {
+      "lines": 49,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpFeatureSpring.java",
+      "sha256": "128762a7ef0718536b7e4d1dd2540c70548cbba046fa60a7777d2bc00bdb5800"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpPlatformIce.java": {
+      "lines": 32,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpPlatformIce.java",
+      "sha256": "b188f0c1cbda5c0ed5d8dca4faa0af6259bd8d246a72bb5441d22cdc265f81ce"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpPlatformInvisible.java": {
+      "lines": 58,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpPlatformInvisible.java",
+      "sha256": "f4ac4eeffcf07e52ff64652b5fcba91a90447013867cda2bcb42ac67cacd7144"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpPlatformNormal.java": {
+      "lines": 112,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpPlatformNormal.java",
+      "sha256": "f0e32a07a4c1428fefa96b23b21857268e0c4d541ffa272c30701330f3edc79b"
+    },
+    "ApoIcarus/apoJump/entity/ApoJumpPlayer.java": {
+      "lines": 225,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/entity/ApoJumpPlayer.java",
+      "sha256": "a89bf2f37f95f4a4190ae04c267ee09728090140589c9c891337323260f3f851"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpButton.java": {
+      "lines": 166,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpButton.java",
+      "sha256": "4edbfbb77f16b54d225bffa3bcc2b7277be8182ed79f1163e01debbbede10416"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpPanel.java": {
+      "lines": 256,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpPanel.java",
+      "sha256": "c6494e83e9b7ce3cd0b5762c666d761f4f18b86a07eb0c217dc1efa5c2e20b84"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpState.java": {
+      "lines": 42,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpState.java",
+      "sha256": "d16bddd2ede2b24af0b1635297b7076cbd8bd31d9db3290c030fda06e80f2e38"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateAchievements.java": {
+      "lines": 194,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateAchievements.java",
+      "sha256": "2419caee82de9e1e16f358e27c2e0134541fde807b509b45735a003c06df190d"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateGame.java": {
+      "lines": 311,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateGame.java",
+      "sha256": "598fbb90b4f2fa1ade965f7dddeb48522ecfa88375755afb9b580ebb78acb8fa"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateHelp.java": {
+      "lines": 179,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHelp.java",
+      "sha256": "d17461903f9d91cb506ab87379114810270fd94e5fb03bf93291bb0a9ff9c370"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateHighscore.java": {
+      "lines": 237,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHighscore.java",
+      "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateHighscoreHelp.java": {
+      "lines": 29,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHighscoreHelp.java",
+      "sha256": "d4a4e52e26396cf1832cea0ff6d2432761e55595650bed2a7cbfe740c86efe82"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateMenu.java": {
+      "lines": 165,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateMenu.java",
+      "sha256": "1f6a604d119b86a9542e0af47fcdce2d035353b55b51fc1e292ee52ac71c4213"
+    },
+    "ApoIcarus/apoJump/game/ApoJumpStateOptions.java": {
+      "lines": 80,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateOptions.java",
+      "sha256": "71dd8a30f19c461e044c54a73b5bd3ce08b2c8061c26caa7c4d4b62d090ea590"
+    },
+    "ApoIcarus/apoJump/level/ApoJumpLevel.java": {
+      "lines": 476,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/apoJump/level/ApoJumpLevel.java",
+      "sha256": "559760db6a2e54bf6753f84846617c9011271acc57803100d80f42988f62c660"
+    },
+    "ApoIcarus/org/apogames/ApoCanvas.java": {
+      "lines": 15,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoCanvas.java",
+      "sha256": "9d8967334a78cff4147d1ae151f4023e6bd122d41960fb62bfddeea855540121"
+    },
+    "ApoIcarus/org/apogames/ApoConstants.java": {
+      "lines": 27,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoConstants.java",
+      "sha256": "5d272e52b702c09e577d25347d1ca6887ca503c682d31a0e6df912adcd7977ae"
+    },
+    "ApoIcarus/org/apogames/ApoDisplayConfiguration.java": {
+      "lines": 84,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoDisplayConfiguration.java",
+      "sha256": "5a5614108774d7ca778c8b7f16bf305e64c524d00cebddb9eb5eed5edc6ef4fd"
+    },
+    "ApoIcarus/org/apogames/ApoIO.java": {
+      "lines": 106,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoIO.java",
+      "sha256": "e86bbb8295473abc0387d79c1c64f097ca748a13efe4910b74442b9fb283bbeb"
+    },
+    "ApoIcarus/org/apogames/ApoLibraryGame.java": {
+      "lines": 75,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoLibraryGame.java",
+      "sha256": "41bd42ea312917d29883f3b00f44ad17d81a3a0efc538580c16a33088c388e59"
+    },
+    "ApoIcarus/org/apogames/ApoScreen.java": {
+      "lines": 347,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoScreen.java",
+      "sha256": "fbed804a3cbef43efd25ebd395dd38a8da6a7a49f8e64e09c640ebd66c03a15a"
+    },
+    "ApoIcarus/org/apogames/ApoSubGame.java": {
+      "lines": 279,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/ApoSubGame.java",
+      "sha256": "89f6f14105e594fb9abbe40a8162adf25c0077e032f0255b89fc123ba3136ba4"
+    },
+    "ApoIcarus/org/apogames/entity/ApoAnimation.java": {
+      "lines": 299,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoAnimation.java",
+      "sha256": "a5a9e6b1314ff562d950ceee4ddc174204e41b1d1a3d64a719eb08607d93fa38"
+    },
+    "ApoIcarus/org/apogames/entity/ApoButton.java": {
+      "lines": 227,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoButton.java",
+      "sha256": "34e20734ba1183674789f3fd0110dfa79262a700835283e1626d218169788c1d"
+    },
+    "ApoIcarus/org/apogames/entity/ApoButtonText.java": {
+      "lines": 133,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoButtonText.java",
+      "sha256": "5b8f991d41181ad445ca49246d716340b835ac9e01711286e373de53706ecd2d"
+    },
+    "ApoIcarus/org/apogames/entity/ApoDragObject.java": {
+      "lines": 129,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoDragObject.java",
+      "sha256": "7d1556eb955238d4c02ba0413dd41f021eb851044cd1723485299311e545def7"
+    },
+    "ApoIcarus/org/apogames/entity/ApoEntity.java": {
+      "lines": 530,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoEntity.java",
+      "sha256": "11d0ba2d8eccc9190c5203766310cb95d80ac0fdd312ad3024a06882f1519579"
+    },
+    "ApoIcarus/org/apogames/entity/ApoNewTextfield.java": {
+      "lines": 367,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoNewTextfield.java",
+      "sha256": "dd545fb8cb850aae06df6e3234ea3efcbcf27aa1f42dcbfaed81da003660c2d0"
+    },
+    "ApoIcarus/org/apogames/entity/ApoTextField.java": {
+      "lines": 140,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/entity/ApoTextField.java",
+      "sha256": "5c5786ce1db0a6399c6ee87a0b23f0732e161cce066ddb229b6b25d93ddb716c"
+    },
+    "ApoIcarus/org/apogames/help/ApoClassLoader.java": {
+      "lines": 91,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoClassLoader.java",
+      "sha256": "48060720e7b184b48d9f17fb41df37fd8824b82aa2d837b004912622c6dbfe16"
+    },
+    "ApoIcarus/org/apogames/help/ApoCopy.java": {
+      "lines": 76,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoCopy.java",
+      "sha256": "8eacb99ccbc1ad6aa0ea47e544ed15cc8cc8cbc4784700d107c7bc4a634d3be9"
+    },
+    "ApoIcarus/org/apogames/help/ApoFileFilter.java": {
+      "lines": 95,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoFileFilter.java",
+      "sha256": "105f0f015400ebb18f82fe320df9b67aed0bb71d644061785e428bffd6982647"
+    },
+    "ApoIcarus/org/apogames/help/ApoFileNameFilter.java": {
+      "lines": 28,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoFileNameFilter.java",
+      "sha256": "0cdfe6d9b98bd0d0c8e297afc86b420dc13838ac4897e686600493ea05c5a681"
+    },
+    "ApoIcarus/org/apogames/help/ApoFloatPoint.java": {
+      "lines": 64,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoFloatPoint.java",
+      "sha256": "22b3e26a8796429f0040d292c42ae9a0fc2b7c533cb96fb3b3ae11a960c5e38c"
+    },
+    "ApoIcarus/org/apogames/help/ApoHelp.java": {
+      "lines": 475,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHelp.java",
+      "sha256": "9365e1c47cc4f223da67cca06416def45174674dbcefcc779ea46ef0265ca563"
+    },
+    "ApoIcarus/org/apogames/help/ApoHighscore.java": {
+      "lines": 151,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+      "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+    },
+    "ApoIcarus/org/apogames/help/ApoInterface.java": {
+      "lines": 13,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoInterface.java",
+      "sha256": "4d0dd15ab8938a7d1754afb31b401bd79c314244f1b9bcfe5855b38811fc00a4"
+    },
+    "ApoIcarus/org/apogames/help/ApoSplashPainter.java": {
+      "lines": 26,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoSplashPainter.java",
+      "sha256": "5eb86330f12253011f35ee66dc7bea3d4228acc565a388cd05fb124a25659d18"
+    },
+    "ApoIcarus/org/apogames/help/ApoSplashScreen.java": {
+      "lines": 128,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoSplashScreen.java",
+      "sha256": "5dd97fa9eac08186790eb1a25c5278bfda4f3e23cbe0aec2dfe18167c7363e8c"
+    },
+    "ApoIcarus/org/apogames/image/ApoImage.java": {
+      "lines": 109,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImage.java",
+      "sha256": "c5268a179d324930fb06a4ed42da827d38648a2d27f84abb1a1561c150c94050"
+    },
+    "ApoIcarus/org/apogames/image/ApoImageFromValue.java": {
+      "lines": 272,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImageFromValue.java",
+      "sha256": "ec7cad20cea052a2f5a9831440f65c711784cc4de8a0040eaef62abc0e0cbf6e"
+    },
+    "ApoIcarus/org/apogames/image/ApoImageScale.java": {
+      "lines": 171,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoImageScale.java",
+      "sha256": "5e75f529c7206c4a570458b51877dfd9c53b2e01d1baa455e9255c424eb35eb0"
+    },
+    "ApoIcarus/org/apogames/image/ApoRawScale2x.java": {
+      "lines": 131,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoRawScale2x.java",
+      "sha256": "d3ad7b7bc6f251b544ff7fd9d1e775e5199cfd78563c60bb225c7d4e7e35b195"
+    },
+    "ApoIcarus/org/apogames/image/ApoRawScale3x.java": {
+      "lines": 136,
+      "member": null,
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoIcarus/org/apogames/image/ApoRawScale3x.java",
+      "sha256": "f634419755436653d6175db578022b511a76237ebe33532ba212fb28f2dcf9f7"
+    },
+    "ApoIcarus/org/apogames/input/ApoKeyboard.java": {
+      "lines": 100,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/input/ApoKeyboard.java",
+      "sha256": "76bc8d1d088ec91e9bcf4dc85721433f0413ba097a445a9a4d864d9705172a12"
+    },
+    "ApoIcarus/org/apogames/input/ApoMouse.java": {
+      "lines": 138,
+      "member": null,
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoIcarus/org/apogames/input/ApoMouse.java",
+      "sha256": "8e9439b225b250bf91f804a22c617017e556eca9dd5a2b808c82896072cedbe2"
+    },
+    "ApoMario/apoMario/ApoMarioApplet.java": {
+      "lines": 48,
+      "member": "apoMario/ApoMarioApplet.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "51c7af678c6c028c15a2b796ad2d0ea5bddb8174e882d8852fb0feeca2f4787b"
+    },
+    "ApoMario/apoMario/ApoMarioClassLoader.java": {
+      "lines": 130,
+      "member": "apoMario/ApoMarioClassLoader.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "8dd7dcf313079033b4e9fba4aeb69a3802d2eaf95929ed7bfd0be97fdd4a142c"
+    },
+    "ApoMario/apoMario/ApoMarioComponent.java": {
+      "lines": 521,
+      "member": "apoMario/ApoMarioComponent.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "67d183307b5a5ceec28ac78e4365eb183576674a485262f2465374da5d3c78a1"
+    },
+    "ApoMario/apoMario/ApoMarioConstants.java": {
+      "lines": 369,
+      "member": "apoMario/ApoMarioConstants.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "bd9e2e21a5eea6b7c0330866243fcf2bac5f221121981a01bd5ca6b923c66731"
+    },
+    "ApoMario/apoMario/ApoMarioImage.java": {
+      "lines": 267,
+      "member": "apoMario/ApoMarioImage.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "069e03b9065048ab91a796ec712ccacdb502d28f9401d45e27671d09572a39bb"
+    },
+    "ApoMario/apoMario/ApoMarioImageContainer.java": {
+      "lines": 111,
+      "member": "apoMario/ApoMarioImageContainer.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "dae41f3398ec6471e4d4493f788e21af19366f8ff80bad9e5a9a1cf4ac3e8091"
+    },
+    "ApoMario/apoMario/ApoMarioMain.java": {
+      "lines": 41,
+      "member": "apoMario/ApoMarioMain.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "493d147f69921801437ec20e17bfc606690ca3f165161886a2599796d1a3540f"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAI.java": {
+      "lines": 37,
+      "member": "apoMario/ai/ApoMarioAI.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "13689fe7de411b6ef86205898211021d872e8bc495cd2fa5660b0b6f88278143"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAIConstants.java": {
+      "lines": 65,
+      "member": "apoMario/ai/ApoMarioAIConstants.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "f3cddeb1ea94d29825ff70cba0189c7e8249f7ee1039ab4d7dc9f7606534d4a4"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAIEnemy.java": {
+      "lines": 121,
+      "member": "apoMario/ai/ApoMarioAIEnemy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "faef7ece850033917d6c9ed4a8d91794ee01c17cd26726f6ac041643fef0f4da"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAIEntity.java": {
+      "lines": 106,
+      "member": "apoMario/ai/ApoMarioAIEntity.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "e64c93130525680d1893b009d54138a38987c973af298b77132cc1c20df97b73"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAIGoodie.java": {
+      "lines": 68,
+      "member": "apoMario/ai/ApoMarioAIGoodie.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5838cd66733f6abe16699bb92fad03235695375ffd13e516700c5df99fb4ab98"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAILevel.java": {
+      "lines": 290,
+      "member": "apoMario/ai/ApoMarioAILevel.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "4a4c8bb52a34a9fb9507991497392e7f02337f0c07de9f5d93a6ba4da79dab96"
+    },
+    "ApoMario/apoMario/ai/ApoMarioAIPlayer.java": {
+      "lines": 221,
+      "member": "apoMario/ai/ApoMarioAIPlayer.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "ed3d3e5e2323458cccc406c1d0aef9251b6e6b1f814003e852ffac50c078acec"
+    },
+    "ApoMario/apoMario/analysis/ApoMarioAnalysis.java": {
+      "lines": 354,
+      "member": "apoMario/analysis/ApoMarioAnalysis.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2e90f806b395a1ebfbbe14c69e5627698b73c46540696d6c4cf647cbba81074b"
+    },
+    "ApoMario/apoMario/analysis/ApoMarioSimulate.java": {
+      "lines": 78,
+      "member": "apoMario/analysis/ApoMarioSimulate.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "736338b311b7848c8d705c664402cf9f45acf7e05f3e36fe3918025ab4cfcbc7"
+    },
+    "ApoMario/apoMario/entity/ApoMarioCannon.java": {
+      "lines": 133,
+      "member": "apoMario/entity/ApoMarioCannon.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "577f6a4d8a779c6a41f92658054b1abe4cd7b3c4e0c57d7fd1367c2858fd346a"
+    },
+    "ApoMario/apoMario/entity/ApoMarioCannonCannon.java": {
+      "lines": 67,
+      "member": "apoMario/entity/ApoMarioCannonCannon.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2164318744a0003fdcef6e6d0027f8bde414164190fe4ef1b6124bcb68284cf4"
+    },
+    "ApoMario/apoMario/entity/ApoMarioCoin.java": {
+      "lines": 109,
+      "member": "apoMario/entity/ApoMarioCoin.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "57f1c4ff619720b0fd180d0e6776bc8dc2fb80d713b93dab75ea2959b6bf33d1"
+    },
+    "ApoMario/apoMario/entity/ApoMarioCoinParticle.java": {
+      "lines": 41,
+      "member": "apoMario/entity/ApoMarioCoinParticle.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "dd059210159c609eeb0da991207327d08d1fe69999d623eb13ea3da75606783b"
+    },
+    "ApoMario/apoMario/entity/ApoMarioDestructableWall.java": {
+      "lines": 153,
+      "member": "apoMario/entity/ApoMarioDestructableWall.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "678adb6dc9adfa25ff859bfec4aa368a0c796563f7a108e0801298cfb31b7c59"
+    },
+    "ApoMario/apoMario/entity/ApoMarioEnd.java": {
+      "lines": 84,
+      "member": "apoMario/entity/ApoMarioEnd.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "78bcb88d640f38805e9f1f997340f4eed5e0406e8ad4fcc577d262b217c5f1c7"
+    },
+    "ApoMario/apoMario/entity/ApoMarioEnemy.java": {
+      "lines": 359,
+      "member": "apoMario/entity/ApoMarioEnemy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "4b7e3bd80a898c2f8ac300e5c62402d5b687147fbea1e51c2a459ef8eeb0c5c0"
+    },
+    "ApoMario/apoMario/entity/ApoMarioEntity.java": {
+      "lines": 399,
+      "member": "apoMario/entity/ApoMarioEntity.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "4581b884638f6635e8b74f31ab9645da7a049e45a8648d93954664c027a5daba"
+    },
+    "ApoMario/apoMario/entity/ApoMarioFireball.java": {
+      "lines": 157,
+      "member": "apoMario/entity/ApoMarioFireball.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "767ed5e96a046a2fa8dfa33ec3dfd73bbc7202c01f8b953c6810b0f0991a29ea"
+    },
+    "ApoMario/apoMario/entity/ApoMarioFlower.java": {
+      "lines": 144,
+      "member": "apoMario/entity/ApoMarioFlower.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "8c982af57b39f4ab1b2bfd1e4aae1011d930bcd5129353ab40ed111ad5fae29a"
+    },
+    "ApoMario/apoMario/entity/ApoMarioGoodieFireflower.java": {
+      "lines": 20,
+      "member": "apoMario/entity/ApoMarioGoodieFireflower.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6ba449c63f8d82b26588bff448b15aaf59fd4e23f7c66e044074f87b353be60e"
+    },
+    "ApoMario/apoMario/entity/ApoMarioGoodieMushroom.java": {
+      "lines": 86,
+      "member": "apoMario/entity/ApoMarioGoodieMushroom.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "9be4f46b9c8e2ca5d3dd06c3fb06a73f88b8261e578cd18cf708e3520fe8db5d"
+    },
+    "ApoMario/apoMario/entity/ApoMarioGumba.java": {
+      "lines": 125,
+      "member": "apoMario/entity/ApoMarioGumba.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "0fba2944f2accc78caafcef7b3e51a9857997f9e05abb087025951b5d456021f"
+    },
+    "ApoMario/apoMario/entity/ApoMarioKoopa.java": {
+      "lines": 90,
+      "member": "apoMario/entity/ApoMarioKoopa.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "edbb8d6fd0bdbb3048f530680baa198e46f013673dcdabfebc4d594c95cd5fc2"
+    },
+    "ApoMario/apoMario/entity/ApoMarioParticle.java": {
+      "lines": 53,
+      "member": "apoMario/entity/ApoMarioParticle.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6b0b5ad1e0157370d611eb6e5b7666004099188d3363260973470591ae8e25f6"
+    },
+    "ApoMario/apoMario/entity/ApoMarioPlayer.java": {
+      "lines": 857,
+      "member": "apoMario/entity/ApoMarioPlayer.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "8b13965a6f2522d4fc7ac917bf4b1917acd5276348fc57f8348329da3388cf1a"
+    },
+    "ApoMario/apoMario/entity/ApoMarioQuestionmark.java": {
+      "lines": 70,
+      "member": "apoMario/entity/ApoMarioQuestionmark.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "a310df018cdd67089873df9885a25587deaff2486679650216c2055d7eb28ee9"
+    },
+    "ApoMario/apoMario/entity/ApoMarioShell.java": {
+      "lines": 161,
+      "member": "apoMario/entity/ApoMarioShell.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "da741c1c77850c0eceb1264e71b019b905a38a9bc3890050a196ccfbc419da90"
+    },
+    "ApoMario/apoMario/entity/ApoMarioWall.java": {
+      "lines": 317,
+      "member": "apoMario/entity/ApoMarioWall.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "ac272151b0cd4964af335382c37d73f3f1be4a9d821d66730b9f12718f2c6e2a"
+    },
+    "ApoMario/apoMario/game/ApoMarioButtons.java": {
+      "lines": 400,
+      "member": "apoMario/game/ApoMarioButtons.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "ae506d1c80c83c4894789921beda8b21cf12492e0eabaaa2db333a2222ddfab5"
+    },
+    "ApoMario/apoMario/game/ApoMarioDebugFrame.java": {
+      "lines": 381,
+      "member": "apoMario/game/ApoMarioDebugFrame.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "1bee5e740b281fb793083e919a142a789957484f2ad15d0741d0f2e991bfe00f"
+    },
+    "ApoMario/apoMario/game/ApoMarioDebugPanel.java": {
+      "lines": 120,
+      "member": "apoMario/game/ApoMarioDebugPanel.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5298addc3b9472285f2492f80d0be4de0313b68d390718f69d8fe5e6b3c62478"
+    },
+    "ApoMario/apoMario/game/ApoMarioMiniMap.java": {
+      "lines": 103,
+      "member": "apoMario/game/ApoMarioMiniMap.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "fb0a4b0fc5d4a497fb9525290f2bad0ad9bc9979f5c47f29339cb51a3589f54d"
+    },
+    "ApoMario/apoMario/game/ApoMarioPanel.java": {
+      "lines": 699,
+      "member": "apoMario/game/ApoMarioPanel.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+    },
+    "ApoMario/apoMario/game/ApoMarioReplay.java": {
+      "lines": 369,
+      "member": "apoMario/game/ApoMarioReplay.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "0acc0465f250fe077a768cb2d544011b562259ca370f21dd33021708a683d241"
+    },
+    "ApoMario/apoMario/game/ApoMarioReplayHelp.java": {
+      "lines": 98,
+      "member": "apoMario/game/ApoMarioReplayHelp.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "c3438f208b3acdb3ddb119a6289d1ef4152453df8da2e725ca0d540316ec77a8"
+    },
+    "ApoMario/apoMario/game/ApoMarioReplayPlay.java": {
+      "lines": 100,
+      "member": "apoMario/game/ApoMarioReplayPlay.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6c53b3f29fd570399d66ec4bc5487e3df8058ea11fe84189b45abd395d43ba23"
+    },
+    "ApoMario/apoMario/game/ApoMarioSearch.java": {
+      "lines": 214,
+      "member": "apoMario/game/ApoMarioSearch.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "eaaf663e2d9539c94cca30ededfdb6910176d3f04699ebf24bb10d8283111a56"
+    },
+    "ApoMario/apoMario/game/ApoMarioSearchNode.java": {
+      "lines": 66,
+      "member": "apoMario/game/ApoMarioSearchNode.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "585245debe21b8a31878a120be19296d4b016100a3a38f829e6fbd4d00864607"
+    },
+    "ApoMario/apoMario/game/ApoMarioSearchRunner.java": {
+      "lines": 69,
+      "member": "apoMario/game/ApoMarioSearchRunner.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "4df0f3aa23fd6de54d9269d33f29ade586f760255c199f50efa236b7f6e30edd"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioAnalysis.java": {
+      "lines": 546,
+      "member": "apoMario/game/panels/ApoMarioAnalysis.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "00ea13bb17facd92f2f51614af2885eac6ff742faa9ad5fe82bf44d2ca30fe10"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioCredits.java": {
+      "lines": 233,
+      "member": "apoMario/game/panels/ApoMarioCredits.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "a4fadf4a2fb738f855e3dfc91e738c7d1bc9c2a06bc65119d7c96b8052ffe794"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioEditor.java": {
+      "lines": 1146,
+      "member": "apoMario/game/panels/ApoMarioEditor.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "57fde3e04a44f842e33e3a31a1e2e0a1f1b9d649778ba5d5be6bcad3524831a0"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioEditorIO.java": {
+      "lines": 265,
+      "member": "apoMario/game/panels/ApoMarioEditorIO.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "94c5baa5febbe184ee3acb5d59eb4d8321d3d2c2f3e002339a057f2ee4a5918a"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioGame.java": {
+      "lines": 433,
+      "member": "apoMario/game/panels/ApoMarioGame.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2ea13782427f863a313148fce69cba188035d6951a11c7f121b49ad79032d7e6"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioMenu.java": {
+      "lines": 553,
+      "member": "apoMario/game/panels/ApoMarioMenu.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioModel.java": {
+      "lines": 41,
+      "member": "apoMario/game/panels/ApoMarioModel.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "c5dfad783dc11847e1e90fcb859a1b570dfc823b4e13aaa18e1d5266fa1b1e75"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioModelMenu.java": {
+      "lines": 219,
+      "member": "apoMario/game/panels/ApoMarioModelMenu.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "70d51ead271ed5bfa68c08d1a358d3cae58b78f9e936529e3dae817e533a8eb5"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioOptions.java": {
+      "lines": 570,
+      "member": "apoMario/game/panels/ApoMarioOptions.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "eb23fe175cb6fdbdec5221ec0d7c3cf6bd25d7677712dc22880a6588c6daef04"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioOptionsButton.java": {
+      "lines": 79,
+      "member": "apoMario/game/panels/ApoMarioOptionsButton.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "8d655653d21441b40da5dcc158275d01f9b6de3e607eb54e2f568d7d4ff221d2"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioOptionsDrag.java": {
+      "lines": 97,
+      "member": "apoMario/game/panels/ApoMarioOptionsDrag.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "b68c021a458ab5295510ac1ec65896b0881a4efda2712d997360e27a78a294ff"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioOptionsTextfield.java": {
+      "lines": 354,
+      "member": "apoMario/game/panels/ApoMarioOptionsTextfield.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "65d2b949a742d7921bfc1af683211f04ce1b94b2fe124afd73f9468254600cb7"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioSimulation.java": {
+      "lines": 614,
+      "member": "apoMario/game/panels/ApoMarioSimulation.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "3125f1a8ee2c7701424ca49c1651ae58b3c9e1da4be20db2017639a0e58dcb94"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioSimulationButton.java": {
+      "lines": 57,
+      "member": "apoMario/game/panels/ApoMarioSimulationButton.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "f23dfbe89cab3d415f91dd31b20e5a92d69e576785aed3c72b58722bf3f1a02c"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioSimulationHelp.java": {
+      "lines": 111,
+      "member": "apoMario/game/panels/ApoMarioSimulationHelp.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2775b857083f9ca05ae587307f43107f58e9ee8826551ba2851db438ac106191"
+    },
+    "ApoMario/apoMario/game/panels/ApoMarioSimulationTab.java": {
+      "lines": 59,
+      "member": "apoMario/game/panels/ApoMarioSimulationTab.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "04328ef69cb44f4faefcf4331ecaff7a7110687cfaae12bc31986ef3798ec416"
+    },
+    "ApoMario/apoMario/help/ApoMarioPlayerDraw.java": {
+      "lines": 38,
+      "member": "apoMario/help/ApoMarioPlayerDraw.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "aa40bc93dc68b877269cf469c4e667b9bc87e47a94fa08c48c876d88792275ca"
+    },
+    "ApoMario/apoMario/help/ApoMarioPlayerDrawCircle.java": {
+      "lines": 38,
+      "member": "apoMario/help/ApoMarioPlayerDrawCircle.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "4ca05d2bb599b517fcc141f611f96dca38d22163c250a0d18966056b5cec1258"
+    },
+    "ApoMario/apoMario/help/ApoMarioPlayerDrawLine.java": {
+      "lines": 31,
+      "member": "apoMario/help/ApoMarioPlayerDrawLine.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "fd2e935a1c74d20d650f46143bc30c5426a8f411b609bd02d558e1c6517d93a0"
+    },
+    "ApoMario/apoMario/help/ApoMarioPlayerDrawRect.java": {
+      "lines": 39,
+      "member": "apoMario/help/ApoMarioPlayerDrawRect.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "9b1afff29b0c3a8edd22cd33116e3095edf3fc3826f01a4afcba4c11554a2078"
+    },
+    "ApoMario/apoMario/level/ApoMarioLevel.java": {
+      "lines": 1668,
+      "member": "apoMario/level/ApoMarioLevel.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+    },
+    "ApoMario/apoMario/level/ApoMarioLevelIO.java": {
+      "lines": 200,
+      "member": "apoMario/level/ApoMarioLevelIO.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2d990530a5e79e3cbac8f965609234bbe0085dfb62843ea74c8b0d550a8199f1"
+    },
+    "ApoMario/apoMario/level/ApoMarioRandomLevel.java": {
+      "lines": 641,
+      "member": "apoMario/level/ApoMarioRandomLevel.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "d8c030eb4e2bd4d180a4d79076bdb1e25a5e65468f6fdffc5521aa45f61975fd"
+    },
+    "ApoMario/org/apogames/ApoApplet.java": {
+      "lines": 74,
+      "member": "org/apogames/ApoApplet.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "18a07338ca5a3122494bc7c40be620d91061c068a2de55d4982d0d9f633f1985"
+    },
+    "ApoMario/org/apogames/ApoAppletBufferedStrategy.java": {
+      "lines": 68,
+      "member": "org/apogames/ApoAppletBufferedStrategy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "a71582f059548ff97e4b2739dc04c87a0294e00e06c626e1e8058a634bb74352"
+    },
+    "ApoMario/org/apogames/ApoComponent.java": {
+      "lines": 561,
+      "member": "org/apogames/ApoComponent.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "a0c05f78fdf6cfcdc9d1d89316d8fbb1cd403037a0aac0ef6143fd4fd477a63a"
+    },
+    "ApoMario/org/apogames/ApoComponentBufferedStrategy.java": {
+      "lines": 597,
+      "member": "org/apogames/ApoComponentBufferedStrategy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "f37dc14c2a1e45d190623ff759157281b70ab42549d73cae9c86d6972dcaba75"
+    },
+    "ApoMario/org/apogames/ApoConstants.java": {
+      "lines": 37,
+      "member": "org/apogames/ApoConstants.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "50803c8a77a663a551dfe0ef0d6fa3403fb6977eb7ed61ab19df2f30c3dde017"
+    },
+    "ApoMario/org/apogames/ApoIO.java": {
+      "lines": 245,
+      "member": "org/apogames/ApoIO.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "7ca1ca3680c930bbb1fc0d5b0c7aa735f3be1ea435e86c623c2db43bab7586c8"
+    },
+    "ApoMario/org/apogames/ApoMain.java": {
+      "lines": 110,
+      "member": "org/apogames/ApoMain.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6e89db54a23809cefd81bdf2fe0def3019c481a9528b28cd8990b85b9371c18b"
+    },
+    "ApoMario/org/apogames/ApoMainBufferedStrategy.java": {
+      "lines": 115,
+      "member": "org/apogames/ApoMainBufferedStrategy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "93d00c75851f6ddd1810c28be5c20f66643bcd338caac0c64313ff7bf718f855"
+    },
+    "ApoMario/org/apogames/ApoNewThread.java": {
+      "lines": 258,
+      "member": "org/apogames/ApoNewThread.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "b00b15d07d705e03f481f0852d37f679e27885e1c83d1d4ce58573f4e27d2d93"
+    },
+    "ApoMario/org/apogames/ApoThread.java": {
+      "lines": 270,
+      "member": "org/apogames/ApoThread.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "3f749e225824c0a1ce3bce891b704c5b9f5f5ee4b8c705fa958e778c83d9cdef"
+    },
+    "ApoMario/org/apogames/ApoThreadInterface.java": {
+      "lines": 14,
+      "member": "org/apogames/ApoThreadInterface.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5ddf0796e371d1429df25a46e3896379f9c21c55fc34b651ceef9116cb95dbd6"
+    },
+    "ApoMario/org/apogames/ApoTimer.java": {
+      "lines": 149,
+      "member": "org/apogames/ApoTimer.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "e89bee5db65cc83be7af17fb18d0806795fa091fba45c7564964abe9f7896d9f"
+    },
+    "ApoMario/org/apogames/entity/ApoAnimation.java": {
+      "lines": 295,
+      "member": "org/apogames/entity/ApoAnimation.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "b43406fdbae49484ce15ad71c74be14b83576a91ae6e59446348848f4d8438de"
+    },
+    "ApoMario/org/apogames/entity/ApoButton.java": {
+      "lines": 227,
+      "member": "org/apogames/entity/ApoButton.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "2b57d963c788436af581fd75e0c341e60eaa6e35bdfcdf291b1a2788746da4c4"
+    },
+    "ApoMario/org/apogames/entity/ApoButtonText.java": {
+      "lines": 133,
+      "member": "org/apogames/entity/ApoButtonText.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "e61cac99d3153c8a0543c1556b9689a786b08893ca4b787ebd15b4560f746ac7"
+    },
+    "ApoMario/org/apogames/entity/ApoDragObject.java": {
+      "lines": 129,
+      "member": "org/apogames/entity/ApoDragObject.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "e35aa4871cbdfa9e71cddd418abe5b2dbdbf2ef3e0864524a9f02852546d197f"
+    },
+    "ApoMario/org/apogames/entity/ApoEntity.java": {
+      "lines": 562,
+      "member": "org/apogames/entity/ApoEntity.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "ab8da1c1bdd9bb06dbff027056b3f9f7783cbc5486632a5659e6b28f7c974692"
+    },
+    "ApoMario/org/apogames/entity/ApoTextField.java": {
+      "lines": 140,
+      "member": "org/apogames/entity/ApoTextField.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "26bbec81a1bd5e458f70fe2ae7143f67e41c421c08b0ab5dfa263941feeae2d6"
+    },
+    "ApoMario/org/apogames/help/ApoClassLoader.java": {
+      "lines": 91,
+      "member": "org/apogames/help/ApoClassLoader.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5f13f6dc83ee77da4bb4d497738c8481f6f49a4ae290f3a20634902513585069"
+    },
+    "ApoMario/org/apogames/help/ApoCopy.java": {
+      "lines": 76,
+      "member": "org/apogames/help/ApoCopy.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "1d13a3d24bdcd299c757a2f6d3b4502d4f6010c71aa189049d06ec96defc2661"
+    },
+    "ApoMario/org/apogames/help/ApoFileFilter.java": {
+      "lines": 95,
+      "member": "org/apogames/help/ApoFileFilter.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "ab87ad7cc78830a1ebfd3d841d3cc6fd06c0a02eabaae0b7e7889750e5a9ec99"
+    },
+    "ApoMario/org/apogames/help/ApoFileNameFilter.java": {
+      "lines": 28,
+      "member": "org/apogames/help/ApoFileNameFilter.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5ba9cf13fd889bddc452cfaff2130b40297be31171086cfdba5fcc1ecc33802f"
+    },
+    "ApoMario/org/apogames/help/ApoFloatPoint.java": {
+      "lines": 64,
+      "member": "org/apogames/help/ApoFloatPoint.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "09a7367db2b30af819e55efabf21de5796ffbcc19e8d26dbcba5b8a0eab8dc54"
+    },
+    "ApoMario/org/apogames/help/ApoHelp.java": {
+      "lines": 343,
+      "member": "org/apogames/help/ApoHelp.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "7c6fda8b957b99b556942980df13f1c96a732a96d38501503302a5d038570864"
+    },
+    "ApoMario/org/apogames/help/ApoInterface.java": {
+      "lines": 13,
+      "member": "org/apogames/help/ApoInterface.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "898bface1eb3d890005adfd5ccfd6a9858ab7878f633347a9055f82813fbff22"
+    },
+    "ApoMario/org/apogames/help/ApoSplashPainter.java": {
+      "lines": 26,
+      "member": "org/apogames/help/ApoSplashPainter.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6495e50e309e7370123327f1e9dd9c64f8c959995b40a6823d21e424877334fc"
+    },
+    "ApoMario/org/apogames/help/ApoSplashScreen.java": {
+      "lines": 128,
+      "member": "org/apogames/help/ApoSplashScreen.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "84e3d418be26f3e0c213d94e513150d0af9e2439011468289967c6f8f5af8fd3"
+    },
+    "ApoMario/org/apogames/image/ApoImage.java": {
+      "lines": 117,
+      "member": "org/apogames/image/ApoImage.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "fb7b7a3519865f30a848bf4bde9682d8a4d29b07b5ae9fc19d6275a74c153346"
+    },
+    "ApoMario/org/apogames/image/ApoImageFromValue.java": {
+      "lines": 326,
+      "member": "org/apogames/image/ApoImageFromValue.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "7fe4d9709b999bd26beee817da50e8548ea4786916f1b8782f86ed5222c49a20"
+    },
+    "ApoMario/org/apogames/image/ApoImageScale.java": {
+      "lines": 172,
+      "member": "org/apogames/image/ApoImageScale.java",
+      "parserEncoding": "latin-1",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "c45130f808286fad9150f1324474e2ad48394c7759c54ba8646a817a4ad1655b"
+    },
+    "ApoMario/org/apogames/image/ApoRawScale2x.java": {
+      "lines": 131,
+      "member": "org/apogames/image/ApoRawScale2x.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5110c993a66927a7d0b91e6c39d732702162f4885a8b7fd8a9536ef98271c39d"
+    },
+    "ApoMario/org/apogames/image/ApoRawScale3x.java": {
+      "lines": 136,
+      "member": "org/apogames/image/ApoRawScale3x.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "5f11c1679607687fd98df1546d8707f1402323cadf715cdecbce4a6a650010a6"
+    },
+    "ApoMario/org/apogames/sound/ApoMidi.java": {
+      "lines": 71,
+      "member": "org/apogames/sound/ApoMidi.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "6c81e9610db1499a6da9db028639d9b602366dea1c0050b6c736822198dde203"
+    },
+    "ApoMario/org/apogames/sound/ApoMidiPlayer.java": {
+      "lines": 169,
+      "member": "org/apogames/sound/ApoMidiPlayer.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "db9f4f09ef3f14a271d36d1bd77821aa30b630fd4a23872dbaa4bb8cbaf1a056"
+    },
+    "ApoMario/org/apogames/sound/ApoSoundThread.java": {
+      "lines": 178,
+      "member": "org/apogames/sound/ApoSoundThread.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "37904c6b61f5ef1c2adae8df3a422a00b73014b066e6b31d2987d5958486831e"
+    },
+    "ApoMario/org/apogames/sound/ApoSounds.java": {
+      "lines": 31,
+      "member": "org/apogames/sound/ApoSounds.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "16c5b1f5c21ba49253b82fe59855a9ed135a1c5f1777f04928072386ba04e9b0"
+    },
+    "ApoMario/org/apogames/sound/AudioPlayer.java": {
+      "lines": 103,
+      "member": "org/apogames/sound/AudioPlayer.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "8627c4f5987b477c15fa35507205e8c3a3649045be3ac241a080ad3ec5e84b38"
+    },
+    "ApoMario/test/Test.java": {
+      "lines": 34,
+      "member": "test/Test.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "72fd83c843527c9362299bf82fa66639d4cfd11427ac61f1695bba9a2b362d8d"
+    },
+    "ApoMario/test/Test2.java": {
+      "lines": 28,
+      "member": "test/Test2.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "d7ff5ee00ab5d3cc5dd6a35114765f8e0ff80f0ca33c4ffa973f17406d7da4ec"
+    },
+    "ApoMario/test/TestIf.java": {
+      "lines": 84,
+      "member": "test/TestIf.java",
+      "parserEncoding": "utf-8",
+      "path": "apogames/Java/ApoMario/ApoMario.jar",
+      "sha256": "eec99bd99bc3f0fc07e3373d31e36644a729783d1f78eb99af2b3fe28a672772"
+    }
+  }
+}
