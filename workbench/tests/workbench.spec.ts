@@ -51,3 +51,29 @@ test('plain navigation remains usable on narrow screens', async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   await page.screenshot({ path: 'test-results/simple-mobile.png' });
 });
+
+test('test-only observations expose conditional-rate differences and missing denominators', async ({ page }) => {
+  // Synthetic transport data exists only in this browser test, never in the study assets.
+  await page.route('**/data/study.json', async route => {
+    const response = await route.fetch(), data = await response.json();
+    const definition = data.tests[0];
+    data.runs = ['pass', 'not_run', 'pass', 'fail'].map((status, index) => ({
+      id: `test-fixture-${index}`, planId: data.experimentPlans[0].id,
+      condition: index < 2 ? 'generation_security_none' : 'generation_security_all',
+      model: data.experimentPlans[0].model, repetition: index + 1,
+      evaluationSignature: 'same-test-environment',
+      checks: [{ id: definition.id, status, detail: 'Synthetic browser-test fixture' }],
+    }));
+    await route.fulfill({ response, json: data });
+  });
+  await page.goto('/');
+  const row = page.locator('.results-table tbody tr').first();
+  await expect(row).toContainText('100.0%');
+  await expect(row).toContainText('50.0%');
+  await expect(row.locator('td').last()).toHaveText('-50.0');
+  await row.getByRole('button').click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toContainText('Pass / all attempts');
+  await expect(dialog).toContainText('Synthetic browser-test fixture');
+  await expect(dialog.getByText('50.0%', { exact: true })).toHaveCount(2);
+});
