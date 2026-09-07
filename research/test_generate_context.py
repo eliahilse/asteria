@@ -100,5 +100,32 @@ class GenerationTests(unittest.TestCase):
             self.assertIsNone(done['output'])
             self.assertFalse(done['settingsVerified'])
 
+    def test_citation_feedback_and_numbered_reads_preserve_original_candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            record, snap, out = prepare(self.repo(root), 'Add highscore', 'task', root / 'runs')
+            finish = {'action': 'finish', 'summary': 'TEST FIXTURE', 'limitations': [], 'items': [
+                {'id': 'x', 'kind': 'existing_risk', 'topic': 'input', 'statement': 'Test claim', 'task_relevance': 'Test relevance',
+                 'cwes': [], 'suggested_check': 'Test check', 'evidence': [{'path': 'Score.java', 'start_line': 1, 'end_line': 1, 'quote': 'String input;'}]}]}
+            count = 0
+            def model(command, request, timeout):
+                nonlocal count
+                count += 1
+                self.assertEqual(request['response_format'], {'type': 'json_object'})
+                if count == 1: action = {'action': 'read', 'files': [{'path': 'Score.java', 'start_line': 1, 'end_line': 3}]}
+                else:
+                    self.assertIn('2:   String input;', json.dumps(request['messages']))
+                    action = json.loads(json.dumps(finish))
+                    if count == 3:
+                        self.assertIn('citationErrors', request['messages'][-1]['content'])
+                        action['items'][0]['evidence'][0].update(start_line=2, end_line=2)
+                return {'model': request['model'], 'request_id': request['request_id'], 'settings': request['settings'],
+                        'finish_reason': 'stop', 'output_text': json.dumps(action)}
+            with patch('research.generate_context.invoke', side_effect=model): done = execute(record, snap, out, ['test-only'])
+            self.assertEqual(done['status'], 'completed')
+            self.assertEqual(len(done['turns']), 3)
+            self.assertEqual(done['turns'][1]['candidateOutput']['items'][0]['citationStatus'], 'unmatched')
+            self.assertEqual(done['output']['items'][0]['citationStatus'], 'matched')
+
 
 if __name__ == '__main__': unittest.main()

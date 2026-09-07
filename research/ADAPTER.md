@@ -60,6 +60,13 @@ Response:
 }
 ```
 
+Context acquisition also sends `"response_format": {"type": "json_object"}`.
+Adapters used for this workflow must forward the requested structured response
+format. Context requests contain the complete multi-turn message history; each
+invocation still submits exactly one new model request. An adapter must not add
+context from other generations. If effective settings are not reported by the
+service, return `null` settings; context outputs retain that uncertainty.
+
 These are schema examples, not model observations. `null` temperature means omit
 the provider parameter. Return the served model and effective settings honestly;
 use `null` settings when unknown. Unknown/different settings or request IDs are

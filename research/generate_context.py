@@ -37,6 +37,7 @@ Return exactly one JSON object per turn, without Markdown fences, using one of t
 Search is case-insensitive literal matching, returning up to 80 lines. Read up to 5 ranges,
 240 lines each and 30000 characters total per turn. Use 1-based inclusive line numbers.
 Citations must quote exact text you actually inspected. Cite all repository-specific claims.
+Read/search excerpts have numbered lines. Exclude the line-number prefixes from quotes.
 Uncertainty is allowed; empty evidence is appropriate for an explicitly stated unknown.
 If a tool reports an error, adjust your request. Finish within the stated turn budget.
 '''
@@ -100,7 +101,8 @@ def execute(record: dict, snap: dict, directory: Path, command: list[str], *, ti
     try:
         for step in range(record['maxTurns']):
             request = {'protocol_version': 1, 'request_id': f"{record['id']}-turn-{step + 1}",
-                       'model': MODEL, 'settings': SETTINGS, 'messages': list(messages)}
+                       'model': MODEL, 'settings': SETTINGS, 'messages': list(messages),
+                       'response_format': {'type': 'json_object'}}
             turn = {'number': step + 1, 'status': 'started', 'request': request,
                     'requestSha256': digest(canonical(request)), 'startedAt': timestamp()}
             record['turns'].append(turn)
@@ -119,14 +121,26 @@ def execute(record: dict, snap: dict, directory: Path, command: list[str], *, ti
                 action = json.loads(response['output_text'])
                 if not isinstance(action, dict): raise ValueError('Return one JSON object')
                 if action.get('action') == 'finish':
-                    record['output'], record['citationChecks'] = validate_output(action, snap, inspected)
-                    record['status'] = 'completed' if record['settingsVerified'] else 'settings_unverified'
-                    break
-                result = operate(snap, action)
-                inspected.extend(result.get('excerpts', []))
+                    candidate, checks = validate_output(action, snap, inspected)
+                    turn['candidateOutput'] = candidate
+                    errors = [{'item': item['id'], 'evidence': e, 'error': 'Quote or line range does not match inspected source'}
+                              for item in candidate['items'] for e in item['evidence'] if not e['inspected']]
+                    if not errors or step == record['maxTurns'] - 1:
+                        record['output'], record['citationChecks'] = candidate, checks
+                        record['status'] = 'citation_issues' if errors else ('completed' if record['settingsVerified'] else 'settings_unverified')
+                        break
+                    result = {'citationErrors': errors, 'instruction': 'Check the numbered source lines and revise these citations. Retain uncertainty; do not invent quotes.'}
+                else:
+                    result = operate(snap, action)
+                    inspected.extend(result.get('excerpts', []))
+                    # The model sees explicit line numbers; matching uses the original snapshot text.
+                    result = {**result, 'excerpts': [{**e, 'text': '\n'.join(f'{e["start_line"] + n}: {line}' for n, line in enumerate(e['text'].splitlines()))}
+                                                    for e in result.get('excerpts', [])]}
             except (ValueError, TypeError, AttributeError) as error:
                 result = {'error': str(error)}
             turn['toolResult'] = result
+            shown = {(e['path'], n) for e in inspected for n in range(e['start_line'], e['end_line'] + 1)}
+            record.update(inspectedFiles=len({p for p, _ in shown}), inspectedLines=len(shown))
             messages.append({'role': 'user', 'content': json.dumps(result, ensure_ascii=False) +
                              f"\n{record['maxTurns'] - step - 1} turns remain; finish before the budget ends."})
             write_atomic(directory / 'record.json', record)
