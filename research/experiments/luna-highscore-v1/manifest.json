@@ -1,0 +1,1416 @@
+{
+  "analysis": {
+    "confounds": "The ablation fixes the legacy conflicting output suffix for every arm. Bridge prompts are exact historical payloads. Do not attribute bridge-to-ablation differences solely to context.",
+    "controls": "No prior model results or exact adversarial fixture data are provided in the ablation prompts.",
+    "primary": "Full functional success and all declared security properties pass / all attempts. Missing checks cannot establish success.",
+    "sampleCaveat": "Exploratory sizes, not a statistical power calculation. No claim of generalization from one feature.",
+    "secondary": [
+      "Main compilation / all attempts",
+      "Per-property pass, fail, unknown and unevaluated counts",
+      "Source-reviewed findings with reviewed denominator",
+      "Context facts, prompt tokens, output tokens and observed cost"
+    ],
+    "timing": "Randomized block schedule reduces temporal confounding. Schedule seed is not a model sampling seed."
+  },
+  "conditions": [
+    {
+      "baseContext": "S",
+      "contextTypes": [],
+      "factCount": 0,
+      "factIds": [],
+      "id": "bridge_generation_s",
+      "promptBytes": 288611,
+      "promptCharacters": 288561,
+      "promptFile": "prompts/2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749.txt",
+      "promptSha256": "2269a017bff239b221c8211336f68e3a416ca99458cc74390a599ceb87880749",
+      "promptTokens": null,
+      "repetitions": 5,
+      "source": "experiments/meeting_iteration_2/prompts/generation_s.txt",
+      "stage": "bridge",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "S",
+      "contextTypes": [
+        "legacy_mixed"
+      ],
+      "factCount": 5,
+      "factIds": [
+        "legacy-1",
+        "legacy-2",
+        "legacy-3",
+        "legacy-4",
+        "legacy-5"
+      ],
+      "id": "bridge_generation_s_security",
+      "promptBytes": 290335,
+      "promptCharacters": 290285,
+      "promptFile": "prompts/5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31.txt",
+      "promptSha256": "5a59ab252991407162fea4e1e8a0546a89f589523ed277afe7ee9e92d2b5ce31",
+      "promptTokens": null,
+      "repetitions": 5,
+      "source": "experiments/meeting_iteration_2/prompts/generation_s_security.txt",
+      "stage": "bridge",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [],
+      "factCount": 0,
+      "factIds": [],
+      "id": "generation_security_none",
+      "promptBytes": 141340,
+      "promptCharacters": 141290,
+      "promptFile": "prompts/5e65af0ce97a98eff7af5a22999a86a0d2a7097a0c3f57b5ce04addae2009884.txt",
+      "promptSha256": "5e65af0ce97a98eff7af5a22999a86a0d2a7097a0c3f57b5ce04addae2009884",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C1"
+      ],
+      "factCount": 12,
+      "factIds": [
+        "c1-17de6d3c16b764c9",
+        "c1-373b047fc9a0f395",
+        "c1-4424b65979da0c88",
+        "c1-698f3e8d8805f300",
+        "c1-9492f0eab87af60b",
+        "c1-b56f9c0ff137332b",
+        "c1-b61d782f8c8b8daf",
+        "c1-b69aa2c2b0d9651a",
+        "c1-c302147b36cfc7dd",
+        "c1-cf7fcb37f2a0cb2a",
+        "c1-dddfbcb32eab1efd",
+        "c1-e99ba7cf50081c88"
+      ],
+      "id": "generation_security_c1",
+      "promptBytes": 144340,
+      "promptCharacters": 144290,
+      "promptFile": "prompts/5f92d7228edd282c72a9c35e0ffa02ea7c04c836ecc95cd9b26661f6b50193d9.txt",
+      "promptSha256": "5f92d7228edd282c72a9c35e0ffa02ea7c04c836ecc95cd9b26661f6b50193d9",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C2"
+      ],
+      "factCount": 3,
+      "factIds": [
+        "c2-8072de132b4bf384",
+        "c2-9b3ee9bd3a4b0e44",
+        "c2-ca2cde872fdf3f93"
+      ],
+      "id": "generation_security_c2",
+      "promptBytes": 142325,
+      "promptCharacters": 142269,
+      "promptFile": "prompts/b19570263f984547952f9f9987820daae5e7dd9f5a002de2f8c7a1b8e95b2015.txt",
+      "promptSha256": "b19570263f984547952f9f9987820daae5e7dd9f5a002de2f8c7a1b8e95b2015",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C3"
+      ],
+      "factCount": 2,
+      "factIds": [
+        "c3-304929f2fdeb1da1",
+        "c3-ddc50123f02e22ff"
+      ],
+      "id": "generation_security_c3",
+      "promptBytes": 142014,
+      "promptCharacters": 141964,
+      "promptFile": "prompts/62d0970c61d9b6b9e14e2b2558a2b3e2ebe61495b01dde64ae292840a2cac0fa.txt",
+      "promptSha256": "62d0970c61d9b6b9e14e2b2558a2b3e2ebe61495b01dde64ae292840a2cac0fa",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C4"
+      ],
+      "factCount": 6,
+      "factIds": [
+        "c4-18182348126106e5",
+        "c4-214c0a2e932ef486",
+        "c4-6636f0b1751cb012",
+        "c4-6ee2e0d4fee4bcd8",
+        "c4-b96df2c19900a90c",
+        "c4-bceb79b3953e999a"
+      ],
+      "id": "generation_security_c4",
+      "promptBytes": 142916,
+      "promptCharacters": 142866,
+      "promptFile": "prompts/d88775355ec122288ea56066f41c14bc086ab2d7b950393fb70284e47efc80ae.txt",
+      "promptSha256": "d88775355ec122288ea56066f41c14bc086ab2d7b950393fb70284e47efc80ae",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "factCount": 23,
+      "factIds": [
+        "c1-17de6d3c16b764c9",
+        "c1-373b047fc9a0f395",
+        "c1-4424b65979da0c88",
+        "c1-698f3e8d8805f300",
+        "c1-9492f0eab87af60b",
+        "c1-b56f9c0ff137332b",
+        "c1-b61d782f8c8b8daf",
+        "c1-b69aa2c2b0d9651a",
+        "c1-c302147b36cfc7dd",
+        "c1-cf7fcb37f2a0cb2a",
+        "c1-dddfbcb32eab1efd",
+        "c1-e99ba7cf50081c88",
+        "c2-8072de132b4bf384",
+        "c2-9b3ee9bd3a4b0e44",
+        "c2-ca2cde872fdf3f93",
+        "c3-304929f2fdeb1da1",
+        "c3-ddc50123f02e22ff",
+        "c4-18182348126106e5",
+        "c4-214c0a2e932ef486",
+        "c4-6636f0b1751cb012",
+        "c4-6ee2e0d4fee4bcd8",
+        "c4-b96df2c19900a90c",
+        "c4-bceb79b3953e999a"
+      ],
+      "id": "generation_security_all",
+      "promptBytes": 147575,
+      "promptCharacters": 147519,
+      "promptFile": "prompts/435e1217e88893888213c865d8c1d35f38c04d7766fee23f3e791562320b843e.txt",
+      "promptSha256": "435e1217e88893888213c865d8c1d35f38c04d7766fee23f3e791562320b843e",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Generation"
+    },
+    {
+      "baseContext": "S+F+B",
+      "contextTypes": [],
+      "factCount": 0,
+      "factIds": [],
+      "id": "bridge_reuse_sfb",
+      "promptBytes": 677766,
+      "promptCharacters": 677708,
+      "promptFile": "prompts/82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9.txt",
+      "promptSha256": "82b72918e583f1bb21b40feb87e1d1115210f452393999101f48efd68cb878d9",
+      "promptTokens": null,
+      "repetitions": 5,
+      "source": "experiments/meeting_iteration_2/prompts/reuse_sfb.txt",
+      "stage": "bridge",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "S+F+B",
+      "contextTypes": [
+        "legacy_mixed"
+      ],
+      "factCount": 5,
+      "factIds": [
+        "legacy-1",
+        "legacy-2",
+        "legacy-3",
+        "legacy-4",
+        "legacy-5"
+      ],
+      "id": "bridge_reuse_sfb_security",
+      "promptBytes": 679490,
+      "promptCharacters": 679432,
+      "promptFile": "prompts/d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc.txt",
+      "promptSha256": "d13a141c375741764eb1a8e8ec44652126ceae7f8fe80d576b0d8def977de1bc",
+      "promptTokens": null,
+      "repetitions": 5,
+      "source": "experiments/meeting_iteration_2/prompts/reuse_sfb_security.txt",
+      "stage": "bridge",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [],
+      "factCount": 0,
+      "factIds": [],
+      "id": "reuse_security_none",
+      "promptBytes": 153179,
+      "promptCharacters": 153121,
+      "promptFile": "prompts/1968c1a725ab247050b7af4e3f2f1f015b16389df5a217190e20ad0f7eb7c78e.txt",
+      "promptSha256": "1968c1a725ab247050b7af4e3f2f1f015b16389df5a217190e20ad0f7eb7c78e",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C1"
+      ],
+      "factCount": 12,
+      "factIds": [
+        "c1-17de6d3c16b764c9",
+        "c1-373b047fc9a0f395",
+        "c1-4424b65979da0c88",
+        "c1-698f3e8d8805f300",
+        "c1-9492f0eab87af60b",
+        "c1-b56f9c0ff137332b",
+        "c1-b61d782f8c8b8daf",
+        "c1-b69aa2c2b0d9651a",
+        "c1-c302147b36cfc7dd",
+        "c1-cf7fcb37f2a0cb2a",
+        "c1-dddfbcb32eab1efd",
+        "c1-e99ba7cf50081c88"
+      ],
+      "id": "reuse_security_c1",
+      "promptBytes": 156179,
+      "promptCharacters": 156121,
+      "promptFile": "prompts/71cb0cafb7104a1f83ce50771453f5c2f40af2119886834d14df285664a2142a.txt",
+      "promptSha256": "71cb0cafb7104a1f83ce50771453f5c2f40af2119886834d14df285664a2142a",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C2"
+      ],
+      "factCount": 3,
+      "factIds": [
+        "c2-8072de132b4bf384",
+        "c2-9b3ee9bd3a4b0e44",
+        "c2-ca2cde872fdf3f93"
+      ],
+      "id": "reuse_security_c2",
+      "promptBytes": 154164,
+      "promptCharacters": 154100,
+      "promptFile": "prompts/33c874a3bf087b16a933ab9b2e5f08f36e5094685234caa88d753436b9264f95.txt",
+      "promptSha256": "33c874a3bf087b16a933ab9b2e5f08f36e5094685234caa88d753436b9264f95",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C3"
+      ],
+      "factCount": 2,
+      "factIds": [
+        "c3-304929f2fdeb1da1",
+        "c3-ddc50123f02e22ff"
+      ],
+      "id": "reuse_security_c3",
+      "promptBytes": 153853,
+      "promptCharacters": 153795,
+      "promptFile": "prompts/f6211a0f32ff3ce623f9676332c6802df737030fdd11ce565b22c56e39a609e7.txt",
+      "promptSha256": "f6211a0f32ff3ce623f9676332c6802df737030fdd11ce565b22c56e39a609e7",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C4"
+      ],
+      "factCount": 6,
+      "factIds": [
+        "c4-18182348126106e5",
+        "c4-214c0a2e932ef486",
+        "c4-6636f0b1751cb012",
+        "c4-6ee2e0d4fee4bcd8",
+        "c4-b96df2c19900a90c",
+        "c4-bceb79b3953e999a"
+      ],
+      "id": "reuse_security_c4",
+      "promptBytes": 154755,
+      "promptCharacters": 154697,
+      "promptFile": "prompts/4b1450fcae775862dbf42b7c141a22fccf4ad8d508867f207fc54b33cd921eac.txt",
+      "promptSha256": "4b1450fcae775862dbf42b7c141a22fccf4ad8d508867f207fc54b33cd921eac",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    },
+    {
+      "baseContext": "none",
+      "contextTypes": [
+        "C1",
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "factCount": 23,
+      "factIds": [
+        "c1-17de6d3c16b764c9",
+        "c1-373b047fc9a0f395",
+        "c1-4424b65979da0c88",
+        "c1-698f3e8d8805f300",
+        "c1-9492f0eab87af60b",
+        "c1-b56f9c0ff137332b",
+        "c1-b61d782f8c8b8daf",
+        "c1-b69aa2c2b0d9651a",
+        "c1-c302147b36cfc7dd",
+        "c1-cf7fcb37f2a0cb2a",
+        "c1-dddfbcb32eab1efd",
+        "c1-e99ba7cf50081c88",
+        "c2-8072de132b4bf384",
+        "c2-9b3ee9bd3a4b0e44",
+        "c2-ca2cde872fdf3f93",
+        "c3-304929f2fdeb1da1",
+        "c3-ddc50123f02e22ff",
+        "c4-18182348126106e5",
+        "c4-214c0a2e932ef486",
+        "c4-6636f0b1751cb012",
+        "c4-6ee2e0d4fee4bcd8",
+        "c4-b96df2c19900a90c",
+        "c4-bceb79b3953e999a"
+      ],
+      "id": "reuse_security_all",
+      "promptBytes": 159414,
+      "promptCharacters": 159350,
+      "promptFile": "prompts/5dca5e0d15fe05494ad53614293ca3b5c9a79f3dc49fedc27839f64bd966001f.txt",
+      "promptSha256": "5dca5e0d15fe05494ad53614293ca3b5c9a79f3dc49fedc27839f64bd966001f",
+      "promptTokens": null,
+      "repetitions": 10,
+      "source": "VaMoS no-context task + archived source attachments + frozen extraction",
+      "stage": "ablation",
+      "strategy": "Reuse"
+    }
+  ],
+  "contextFingerprint": "6c639fa7b110fca6f5d4f82dc39c15c91ef8157bae08f3183021e444ed2b60c2",
+  "fingerprint": "1005f3573fce7ae969615f35c3606b489c0eb016708c6850f77f4c5dbcdeea0f",
+  "id": "luna-highscore-v1",
+  "injection": "once before generation",
+  "maxOutputTokens": 65536,
+  "model": "gpt-5.6-luna",
+  "reasoning": "medium",
+  "schedule": [
+    {
+      "condition": "bridge_reuse_sfb",
+      "repetition": 1,
+      "runId": "luna_medium__bridge_reuse_sfb__r1",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb_security",
+      "repetition": 1,
+      "runId": "luna_medium__bridge_reuse_sfb_security__r1",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s",
+      "repetition": 1,
+      "runId": "luna_medium__bridge_generation_s__r1",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s_security",
+      "repetition": 1,
+      "runId": "luna_medium__bridge_generation_s_security__r1",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb_security",
+      "repetition": 2,
+      "runId": "luna_medium__bridge_reuse_sfb_security__r2",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s",
+      "repetition": 2,
+      "runId": "luna_medium__bridge_generation_s__r2",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb",
+      "repetition": 2,
+      "runId": "luna_medium__bridge_reuse_sfb__r2",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s_security",
+      "repetition": 2,
+      "runId": "luna_medium__bridge_generation_s_security__r2",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb",
+      "repetition": 3,
+      "runId": "luna_medium__bridge_reuse_sfb__r3",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s",
+      "repetition": 3,
+      "runId": "luna_medium__bridge_generation_s__r3",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s_security",
+      "repetition": 3,
+      "runId": "luna_medium__bridge_generation_s_security__r3",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb_security",
+      "repetition": 3,
+      "runId": "luna_medium__bridge_reuse_sfb_security__r3",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb",
+      "repetition": 4,
+      "runId": "luna_medium__bridge_reuse_sfb__r4",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb_security",
+      "repetition": 4,
+      "runId": "luna_medium__bridge_reuse_sfb_security__r4",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s",
+      "repetition": 4,
+      "runId": "luna_medium__bridge_generation_s__r4",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s_security",
+      "repetition": 4,
+      "runId": "luna_medium__bridge_generation_s_security__r4",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s",
+      "repetition": 5,
+      "runId": "luna_medium__bridge_generation_s__r5",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_generation_s_security",
+      "repetition": 5,
+      "runId": "luna_medium__bridge_generation_s_security__r5",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb_security",
+      "repetition": 5,
+      "runId": "luna_medium__bridge_reuse_sfb_security__r5",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "bridge_reuse_sfb",
+      "repetition": 5,
+      "runId": "luna_medium__bridge_reuse_sfb__r5",
+      "stage": "bridge",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_c1__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_c2__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_c4__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_c3__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_c4__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_none__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_c2__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_c1__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 1,
+      "runId": "luna_medium__reuse_security_all__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_all__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_c3__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 1,
+      "runId": "luna_medium__generation_security_none__r1",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_c2__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_c3__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_c3__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_all__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_c2__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_c1__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_c4__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_c4__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_none__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 2,
+      "runId": "luna_medium__generation_security_c1__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_all__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 2,
+      "runId": "luna_medium__reuse_security_none__r2",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_c2__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_none__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_c1__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_c1__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_c4__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_c3__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_c4__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_none__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_all__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_c3__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 3,
+      "runId": "luna_medium__generation_security_c2__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 3,
+      "runId": "luna_medium__reuse_security_all__r3",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_c1__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_all__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_c2__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_c1__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_c4__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_c4__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_none__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_all__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_c3__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_c3__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 4,
+      "runId": "luna_medium__generation_security_c2__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 4,
+      "runId": "luna_medium__reuse_security_none__r4",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_c2__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_c4__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_c4__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_c2__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_none__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_c1__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_c3__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_none__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_c3__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_c1__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 5,
+      "runId": "luna_medium__reuse_security_all__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 5,
+      "runId": "luna_medium__generation_security_all__r5",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_c2__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_c3__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_c3__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_none__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_c1__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_none__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_c4__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_all__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_c4__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_c1__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 6,
+      "runId": "luna_medium__generation_security_c2__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 6,
+      "runId": "luna_medium__reuse_security_all__r6",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_c1__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_c4__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_none__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_c2__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_all__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_none__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_c1__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_c3__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_c2__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_all__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 7,
+      "runId": "luna_medium__generation_security_c3__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 7,
+      "runId": "luna_medium__reuse_security_c4__r7",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_c4__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_c1__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_c2__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_c1__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_c3__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_c2__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_c3__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_all__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 8,
+      "runId": "luna_medium__reuse_security_none__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_c4__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_all__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 8,
+      "runId": "luna_medium__generation_security_none__r8",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_c2__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_none__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_c2__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_none__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_c1__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_c3__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_all__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_c4__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_c1__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 9,
+      "runId": "luna_medium__reuse_security_c3__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_c4__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 9,
+      "runId": "luna_medium__generation_security_all__r9",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c2",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_c2__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_all",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_all__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_all",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_all__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c1",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_c1__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_none",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_none__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c4",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_c4__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_none",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_none__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c1",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_c1__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c2",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_c2__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c4",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_c4__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "generation_security_c3",
+      "repetition": 10,
+      "runId": "luna_medium__generation_security_c3__r10",
+      "stage": "ablation",
+      "status": "planned"
+    },
+    {
+      "condition": "reuse_security_c3",
+      "repetition": 10,
+      "runId": "luna_medium__reuse_security_c3__r10",
+      "stage": "ablation",
+      "status": "planned"
+    }
+  ],
+  "scheduleSeed": 20260907,
+  "schemaVersion": 1,
+  "scope": "feature",
+  "sourceHashes": {
+    "research/prepare_experiment.py": "36fe4caf5cc6ce0bd97511dfe208b7290dba9790467806599b99fb8dd715b099",
+    "research/results/security-context-v1.json": "1ac3f62c8c9a9c9615ed18d1ae0ac6caf8547a80cff163bda8f946b1131fab73",
+    "vamos-artifact/Pipeline/Prompts.csv": "3ee9c747a4774e2c37c06a31ee586e67fe87b97f4f36aa1e7183ba16e75582c1"
+  },
+  "status": "planned",
+  "temperature": null
+}
