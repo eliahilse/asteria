@@ -54,7 +54,8 @@ def junit_checks(suite: str, output: str, exit_code: int | None) -> list[dict]:
 def response_from_observation(path: Path, manifest_path: Path) -> tuple[str, dict]:
     observation = json.loads(path.read_text())
     manifest = frozen_manifest(manifest_path)
-    if observation.get('status') != 'completed' or observation.get('manifestFingerprint') != manifest['fingerprint']:
+    allowed = ('completed', 'settings_unverified') if manifest.get('allowUnverifiedSettings') else ('completed',)
+    if observation.get('status') not in allowed or observation.get('manifestFingerprint') != manifest['fingerprint']:
         raise ValueError('Observation must be completed with matching frozen settings and manifest')
     row = next((r for r in manifest['schedule'] if r['runId'] == observation.get('runId')), None)
     if not row or row['condition'] != observation.get('condition'): raise ValueError('Unknown scheduled attempt')
@@ -66,9 +67,13 @@ def response_from_observation(path: Path, manifest_path: Path) -> tuple[str, dic
     if observation.get('request') != expected or observation.get('requestSha256') != digest(canonical(expected)):
         raise ValueError('Observation request differs from frozen request')
     response = validate_response(observation['response'])
-    if any(response.get(k) != expected[k] for k in ('model', 'request_id', 'settings')):
+    if any(response.get(k) != expected[k] for k in ('model', 'request_id')):
+        raise ValueError('Response model or request identity differs')
+    verified = response.get('settings') == expected['settings']
+    if not verified and not (manifest.get('allowUnverifiedSettings') and response.get('settings') is None):
         raise ValueError('Response settings are unverified')
-    return response['output_text'], {'runId': row['runId'], 'manifestFingerprint': manifest['fingerprint'], 'inputKind': 'model_observation'}
+    return response['output_text'], {'runId': row['runId'], 'manifestFingerprint': manifest['fingerprint'], 'inputKind': 'model_observation',
+                                    'settingsVerified': verified, 'requestedSettings': expected['settings']}
 
 
 def evaluate_response(text: str, output: Path, identity: dict | None = None) -> dict:
