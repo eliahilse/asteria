@@ -21,6 +21,21 @@ from research.run_experiment import frozen_manifest, timestamp, write_atomic
 from experiments.vamos_security_pilot import run_pilot as legacy
 
 
+def stable_import_index(gr):
+    """Never resolve a duplicate simple class name by filesystem traversal order."""
+    indexes, ambiguities = {}, {}
+    for game, directory in gr.GAME_PROJECTS.items():
+        candidates = {}
+        root = Path(directory)
+        for path in sorted(root.rglob('*.java')):
+            qualified = '.'.join(path.relative_to(root).with_suffix('').parts)
+            candidates.setdefault(path.stem, set()).add(qualified)
+        indexes[game] = {name: next(iter(values)) for name, values in candidates.items() if len(values) == 1}
+        ambiguities[game] = {name: sorted(values) for name, values in candidates.items() if len(values) > 1}
+    gr.import_index_per_game = indexes
+    return ambiguities
+
+
 def junit_checks(suite: str, output: str, exit_code: int | None) -> list[dict]:
     """Only infer unnamed passes after a consistent complete JUnit execution."""
     names = TEST_NAMES[suite]
@@ -78,7 +93,7 @@ def evaluate_response(text: str, output: Path, identity: dict | None = None) -> 
     report['environment'] = {'java': subprocess.check_output([str(jdk / 'java'), '-version'], stderr=subprocess.STDOUT, text=True).strip(),
                              'functionalHeap': '256 MiB', 'securityHeap': '64 MiB',
                              'displayConfigured': bool(os.environ.get('DISPLAY')),
-                             'transformations': 'Original author integration and pilot package/import repairs; exact sanitized files and diffs saved. No model repair.'}
+                             'transformations': 'Original author integration and pilot package/import repairs, with ambiguous simple class names excluded from automatic import resolution; exact sanitized files and diffs saved. No model repair.'}
     write_atomic(output / 'report.json', report)
     calls = []
     with tempfile.TemporaryDirectory(prefix='asteria-functional-') as directory:
@@ -91,7 +106,8 @@ def evaluate_response(text: str, output: Path, identity: dict | None = None) -> 
                 if Path(command[0]).name == 'javac': command = [str(jdk / 'javac'), '--release', '8', *command[1:]]
                 if Path(command[0]).name == 'java': command = [str(jdk / 'java'), '-Xmx256m', f'-Djava.io.tmpdir={work}', *command[1:]]
                 kwargs['env'] = {'PATH': str(jdk) + os.pathsep + '/usr/bin:/bin', 'LANG': 'en_US.UTF-8'}
-                if os.environ.get('DISPLAY'): kwargs['env']['DISPLAY'] = os.environ['DISPLAY']
+                for key in ('DISPLAY', 'XAUTHORITY'):
+                    if os.environ.get(key): kwargs['env'][key] = os.environ[key]
                 kwargs.setdefault('cwd', str(work))
                 try:
                     result = subprocess.run(command, *args, **kwargs)
@@ -108,6 +124,8 @@ def evaluate_response(text: str, output: Path, identity: dict | None = None) -> 
             legacy.Java8SubprocessProxy = JavaProcess
             with contextlib.redirect_stdout(io.StringIO()) as log:
                 gr = legacy.configure_author_harness()
+                gr.build_import_index = lambda: stable_import_index(gr)
+                report['ambiguousImports'] = gr.build_import_index()
                 auto, invoked = legacy.configure_supplementary(gr)
                 files = gr.extract_java_files(text)
                 if not files:

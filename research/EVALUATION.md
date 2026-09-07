@@ -25,6 +25,14 @@ unnamed tests can pass only after a consistent complete suite execution. Missing
 counts, initialization failures or aborted processes cannot backfill passes.
 The original author summaries are retained beside the stricter normalized checks.
 
+The original import index selected the last file with a given simple class name
+in filesystem traversal order. ApoMario contains two `ApoMarioAnalysis` classes;
+Linux and macOS selected different packages, and the Linux selection broke the
+reference output before test execution. The new evaluator excludes ambiguous
+names from automatic import repair, preserving explicit imports. Candidate
+packages are recorded in `ambiguousImports`. This is a declared harness correction
+for future evaluations; archived observations and upstream scripts stay intact.
+
 Functional JVMs use a 256 MiB heap and a private temporary directory; timeouts
 remain those of the original suites. Security checks use the existing v1
 protocol's 64 MiB heap, 15-second limits and freshly validated safe/weak controls.
