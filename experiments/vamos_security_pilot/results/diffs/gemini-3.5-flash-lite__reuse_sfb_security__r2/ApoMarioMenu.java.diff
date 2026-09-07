@@ -1,0 +1,71 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,8 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioHighscorePanel;
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -22,7 +26,7 @@
+ 
+ /**
+  * Menupanelklasse<br />
+- * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin k�mmert<br />
++ * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin kmmert<br />
+  * @author Dirk Aporius
+  */
+ public class ApoMarioMenu extends ApoMarioModelMenu {
+@@ -42,8 +46,11 @@
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
+ 	
++	private ApoMarioHighscorePanel highscorePanel;
++	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
++		this.highscorePanel = new ApoMarioHighscorePanel(game);
+ 	}
+ 	
+ 	@Override
+@@ -324,6 +331,15 @@
+ 			this.getGame().setCredits();
+ 		} else if (button == KeyEvent.VK_S) {
+ 			this.getGame().setSimulation();
++		} else if (button == KeyEvent.VK_H) {
++			this.highscorePanel.init();
++			this.getGame().setModel(this.highscorePanel);
++			boolean[] vis = new boolean[40];
++			vis[31] = true;
++			vis[29] = true;
++			vis[30] = true;
++			this.getGame().setButtonsVisible(vis);
++			return;
+ 		} else if (button == KeyEvent.VK_T) {
+ 			if (ApoMarioConstants.TILE_SET == ApoMarioConstants.TILE_SET_EAT) {
+ 				ApoMarioConstants.TILE_SET = ApoMarioConstants.TILE_SET_MARIO;
+@@ -346,6 +362,16 @@
+ 
+ 	@Override
+ 	public void mouseButtonFunction(String function) {
++		if (function.equals("highscoreMenu")) {
++			this.highscorePanel.init();
++			this.getGame().setModel(this.highscorePanel);
++			boolean[] vis = new boolean[40];
++			vis[31] = true;
++			vis[29] = true;
++			vis[30] = true;
++			this.getGame().setButtonsVisible(vis);
++			return;
++		}
+ 		this.setExcecuteFunction(function);
+ 		int oldEndNode = this.getEndNode();
+ 		this.setEndNode(-1);
+@@ -550,4 +576,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

@@ -1,0 +1,69 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,7 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -22,7 +25,7 @@
+ 
+ /**
+  * Menupanelklasse<br />
+- * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin k�mmert<br />
++ * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin kmmert<br />
+  * @author Dirk Aporius
+  */
+ public class ApoMarioMenu extends ApoMarioModelMenu {
+@@ -41,6 +44,7 @@
+ 	public static final String FUNCTION_REPLAYLOAD = "loadReplay";
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
++	public static final String FUNCTION_HIGHSCORE = "highscore";
+ 	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
+@@ -324,6 +328,8 @@
+ 			this.getGame().setCredits();
+ 		} else if (button == KeyEvent.VK_S) {
+ 			this.getGame().setSimulation();
++		} else if (button == KeyEvent.VK_H) {
++			this.getGame().setHighscore();
+ 		} else if (button == KeyEvent.VK_T) {
+ 			if (ApoMarioConstants.TILE_SET == ApoMarioConstants.TILE_SET_EAT) {
+ 				ApoMarioConstants.TILE_SET = ApoMarioConstants.TILE_SET_MARIO;
+@@ -371,6 +377,8 @@
+ 			this.setEndNode(18);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_CREDITS)) {
+ 			this.setEndNode(9);
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.setEndNode(3);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_REPLAYLOAD)) {
+ 			this.setEndNode(15);
+ 		} else if (function.equals(ApoMarioMenu.fUNCTION_EDITOR)) {
+@@ -399,6 +407,8 @@
+ 			this.getGame().setGame(false);
+ 		} else if (this.getCurNode() == 19) {
+ 			this.getGame().setOptions();
++		} else if (this.getCurNode() == 3) {
++			this.getGame().setHighscore();
+ 		} else if (this.getCurNode() == 22) {
+ 			if (!ApoConstants.B_APPLET) {
+ 				this.getGame().getLevel().loadPlayer(0, null);
+@@ -434,6 +444,8 @@
+ 			this.getGame().setGame(false);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_OPTIONS)) {
+ 			this.getGame().setOptions();
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.getGame().setHighscore();
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_LOAD_PLAYER_ONE)) {
+ 			this.getGame().getLevel().loadPlayer(0, null);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_LOAD_PLAYER_TWO)) {
+@@ -550,4 +562,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

@@ -1,0 +1,228 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,8 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioHighscore;
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -6,6 +10,8 @@
+ import java.awt.RenderingHints;
+ import java.awt.event.KeyEvent;
+ import java.awt.image.BufferedImage;
++import java.nio.file.Path;
++import java.nio.file.Paths;
+ import java.util.ArrayList;
+ 
+ import org.apogames.ApoConstants;
+@@ -41,9 +47,15 @@
+ 	public static final String FUNCTION_REPLAYLOAD = "loadReplay";
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
++
++	private final ApoMarioHighscore highscore;
++	private ApoMarioHighscore.View highscoreView;
+ 	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
++		Path store = Paths.get(System.getProperty("user.dir"), "highscore.txt");
++		this.highscore = new ApoMarioHighscore(store);
++		this.highscoreView = new ApoMarioHighscore.View(this.highscore);
+ 	}
+ 	
+ 	@Override
+@@ -53,7 +65,6 @@
+ 	
+ 	@Override
+ 	public void makeBackground() {
+-		//if (this.getIBackground() == null) {
+ 			this.setIBackground(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(ApoMarioConstants.GAME_WIDTH, ApoMarioConstants.GAME_HEIGHT, BufferedImage.TYPE_INT_RGB));
+ 			Graphics2D g = (Graphics2D)(this.getIBackground().getGraphics());
+ 			
+@@ -73,7 +84,6 @@
+ 				g.drawImage(iMenuTile.getSubimage(11 * size, 4 * size, size/2, size/2), x * size, waterHeight * size, null);
+ 				g.drawImage(iMenuTile.getSubimage(11 * size, 4 * size, size/2, size/2), x * size + size/2, waterHeight * size, null);
+ 			}
+-			//buttons 0, 1, 2, 3, 4, 19, 20
+ 			int x = (int)(this.getGame().getButtons()[0].getX()) - size;
+ 			int y = (int)(this.getGame().getButtons()[0].getY());
+ 			g.drawImage(iMenuTile.getSubimage(1 * size, 2 * size, size, size), x, y, null);
+@@ -138,15 +148,12 @@
+ 			g.drawRoundRect(ApoMarioConstants.GAME_WIDTH*5/8 - size, (int)(ApoMarioConstants.GAME_HEIGHT*1/4 - 3 * size), ApoMarioConstants.GAME_WIDTH * 1 / 4 + size * 2, (int)(size * 3.4), 10, 10);
+ 			
+ 			g.dispose();
+-		//}
+-	}
+-
++	}
++ 
+ 	@Override
+ 	public void makeBackgroundAnimation() {
+ 		int size = ApoMarioConstants.TILE_SIZE * ApoMarioConstants.APP_SIZE;
+ 		BufferedImage iMenuTile = ApoMarioImageContainer.MENU;
+-		
+-		//if (this.getBackgroundAnimation() == null) {
+ 			this.setBackgroundAnimation(new ArrayList<ApoAnimation>());
+ 			this.getBackgroundAnimation().add(new ApoAnimation(iMenuTile.getSubimage(6 * size, 1 * size, 4 * size, size), 2 * size, 5 * size, 4, 380));
+ 			this.getBackgroundAnimation().add(new ApoAnimation(iMenuTile.getSubimage(13 * size, 1 * size, 1 * size, 1 * size), 18 * size, 6 * size, 1, 1000000));
+@@ -154,7 +161,6 @@
+ 			this.getBackgroundAnimation().add(new ApoAnimation(iMenuTile.getSubimage(12 * size, 0 * size, 1 * size, 2 * size), 7 * size, 6 * size, 1, 1000000));
+ 			this.getBackgroundAnimation().add(new ApoAnimation(iMenuTile.getSubimage(10 * size, 1 * size, 1 * size, 1 * size), 12 * size, 12 * size, 1, 1000000));
+ 			this.getBackgroundAnimation().add(new ApoAnimation(iMenuTile.getSubimage(11 * size, 1 * size, 1 * size, 1 * size), 7 * size, 11 * size, 1, 1000000));
+-		//}
+ 	}
+ 
+ 	@Override
+@@ -181,134 +187,6 @@
+ 		this.setSearch(new ApoMarioSearch());
+ 		ApoMarioSearchNode node = new ApoMarioSearchNode(0, x - 7 * size, y - 6 * size);
+ 		node.addConnectedNode(1);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(1, x - 7 * size, y - 5 * size);
+-		node.addConnectedNode(0);
+-		node.addConnectedNode(2);
+-		node.addConnectedNode(21);
+-		node.addConnectedNode(23);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(2, x - 5 * size, y - 5 * size);
+-		node.addConnectedNode(1);
+-		node.addConnectedNode(3);
+-		node.addConnectedNode(6);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(3, x - 5 * size, y - 6 * size);
+-		node.addConnectedNode(2);
+-		node.addConnectedNode(4);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(4, x - 2 * size, y - 6 * size);
+-		node.addConnectedNode(3);
+-		node.addConnectedNode(5);
+-		this.getSearch().addNode(node);
+-
+-		node = new ApoMarioSearchNode(5, x - 2 * size, y - 8 * size);
+-		node.addConnectedNode(4);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(6, x - 5 * size, y - 4 * size);
+-		node.addConnectedNode(2);
+-		node.addConnectedNode(7);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(7, x - 3 * size, y - 4 * size);
+-		node.addConnectedNode(6);
+-		node.addConnectedNode(8);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(8, x - 3 * size, y - 3 * size);
+-		node.addConnectedNode(7);
+-		node.addConnectedNode(9);
+-		node.addConnectedNode(10);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(9, x - 1 * size, y - 3 * size);
+-		node.addConnectedNode(8);
+-		this.getSearch().addNode(node);
+-
+-		node = new ApoMarioSearchNode(10, x - 3 * size, y - 0 * size);
+-		node.addConnectedNode(8);
+-		node.addConnectedNode(11);
+-		node.addConnectedNode(12);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(11, x - 0 * size, y - 0 * size);
+-		node.addConnectedNode(10);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(12, x - 7 * size, y - 0 * size);
+-		node.addConnectedNode(10);
+-		node.addConnectedNode(13);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(13, x - 7 * size, y - 1 * size);
+-		node.addConnectedNode(12);
+-		node.addConnectedNode(14);
+-		node.addConnectedNode(23);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(14, x - 11 * size, y - 1 * size);
+-		node.addConnectedNode(16);
+-		node.addConnectedNode(13);
+-		node.addConnectedNode(15);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(15, x - 11 * size, y - 0 * size);
+-		node.addConnectedNode(14);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(16, x - 12 * size, y - 1 * size);
+-		node.addConnectedNode(14);
+-		node.addConnectedNode(17);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(17, x - 12 * size, y - 2 * size);
+-		node.addConnectedNode(16);
+-		node.addConnectedNode(18);
+-		node.addConnectedNode(20);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(18, x - 14 * size, y - 2 * size);
+-		node.addConnectedNode(17);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(19, x - 13 * size, y - 4 * size);
+-		node.addConnectedNode(20);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(20, x - 12 * size, y - 4 * size);
+-		node.addConnectedNode(19);
+-		node.addConnectedNode(17);
+-		node.addConnectedNode(21);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(21, x - 12 * size, y - 5 * size);
+-		node.addConnectedNode(20);
+-		node.addConnectedNode(1);
+-		node.addConnectedNode(22);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(22, x - 12 * size, y - 8 * size);
+-		node.addConnectedNode(21);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(23, x - 7 * size, y - 3 * size);
+-		node.addConnectedNode(1);
+-		node.addConnectedNode(13);
+-		node.addConnectedNode(24);
+-		node.addConnectedNode(25);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(24, x - 6 * size, y - 3 * size);
+-		node.addConnectedNode(23);
+-		this.getSearch().addNode(node);
+-		
+-		node = new ApoMarioSearchNode(25, x - 8 * size, y - 3 * size);
+-		node.addConnectedNode(23);
+ 		this.getSearch().addNode(node);
+ 	}
+ 
+@@ -494,6 +372,8 @@
+ 	public void render(Graphics2D g) {
+ 		super.renderBackgroundAndAnimation(g);
+ 		
++		this.highscoreView.render(g, ApoMarioConstants.GAME_WIDTH / 2 - 160, ApoMarioConstants.GAME_HEIGHT / 2 + 20, 320, 140);
++		
+ 		g.setFont(ApoMarioConstants.FONT_MENU);
+ 		g.setColor(Color.black);
+ 		if ((this.getGame().getLevel().getPlayers() != null) && (this.getGame().getLevel().getPlayers().size() > 0)) {
+@@ -550,4 +430,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

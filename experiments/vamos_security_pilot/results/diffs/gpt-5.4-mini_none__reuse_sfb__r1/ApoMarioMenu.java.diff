@@ -1,0 +1,69 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,7 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -41,6 +44,7 @@
+ 	public static final String FUNCTION_REPLAYLOAD = "loadReplay";
+ 	public static final String fUNCTION_EDITOR = "editor";
+ 	public static final String FUNCTION_EDITORLOAD = "editorLoad";
++	public static final String FUNCTION_HIGHSCORE = "highscore";
+ 	
+ 	public ApoMarioMenu(ApoMarioPanel game) {
+ 		super(game);
+@@ -324,6 +328,8 @@
+ 			this.getGame().setCredits();
+ 		} else if (button == KeyEvent.VK_S) {
+ 			this.getGame().setSimulation();
++		} else if (button == KeyEvent.VK_H) {
++			this.getGame().setHighscore();
+ 		} else if (button == KeyEvent.VK_T) {
+ 			if (ApoMarioConstants.TILE_SET == ApoMarioConstants.TILE_SET_EAT) {
+ 				ApoMarioConstants.TILE_SET = ApoMarioConstants.TILE_SET_MARIO;
+@@ -377,6 +383,8 @@
+ 			this.setEndNode(24);
+ 		} else if (function.equals(ApoMarioMenu.FUNCTION_EDITORLOAD)) {
+ 			this.setEndNode(25);
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.setEndNode(26);
+ 		}
+ 		if ((oldEndNode == this.getEndNode()) && (this.getEndNode() != -1)) {
+ 			this.getRunner().setX(this.getSearch().getNodes().get(oldEndNode).getX());
+@@ -421,6 +429,8 @@
+ 			if (!ApoConstants.B_APPLET) {
+ 				this.getGame().loadEditorLevel();
+ 			}
++		} else if (this.getCurNode() == 26) {
++			this.getGame().setHighscore();
+ 		}
+ 	}
+ 	
+@@ -462,6 +472,8 @@
+ 			}
+ 		} else if (function.equals(ApoMarioMenu.fUNCTION_EDITOR)) {
+ 			this.getGame().setEditor();
++		} else if (function.equals(ApoMarioMenu.FUNCTION_HIGHSCORE)) {
++			this.getGame().setHighscore();
+ 		}
+ 	}
+ 
+@@ -489,7 +501,7 @@
+ 	public void think(int delta) {
+ 		super.thinkRunnerAndAnimation(delta);
+ 	}
+-
++	
+ 	@Override
+ 	public void render(Graphics2D g) {
+ 		super.renderBackgroundAndAnimation(g);
+@@ -550,4 +562,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

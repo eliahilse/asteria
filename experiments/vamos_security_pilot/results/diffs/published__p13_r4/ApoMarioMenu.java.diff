@@ -1,0 +1,36 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,7 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -22,7 +25,7 @@
+ 
+ /**
+  * Menupanelklasse<br />
+- * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin k�mmert<br />
++ * Klasse, die das eigentliche Startmenu anzeigt und sich um die Auswertung der Events dadrin kmmert<br />
+  * @author Dirk Aporius
+  */
+ public class ApoMarioMenu extends ApoMarioModelMenu {
+@@ -333,7 +336,9 @@
+ 			ApoMarioImageContainer.setTileSet(ApoMarioConstants.TILE_SET);
+ 			this.getGame().restartLevel();
+ 			this.getGame().setMenu();
+-		}
++		} else if (button == KeyEvent.VK_H) {
++            this.getGame().setHighscore();
++        }
+ 		this.keyButtonReleasedArrowAndEnter(button, character);
+ 	}
+ 	
+@@ -550,4 +555,4 @@
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

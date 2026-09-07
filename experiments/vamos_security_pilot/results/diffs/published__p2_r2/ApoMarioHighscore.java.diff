@@ -1,0 +1,98 @@
+--- a/apoMario/game/panels/ApoMarioHighscore.java
++++ b/apoMario/game/panels/ApoMarioHighscore.java
+@@ -0,0 +1,95 @@
++package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioHighscore;
++import apoMario.game.panels.ApoMarioHighscoreEntry;
++
++import java.io.IOException;
++import java.io.ObjectInputStream;
++import java.io.ObjectOutputStream;
++import java.nio.file.Files;
++import java.nio.file.Path;
++import java.util.ArrayList;
++import java.util.Collections;
++import java.util.Comparator;
++import java.util.List;
++
++import apoMario.entity.ApoMarioPlayer;
++import apoMario.level.ApoMarioLevel;
++
++public class ApoMarioHighscore {
++    private Path store;
++    private List<ApoMarioHighscoreEntry> entries;
++
++    @SuppressWarnings("unchecked")
++    public ApoMarioHighscore(Path store) {
++        this.store = store;
++        this.entries = new ArrayList<>();
++        if (Files.exists(store)) {
++            try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(store))) {
++                this.entries = (List<ApoMarioHighscoreEntry>) ois.readObject();
++            } catch (Exception e) {
++                e.printStackTrace();
++            }
++        }
++    }
++
++    public boolean storeRun(int score, int survivalTime, String playerName) {
++        entries.add(new ApoMarioHighscoreEntry(score, survivalTime, playerName));
++        Collections.sort(entries, new Comparator<ApoMarioHighscoreEntry>() {
++            @Override
++            public int compare(ApoMarioHighscoreEntry a, ApoMarioHighscoreEntry b) {
++                return b.score - a.score;
++            }
++        });
++        return true;
++    }
++
++    public List<String> getPlayersNames() {
++        List<String> names = new ArrayList<>();
++        for (ApoMarioHighscoreEntry entry : entries) {
++            names.add(entry.name);
++        }
++        return names;
++    }
++
++    public List<Integer> getPlayersScores() {
++        List<Integer> scores = new ArrayList<>();
++        for (ApoMarioHighscoreEntry entry : entries) {
++            scores.add(entry.score);
++        }
++        return scores;
++    }
++
++    public List<Integer> getSurvivalTimes() {
++        List<Integer> times = new ArrayList<>();
++        for (ApoMarioHighscoreEntry entry : entries) {
++            times.add(entry.time);
++        }
++        return times;
++    }
++
++    public void persistAcrossRuns() {
++        try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(store))) {
++            oos.writeObject(entries);
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++    }
++
++    public void recordRunEnd(ApoMarioLevel level) {
++        ApoMarioPlayer bestPlayer = null;
++        for (ApoMarioPlayer p : level.getPlayers()) {
++            if (p.isBVisible() && (bestPlayer == null || p.getPoints() > bestPlayer.getPoints())) {
++                bestPlayer = p;
++            }
++        }
++        if (bestPlayer != null) {
++            String name = bestPlayer.getTeamName();
++            if (name == null || name.isEmpty()) {
++                name = "Player";
++            }
++            storeRun(bestPlayer.getPoints(), level.getPassedTime(), name);
++            persistAcrossRuns();
++        }
++    }
++}

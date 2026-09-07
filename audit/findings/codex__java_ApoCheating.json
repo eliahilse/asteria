@@ -1,0 +1,68 @@
+{
+  "variant": "ApoCheating",
+  "files_reviewed": 27,
+  "notable_files": [
+    "_from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java",
+    "_from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java",
+    "_from_jar_ApoCheating/apoCheating/ApoCheatingHudPanel.java",
+    "_from_jar_ApoCheating/apoCheating/ApoCheatingGoal.java",
+    "_from_jar_ApoCheating/apoCheating/ApoCheatingFinish.java"
+  ],
+  "findings": [
+    {
+      "id": "ApoCheating-01",
+      "title": "Unchecked .cheat grid dimensions allow heap exhaustion",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-789",
+      "file": "_from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java",
+      "line": 373,
+      "code_excerpt": "int y = in.readInt();\nint x = in.readInt();\nthis.aPlayground\t= new int[y][x];",
+      "entry_point": "A malicious local or downloaded .cheat file can be selected through the visible Load button at _from_jar_ApoCheating/apoCheating/ApoCheatingHudPanel.java:59,330-349. The default ${user.dir}/levels/Original1.cheat is also loaded automatically at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:99.",
+      "sink": "Attacker-controlled y and x values are used directly in the two-dimensional array allocation at _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:371-373.",
+      "data_path": "ApoCheatingHudPanel.load calls ApoCheatingGamePanel.load(null) at _from_jar_ApoCheating/apoCheating/ApoCheatingHudPanel.java:169-175; ApoCheatingGamePanel.load obtains the selected path and invokes ApoCheatingLoadSave.readLevel at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:157-180; readLevel reads the two integers and allocates the grid at _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:363-373.",
+      "attack_scenario": "An attacker creates a tiny ObjectOutputStream-format file whose first two primitive integers are both 1000000, names it with a .cheat extension, and convinces the victim to load it. The game attempts to allocate a 1000000-by-1000000 nested int array before reading any cells. Only EOFException and IOException are caught at _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:479-487, so OutOfMemoryError escapes and can terminate or render the game unusable.",
+      "reachable": true,
+      "preconditions": "The attacker must replace the automatically loaded Original1.cheat or persuade the user to select the crafted .cheat file. The JVM must run with a normal finite heap.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "Create oom.cheat with ObjectOutputStream, call writeInt(1000000) twice, and close it without adding grid cells. Run the game with a bounded heap such as -Xmx128m and select oom.cheat through Load. An OutOfMemoryError whose stack points to ApoCheatingLoadSave.java:373, followed by termination or an unusable UI, confirms the finding.",
+      "shared_component": true,
+      "_family": "codex",
+      "_variant": "ApoCheating",
+      "_log": "audit/runs/codex/java_ApoCheating.log"
+    },
+    {
+      "id": "ApoCheating-02",
+      "title": "File-controlled goal and finish values can force an immediate local win",
+      "category": "client_side_trust",
+      "cwe": "CWE-807",
+      "file": "_from_jar_ApoCheating/apoCheating/ApoCheatingGoal.java",
+      "line": 71,
+      "code_excerpt": "player.setCheat( player.getCheated() + this.plus );",
+      "entry_point": "The game accepts the startup level at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:99 or a user-selected .cheat file at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:157-180 without authenticating its gameplay values.",
+      "sink": "ApoCheatingFinish.isFinish treats a cheat value of at least 100, a matching file-controlled player identifier, and a file-controlled position as authoritative victory conditions at _from_jar_ApoCheating/apoCheating/ApoCheatingFinish.java:76-81; ApoCheatingGamePanel records and displays the winner at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:758-768.",
+      "data_path": "ApoCheatingLoadSave.readLevel reads player attributes at _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:426-436, the unrestricted goal plus value at :439-450, and finish position/player values at :465-474. The goal constructor stores plus at _from_jar_ApoCheating/apoCheating/ApoCheatingGoal.java:38-44. ApoCheatingGamePanel.action invokes the goal at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:631-638, which adds plus at ApoCheatingGoal.java:62-71. The next finish check reaches ApoCheatingFinish.java:76-81.",
+      "attack_scenario": "A local cheater creates a structurally valid 15-by-15 .cheat file with one player at (64,64), an overlapping goal whose plus is 100.0, and a matching finish point at the player's center. After loading and starting the level, the user presses the action key once. The goal sets progress to 100 and the next tick records a win. The gain is limited to the local victory/grade and Next UI rendered at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:854-949; no server-side score or account impact exists in the reviewed source.",
+      "reachable": true,
+      "preconditions": "The local user must edit or generate a valid .cheat file, keep its coordinates within the grid, load it, start play, and press the action key. Player and finish identifiers must match.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Generate a valid .cheat stream containing a 15-by-15 grid, zero teachers, one player at (64,64) with ID 1, one overlapping goal with plus 100.0, zero extras, and one finish at (75,75) for player 1. Load it, start play, and press Space once. A win overlay and grade on the following game tick confirm the trusted-local-state bypass.",
+      "shared_component": false,
+      "_family": "codex",
+      "_variant": "ApoCheating",
+      "_log": "audit/runs/codex/java_ApoCheating.log"
+    }
+  ],
+  "categories_checked_and_absent": [
+    "remote_code_loading",
+    "insecure_transport",
+    "untrusted_deserialization",
+    "path_traversal",
+    "information_disclosure",
+    "unsafe_native_call",
+    "legacy_sandbox_assumption",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 27 supplied Java files were opened. Although _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:368 constructs ObjectInputStream, readLevel uses only readInt, readDouble, readBoolean, and readUTF at :371-477 and never calls readObject, so gadget-based Java deserialization is not reachable. The AI is statically instantiated as human.Human at _from_jar_ApoCheating/apoCheating/ApoCheatingPlayer.java:3,35 rather than obtained through a custom class loader. ApoCheating-02 is deliberately low severity because the reviewed variant only renders the resulting win and grade locally at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:854-949."
+}

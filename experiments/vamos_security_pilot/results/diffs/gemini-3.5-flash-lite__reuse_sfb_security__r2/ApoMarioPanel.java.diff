@@ -1,0 +1,47 @@
+--- a/apoMario/game/ApoMarioPanel.java
++++ b/apoMario/game/ApoMarioPanel.java
+@@ -1,4 +1,11 @@
+ package apoMario.game;
++
++import apoMario.game.ApoMarioButtons;
++import apoMario.game.ApoMarioDebugFrame;
++import apoMario.game.ApoMarioMiniMap;
++import apoMario.game.ApoMarioPanel;
++import apoMario.game.ApoMarioReplay;
++import apoMario.game.ApoMarioReplayPlay;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -29,7 +36,7 @@
+ import apoMario.game.panels.ApoMarioSimulation;
+ 
+ /**
+- * Klasse, die sich um das eigentliche Spiel k�mmert und alle Objekt �berwacht, anspricht und steuert
++ * Klasse, die sich um das eigentliche Spiel kmmert und alle Objekt berwacht, anspricht und steuert
+  * @author Dirk Aporius
+  *
+  */
+@@ -209,6 +216,14 @@
+ 	
+ 	public void setBJump(boolean bJump) {
+ 		this.bJump = bJump;
++	}
++
++	public void setModel(ApoMarioModel model) {
++		this.model = model;
++	}
++
++	public void setButtonsVisible(boolean[] visible) {
++		this.setButtons(visible);
+ 	}
+ 
+ 	public void setMenu() {
+@@ -660,7 +675,7 @@
+ 	}
+ 
+ 	/**
+-	 * rendert die Anzeige f�r die FPS und die Thinkzeit
++	 * rendert die Anzeige fr die FPS und die Thinkzeit
+ 	 * @param g : das Graphicsobjekt
+ 	 */
+ 	private void renderFPS(Graphics2D g) {

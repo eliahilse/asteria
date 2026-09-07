@@ -1,0 +1,173 @@
+--- a/apoMario/level/ApoMarioLevel.java
++++ b/apoMario/level/ApoMarioLevel.java
+@@ -1,4 +1,7 @@
+ package apoMario.level;
++
++import apoMario.level.ApoMarioLevel;
++import apoMario.level.ApoMarioRandomLevel;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -17,11 +20,6 @@
+ import org.apogames.ApoConstants;
+ import org.apogames.entity.ApoAnimation;
+ 
+-import test.IcarusAI;
+-import test.Test;
+-import test.Test2;
+-import test.TestIf;
+-import test.TestSolve;
+ 
+ import apoMario.ApoMarioClassLoader;
+ import apoMario.ApoMarioComponent;
+@@ -46,6 +44,7 @@
+ import apoMario.game.ApoMarioPanel;
+ import apoMario.game.ApoMarioReplay;
+ import apoMario.game.ApoMarioReplayPlay;
++import apoMario.game.panels.ApoMarioHighscore;
+ 
+ /**
+  * Klasse, die ein Level darstellt
+@@ -68,7 +67,7 @@
+ 	
+ 	/** Breite des Levels */
+ 	private int width;
+-	/** H�he des Levels */
++	/** Hhe des Levels */
+ 	private int height;
+ 	
+ 	private long levelInt;
+@@ -174,7 +173,7 @@
+ 	}
+ 
+ 	/**
+-	 * gibt die Breite des Levels zur�ck
++	 * gibt die Breite des Levels zurck
+ 	 * @return die Breite des Levels
+ 	 */
+ 	public int getWidth() {
+@@ -182,7 +181,7 @@
+ 	}
+ 
+ 	/**
+-	 * gibt die H�he des Levels zur�ck
++	 * gibt die Hhe des Levels zurck
+ 	 * @return
+ 	 */
+ 	public int getHeight() {
+@@ -206,16 +205,16 @@
+ 	}
+ 
+ 	/**
+-	 * gibt eine ArrayList mit den Goodies zur�ck
+-	 * @return gibt eine ArrayList mit den Goodies zur�ck
++	 * gibt eine ArrayList mit den Goodies zurck
++	 * @return gibt eine ArrayList mit den Goodies zurck
+ 	 */
+ 	public ArrayList<ApoMarioEnemy> getGoodies() {
+ 		return this.goodies;
+ 	}
+ 
+ 	/**
+-	 * gibt eine Arraylist mit den Gegnern zur�ck
+-	 * @return gibt eine Arraylist mit den Gegnern zur�ck
++	 * gibt eine Arraylist mit den Gegnern zurck
++	 * @return gibt eine Arraylist mit den Gegnern zurck
+ 	 */
+ 	public ArrayList<ApoMarioEnemy> getEnemies() {
+ 		return this.enemies;
+@@ -269,7 +268,7 @@
+ 	}
+ 	
+ 	/**
+-	 * erstellt ein zuf�lliges Level
++	 * erstellt ein zuflliges Level
+ 	 * @param levelInt : Zufallszahl nach dem sich der Levelaufbau richtet
+ 	 */
+ 	public void makeLevel(long levelInt, boolean bNew, boolean bRealNew, int width, int difficulty) {
+@@ -951,15 +950,10 @@
+ 		if (this.playerOneAI == this.HUMAN_NO_PLAYER) {
+ 			this.AIOne = null;
+ 		} else if (this.playerOneAI == this.TEST_SLOW_PLAYER) {
+-			this.AIOne = new Test2();
+ 		} else if (this.playerOneAI == this.TEST_IF_PLAYER) {
+-			this.AIOne = new TestIf();
+ 		} else if (this.playerOneAI == this.TEST_FAST_PLAYER) {
+-			this.AIOne = new Test();
+ 		} else if (this.playerOneAI == this.TEST_SHORTI) {
+-			this.AIOne = new TestSolve();
+ 		} else if (this.playerOneAI == this.TEST_CHEATER) {
+-			this.AIOne = new IcarusAI();
+ 		}
+ 		ApoMarioConstants.AI_LEFT = String.valueOf(this.playerOneAI);
+ 		this.getPlayers().get(0).setAi(this.AIOne);
+@@ -995,15 +989,10 @@
+ 		if (this.playerTwoAI == this.HUMAN_NO_PLAYER) {
+ 			this.AITwo = null;
+ 		} else if (this.playerTwoAI == this.TEST_SLOW_PLAYER) {
+-			this.AITwo = new Test2();
+ 		} else if (this.playerTwoAI == this.TEST_FAST_PLAYER) {
+-			this.AITwo = new Test();
+ 		} else if (this.playerTwoAI == this.TEST_IF_PLAYER) {
+-			this.AITwo = new TestIf();
+ 		} else if (this.playerTwoAI == this.TEST_SHORTI) {
+-			this.AITwo = new TestSolve();
+ 		} else if (this.playerTwoAI == this.TEST_CHEATER) {
+-			this.AITwo = new IcarusAI();
+ 		}
+ 		this.players.get(1).setAi(null);
+ 		this.players.get(1).setAi(this.AITwo);
+@@ -1171,6 +1160,31 @@
+ 
+ 	public int getPassedTime() {
+ 		return (this.randomLevel.getTime() - this.time);
++	}
++
++	public void recordRunEnd(ApoMarioLevel level) {
++		if (level == null) {
++			return;
++		}
++		ArrayList<ApoMarioPlayer> list = level.getPlayers();
++		if (list == null || list.isEmpty()) {
++			return;
++		}
++		ApoMarioPlayer p1 = list.get(0);
++		if (p1 == null) {
++			return;
++		}
++		int score = p1.getPoints();
++		int passedMs = level.getPassedTime();
++		if (passedMs < 0) {
++			passedMs = 0;
++		}
++		int survivalTimeSec = passedMs / 1000;
++		String name = "Player One";
++		if (p1.getAi() != null && p1.getAi().getTeamName() != null && !p1.getAi().getTeamName().isEmpty()) {
++			name = p1.getAi().getTeamName();
++		}
++		AopMarioHighscoreDummy.record(score, survivalTimeSec, name);
+ 	}
+ 	
+ 	public void setAnalysis(boolean bWin) {
+@@ -1224,10 +1238,21 @@
+ 					playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+ 				}
+ 			}
++			recordRunEnd(this);
+ 			if (game.isBEditor()) {
+ 				game.setEditor();
+ 			} else {
+ 				game.setAnalysis();
++			}
++		}
++	}
++
++	private static class AopMarioHighscoreDummy {
++		public static void record(int score, int time, String name) {
++			try {
++				ApoMarioHighscore hs = new ApoMarioHighscore((ApoMarioPanel)null);
++				hs.storeRun(score, time, name);
++			} catch (Exception e) {
+ 			}
+ 		}
+ 	}

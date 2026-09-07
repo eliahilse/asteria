@@ -1,0 +1,70 @@
+{
+  "variant": "TutorVolley",
+  "files_reviewed": 15,
+  "notable_files": [
+    "tutorVolley/TutorVolleyClassLoader.java",
+    "tutorVolley/TutorVolleyPanelOptions.java",
+    "tutorVolley/TutorVolleyImage.java",
+    "tutorVolley/TutorVolleyMain.java",
+    "player/Human.java",
+    "player/Easy.java"
+  ],
+  "findings": [
+    {
+      "id": "TutorVolley-01",
+      "title": "Plugin 'Load Player' feature defines and instantiates arbitrary local .class files with full user privileges (no sandbox, no integrity check)",
+      "category": "remote_code_loading",
+      "cwe": "CWE-494",
+      "file": "tutorVolley/TutorVolleyClassLoader.java",
+      "line": 43,
+      "code_excerpt": "byte data[] = loadClassData(filename);\n\t\t\t\t\tc = defineClass (name, data, 0, data.length);",
+      "entry_point": "User-typed class name in the 'Load Player' JOptionPane shown by TutorVolleyPanelOptions.loadPlayer (tutorVolley/TutorVolleyPanelOptions.java:135-138), triggered by the LoadPlayerOne/LoadPlayerTwo buttons (handlers at TutorVolleyPanelOptions.java:236 and :257); additionally, any .class file placed in the './player' directory relative to the current working directory is a candidate payload.",
+      "sink": "ClassLoader.defineClass at tutorVolley/TutorVolleyClassLoader.java:43, followed immediately by Class.newInstance() at tutorVolley/TutorVolleyPanelOptions.java:147, which executes the loaded class's constructor.",
+      "data_path": "mouseReleased -> loadPlayer(player, null) [TutorVolleyPanelOptions.java:236/257] -> JOptionPane.showInputDialog returns attacker-influenced string res -> new TutorVolleyClassLoader(\"player\").loadClass(res) [line 146] -> overridden loadClass(name,resolve) [TutorVolleyClassLoader.java:25] maps name to filename via name.replace('.',File.separatorChar)+\".class\" [line 38] -> loadClassData [line 83] opens new File(\"player\", filename) with FileInputStream and readFully [lines 88-103] -> defineClass [line 43] -> back in PanelOptions line 147 c.newInstance() runs the constructor. Note that the bundled sample player player/Human.java:21 shows constructors execute real code against the host frame at instantiation time (addKeyListener on the main window).",
+      "attack_scenario": "This loader exists BY DESIGN so students can plug in AI classes, but it performs zero integrity or origin checking: (1) An attacker redistributes a trojanized student AI, e.g. 'SuperEasyAI.class', that in its constructor spawns a reverse shell or exfiltrates ~/.ssh; victims drop it into the game's 'player/' folder (or an archive containing it that they extract next to the jar) and click Load -> the constructor runs instantly with full OS-user privileges; the plain-JFrame app has no SecurityManager, so nothing constrains the bytecode. (2) Alternatively, a co-located attacker who can write into the game directory swaps Easy.class for a trojanized copy; the default startup path setAI() [TutorVolleyPanelOptions.java:64,82] instantiates it automatically on launch, giving code execution without any user interaction beyond starting the game.",
+      "reachable": true,
+      "preconditions": "Attacker must get a crafted .class file into the 'player' directory relative to the game's working directory (e.g. via shared archive, lab file share, or by being the local user), OR convince the user to paste/type the class name into the Load Player dialog. Unlike sibling corpus variants, there is NO network fetch here - the loader reads local disk only, so remote exploitation requires the file-drop/social-engineering step above.",
+      "severity": "medium",
+      "confidence": "high",
+      "validation_plan": "1) Create run-dir/player/, compile Evil.java implementing tutorVolley.TutorVolleyAI whose constructor writes a marker file to System.getProperty('user.home') (observable, harmless). 2) Launch tutorVolley.TutorVolleyMain, click a Load button, type 'Evil'. Expected: marker file appears the moment the dialog is confirmed (constructor ran via newInstance), proving defineClass+instantiate executes attacker bytecode with full privileges and no warning. 3) Repeat with the class named '../outside/Evil' placed one level above player/ to also confirm the unsanitized path join (see TutorVolley-02). 4) Integrity-check absence: corrupt one byte of a compiled AI class, reload - no hash/MAC comparison exists anywhere in the load path, so it still attempts to load.",
+      "shared_component": true,
+      "_family": "oxa",
+      "_variant": "TutorVolley",
+      "_log": "audit/runs/oxa/java_TutorVolley.log"
+    },
+    {
+      "id": "TutorVolley-02",
+      "title": "Class-name to filename mapping does not neutralize '/' or '..' allowing reads of .class files outside the player directory",
+      "category": "path_traversal",
+      "cwe": "CWE-22",
+      "file": "tutorVolley/TutorVolleyClassLoader.java",
+      "line": 38,
+      "code_excerpt": "String filename = name.replace ('.', File.separatorChar) + \".class\";",
+      "entry_point": "Same dialog string as TutorVolley-01: user-supplied class name passed to loadClass (only '.' is rewritten to File.separatorChar; '/', '..' and absolute-path components pass through untouched into new File(root, filename) at TutorVolleyClassLoader.java:88).",
+      "sink": "new FileInputStream(f) at tutorVolley/TutorVolleyClassLoader.java:99 feeding defineClass at line 43.",
+      "data_path": "showInputDialog -> loadClass(res) -> loadClass(name,false) line 38 builds filename -> loadClassData line 88 new File(\"player\", \"../../x/Y.class\") resolves outside the intended root -> readFully -> defineClass.",
+      "attack_scenario": "Theoretical only: the sole input source is the local user typing into the dialog, who already has full control of the machine, so no privilege boundary is crossed. Its practical significance is forward-looking: if a sibling variant (clone-and-own reuse of this Sun-tutorial-derived loader) ever feeds a network-supplied class name (e.g. from a get_level-style response) into this same loadClass, the missing sanitization turns into remote class-file retrieval from arbitrary local paths.",
+      "reachable": false,
+      "preconditions": "Requires local interactive access to the Load Player dialog; no remote or file-based path currently delivers an attacker-chosen class-name string.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Compile Pwn.class implementing TutorVolleyAI into <run-dir>/../outside/, launch the game, click Load, type '../outside/Pwn'. Observable result: the Pwn constructor executes although the file lies outside player/, demonstrating the traversal. Then confirm no other code path supplies names programmatically (grep shows loadClass called only from TutorVolleyPanelOptions.java:146).",
+      "shared_component": true,
+      "_family": "oxa",
+      "_variant": "TutorVolley",
+      "_log": "audit/runs/oxa/java_TutorVolley.log"
+    }
+  ],
+  "categories_checked_and_absent": [
+    "insecure_transport",
+    "untrusted_deserialization",
+    "unsafe_custom_parser",
+    "weak_integrity_check",
+    "unsafe_native_call",
+    "credential_or_secret_exposure",
+    "information_disclosure",
+    "legacy_sandbox_assumption",
+    "resource_exhaustion"
+  ],
+  "notes": "Smallest variant audited: 15 files total (11 game-logic classes in tutorVolley/, 2 sample AIs in player/, plus the classloader and image helper), all under <source-root>/Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/ - the corpus checkout nests the original absolute path; finding paths above are relative to that project dir. Verified absences by reading every file AND regex sweeps over the whole tree: no java.net usage at all (no apo-games.de HTTP endpoints, no highscore/level upload - a stark contrast to sibling variants), no MessageDigest/MD5, no ObjectInputStream, no save/level/replay formats (.cheat/.mar/.skunk/etc. absent), no System.load/JNI, no applet entry point (TutorVolleyMain.java:96-99 is the only entry, a plain JFrame main()), no secrets, no user.home/user.dir path building. Two near-findings rejected: (a) TutorVolleyImage.java:114 has an ImageIcon(BildName) branch loading images from arbitrary filesystem paths, but every one of the 11 setPicsMain call sites passes bLoad=false, making it dead code; (b) the AI think-time watchdog in TutorVolleyPlayer.java:208-222 (game stops if avg think >10ms or count>=5) is anti-cheat theater that a loaded AI trivially evades via worker threads - subsumed by TutorVolley-01 rather than a separate finding. The classloader header comment (line 10) admits it is lifted from the Sun Java tutorials ('Stammt aus den Sun JAVA-Tutorien'), i.e. textbook clone-and-own infrastructure duplicated across the corpus under per-variant names (here TutorVolleyClassLoader instead of ApoClassLoader), which is why both findings set shared_component=true. Deployment caveat: Class.newInstance() at TutorVolleyPanelOptions.java:147 throws InstantiationException on modern JDKs, so the plugin path silently fails on current Java - the vulnerable behavior manifests on the era-appropriate JREs this corpus targets."
+}

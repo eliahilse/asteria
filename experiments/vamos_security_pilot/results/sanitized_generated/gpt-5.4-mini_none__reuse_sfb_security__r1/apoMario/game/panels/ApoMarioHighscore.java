@@ -1,0 +1,185 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apogames.help.ApoHelp;
+
+/**
+ * Highscore board for ApoMario.
+ */
+public class ApoMarioHighscore {
+
+	private static final int MAX_ENTRIES = 10;
+	private static final int MAX_NAME_LENGTH = 32;
+
+	private final Path store;
+	private final ArrayList<String> playersNames;
+	private final ArrayList<Integer> playersScores;
+	private final ArrayList<Integer> survivalTimes;
+
+	public ApoMarioHighscore(Path store) {
+		this.store = store;
+		this.playersNames = new ArrayList<String>();
+		this.playersScores = new ArrayList<Integer>();
+		this.survivalTimes = new ArrayList<Integer>();
+		this.persistAcrossRuns();
+	}
+
+	public boolean storeRun(int score, int survivalTime, String playerName) {
+		if (score < 0) {
+			return false;
+		}
+		if (survivalTime < 0) {
+			return false;
+		}
+		if (playerName == null) {
+			return false;
+		}
+		playerName = playerName.trim();
+		if (playerName.length() <= 0) {
+			return false;
+		}
+		if (playerName.length() > MAX_NAME_LENGTH) {
+			playerName = playerName.substring(0, MAX_NAME_LENGTH);
+		}
+
+		int insertAt = this.playersScores.size();
+		for (int i = 0; i < this.playersScores.size(); i++) {
+			if (score > this.playersScores.get(i)) {
+				insertAt = i;
+				break;
+			}
+		}
+
+		this.playersNames.add(insertAt, playerName);
+		this.playersScores.add(insertAt, Integer.valueOf(score));
+		this.survivalTimes.add(insertAt, Integer.valueOf(survivalTime));
+
+		while (this.playersNames.size() > MAX_ENTRIES) {
+			int last = this.playersNames.size() - 1;
+			this.playersNames.remove(last);
+			this.playersScores.remove(last);
+			this.survivalTimes.remove(last);
+		}
+		this.persistAcrossRuns();
+		return true;
+	}
+
+	public List<String> getPlayersNames() {
+		return this.playersNames;
+	}
+
+	public List<Integer> getPlayersScores() {
+		return this.playersScores;
+	}
+
+	public List<Integer> getSurvivalTimes() {
+		return this.survivalTimes;
+	}
+
+	public void persistAcrossRuns() {
+		this.playersNames.clear();
+		this.playersScores.clear();
+		this.survivalTimes.clear();
+
+		if ((this.store == null) || (!Files.exists(this.store))) {
+			return;
+		}
+
+		try (BufferedReader reader = Files.newBufferedReader(this.store, StandardCharsets.UTF_8)) {
+			String line;
+			int count = 0;
+			while ((count < MAX_ENTRIES) && ((line = reader.readLine()) != null)) {
+				String[] parts = line.split("\\|", -1);
+				if (parts.length != 3) {
+					continue;
+				}
+				String name = parts[0];
+				if (name == null) {
+					continue;
+				}
+				name = name.trim();
+				if (name.length() <= 0 || name.length() > MAX_NAME_LENGTH) {
+					continue;
+				}
+				int score;
+				int time;
+				try {
+					score = Integer.parseInt(parts[1]);
+					time = Integer.parseInt(parts[2]);
+				} catch (NumberFormatException ex) {
+					continue;
+				}
+				if (score < 0 || time < 0) {
+					continue;
+				}
+				int insertAt = this.playersScores.size();
+				for (int i = 0; i < this.playersScores.size(); i++) {
+					if (score > this.playersScores.get(i)) {
+						insertAt = i;
+						break;
+					}
+				}
+				this.playersNames.add(insertAt, name);
+				this.playersScores.add(insertAt, Integer.valueOf(score));
+				this.survivalTimes.add(insertAt, Integer.valueOf(time));
+				count++;
+			}
+		} catch (IOException ex) {
+			this.playersNames.clear();
+			this.playersScores.clear();
+			this.survivalTimes.clear();
+		}
+		this.trimToMax();
+		this.saveToDisk();
+	}
+
+	private void trimToMax() {
+		while (this.playersNames.size() > MAX_ENTRIES) {
+			int last = this.playersNames.size() - 1;
+			this.playersNames.remove(last);
+			this.playersScores.remove(last);
+			this.survivalTimes.remove(last);
+		}
+	}
+
+	private void saveToDisk() {
+		if (this.store == null) {
+			return;
+		}
+		try {
+			Path parent = this.store.getParent();
+			if (parent != null) {
+				Files.createDirectories(parent);
+			}
+			try (BufferedWriter writer = Files.newBufferedWriter(this.store, StandardCharsets.UTF_8)) {
+				for (int i = 0; i < this.playersNames.size(); i++) {
+					writer.write(this.playersNames.get(i));
+					writer.write('|');
+					writer.write(String.valueOf(this.playersScores.get(i)));
+					writer.write('|');
+					writer.write(String.valueOf(this.playersTimesSafe(i)));
+					writer.newLine();
+				}
+			}
+		} catch (IOException ex) {
+		}
+	}
+
+	private int playersTimesSafe(int i) {
+		if ((i < 0) || (i >= this.survivalTimes.size())) {
+			return 0;
+		}
+		Integer value = this.survivalTimes.get(i);
+		return (value == null) ? 0 : value.intValue();
+	}
+}

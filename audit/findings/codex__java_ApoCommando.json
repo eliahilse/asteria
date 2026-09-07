@@ -1,0 +1,53 @@
+{
+  "variant": "ApoCommando",
+  "files_reviewed": 72,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/org/apogames/help/ApoClassLoader.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/org/apogames/ApoIO.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/org/apogames/help/ApoHelp.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/org/apogames/image/ApoImage.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/ApoMarioMain.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/ApoMarioApplet.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/ApoMarioImageContainer.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/panels/ApoMarioModel.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/panels/ApoMarioGame.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/apoCommando/level/ApoMarioLevel.java"
+  ],
+  "findings": [
+    {
+      "id": "ApoCommando-01",
+      "title": "Dormant helper loads and instantiates unverified classes",
+      "category": "remote_code_loading",
+      "cwe": "CWE-494",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando/org/apogames/help/ApoClassLoader.java",
+      "line": 69,
+      "code_excerpt": "\t\t\tURLClassLoader cl = new URLClassLoader( new URL[] { url } ); \n\t\t\tClass<?> c;\n\t\t\ttry {\n\t\t\t\t//System.out.println( this.getPath() + \"\" + this.getClassname() );\n\t\t\t\tc = cl.loadClass( this.getClassname() );\n\t\t\t    try {\n\t\t\t\t\treturn c.newInstance();",
+      "entry_point": "No attacker-controlled entry point exists in this variant. The only inputs are the public constructor's path and classname parameters (ApoClassLoader.java:19-22). No other source file constructs ApoClassLoader or calls getMyClass; the actual desktop bootstrap directly constructs ApoMarioPanel instead (ApoMarioMain.java:23-38).",
+      "sink": "URLClassLoader creation, ClassLoader.loadClass, and Class.newInstance at ApoClassLoader.java:69-75.",
+      "data_path": "Theoretical path only: ApoClassLoader(path, classname) at lines 19-22 -> setPath/setClassname at lines 36-53 -> getMyClass at line 62 -> local File or remote URL resolution at lines 65-69 -> loadClass/newInstance at lines 73-75. No game method invokes this chain.",
+      "attack_scenario": "This cannot be exploited through the supplied game's UI, network traffic, command line, or files. If a future clone or integration passes an attacker-controlled HTTP URL or user-writable directory and class name, the attacker places Evil.class there and causes getMyClass() to run; the class is loaded without authentication and its initializer or constructor executes with the game process's permissions.",
+      "reachable": false,
+      "preconditions": "Additional integration code must call the helper and allow the attacker to control path, classname, or the contents at a trusted path. Those conditions are absent from the supplied desktop and applet flows.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "Run `rg -n 'ApoClassLoader|getMyClass'` over the source and confirm that only ApoClassLoader.java contains references. To prove the latent sink, compile a public Evil class whose no-argument constructor writes a marker, place it in a temporary directory, set ApoConstants.B_APPLET=false, and invoke `new ApoClassLoader(tempDir, \"Evil\").getMyClass()` from a test harness. Creation of the marker proves execution. Set B_APPLET=true and serve Evil.class over HTTP to exercise the remote branch.",
+      "shared_component": true,
+      "_family": "codex",
+      "_variant": "ApoCommando",
+      "_log": "audit/runs/codex/java_ApoCommando.log"
+    }
+  ],
+  "categories_checked_and_absent": [
+    "insecure_transport",
+    "untrusted_deserialization",
+    "unsafe_custom_parser",
+    "path_traversal",
+    "client_side_trust",
+    "information_disclosure",
+    "resource_exhaustion",
+    "unsafe_native_call",
+    "legacy_sandbox_assumption",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "The source root contains only Java sources under the nested Users/eliahilse/Documents/GitHub/B/apogames/Java/ApoCommando path. ApoIO exposes generic file/URL operations (ApoIO.java:31-48 and 67-95), but it remains abstract (lines 18 and 62-105), has no subclass or call site here, and contains no apo-games.de endpoint. The MD5 helper at ApoHelp.java:305-314 also has no call site, so it is not an integrity finding. Live image loading uses fixed classpath names with bFile=false (ApoMarioImageContainer.java:45-68), not attacker-selected URLs or files. Keyboard level commands are capped at 15 characters (ApoMarioGame.java:47-67) and matched against built-in codes (ApoMarioModel.java:239-259); there is no save, replay, or downloaded-level parser. The godmode command mutates only local session state (ApoMarioGame.java:127-136) and deliberately records a cheater achievement (ApoMarioAchievements.java:15 and 102-106); because this variant has no score persistence or submission path, it was not classified as a client-side trust weakness."
+}

@@ -1,0 +1,89 @@
+--- a/apoMario/game/ApoMarioPanel.java
++++ b/apoMario/game/ApoMarioPanel.java
+@@ -1,4 +1,11 @@
+ package apoMario.game;
++
++import apoMario.game.ApoMarioButtons;
++import apoMario.game.ApoMarioDebugFrame;
++import apoMario.game.ApoMarioMiniMap;
++import apoMario.game.ApoMarioPanel;
++import apoMario.game.ApoMarioReplay;
++import apoMario.game.ApoMarioReplayPlay;
+ 
+ import java.awt.BasicStroke;
+ import java.awt.Color;
+@@ -23,13 +30,14 @@
+ import apoMario.game.panels.ApoMarioEditor;
+ import apoMario.game.panels.ApoMarioEditorIO;
+ import apoMario.game.panels.ApoMarioGame;
++import apoMario.game.panels.ApoMarioHighscore;
+ import apoMario.game.panels.ApoMarioMenu;
+ import apoMario.game.panels.ApoMarioModel;
+ import apoMario.game.panels.ApoMarioOptions;
+ import apoMario.game.panels.ApoMarioSimulation;
+ 
+ /**
+- * Klasse, die sich um das eigentliche Spiel k�mmert und alle Objekt �berwacht, anspricht und steuert
++ * Klasse, die sich um das eigentliche Spiel kmmert und alle Objekt berwacht, anspricht und steuert
+  * @author Dirk Aporius
+  *
+  */
+@@ -65,6 +73,8 @@
+ 	private ApoMarioCredits credits;
+ 
+ 	private ApoMarioSimulation simulation;
++	
++	private ApoMarioHighscore highscore;
+ 	
+ 	private ApoMarioModel model;
+ 	
+@@ -124,6 +134,9 @@
+ 		if (this.simulation == null) {
+ 			this.simulation = new ApoMarioSimulation(this);
+ 		}
++		if (this.highscore == null) {
++			this.highscore = new ApoMarioHighscore(this);
++		}
+ 		if (this.editorIO == null) {
+ 			this.editorIO = new ApoMarioEditorIO(this.getLevel());
+ 		}
+@@ -239,6 +252,19 @@
+ 		this.simulation.init();
+ 		
+ 		this.setButtons(ApoMarioConstants.BUTTON_SIMULATION);
++	}
++
++	public void setHighscore() {
++		this.setBPause(false);
++		this.model = this.highscore;
++		this.highscore.init();
++
++		boolean[] visible = new boolean[] {false, false, false, false, false, false, false, false, false, false, false, true};
++		this.setButtons(visible);
++	}
++
++	public ApoMarioHighscore getHighscore() {
++		return this.highscore;
+ 	}
+ 	
+ 	public ApoMarioMiniMap getMiniMap() {
+@@ -368,6 +394,10 @@
+ 		this.setButtons(ApoMarioConstants.BUTTON_ANALYSIS);
+ 		
+ 		this.iMenuBackground = this.getBackgroundImageWithRect(false);
++
++		if (this.highscore != null) {
++			this.highscore.recordRunEnd(this.getLevel());
++		}
+ 	}
+ 	
+ 	private BufferedImage getBackgroundImageWithRect(boolean bDown) {
+@@ -660,7 +690,7 @@
+ 	}
+ 
+ 	/**
+-	 * rendert die Anzeige f�r die FPS und die Thinkzeit
++	 * rendert die Anzeige fr die FPS und die Thinkzeit
+ 	 * @param g : das Graphicsobjekt
+ 	 */
+ 	private void renderFPS(Graphics2D g) {

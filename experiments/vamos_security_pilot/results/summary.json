@@ -1,0 +1,118 @@
+[
+  {
+    "model": "gemini-3.5-flash-lite",
+    "condition": "generation_s",
+    "strategy": "Generation",
+    "context": "S",
+    "security_context": false,
+    "n": 2,
+    "received": 2,
+    "compiled": 0,
+    "unit_pass": 0,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  },
+  {
+    "model": "gemini-3.5-flash-lite",
+    "condition": "generation_s_security",
+    "strategy": "Generation",
+    "context": "S",
+    "security_context": true,
+    "n": 2,
+    "received": 2,
+    "compiled": 0,
+    "unit_pass": 0,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  },
+  {
+    "model": "gemini-3.5-flash-lite",
+    "condition": "reuse_sfb",
+    "strategy": "Reuse",
+    "context": "S+F+B",
+    "security_context": false,
+    "n": 2,
+    "received": 2,
+    "compiled": 0,
+    "unit_pass": 0,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  },
+  {
+    "model": "gemini-3.5-flash-lite",
+    "condition": "reuse_sfb_security",
+    "strategy": "Reuse",
+    "context": "S+F+B",
+    "security_context": true,
+    "n": 2,
+    "received": 2,
+    "compiled": 0,
+    "unit_pass": 0,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  },
+  {
+    "model": "gpt-5.4-mini@none",
+    "condition": "generation_s",
+    "strategy": "Generation",
+    "context": "S",
+    "security_context": false,
+    "n": 2,
+    "received": 2,
+    "compiled": 2,
+    "unit_pass": 2,
+    "full_functional_success": 1,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {
+      "CWE-400": 2
+    }
+  },
+  {
+    "model": "gpt-5.4-mini@none",
+    "condition": "generation_s_security",
+    "strategy": "Generation",
+    "context": "S",
+    "security_context": true,
+    "n": 2,
+    "received": 2,
+    "compiled": 1,
+    "unit_pass": 1,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  },
+  {
+    "model": "gpt-5.4-mini@none",
+    "condition": "reuse_sfb",
+    "strategy": "Reuse",
+    "context": "S+F+B",
+    "security_context": false,
+    "n": 2,
+    "received": 2,
+    "compiled": 1,
+    "unit_pass": 1,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {
+      "CWE-400": 1
+    }
+  },
+  {
+    "model": "gpt-5.4-mini@none",
+    "condition": "reuse_sfb_security",
+    "strategy": "Reuse",
+    "context": "S+F+B",
+    "security_context": true,
+    "n": 2,
+    "received": 2,
+    "compiled": 0,
+    "unit_pass": 0,
+    "full_functional_success": 0,
+    "secure_functional_success_candidate": 0,
+    "security_candidate_compiled_runs_by_cwe": {}
+  }
+]

@@ -1,0 +1,3515 @@
+Reading additional input from stdin...
+OpenAI Codex v0.145.0
+--------
+[1mworkdir:[0m /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[1mmodel:[0m gpt-5.6-sol
+[1mprovider:[0m openai
+[1mapproval:[0m on-request
+[1msandbox:[0m read-only
+[1mreasoning effort:[0m max
+[1mreasoning summaries:[0m none
+[1msession id:[0m 01a033be-0138-7882-b8cd-3054f78b034a
+--------
+[36muser[0m
+You are performing a SECURITY AUDIT of one variant of the Apo-Games corpus, a
+family of ~26 cloned Java/Android games used as an academic case study for
+software product line research.
+
+TARGET VARIANT: TutorVolley
+SOURCE ROOT:    /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+
+Read the source yourself. Do not guess: every claim must cite a real file and
+line number that you actually opened.
+
+## What we are trying to learn
+
+This audit feeds research on how much *security-relevant context* an LLM needs
+in order to generate or reuse code safely. We therefore care about the
+CATEGORIES and the REACHABILITY of weaknesses, not a raw bug count. A finding is
+only useful to us if it is concrete enough that someone could try to reproduce
+it.
+
+## Ground rules (important)
+
+1. NO GENERIC ADVICE. "Input should be validated" with no specific call site is
+   worthless. Every finding must name the sink, the entry point, and the path
+   between them.
+2. DISTINGUISH REACHABLE FROM THEORETICAL. State plainly whether untrusted input
+   (network response, file on disk the user can edit, level/save file,
+   command-line arg) can actually reach the sink. If it cannot, say so and mark
+   it theoretical.
+3. THIS IS A DESKTOP/ANDROID GAME, NOT A SERVER. The relevant threat model is:
+   a malicious server or network attacker (these games talk plain HTTP), a
+   malicious/user-edited local file (saves, levels, replays), malicious
+   user-generated content downloaded from the shared level server, and a local
+   user tampering to cheat. Judge severity against THAT model. Do not inflate
+   findings by pretending there is a web endpoint.
+4. BE HONEST ABOUT ABSENCE. If a category genuinely does not appear in this
+   variant, say so. A credible "not present" is as valuable as a finding.
+5. NO DUPLICATES. Collapse the same root cause in the same file into one
+   finding.
+
+## Areas known to exist in this corpus (verify, do not assume)
+
+- Custom class loaders that fetch bytes and call `defineClass` (possible remote
+  or local code loading).
+- Plain-HTTP calls to `apo-games.de` endpoints such as `save_highscore.php`,
+  `save_level.php`, `get_level.php` (no TLS; score/level submission).
+- Custom binary/text save, level, and replay formats parsed by hand
+  (`.cheat`, `.mar`, `.skunk`, `.defence`, `.rep`).
+- `java.io.ObjectInputStream` use in at least one variant.
+- `MessageDigest` (often MD5) used around highscore/validation logic.
+- Applet entry points, JNI `System.load`, and file paths built from
+  `user.home` / `user.dir`.
+
+## Output format
+
+Think first, then emit ONE JSON object between the exact markers below and
+nothing after it. No markdown fences inside the markers.
+
+<<<JSON_BEGIN>>>
+{
+  "variant": "TutorVolley",
+  "files_reviewed": 0,
+  "notable_files": ["path relative to source root"],
+  "findings": [
+    {
+      "id": "TutorVolley-01",
+      "title": "short specific title",
+      "category": "one of: remote_code_loading | insecure_transport | untrusted_deserialization | unsafe_custom_parser | path_traversal | weak_integrity_check | client_side_trust | information_disclosure | resource_exhaustion | unsafe_native_call | legacy_sandbox_assumption | credential_or_secret_exposure | other",
+      "cwe": "CWE-XXX",
+      "file": "path relative to source root",
+      "line": 0,
+      "code_excerpt": "the actual line(s), verbatim, max 300 chars",
+      "entry_point": "where untrusted data originates",
+      "sink": "the dangerous operation reached",
+      "data_path": "how input reaches the sink; name the intermediate methods",
+      "attack_scenario": "concrete: what an attacker does, step by step, and what they gain",
+      "reachable": true,
+      "preconditions": "what must hold for this to work",
+      "severity": "critical | high | medium | low",
+      "confidence": "high | medium | low",
+      "validation_plan": "concrete steps to PROVE this is real: what to craft, what to run, what observable result confirms it",
+      "shared_component": true
+    }
+  ],
+  "categories_checked_and_absent": ["category names you actively looked for and did not find"],
+  "notes": "anything about this variant that matters but is not a finding"
+}
+<<<JSON_END>>>
+
+Set "shared_component" to true if the vulnerable file looks like cloned
+infrastructure shared with sibling variants (e.g. ApoClassLoader.java,
+ApoIO.java, ApoHelp.java), rather than logic unique to this game. This matters:
+we are measuring how flaws propagate through clone-and-own reuse.
+
+If you find nothing credible, return an empty "findings" array and explain why
+in "notes". An honest empty result is acceptable and useful.
+[35m[3mcodex[0m[0m
+I’ll trace each candidate from an actual input source to its sink, inspect the relevant callers and parsers, and separately record categories that are genuinely absent. I’ll keep theoretical issues distinct from attacker-reachable ones and cite only lines I opened.
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "pwd && rg --files -g 'AGENTS.md' -g '"'!build'"' -g '"'!target'"' -g '"'!out'"' && rg --files -g '"'!build'"' -g '"'!target'"' -g '"'!out'"'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[31m exited 1 in 0ms:[0m
+/Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'find .. -name AGENTS.md -print'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg --files -g '"'!build'"' -g '"'!target'"' -g '"'!out'"'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyAI.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyBall.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyEntity.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleySnow.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyTimer.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyButton.java
+Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyCircle2D.java
+
+[32m succeeded in 116ms:[0m
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'git status --short'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'find . -maxdepth 5 -type d -print'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'find . -maxdepth 5 -type f -print'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+[31m exited 128 in 119ms:[0m
+git: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+git: error: couldn't create cache file '/tmp/xcrun_db-T7MdHtUM' (errno=Operation not permitted)
+git: warning: confstr() failed with code 5: couldn't get path of DARWIN_USER_TEMP_DIR; using /tmp instead
+git: error: couldn't create cache file '/tmp/xcrun_db-pKKx6tj0' (errno=Operation not permitted)
+fatal: not a git repository (or any of the parent directories): .git
+
+[32m succeeded in 116ms:[0m
+.
+./Users
+./Users/eliahilse
+./Users/eliahilse/Documents
+./Users/eliahilse/Documents/GitHub
+./Users/eliahilse/Documents/GitHub/B
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'find . -type f -print'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyCircle2D.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyButton.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyTimer.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleySnow.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyEntity.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyBall.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyAI.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'wc -l $(rg --files -g '"'*.java')"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n -i \"URL|URLConnection|Http|Socket|defineClass|ClassLoader|ObjectInputStream|ObjectOutputStream|MessageDigest|MD5|System\\.load|System\\.getProperty|user\\.home|user\\.dir|File(Input|Output)?Stream|RandomAccessFile|DataInput|DataOutput|BufferedReader|InputStream|OutputStream|readLine|readObject|Runtime\\.getRuntime|ProcessBuilder|exec\\(|Applet|AccessController|SecurityManager|reflection|Class\\.forName|new File|Paths?\\.get|Scanner|Integer\\.parse|Double\\.parse|Long\\.parse|read\\(|write\\(|save|load|highscore|level|replay|\\.cheat|\\.mar|\\.skunk|\\.defence|\\.rep|apo-games\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 118ms:[0m
+     108 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java
+      57 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java
+     265 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java
+     209 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java
+      27 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyAI.java
+     480 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java
+     111 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java
+     101 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java
+     298 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyBall.java
+     145 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyEntity.java
+     332 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java
+      65 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleySnow.java
+      49 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyTimer.java
+     183 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyButton.java
+     123 Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyCircle2D.java
+    2553 total
+
+[32m succeeded in 103ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:50:		this.tutorVolleyButton[2]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ),  80, 150,  40, 25, "LoadPlayerOne" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:51:		this.tutorVolleyButton[3]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ), 280, 150,  40, 25, "LoadPlayerTwo" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:64:			this.loadPlayer( 1, "Human" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:82:			this.loadPlayer( 2, "Easy" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:130:	private void loadPlayer( int player, String s ) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:136:					"Class name:", "Load Player",
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:146:        	Class c = new TutorVolleyClassLoader("player").loadClass(res);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:186:				this.repaint();
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:206:				this.repaint();
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:232:				} else if ( "LoadPlayerOne".equals( function ) )
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:236:						this.loadPlayer( 1, null );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:253:				} else if ( "LoadPlayerTwo".equals( function ) )
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:257:						this.loadPlayer( 2, null );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:277:		this.repaint();
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:3:import java.io.DataInputStream;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:5:import java.io.FileInputStream;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:13:public class TutorVolleyClassLoader extends ClassLoader
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:17:	public TutorVolleyClassLoader (String rootDir)
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:25:	protected Class loadClass (String name, boolean resolve) 
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:32:			c = findLoadedClass (name);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:38:				String filename = name.replace ('.', File.separatorChar) + ".class";
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:42:					byte data[] = loadClassData(filename);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:43:					c = defineClass (name, data, 0, data.length);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:56:			// Since all support classes of loaded class use same class loader
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:83:	private byte[] loadClassData (String filename) 
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:88:		File f = new File (root, filename);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:99:		FileInputStream fis = new FileInputStream(f);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:100:		DataInputStream dis = new DataInputStream (fis);
+
+[35m[3mcodex[0m[0m
+The first concrete security boundary is the game’s “Load Player” feature: it accepts a class name, reads raw `.class` bytes from a relative `player` directory, and invokes `defineClass`. I’m now checking startup behavior and every call site to determine whether this is merely an explicit local plug-in mechanism or can be reached automatically or through path manipulation.
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 103 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 178 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 130 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 25 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 51 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 4 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 330 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 78 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 182 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 154 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 4 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 282 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 171 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 332 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 772 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 22 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 103 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 281 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 562 events
+[32m succeeded in 353ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.io.DataInputStream;
+     4	import java.io.File;
+     5	import java.io.FileInputStream;
+     6	import java.io.IOException;
+     7	
+     8	/**
+     9	 * Laedt JAVA-Klassen aus einen anzugebenden Verzeichnis.
+    10	 * Stammt aus den Sun JAVA-Tutorien.
+    11	 * Wird hier genutzt, um die Hamster neu zu laden.
+    12	 */
+    13	public class TutorVolleyClassLoader extends ClassLoader
+    14	{
+    15		private String root;
+    16	
+    17		public TutorVolleyClassLoader (String rootDir)
+    18		{
+    19			if (rootDir == null)
+    20				throw new IllegalArgumentException ("Null root directory");
+    21			root = rootDir;
+    22		}
+    23		
+    24		@SuppressWarnings("unchecked")
+    25		protected Class loadClass (String name, boolean resolve) 
+    26		throws ClassNotFoundException
+    27		{
+    28			Class c;
+    29			try
+    30			{
+    31	
+    32				c = findLoadedClass (name);
+    33	
+    34				if (c == null)
+    35				{
+    36					// Convert class name argument to filename
+    37					// Convert package names into subdirectories
+    38					String filename = name.replace ('.', File.separatorChar) + ".class";
+    39					
+    40					try
+    41					{
+    42						byte data[] = loadClassData(filename);
+    43						c = defineClass (name, data, 0, data.length);
+    44					} catch (IOException e)
+    45					{
+    46						// tritt auf, wenn die Datei nicht gefunden wurde
+    47					} catch (NoClassDefFoundError e)
+    48					{
+    49						// tritt auf, wenn die Datei gefunden wurde,
+    50						// aber eine Klasse enthaelt, die nicht dem Dateinamen
+    51						// enspricht (Windows findet Dateien
+    52						// auch bei falscher Gross-Klein-Schreibung)
+    53					}
+    54				}
+    55	
+    56				// Since all support classes of loaded class use same class loader
+    57				// must check subclass cache of classes for things like Object
+    58				if (c == null)
+    59				{
+    60					try
+    61					{
+    62						c = findSystemClass (name);
+    63					} catch (Exception e)
+    64					{
+    65					}
+    66				}
+    67	
+    68				if (c == null)
+    69				{
+    70					throw new ClassNotFoundException (name);
+    71				}
+    72				if (resolve)
+    73					resolveClass (c);
+    74	
+    75			} catch(Throwable ex)
+    76			{
+    77				throw new ClassNotFoundException (name);
+    78			}
+    79	
+    80			return c;
+    81		}
+    82	
+    83		private byte[] loadClassData (String filename) 
+    84		throws IOException
+    85		{
+    86	
+    87			// Create a file object relative to directory provided
+    88			File f = new File (root, filename);
+    89			
+    90			//System.out.println("f = "+f.toString());
+    91	
+    92			// Get size of class file
+    93			int size = (int)f.length();
+    94	
+    95			// Reserve space to read
+    96			byte buff[] = new byte[size];
+    97	
+    98			// Get stream to read from
+    99			FileInputStream fis = new FileInputStream(f);
+   100			DataInputStream dis = new DataInputStream (fis);
+   101	
+   102			// Read in data
+   103			dis.readFully (buff);
+   104	
+   105			// close stream
+   106			dis.close();
+   107	
+   108			// return data
+   109			return buff;
+   110		}
+   111	}
+
+[32m succeeded in 377ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Dimension;
+     4	import java.awt.image.BufferedImage;
+     5	
+     6	import javax.swing.JFrame;
+     7	import javax.swing.JPanel;
+     8	
+     9	/**
+    10	 * Startklasse, die das eigentliche Frame handelt
+    11	 * @author Dirk Aporius
+    12	 *
+    13	 */
+    14	public class TutorVolleyMain extends JFrame
+    15	{
+    16		private static final long serialVersionUID = 1L;
+    17	
+    18		private TutorVolleyPanelGame	tutorVolleyPanelGame;
+    19		private TutorVolleyPanelOptions	tutorVolleyPanelOptions;
+    20		
+    21		public static TutorVolleyMain	tutorVolleyMain;
+    22		
+    23		private JPanel					contentPanel;
+    24		
+    25		public TutorVolleyMain()
+    26		{
+    27			super();
+    28	
+    29			tutorVolleyMain	= this;
+    30			
+    31			this.setTitle( "=== TutorVolley ===" );
+    32			
+    33			this.setLayout( null );
+    34			this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    35			
+    36			TutorVolleyImage tutorVolleyImage	= new TutorVolleyImage();
+    37			BufferedImage	iBackground			= tutorVolleyImage.setPicsMain( "/images/background_christmas.jpg", false );
+    38			
+    39			this.tutorVolleyPanelOptions		= new TutorVolleyPanelOptions( this, iBackground );
+    40			this.tutorVolleyPanelOptions.setLocation( 0, 0 );
+    41			this.tutorVolleyPanelOptions.setSize( 400, 300 );
+    42	
+    43			this.tutorVolleyPanelGame			= new TutorVolleyPanelGame( this, iBackground );
+    44			this.tutorVolleyPanelGame.setLocation( 0, 0 );
+    45			this.tutorVolleyPanelGame.setSize( 400, 300 );
+    46			
+    47			this.tutorVolleyPanelOptions.setApoVolleyPanelGame( this.tutorVolleyPanelGame );
+    48			this.tutorVolleyPanelOptions.setAI();
+    49			
+    50			this.contentPanel		= this.tutorVolleyPanelOptions;
+    51			
+    52			this.add( this.contentPanel );
+    53			
+    54			this.setUndecorated( false );
+    55			this.setResizable( false );
+    56			
+    57			this.setIconImage( tutorVolleyImage.setPicsMain( "/images/ball.png", false ) );
+    58			
+    59			this.pack();
+    60			this.setLocationRelativeTo(null);
+    61			this.setVisible(true);
+    62		}
+    63		
+    64		public Dimension getPreferredSize()
+    65		{
+    66			return new Dimension( 400 + 6, 300 + 32);
+    67		}
+    68		
+    69		/**
+    70		 *	entfernt das jetztige JPanel und sagt, dass das aktuelle JPanel nun das Spielfeld ist
+    71		 */
+    72		public void setGame()
+    73		{
+    74			super.remove(this.contentPanel);
+    75			
+    76			this.contentPanel	= this.tutorVolleyPanelGame;
+    77			super.add(this.contentPanel);
+    78			super.validate();
+    79			this.tutorVolleyPanelGame.init();
+    80			this.contentPanel.repaint();	
+    81		}
+    82		
+    83		/**
+    84		 *	entfernt das jetztige JPanel und sagt, dass das aktuelle JPanel nun die Optionen darstellen
+    85		 */
+    86		public void setOptions()
+    87		{
+    88			this.tutorVolleyPanelGame.stop();
+    89			super.remove(this.contentPanel);
+    90			this.contentPanel	= this.tutorVolleyPanelOptions;
+    91			super.add(this.contentPanel);
+    92			super.validate();
+    93			this.contentPanel.repaint();
+    94		}
+    95		
+    96		public static void main( String[] args )
+    97		{
+    98			new TutorVolleyMain();
+    99		}
+   100	
+   101	}
+
+[32m succeeded in 427ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Color;
+     4	import java.awt.Graphics;
+     5	import java.awt.Graphics2D;
+     6	import java.awt.event.MouseEvent;
+     7	import java.awt.event.MouseListener;
+     8	import java.awt.event.MouseMotionListener;
+     9	import java.awt.image.BufferedImage;
+    10	import java.lang.reflect.InvocationTargetException;
+    11	
+    12	import javax.swing.JOptionPane;
+    13	import javax.swing.JPanel;
+    14	
+    15	/**
+    16	 * Klasse, die am Anfang aufgerufen wird und das OptionsPanel darstellt
+    17	 * @author Dirk Aporius
+    18	 *
+    19	 */
+    20	public class TutorVolleyPanelOptions extends JPanel implements MouseMotionListener, MouseListener
+    21	{
+    22		private static final long 	serialVersionUID = 1L;
+    23	
+    24		private TutorVolleyMain 	tutorVolleyMain;
+    25		
+    26		private BufferedImage		iBackground;
+    27		
+    28		private TutorVolleyButton[]	tutorVolleyButton;
+    29		
+    30		private String				playerName	= "";
+    31		
+    32		private TutorVolleyAI			tutorVolleyAI;
+    33		
+    34		private TutorVolleyPanelGame	tutorVolleyPanelGame;
+    35		
+    36		private TutorVolleyPlayer[]	tutorVolleyPlayer;
+    37		
+    38		public TutorVolleyPanelOptions( TutorVolleyMain tutorVolleyMain, BufferedImage iBackground )
+    39		{
+    40			super( true );
+    41			
+    42			this.tutorVolleyMain				= tutorVolleyMain;
+    43			this.iBackground				= iBackground;
+    44			
+    45			TutorVolleyImage	tutorVolleyImage	= new TutorVolleyImage();
+    46			
+    47			this.tutorVolleyButton			= new TutorVolleyButton[4];
+    48			this.tutorVolleyButton[0]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_quit.png", false ), 370, 270,  25, 25, "Quit" );
+    49			this.tutorVolleyButton[1]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_play.png", false ), 100,  50, 200, 50, "Play" );
+    50			this.tutorVolleyButton[2]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ),  80, 150,  40, 25, "LoadPlayerOne" );
+    51			this.tutorVolleyButton[3]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ), 280, 150,  40, 25, "LoadPlayerTwo" );
+    52			
+    53			this.addMouseListener( this );
+    54			this.addMouseMotionListener( this );
+    55		}
+    56		
+    57		/**
+    58		 * setzt die AI der beiden Spieler am Anfang auf eine bestimmt AI
+    59		 */
+    60		protected void setAI()
+    61		{
+    62			try
+    63			{
+    64				this.loadPlayer( 1, "Human" );
+    65			} catch (ClassNotFoundException e)
+    66			{
+    67				e.printStackTrace();
+    68			} catch (NoSuchMethodException e)
+    69			{
+    70				e.printStackTrace();
+    71			} catch (InstantiationException e)
+    72			{
+    73				e.printStackTrace();
+    74			} catch (IllegalAccessException e)
+    75			{
+    76				e.printStackTrace();
+    77			} catch (InvocationTargetException e)
+    78			{
+    79				e.printStackTrace();
+    80			}
+    81			try {
+    82				this.loadPlayer( 2, "Easy" );
+    83			} catch (ClassNotFoundException e) {
+    84				// TODO Auto-generated catch block
+    85				e.printStackTrace();
+    86			} catch (NoSuchMethodException e) {
+    87				// TODO Auto-generated catch block
+    88				e.printStackTrace();
+    89			} catch (InstantiationException e) {
+    90				// TODO Auto-generated catch block
+    91				e.printStackTrace();
+    92			} catch (IllegalAccessException e) {
+    93				// TODO Auto-generated catch block
+    94				e.printStackTrace();
+    95			} catch (InvocationTargetException e) {
+    96				// TODO Auto-generated catch block
+    97				e.printStackTrace();
+    98			}
+    99		}
+   100		
+   101		/**
+   102		 * gibt das SpielfeldPanel an das Optionspanel, damit die beide untereinander
+   103		 * kommunizieren k�nnen
+   104		 * @param tutorVolleyPanelGame
+   105		 */
+   106		protected void setApoVolleyPanelGame( TutorVolleyPanelGame tutorVolleyPanelGame )
+   107		{
+   108			this.tutorVolleyPanelGame		= tutorVolleyPanelGame;
+   109			this.tutorVolleyPlayer		= this.tutorVolleyPanelGame.getPlayer();
+   110		}
+   111		
+   112		/**
+   113		 * wird aufgerufen, wenn auf den Play-Button gedr�ckt wurde
+   114		 */
+   115		private void setGame()
+   116		{
+   117			this.tutorVolleyMain.setGame();
+   118		}
+   119		
+   120		/**
+   121		 * l�dt eine PlayerAI
+   122		 * @param player = f�r welchen Spieler
+   123		 * @param s = falls != NULL dann lade den �bergeben String
+   124		 * @throws ClassNotFoundException
+   125		 * @throws NoSuchMethodException
+   126		 * @throws InstantiationException
+   127		 * @throws IllegalAccessException
+   128		 * @throws InvocationTargetException
+   129		 */
+   130		private void loadPlayer( int player, String s ) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+   131		{
+   132			String res;
+   133			if ( s == null )
+   134			{
+   135				res = (String) JOptionPane.showInputDialog(this,
+   136						"Class name:", "Load Player",
+   137						JOptionPane.QUESTION_MESSAGE, null, null,
+   138						this.playerName);
+   139				if (res==null || res.length()<=0)
+   140					return;
+   141			} else
+   142				res	= s;
+   143	        try
+   144	        {
+   145	        	this.playerName	= res;
+   146	        	Class c = new TutorVolleyClassLoader("player").loadClass(res);
+   147	    		Object o = c.newInstance();
+   148	    		this.tutorVolleyAI = (TutorVolleyAI)o;
+   149	    		//if ( s == null )
+   150	    			this.setAI( this.tutorVolleyAI, player );
+   151			} catch (SecurityException e)
+   152			{
+   153				e.printStackTrace();
+   154			} catch (IllegalArgumentException e)
+   155			{
+   156				e.printStackTrace();
+   157			}
+   158		}
+   159		
+   160		/**
+   161		 * setzt die PlayerAI im Spielfeld
+   162		 * @param tutorVolleyAI = SpielerAI
+   163		 * @param player = welcher Spieler
+   164		 */
+   165		private void setAI( TutorVolleyAI tutorVolleyAI, int player )
+   166		{
+   167			if ( this.tutorVolleyPanelGame == null )
+   168				return;
+   169			this.tutorVolleyPanelGame.setAI( player, tutorVolleyAI );
+   170		}
+   171		
+   172		public void mouseDragged(MouseEvent arg0) {}
+   173	
+   174		/**
+   175		 * was passiert, wenn die Maus bewegt wurde
+   176		 */
+   177		public void mouseMoved(MouseEvent e)
+   178		{
+   179			int x	= e.getX();
+   180			int y	= e.getY();
+   181			
+   182			for ( int i = 0; i < this.tutorVolleyButton.length; i++ )
+   183			{
+   184				if ( this.tutorVolleyButton[i].getMove( x, y ) )
+   185				{
+   186					this.repaint();
+   187					return;
+   188				}
+   189			}
+   190		}
+   191	
+   192		public void mouseClicked(MouseEvent e) {}
+   193	
+   194		/**
+   195		 * was passiert, wenn eine Maustaste gedr�ckt wurde
+   196		 */
+   197		public void mousePressed(MouseEvent e)
+   198		{
+   199			int x	= e.getX();
+   200			int y	= e.getY();
+   201			
+   202			for ( int i = 0; i < this.tutorVolleyButton.length; i++ )
+   203			{
+   204				if ( this.tutorVolleyButton[i].getPressed( x, y ) )
+   205				{
+   206					this.repaint();
+   207					return;
+   208				}
+   209			}
+   210		}
+   211	
+   212		/**
+   213		 * was passiert, wenn eine Maustaste losgelassen wurde
+   214		 */
+   215		public void mouseReleased(MouseEvent e)
+   216		{
+   217			int x	= e.getX();
+   218			int y	= e.getY();
+   219			
+   220			for ( int i = 0; i < this.tutorVolleyButton.length; i++ )
+   221			{
+   222				if ( this.tutorVolleyButton[i].getReleased( x, y ) )
+   223				{
+   224					String function	= this.tutorVolleyButton[i].getFunction();
+   225					if ( "Quit".equals( function ) )
+   226					{
+   227						System.exit( 0 );
+   228					} else if ( "Play".equals( function ) )
+   229					{
+   230						this.setGame();
+   231						return;
+   232					} else if ( "LoadPlayerOne".equals( function ) )
+   233					{
+   234						try
+   235						{
+   236							this.loadPlayer( 1, null );
+   237						} catch (ClassNotFoundException ex)
+   238						{
+   239							ex.printStackTrace();
+   240						} catch (NoSuchMethodException ex)
+   241						{
+   242							ex.printStackTrace();
+   243						} catch (InstantiationException ex)
+   244						{
+   245							ex.printStackTrace();
+   246						} catch (IllegalAccessException ex)
+   247						{
+   248							ex.printStackTrace();
+   249						} catch (InvocationTargetException ex)
+   250						{
+   251							ex.printStackTrace();
+   252						}
+   253					} else if ( "LoadPlayerTwo".equals( function ) )
+   254					{
+   255						try
+   256						{
+   257							this.loadPlayer( 2, null );
+   258						} catch (ClassNotFoundException ex)
+   259						{
+   260							ex.printStackTrace();
+   261						} catch (NoSuchMethodException ex)
+   262						{
+   263							ex.printStackTrace();
+   264						} catch (InstantiationException ex)
+   265						{
+   266							ex.printStackTrace();
+   267						} catch (IllegalAccessException ex)
+   268						{
+   269							ex.printStackTrace();
+   270						} catch (InvocationTargetException ex)
+   271						{
+   272							ex.printStackTrace();
+   273						}
+   274					}
+   275				}
+   276			}
+   277			this.repaint();
+   278		}
+   279	
+   280		public void mouseEntered(MouseEvent e) {}
+   281	
+   282		public void mouseExited(MouseEvent e) {}
+   283		
+   284	
+   285	
+   286		/**
+   287		 * malt das eigentliche OptionsPanel
+   288		 */
+   289		public void paintComponent(Graphics g) 
+   290		{
+   291			super.paintComponent(g);
+   292			
+   293			Graphics2D gfx	= (Graphics2D)g;
+   294			
+   295			gfx.setColor( Color.BLACK );
+   296			gfx.fillRect( 0, 0, this.getWidth(), this.getHeight() );
+   297			
+   298			gfx.drawImage( this.iBackground,  0,   0, this );
+   299			if ( this.tutorVolleyPlayer != null )
+   300			{
+   301				String s	= "empty";
+   302				if ( this.tutorVolleyPlayer[0].getName() != null )
+   303					s	= this.tutorVolleyPlayer[0].getName();
+   304				int w = g.getFontMetrics().stringWidth( s );
+   305				gfx.drawString( s, 100 - w/2, 205 );
+   306				s	= "empty";
+   307				if ( this.tutorVolleyPlayer[0].getAuthorName() != null )
+   308					s	= this.tutorVolleyPlayer[0].getAuthorName();
+   309				w = g.getFontMetrics().stringWidth( s );
+   310				gfx.drawString( s, 100 - w/2, 290 );
+   311				gfx.drawImage( this.tutorVolleyPlayer[0].getIBackground(),  84, 215, this );
+   312				
+   313				s	= "empty";
+   314				if ( this.tutorVolleyPlayer[1].getName() != null )
+   315					s	= this.tutorVolleyPlayer[1].getName();
+   316				w = g.getFontMetrics().stringWidth( s );
+   317				gfx.drawString( s, 300 - w/2, 205 );
+   318				s	= "empty";
+   319				if ( this.tutorVolleyPlayer[1].getAuthorName() != null )
+   320					s	= this.tutorVolleyPlayer[1].getAuthorName();
+   321				w = g.getFontMetrics().stringWidth( s );
+   322				gfx.drawString( s, 300 - w/2, 290 );
+   323				gfx.drawImage( this.tutorVolleyPlayer[1].getIBackground(), 284, 215, this );
+   324			}
+   325			
+   326			for ( int i = 0; i < this.tutorVolleyButton.length; i++ )
+   327			{
+   328				this.tutorVolleyButton[i].render( gfx );
+   329			}
+   330		}
+   331	
+   332	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyAI.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 307 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 495 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 230 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 431 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 387 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 8 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 57 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 26 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 26 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 128 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 156 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 2 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 12 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 25 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 171 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 22 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 45 events
+[32m succeeded in 146ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Color;
+     4	import java.awt.Font;
+     5	import java.awt.Graphics;
+     6	import java.awt.Graphics2D;
+     7	import java.awt.RenderingHints;
+     8	import java.awt.event.KeyEvent;
+     9	import java.awt.event.KeyListener;
+    10	import java.awt.image.BufferedImage;
+    11	//import java.awt.image.VolatileImage;
+    12	import java.util.ArrayList;
+    13	import java.util.concurrent.TimeUnit;
+    14	
+    15	import javax.swing.JPanel;
+    16	import java.util.Timer;
+    17	
+    18	/**
+    19	 * Klasse, die das eigentliches Spielpanel darstellt
+    20	 * @author Dirk Aporius
+    21	 *
+    22	 */
+    23	public class TutorVolleyPanelGame extends JPanel implements KeyListener
+    24	{
+    25		private static final long 			serialVersionUID = 1L;
+    26		
+    27		public final int					WAIT_TIME	= 25;
+    28		public final static int				PLAYER_ONE	= 1;
+    29		public final static int				PLAYER_TWO	= 2;
+    30		public final static int				BALL		= 3;
+    31		
+    32		private TutorVolleyMain 			tutorVolleyMain;
+    33		
+    34		private BufferedImage				iBackground, iTime, iWin;
+    35		//private VolatileImage				iVol;
+    36	
+    37		private long						time;//, timePoint;
+    38		
+    39		private boolean						bThread, bWin;
+    40		
+    41		private int							playerWin, thinkCount;
+    42		
+    43		private TutorVolleyPlayer[]			tutorVolleyPlayer;
+    44		
+    45		private TutorVolleyBall				tutorVolleyBall;
+    46		
+    47		private Font						fontBig;
+    48		
+    49		private ArrayList<TutorVolleySnow>	tutorVolleySnow;
+    50		
+    51		private TutorVolleyTimer			tutorVolleyTimer;
+    52		
+    53		public TutorVolleyPanelGame( TutorVolleyMain tutorVolleyMain, BufferedImage iBackground )
+    54		{
+    55			super( true );
+    56			
+    57			this.tutorVolleyMain		= tutorVolleyMain;
+    58			this.iBackground			= iBackground;
+    59			
+    60			TutorVolleyImage	tutorVolleyImage	= new TutorVolleyImage();
+    61			
+    62			this.iTime						= tutorVolleyImage.setPicsMain( "/images/time.png", false );
+    63			this.iWin						= tutorVolleyImage.setPicsMain( "/images/win.png", false );
+    64			
+    65			this.tutorVolleyPlayer			= new TutorVolleyPlayer[2];
+    66			this.tutorVolleyPlayer[0]		= new TutorVolleyPlayer( tutorVolleyImage.setPicsMain( "/images/player_one.png", false ),  34, 215, 33, 45  );
+    67			this.tutorVolleyPlayer[1]		= new TutorVolleyPlayer( tutorVolleyImage.setPicsMain( "/images/player_two.png", false ), 334, 215, 33, 45  );
+    68			this.tutorVolleyPlayer[0].setEnemy( this.tutorVolleyPlayer[1] );
+    69			this.tutorVolleyPlayer[1].setEnemy( this.tutorVolleyPlayer[0] );
+    70			
+    71			this.tutorVolleyBall			= new TutorVolleyBall( tutorVolleyImage.setPicsMain( "/images/ball.png", false ),  84, 150, 32, 32  );
+    72			
+    73			this.fontBig					= new Font( "Dialog", Font.BOLD, 20 );
+    74			
+    75			this.tutorVolleyTimer			= new TutorVolleyTimer( this );
+    76			
+    77			this.thinkCount					= 1;
+    78			
+    79			Timer t = new Timer();
+    80			t.scheduleAtFixedRate(this.tutorVolleyTimer,0,this.WAIT_TIME);
+    81			
+    82			this.tutorVolleyMain.addKeyListener( this );
+    83		}
+    84		
+    85		/**
+    86		 * initialisiert alles wichtige, wie die Spieler, den Ball und sagt dem Timer,
+    87		 * dass er nun alle 25 Millisekunden die think Methode aufrufen soll
+    88		 */
+    89		protected void init()
+    90		{
+    91			if ( this.bThread )
+    92				return;
+    93			this.thinkCount					= 1;
+    94			int random	= (int)(Math.random() * 100);
+    95			if ( random > 50 )
+    96			{
+    97				this.tutorVolleyBall.setX( 84 );
+    98				this.tutorVolleyBall.setY( 150 );
+    99			} else
+   100			{
+   101				this.tutorVolleyBall.setX( 284 );
+   102				this.tutorVolleyBall.setY( 150 );
+   103			}
+   104			this.tutorVolleyBall.setBDown( false );
+   105			this.tutorVolleyBall.setBFirst( false );
+   106			this.tutorVolleyPlayer[0].setX( 34 );
+   107			this.tutorVolleyPlayer[0].setY( 215 );
+   108			this.tutorVolleyPlayer[0].setPoints( 0 );
+   109			this.tutorVolleyPlayer[0].init();
+   110			this.tutorVolleyPlayer[1].setX( 334 );
+   111			this.tutorVolleyPlayer[1].setY( 215 );
+   112			this.tutorVolleyPlayer[1].setPoints( 0 );
+   113			this.tutorVolleyPlayer[1].init();
+   114			this.bWin			= false;
+   115			//this.timePoint		= System.nanoTime();
+   116			
+   117			this.time		= 0;
+   118			
+   119			this.tutorVolleySnow	= new ArrayList<TutorVolleySnow>();
+   120			int rand = (int)(Math.random() * 50 + 70);
+   121			for ( int i = 0; i < rand; i++ )
+   122			{
+   123				int x	= (int)(Math.random() * (this.getWidth() + 50)) - 50;
+   124				int y	= (int)(Math.random() * (this.getHeight() - 80) );
+   125				this.tutorVolleySnow.add( new TutorVolleySnow( null, x, y, 3, 3 ) );
+   126			}
+   127			
+   128			this.time			= System.nanoTime();
+   129			this.tutorVolleyTimer.setBRunning( true );
+   130			
+   131			this.bThread	= true;
+   132		}
+   133	
+   134		/**
+   135		 * setzt die �bergebene AI an den �bergebenen Spieler
+   136		 * @param player = welcher Spieler soll die AI bekommen
+   137		 * @param tutorVolleyAI = die AI
+   138		 */
+   139		protected void setAI( int player, TutorVolleyAI tutorVolleyAI )
+   140		{
+   141			this.tutorVolleyPlayer[player-1].setAI( tutorVolleyAI );
+   142		}
+   143		
+   144		/**
+   145		 * gibt das eigentliche SpielerArray zur�ck
+   146		 * @return SpielerArray
+   147		 */
+   148		protected TutorVolleyPlayer[] getPlayer()
+   149		{
+   150			return this.tutorVolleyPlayer;
+   151		}
+   152		
+   153		/**
+   154		 * sagt den Timer, dass er jetzt nicht mehr die Think Methode aufrufen muss!
+   155		 */
+   156		protected void stop()
+   157		{
+   158			this.tutorVolleyTimer.setBRunning( false );
+   159			this.bThread	= false;
+   160		}
+   161		
+   162		/**
+   163		 * wird pro Zyklus einmal aufgerufen und gibt dem Ball und den Spielern
+   164		 * einen neuen X und Y-Wert
+   165		 */
+   166		protected void think()
+   167		{
+   168			for ( int i = 0; i < this.thinkCount; i++ )
+   169			{
+   170				this.think( TutorVolleyPanelGame.PLAYER_ONE );
+   171				this.think( TutorVolleyPanelGame.PLAYER_TWO );
+   172				this.think( TutorVolleyPanelGame.BALL );
+   173			}
+   174		}
+   175		
+   176		/**
+   177		 * wird pro Zyklus 3 mal mit verschiedenen values aufgerufen
+   178		 * einmal f�r den Ball und dann noch f�r beide Spieler
+   179		 * @param value = welche Methode soll aufgerufen werden
+   180		 */
+   181		protected void think( int value )
+   182		{
+   183			if ( value == TutorVolleyPanelGame.BALL )
+   184				this.thinkBall();
+   185			else
+   186				this.thinkPlayer( value - 1 );
+   187			for ( int i = this.tutorVolleySnow.size() - 1; i >= 0; i-- )
+   188			{
+   189				this.tutorVolleySnow.get( i ).think();
+   190				if ( this.tutorVolleySnow.get( i ).getY() >= this.getHeight() - 50 )
+   191				{
+   192					this.tutorVolleySnow.remove( i );
+   193					int x	= (int)(Math.random() * (this.getWidth()+50)) - 50;
+   194					this.tutorVolleySnow.add( new TutorVolleySnow( null, x, 0.0D, 3, 3 ) );
+   195				} else if ( this.tutorVolleySnow.get( i ).getX() > this.getWidth() )
+   196				{
+   197					this.tutorVolleySnow.remove( i );
+   198					int x	= (int)(Math.random() * (this.getWidth()+50)) - 50;
+   199					this.tutorVolleySnow.add( new TutorVolleySnow( null, x, 0.0D, 3, 3 ) );
+   200				}
+   201			}
+   202		}
+   203		
+   204		/**
+   205		 * setzt die Punkte bei einem Spieler hoch
+   206		 * @param bPoint: true = Spieler 1 bekommt den Punkt sonst Spieler 2
+   207		 */
+   208		protected void setPoint( boolean bPoint )
+   209		{
+   210			//if ( TimeUnit.NANOSECONDS.toMillis( System.nanoTime() - this.timePoint ) < 1000 )
+   211			//	return;
+   212			//this.timePoint		= System.nanoTime();
+   213			if ( bPoint == true )
+   214			{
+   215				this.tutorVolleyPlayer[0].setPoints();
+   216				this.tutorVolleyBall.setX( 84 );
+   217				this.tutorVolleyBall.setY( 150 );
+   218			} else
+   219			{
+   220				this.tutorVolleyPlayer[1].setPoints();
+   221				this.tutorVolleyBall.setX( 284 );
+   222				this.tutorVolleyBall.setY( 150 );
+   223			}
+   224			this.checkWin();
+   225		}
+   226		
+   227		/**
+   228		 * �berpr�ft, ob Spieler 1 oder 2 gewonnen haben und zeigt das Gewinnerbild
+   229		 */
+   230		private void checkWin()
+   231		{
+   232			if ( 	( this.tutorVolleyPlayer[0].getPoints() == 27 ) || 
+   233					( ( this.tutorVolleyPlayer[0].getPoints() >= 25 ) && ( this.tutorVolleyPlayer[1].getPoints() + 2 <= this.tutorVolleyPlayer[0].getPoints() ) ) )
+   234			{
+   235				this.stop();
+   236				this.bWin		= true;
+   237				this.playerWin	= 1;
+   238				this.repaint();
+   239			} else if ( ( this.tutorVolleyPlayer[1].getPoints() == 27 ) || 
+   240						( ( this.tutorVolleyPlayer[1].getPoints() >= 25 ) && ( this.tutorVolleyPlayer[0].getPoints() + 2 <= this.tutorVolleyPlayer[1].getPoints() ) ) )
+   241			{
+   242				this.stop();
+   243				this.bWin		= true;
+   244				this.playerWin	= 2;
+   245				this.repaint();
+   246			}
+   247		}
+   248		
+   249		/**
+   250		 * ruft die think-Methode des Balles auf
+   251		 */
+   252		private void thinkBall()
+   253		{
+   254			this.tutorVolleyBall.think( this.tutorVolleyPlayer[0], this.tutorVolleyPlayer[1], this );
+   255		}
+   256		
+   257		/**
+   258		 * ruft die think-Methode des �bergebenen Spielers auf
+   259		 * @param player = welcher Spieler soll denken
+   260		 */
+   261		private void thinkPlayer( int player )
+   262		{
+   263			if ( !this.tutorVolleyPlayer[player].think( this.tutorVolleyBall ) )
+   264				this.stop();
+   265		}
+   266		
+   267		/**
+   268		 *	wird auf Druck der ESC-Taste aufgerufen und zeigt das OptionsPanel
+   269		 */
+   270		private void setOptions()
+   271		{
+   272			this.tutorVolleyMain.setOptions();
+   273		}
+   274	
+   275		public void keyTyped(KeyEvent e) {}
+   276	
+   277		public void keyPressed(KeyEvent e) {}
+   278	
+   279		/**
+   280		 * was passiert, wenn eine Keyboardtaste losgelassen wird
+   281		 */
+   282		public void keyReleased(KeyEvent e)
+   283		{
+   284			if ( e.getKeyCode() == KeyEvent.VK_ESCAPE )
+   285			{
+   286				this.setOptions();
+   287			} else if ( ( e.getKeyCode() == KeyEvent.VK_ENTER ) && ( this.bWin ) )
+   288			{
+   289				this.init();
+   290			} else if ( ( e.getKeyCode() == KeyEvent.VK_PLUS ) && ( !this.bWin ) )
+   291			{
+   292				if ( 	( this.tutorVolleyPlayer[0].getName().equals( "Mensch" ) ) ||
+   293						( this.tutorVolleyPlayer[1].getName().equals( "Mensch" ) ) )
+   294					return;
+   295				this.thinkCount++;
+   296				if ( this.thinkCount > 50 )
+   297					this.thinkCount	= 50;
+   298			} else if ( ( e.getKeyCode() == KeyEvent.VK_MINUS ) && ( !this.bWin ) )
+   299			{
+   300				if ( 	( this.tutorVolleyPlayer[0].getName().equals( "Mensch" ) ) ||
+   301						( this.tutorVolleyPlayer[1].getName().equals( "Mensch" ) ) )
+   302					return;
+   303				this.thinkCount--;
+   304				if ( this.thinkCount < 1 )
+   305					this.thinkCount	= 1;
+   306			}
+   307		}
+   308	
+   309		/**
+   310		 * malt das eigentliche Spielfeld mit Spielern usw.
+   311		 */
+   312		public void paintComponent(Graphics g) 
+   313		{
+   314			super.paintComponent(g);
+   315			
+   316			Graphics2D gfx	= (Graphics2D)g;
+   317			
+   318			gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+   319			
+   320			gfx.drawImage( this.iBackground, 0, 0, null );
+   321			
+   322			for ( int i = 0; i < this.tutorVolleyPlayer.length; i++ )
+   323			{
+   324				this.tutorVolleyPlayer[i].render( gfx );
+   325			}
+   326			
+   327			this.tutorVolleyBall.render( gfx );
+   328			
+   329			gfx.setColor( Color.WHITE );
+   330			for ( int i = 0; i < this.tutorVolleySnow.size(); i++ )
+   331			{
+   332				this.tutorVolleySnow.get( i ).render( gfx );
+   333			}
+   334			
+   335			gfx.setColor( Color.BLACK );
+   336			this.drawPoints( gfx );
+   337			
+   338			this.drawTime( gfx );
+   339			
+   340			this.drawThinkTime( gfx );
+   341			
+   342			gfx.setColor( Color.BLACK );
+   343			if ( this.bWin )
+   344				this.drawWin( gfx );
+   345		}
+   346		
+   347		/*protected void drawVolatileImage()
+   348		{
+   349			long t	= System.nanoTime();
+   350			
+   351			this.iVol	= createVolatileImage(400, 300);
+   352			
+   353			Graphics gDraw = this.getGraphics();
+   354			Graphics gVol  = this.iVol.getGraphics();
+   355			Graphics2D gfx	= (Graphics2D)gVol;
+   356			
+   357			gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+   358			
+   359			gfx.drawImage( this.iBackground, 0, 0, this );
+   360			
+   361			for ( int i = 0; i < this.tutorVolleyPlayer.length; i++ )
+   362			{
+   363				this.tutorVolleyPlayer[i].render( gfx );
+   364			}
+   365			
+   366			this.tutorVolleyBall.render( gfx );
+   367			
+   368			gfx.setColor( Color.WHITE );
+   369			for ( int i = 0; i < this.tutorVolleySnow.size(); i++ )
+   370			{
+   371				this.tutorVolleySnow.get( i ).render( gfx );
+   372			}
+   373			
+   374			gfx.setColor( Color.BLACK );
+   375			this.drawPoints( gfx );
+   376			
+   377			this.drawTime( gfx );
+   378			
+   379			gfx.setColor( Color.BLACK );
+   380			if ( this.bWin )
+   381				this.drawWin( gfx );
+   382			
+   383			gDraw.drawImage( this.iVol, 0, 0, null );
+   384			
+   385			System.out.println( "time = "+( System.nanoTime() - t ) );
+   386		}*/
+   387		
+   388		/**
+   389		 * malt die Punkte und Namen der Spieler
+   390		 * @param g
+   391		 */
+   392		private void drawPoints( Graphics2D g )
+   393		{
+   394			g.drawImage( this.iTime, 20, 7, this );
+   395			g.drawString( "Points: "+this.tutorVolleyPlayer[0].getPoints(), 25, 20 );
+   396			g.drawImage( this.iTime, 20, 27, this );
+   397			String s	= "empty";
+   398			if ( this.tutorVolleyPlayer[0].getName() != null )
+   399				s	= this.tutorVolleyPlayer[0].getName();
+   400			g.drawString( s, 25, 40 );
+   401			g.drawImage( this.iTime, 300, 7, this );
+   402			g.drawString( "Points: "+this.tutorVolleyPlayer[1].getPoints(), 305, 20 );
+   403			g.drawImage( this.iTime, 300, 27, this );
+   404			s	= "empty";
+   405			if ( this.tutorVolleyPlayer[1].getName() != null )
+   406				s	= this.tutorVolleyPlayer[1].getName();
+   407			g.drawString( s, 305, 40 );
+   408		}
+   409		
+   410		/**
+   411		 * malt die Zeit
+   412		 * @param g
+   413		 */
+   414		private void drawTime( Graphics2D g )
+   415		{
+   416			g.drawImage( this.iTime, 163, 7, this );
+   417			long time		= TimeUnit.NANOSECONDS.toMillis( System.nanoTime() - this.time );
+   418			String min = ""+( time/1000/60);
+   419			String sec = ""+(( time/1000)%60);
+   420			String msec = ""+(( time/10)%100);
+   421			if (sec.length()<2) sec = "0"+sec;
+   422			if (msec.length()<2) msec = "0"+msec;
+   423			String timeString = min+":"+sec+":"+msec;
+   424			int w	= g.getFontMetrics().stringWidth( timeString );
+   425			g.drawString( timeString, 200 - w/2, 20 );
+   426			if ( 	( !this.tutorVolleyPlayer[0].getName().equals( "Mensch" ) ) &&
+   427					( !this.tutorVolleyPlayer[1].getName().equals( "Mensch" ) ) )
+   428			{
+   429				String s	= "ThinkCount = "+this.thinkCount;
+   430				w	= g.getFontMetrics().stringWidth( s );
+   431				g.drawString( s, 200 - w/2, 40 );
+   432			}
+   433		}
+   434		
+   435		/**
+   436		 * malt die Sachen, wenn das Spiel beendet wurde
+   437		 * @param g
+   438		 */
+   439		private void drawWin( Graphics2D g )
+   440		{
+   441			g.drawImage( this.iWin, 0, 40, this );
+   442			g.setFont( this.fontBig );
+   443			if ( this.playerWin == 1 )
+   444			{
+   445				g.drawImage( this.tutorVolleyPlayer[0].getIBackground(), 184, 85, this );
+   446				String s	= "empty";
+   447				if ( this.tutorVolleyPlayer[0].getName() != null )
+   448					s	= this.tutorVolleyPlayer[0].getName();
+   449				int w = g.getFontMetrics().stringWidth( s );
+   450				g.drawString( s, 200 - w/2, 155 );
+   451			}
+   452			else if ( this.playerWin == 2 )
+   453			{
+   454				g.drawImage( this.tutorVolleyPlayer[1].getIBackground(), 184, 85, this );
+   455				String s	= "empty";
+   456				if ( this.tutorVolleyPlayer[1].getName() != null )
+   457					s	= this.tutorVolleyPlayer[1].getName();
+   458				int w = g.getFontMetrics().stringWidth( s );
+   459				g.drawString( s, 200 - w/2, 155 );
+   460			}
+   461		}
+   462		
+   463		private void drawThinkTime( Graphics2D g )
+   464		{
+   465			g.setColor( Color.BLACK );
+   466			if ( !this.tutorVolleyPlayer[0].getName().equals( "Mensch" ) )
+   467				g.drawRect( 20, 48, 75, 15 );
+   468			if ( !this.tutorVolleyPlayer[1].getName().equals( "Mensch" ) )
+   469				g.drawRect( 300, 48, 75, 15 );
+   470			
+   471			g.setColor( Color.BLUE );
+   472			if ( !this.tutorVolleyPlayer[0].getName().equals( "Mensch" ) )
+   473				g.fillRect( 21, 49, (int)(this.tutorVolleyPlayer[0].getAverageTime() * 7), 14 );
+   474			if ( !this.tutorVolleyPlayer[1].getName().equals( "Mensch" ) )
+   475				g.fillRect( 301, 49, (int)(this.tutorVolleyPlayer[1].getAverageTime() * 7), 14 );
+   476		}
+   477		
+   478		
+   479	
+   480	}
+
+[32m succeeded in 201ms:[0m
+     1	package tutorVolley;
+     2	
+     3	/**
+     4	 * TutorBlobbyAI ist die "K�nstliche Intelligenz" (AI) des Spielers und steuert diesen.
+     5	 * Dieses Interface mu� implementiert werden, damit der Spieler gesteuert werden kann.
+     6	 * @author Dirk Aporius
+     7	 */
+     8	public interface TutorVolleyAI
+     9	{
+    10		/**
+    11		 * Wird pro Zyklus einmal ausgef�hrt. Wird TRUE zur�ckgegeben, versucht der Spieler 
+    12		 * zu springen. 
+    13		 * 
+    14		 */
+    15		public boolean think( TutorVolleyBall ball, TutorVolleyPlayer player );
+    16		
+    17		/**
+    18		 * �bergibt den Spielernamen
+    19		 * @return Spielername
+    20		 */
+    21		public String getName();
+    22		
+    23		/**
+    24		 * �bergibt den Namen des Autors
+    25		 * @return Autorenname
+    26		 */
+    27		public String getAuthorName();
+    28	}
+[32m succeeded in 220ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Component;
+     4	import java.awt.Graphics;
+     5	import java.awt.GraphicsConfiguration;
+     6	import java.awt.GraphicsDevice;
+     7	import java.awt.GraphicsEnvironment;
+     8	import java.awt.HeadlessException;
+     9	import java.awt.Image;
+    10	import java.awt.MediaTracker;
+    11	import java.awt.Transparency;
+    12	import java.awt.image.BufferedImage;
+    13	import java.awt.image.ColorModel;
+    14	import java.awt.image.ImageObserver;
+    15	import java.awt.image.PixelGrabber;
+    16	import java.io.IOException;
+    17	
+    18	import javax.imageio.ImageIO;
+    19	import javax.swing.ImageIcon;
+    20	
+    21	/**
+    22	 * Klasse, die ein BufferedImage l�dt
+    23	 * @author Dirk Aporius
+    24	 *
+    25	 */
+    26	public class TutorVolleyImage extends Component implements ImageObserver
+    27	{
+    28		private static final long serialVersionUID = 1L;
+    29		
+    30		private Component 	C;
+    31		private int			width, height;
+    32		private GraphicsConfiguration gc;
+    33		
+    34		public TutorVolleyImage() 
+    35		{
+    36			this.C					= this;
+    37			this.gc					= GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+    38			// TODO Auto-generated constructor stub
+    39		}
+    40		
+    41		/**
+    42		 * gibt die Weite des Bildes zur�ck
+    43		 */
+    44		public int getWidth()
+    45		{
+    46			return this.width;
+    47		}
+    48		
+    49		/**
+    50		 * gibt die H�he des Bildes zur�ck
+    51		 */
+    52		public int getHeight()
+    53		{
+    54			return this.height;
+    55		}
+    56		
+    57		/**
+    58		 * l�dt das Bild aus dem �bergbenen String und wartet bis es fertig geladen ist
+    59		 * @param BildString = wo steckt das Bild
+    60		 * @param bLoad
+    61		 * @return gibt das geladenen Bild zur�ck
+    62		 */
+    63		public BufferedImage setPicsMain( String BildString, boolean bLoad ) 
+    64		{
+    65			BufferedImage i;
+    66			MediaTracker mt;
+    67			mt = new MediaTracker( this.C );// damit alles mit einmal angezeigt wird
+    68			
+    69			i = getImage( BildString, bLoad );
+    70	
+    71			mt.addImage(i, 0);
+    72	
+    73			try
+    74			{
+    75				// Wait until all pic are load,
+    76				mt.waitForAll();
+    77			} catch (InterruptedException e) 
+    78			{
+    79				// nothing
+    80			}
+    81			this.width	= i.getWidth( null );
+    82			this.height	= i.getHeight( null );
+    83			return i;
+    84		}
+    85		
+    86		/**
+    87		 * l�dt das Bild aus einem �bergebenen String
+    88		 * @param BildName = wo steckt das Bild
+    89		 * @param bLoad
+    90		 * @return das Bild
+    91		 */
+    92		private BufferedImage getImage(String BildName, boolean bLoad )
+    93		{
+    94			BufferedImage icon;
+    95			
+    96			BufferedImage result	= null;
+    97			BufferedImage img		= null;
+    98			
+    99			if ( !bLoad ) 
+   100			{
+   101				try
+   102				{
+   103					img = ImageIO.read( TutorVolleyImage.class.getResource( BildName ) );
+   104				} catch (IOException e)
+   105				{
+   106					e.printStackTrace();
+   107				}
+   108				result = this.gc.createCompatibleImage(img.getWidth(),img.getHeight(), Transparency.TRANSLUCENT);
+   109				result.createGraphics().drawImage(img,0,0,null);
+   110				icon	= result;
+   111				
+   112			} else
+   113			{
+   114				img = getBufferedImage( new ImageIcon(BildName).getImage() );
+   115				result = this.gc.createCompatibleImage(img.getWidth(),img.getHeight(), Transparency.TRANSLUCENT);
+   116				result.createGraphics().drawImage(img,0,0,null);
+   117				icon	= result;
+   118			}
+   119			return (icon);
+   120		}	
+   121		
+   122		/**
+   123		 * wandelt ein Image in ein BufferedImage um
+   124		 * @param img Ausgangsimage
+   125		 * @return das BufferedImage
+   126		 */
+   127		public BufferedImage getBufferedImage(Image img)
+   128		{
+   129			return toBufferedImage(img);
+   130		}
+   131		
+   132	    /**
+   133	     * Hilfsmethode f�r Umwandlung des Bildes
+   134	     * @param image
+   135	     * @return ob das Bild einen Alpha-Wert hat
+   136	     */
+   137	    private boolean hasAlpha(Image image) 
+   138	    {
+   139	        if (image instanceof BufferedImage) 
+   140	        {
+   141	            BufferedImage bImage = (BufferedImage) image;
+   142	            return bImage.getColorModel().hasAlpha();
+   143	        }
+   144	
+   145	        PixelGrabber pixelGrabber = new PixelGrabber(image, 0, 0, 1, 1, false);
+   146	        try 
+   147	        {
+   148	            pixelGrabber.grabPixels();
+   149	        } catch (InterruptedException e) 
+   150	        {}
+   151	
+   152	        ColorModel colorModel = pixelGrabber.getColorModel();
+   153	        return colorModel.hasAlpha();
+   154	    }
+   155	
+   156	    /**
+   157	     *  Umwandlung eines Image in ein BufferedImage
+   158	     * @param image
+   159	     * @return das BufferedImage
+   160	     */
+   161	    private BufferedImage toBufferedImage(Image image) 
+   162	    {
+   163	        if (image instanceof BufferedImage) 
+   164	        {
+   165	            return (BufferedImage) image;
+   166	        }
+   167	
+   168	        image = new ImageIcon(image).getImage();
+   169	
+   170	        boolean hasAlpha = hasAlpha(image);
+   171	
+   172	        BufferedImage bImage = null;
+   173	        GraphicsEnvironment ge = GraphicsEnvironment
+   174	                .getLocalGraphicsEnvironment();
+   175	        try 
+   176	        {
+   177	            int transparency = Transparency.OPAQUE;
+   178	            if (hasAlpha)
+   179	                transparency = Transparency.BITMASK;
+   180	
+   181	            GraphicsDevice gs = ge.getDefaultScreenDevice();
+   182	            GraphicsConfiguration gc = gs.getDefaultConfiguration();
+   183	            bImage = gc.createCompatibleImage(image.getWidth(null), image
+   184	                    .getHeight(null), transparency);
+   185	        } catch (HeadlessException e) 
+   186	        {}
+   187	
+   188	        if (bImage == null) 
+   189	        {
+   190	            int type = BufferedImage.TYPE_INT_RGB;
+   191	            if (hasAlpha)
+   192	                type = BufferedImage.TYPE_INT_ARGB;
+   193	            bImage = new BufferedImage(image.getWidth(null), image
+   194	                    .getHeight(null), type);
+   195	        }
+   196	
+   197	        Graphics g = bImage.createGraphics();
+   198	
+   199	        g.drawImage(image, 0, 0, this);
+   200	        g.dispose();
+   201	        return bImage;
+   202	    }
+   203	
+   204		public boolean imageUpdate(Image arg0, int arg1, int arg2, int arg3, int arg4, int arg5)
+   205		{
+   206			return false;
+   207		}
+   208	
+   209	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyBall.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyEntity.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 204 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 129 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 290 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 129 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 26 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 74 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 180 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 43 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 459 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 10 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 42 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 39 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 29 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 38 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 212 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 25 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 86 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 42 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 164 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 25 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[1m[33mwarning:[0m[0m in-process app-server event stream lagged; dropped 1 events
+[32m succeeded in 162ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Color;
+     4	import java.awt.Graphics;
+     5	import java.awt.Graphics2D;
+     6	import java.awt.geom.Rectangle2D;
+     7	import java.awt.image.BufferedImage;
+     8	
+     9	/**
+    10	 * Klasse, die den Ball repr�sentiert
+    11	 * @author Dirk Aporius
+    12	 */
+    13	public class TutorVolleyBall extends TutorVolleyEntity
+    14	{
+    15		public static final double		GRAVITATION		= 9.81;
+    16		private final int				MAX_NO_HIT		= 600;
+    17		private final int				MAX_POINT_TIME	= 60;
+    18		
+    19		private double					xSpeed, ySpeed, rotate;
+    20		private boolean					bFirst, bDown, bCollision, bPoint;
+    21		
+    22		private int						time;
+    23		
+    24		private byte					playerOneHit, playerTwoHit;
+    25		
+    26		private int						noHit;
+    27		
+    28		public TutorVolleyBall( BufferedImage iBall, int x, int y, int width, int height )
+    29		{
+    30			super( iBall, x, y, width, height );
+    31			
+    32			this.init();
+    33		}
+    34		
+    35		/**
+    36		 * initialisiert den Startwerte f�r den Ball
+    37		 */
+    38		protected void init()
+    39		{
+    40			this.rotate			= 0.0D;
+    41			this.xSpeed			= 0.0D;
+    42			this.ySpeed			= 0.0D;
+    43			
+    44			this.bFirst			= false;
+    45			this.bDown			= false;
+    46			this.bCollision		= false;
+    47			this.bPoint			= false;
+    48	
+    49			this.playerOneHit	= 0;
+    50			this.playerTwoHit	= 0;
+    51			this.noHit			= 0;
+    52			
+    53			this.time			= 0;
+    54		}
+    55		
+    56		/**
+    57		 * diese Methode gibt zur�ck, ob der Ball schon getroffen wurde oder
+    58		 * noch in der Luft auf den Aufschlag wartet
+    59		 * @return false falls der Ball noch wartet bzw true wenn der Ball schon im Spiel ist
+    60		 */
+    61		public boolean getBFirst()
+    62		{
+    63			return this.bFirst;
+    64		}
+    65		
+    66		/**
+    67		 * diese Methode setzt den boolean Wert ob der Ball getroffen wurde auf den
+    68		 * �bergebenen Wert 
+    69		 * @param bFirst
+    70		 */
+    71		protected void setBFirst( boolean bFirst )
+    72		{
+    73			this.bFirst		= bFirst;
+    74		}
+    75		
+    76		/**
+    77		 * diese Methode setzt den boolean Wert ob der Ball auf dem Boden liegt, auf den
+    78		 * �bergebenen Wert 
+    79		 * @param bDown
+    80		 */
+    81		protected void setBDown( boolean bDown )
+    82		{
+    83			this.bDown		= bDown;
+    84		}
+    85		
+    86		/**
+    87		 * wird pro Zyklus einmal aufgerufen und �berpr�ft, ob der Ball von einem Spieler
+    88		 * getroffen wurde oder auf dem Boden gelandet ist usw
+    89		 * @param playerOne: Spieler ein
+    90		 * @param playerTwo: Spieler zwei
+    91		 * @param panel: Das Objekt um Methoden aus dem SpielPanel aufzurufen
+    92		 */
+    93		protected void think( TutorVolleyPlayer playerOne, TutorVolleyPlayer playerTwo, TutorVolleyPanelGame panel )
+    94		{
+    95			if ( this.bDown == false )
+    96			{
+    97				if ( this.collisionsCheck( playerOne ) )
+    98				{
+    99					if ( this.playerTwoHit != 0 )
+   100						this.playerTwoHit	= 0;
+   101					if ( !this.bCollision )
+   102						this.playerOneHit++;
+   103					if ( this.playerOneHit <= 3 )
+   104						this.setNewSpeed( playerOne );
+   105					this.noHit	= 0;
+   106				} else if ( this.collisionsCheck( playerTwo ) )
+   107				{
+   108					if ( this.playerOneHit != 0 )
+   109						this.playerOneHit	= 0;
+   110					if ( !this.bCollision )
+   111						this.playerTwoHit++;
+   112					if ( this.playerTwoHit <= 3 )
+   113						this.setNewSpeed( playerTwo );
+   114					this.noHit	= 0;
+   115				} else
+   116				{
+   117					this.bCollision	= false;
+   118					this.noHit		= this.noHit + 1;
+   119				}
+   120				if ( ( this.playerOneHit >= 4 ) || ( this.playerTwoHit >= 4 ) || ( this.noHit >= this.MAX_NO_HIT ) )
+   121					this.setPoint();
+   122				else
+   123					this.setNewXAndY();
+   124			} else
+   125			{
+   126				if ( time > this.MAX_POINT_TIME )
+   127				{
+   128					this.bDown		= false;
+   129					panel.setPoint( this.bPoint );
+   130				} else
+   131				{
+   132					this.time	= this.time + 1;
+   133				}
+   134				this.setNewXAndY();
+   135			}
+   136		}
+   137		
+   138		/**
+   139		 * testet, ob der ball mit dem Spieler kollidiert
+   140		 * @param player: welcher Spieler
+   141		 * @return true falls ber�hrung sonst false
+   142		 */
+   143		private boolean collisionsCheck( TutorVolleyPlayer player )
+   144		{
+   145			TutorVolleyCircle2D	cBall	= new TutorVolleyCircle2D( this.getX(), this.getY(), this.getHeight() / 2, -1, -1, 0, 0  );
+   146			TutorVolleyCircle2D	cPlayer	= new TutorVolleyCircle2D( player.getX() + 4, player.getY(), 11, player.getX(), player.getY(), 30, 40 );
+   147			return cBall.intersects( cPlayer );
+   148		}
+   149		
+   150		/**
+   151		 * wird aufgerufen um den Ball nach einem Aufprall mit einem Spieler eine
+   152		 * neue Geschwindigkeit in x und y Richtung zu geben
+   153		 * @param player
+   154		 */
+   155		private void setNewSpeed( TutorVolleyPlayer player )
+   156		{
+   157			if ( !this.bFirst )
+   158			{
+   159				this.bFirst	= true;
+   160			}
+   161			if ( player.getX() < this.getX() )
+   162			{
+   163				this.xSpeed		= ( this.getX() - player.getX() ) * 0.19 + player.getXSpeed()*2;
+   164				this.setX( this.getX() + 3 );
+   165			} else
+   166			{
+   167				this.xSpeed		= ( this.getX() - player.getX() ) * 0.19 + player.getXSpeed()*2;
+   168				this.setX( this.getX() - 3 );
+   169			}
+   170			if ( player.getY() > this.getY() )
+   171			{
+   172				this.ySpeed	= ( this.getY() - player.getY() ) * 0.25 + player.getYSpeed() * 0.75;
+   173				this.setY( this.getY() - 3 );
+   174			}
+   175			this.bCollision		= true;
+   176		}
+   177		
+   178		/**
+   179		 * wird jeden Zyklus aufgerufen und gibt dem Ball den neuen x und y Wert
+   180		 */
+   181		private void setNewXAndY()
+   182		{
+   183			if ( ( !this.bFirst ) && ( !this.bDown ) )
+   184			{
+   185				return;
+   186			}
+   187			//System.out.println("Check x = "+this.getX()+" y = "+this.getY()+" width = "+this.getWidth()+" height = "+this.getHeight());
+   188			this.rotate		+= 0.6 * this.xSpeed;
+   189			this.setX( this.getX() + this.xSpeed * 1 );
+   190			this.setY( this.getY() + this.ySpeed * 1 );
+   191			this.xSpeed		= this.xSpeed * 0.99;
+   192			this.ySpeed		= this.ySpeed + ( TutorVolleyBall.GRAVITATION * 0.0265 );
+   193			if ( this.getX() < 0 )
+   194			{
+   195				this.setX( 0 );
+   196				this.xSpeed	= -this.xSpeed;
+   197			}
+   198			else if ( this.getX() + this.getWidth() > 400 )
+   199			{
+   200				this.setX( 400 - this.getWidth() );
+   201				this.xSpeed	= -this.xSpeed;
+   202			}
+   203			else if ( (new Rectangle2D.Double( this.getX(), this.getY(), this.getWidth(), this.getHeight() )).intersects( 196, 138, 8, 162 ) )
+   204			{
+   205				if ( ( this.getY() + this.getHeight() >= 138 ) && ( this.getY() + this.getHeight() < 148 ) && ( this.ySpeed > 0 ) )
+   206				{
+   207					this.setY( 138 - this.getHeight() );
+   208					this.ySpeed		= -this.ySpeed*0.7;
+   209					if ( ( this.xSpeed > 0 ) && ( this.xSpeed < 0.1 ) )
+   210							this.xSpeed	= 0.1;
+   211					else if ( ( this.xSpeed < 0 ) && ( this.xSpeed > -0.1 ) )
+   212							this.xSpeed	= -0.1;
+   213				}
+   214				else if ( ( this.getX() + this.getWidth() >= 196 ) && ( this.getX() + this.getWidth() < 208 ) )
+   215				{
+   216					this.xSpeed	= -this.xSpeed;
+   217					this.setX( 196 - this.getWidth() );
+   218				} else if ( ( this.getX() <= 205 ) && ( this.getX() >= 192 ) )
+   219				{
+   220					this.xSpeed	= -this.xSpeed;
+   221					this.setX( 205 );
+   222				}
+   223			}
+   224			if ( this.getY() > 240 )
+   225			{
+   226				this.setY( 240 );
+   227				if ( !this.bDown )
+   228					this.setPoint();
+   229			}
+   230		}
+   231		
+   232		/**
+   233		 * wird aufgerufen wenn der Ball auf den Boden gefallen ist oder 4 mal gespielt wurde
+   234		 */
+   235		private void setPoint()
+   236		{
+   237			if ( this.playerOneHit >= 4 )
+   238				this.bPoint		= false;
+   239			else if ( this.playerTwoHit >= 4 )
+   240				this.bPoint		= true;
+   241			else if ( this.getXMiddle() < 200 )
+   242				this.bPoint		= false;
+   243			else
+   244				this.bPoint		= true;
+   245			this.playerOneHit	= 0;
+   246			this.playerTwoHit	= 0;
+   247			this.noHit			= 0;
+   248			this.ySpeed			= 0.0D;
+   249			this.xSpeed			= 0.0D;
+   250			this.rotate			= 0.0D;
+   251			this.bFirst			= false;
+   252			this.bDown			= true;
+   253			this.time			= 0;
+   254		}
+   255		
+   256		/**
+   257		 * gibt die Geschwindigkeit in x-Richtung zur�ck
+   258		 * falls diese > 0, bedeutet dass der Ball nach rechts -> fliegt
+   259		 * falls diese < 0, beduetet dass der Ball nach links <- fliegt
+   260		 * @return Geschwindigkeit in x-Richtung
+   261		 */
+   262		public double getXSpeed()
+   263		{
+   264			return this.xSpeed;
+   265		}
+   266	
+   267		/**
+   268		 * gibt die Geschwindigkeit in y-Richtung zur�ck
+   269		 * falls diese > 0, bedeutet dass der Ball nach unten fliegt
+   270		 * falls diese < 0, bedeutet dass der Ball nach oben fliegt
+   271		 * @return Geschwindigkeit in y-Richtung
+   272		 */
+   273		public double getYSpeed()
+   274		{
+   275			return this.ySpeed;
+   276		}
+   277		
+   278		/**
+   279		 * malt den Ball
+   280		 */
+   281		protected void render( Graphics2D gfx )
+   282		{
+   283			gfx.drawImage( this.getIBackground(), (int)this.getX(), (int)this.getY(), (int)this.getX() + this.getWidth(), (int)this.getY() + this.getHeight(), 0, 0, this.getWidth(), this.getHeight(), null );
+   284			gfx.setColor( Color.BLACK );
+   285			gfx.fillRect( (int)(this.getX() + this.getWidth()/2 - 2), 2, 4, 4 );
+   286		}
+   287		
+   288		/**
+   289		 * malt den Ball
+   290		 */
+   291		protected void render( Graphics gfx )
+   292		{
+   293			gfx.drawImage( this.getIBackground(), (int)this.getX(), (int)this.getY(), (int)this.getX() + this.getWidth(), (int)this.getY() + this.getHeight(), 0, 0, this.getWidth(), this.getHeight(), null );
+   294			gfx.setColor( Color.BLACK );
+   295			gfx.fillRect( (int)(this.getX() + this.getWidth()/2 - 2), 2, 4, 4 );
+   296		}
+   297	
+   298	}
+
+[32m succeeded in 186ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Graphics;
+     4	import java.awt.Graphics2D;
+     5	import java.awt.image.BufferedImage;
+     6	
+     7	/**
+     8	 * Klasse von der Button, Ball und Player erben und einige
+     9	 * grundlegene Sachen zur Verf�gung stellt 
+    10	 * @author Dirk Aporius
+    11	 *
+    12	 */
+    13	public class TutorVolleyEntity
+    14	{
+    15		private double 			x, y;
+    16		private int				width, height;
+    17		private BufferedImage	iBackground;
+    18		
+    19		public TutorVolleyEntity( BufferedImage iBackground, double x, double y, int width, int height )
+    20		{
+    21			this.iBackground		= iBackground;
+    22			this.x					= x;
+    23			this.y					= y;
+    24			this.width				= width;
+    25			this.height				= height;
+    26		}
+    27	
+    28		/**
+    29		 * gibt das Bild zur�ck
+    30		 * @return Bild
+    31		 */
+    32		protected BufferedImage getIBackground()
+    33		{
+    34			return this.iBackground;
+    35		}
+    36	
+    37		/**
+    38		 * setzt das Bild auf den �bergebenen Wert
+    39		 * @param background
+    40		 */
+    41		protected void setIBackground(BufferedImage background)
+    42		{
+    43			iBackground = background;
+    44		}
+    45	
+    46		/**
+    47		 * gibt die Weite des Objektes zur�ck
+    48		 * @return Weite des Objektes
+    49		 */
+    50		public int getWidth()
+    51		{
+    52			return this.width;
+    53		}
+    54	
+    55		/**
+    56		 * setzt die Weite des Objektes auf den �bergebenen Wert
+    57		 * @param width
+    58		 */
+    59		protected void setWidth(int width)
+    60		{
+    61			this.width = width;
+    62		}
+    63	
+    64		/**
+    65		 * gibt die H�he des Objektes zur�ck
+    66		 * @return H�he des Objektes
+    67		 */
+    68		public int getHeight()
+    69		{
+    70			return this.height;
+    71		}
+    72	
+    73		/**
+    74		 * setzt die H�he des Objektes auf den �bergebenen Wert
+    75		 * @param height
+    76		 */
+    77		protected void setHeight(int height)
+    78		{
+    79			this.height = height;
+    80		}
+    81	
+    82		/**
+    83		 * gibt den x-Wert des Objektes zur�ck (also den linken Rand des Bildes
+    84		 * @return x-Wert des Objektes
+    85		 */
+    86		public double getX()
+    87		{
+    88			return this.x;
+    89		}
+    90		
+    91		/**
+    92		 * gibt den mittigen x-Wert des Objektes (also die Kopfmitte sozusagen)
+    93		 * @return x-Wert des Objektes
+    94		 */
+    95		public double getXMiddle()
+    96		{
+    97			return this.x + this.width/2;
+    98		}
+    99	
+   100		/**
+   101		 * setzt den X-Wert auf den �bergebenen Wert
+   102		 * @param x
+   103		 */
+   104		protected void setX(double x)
+   105		{
+   106			this.x = x;
+   107		}
+   108	
+   109		/**
+   110		 * gibt den y-Wert des Objektes zur�ck (also den h�chsten Punkt am Kopf)
+   111		 * @return y-Wert des Objektes
+   112		 */
+   113		public double getY()
+   114		{
+   115			return this.y;
+   116		}
+   117		
+   118		/**
+   119		 * setzt den y-Wert des Objektes auf den �bergebenen
+   120		 * @param y
+   121		 */
+   122		protected void setY(double y)
+   123		{
+   124			this.y = y;
+   125		}
+   126		
+   127		/**
+   128		 * malt das Objekt
+   129		 * @param g
+   130		 */
+   131		protected void render( Graphics2D g )
+   132		{
+   133			g.drawImage( this.iBackground, (int)this.x, (int)this.y, (int)this.x + this.width, (int)this.y + this.height, 0, 0, this.width, this.height, null );
+   134		}
+   135		
+   136		/**
+   137		 * malt das Objekt
+   138		 * @param g
+   139		 */
+   140		protected void render( Graphics g )
+   141		{
+   142			g.drawImage( this.iBackground, (int)this.x, (int)this.y, (int)this.x + this.width, (int)this.y + this.height, 0, 0, this.width, this.height, null );
+   143		}
+   144	
+   145	}
+
+[32m succeeded in 187ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.image.BufferedImage;
+     4	import java.util.Vector;
+     5	
+     6	/**
+     7	 * Klasse, die einen Spieler repr�sentiert
+     8	 * @author Dirk Aporius
+     9	 *
+    10	 */
+    11	public class TutorVolleyPlayer extends TutorVolleyEntity
+    12	{
+    13		public static final double	DIR_LEFT	= -1;
+    14		public static final double	DIR_RIGHT	= 1;
+    15		
+    16		private TutorVolleyAI		playerAI;
+    17		private double				xSpeed, ySpeed;
+    18		private int					points;
+    19		private boolean				bHigh;
+    20		private TutorVolleyEntity	enemy;
+    21		private Vector				checkTime;
+    22		private int					count;
+    23		
+    24		public TutorVolleyPlayer( BufferedImage iPlayer, int x, int y, int width, int height )
+    25		{
+    26			super( iPlayer, x, y, width, height );
+    27			
+    28			this.init();
+    29		}
+    30		
+    31		/**
+    32		 * initialisiert den Startwerte f�r den Ball
+    33		 */
+    34		protected void init()
+    35		{
+    36			this.xSpeed			= 0.0D;
+    37			this.ySpeed			= 0.0D;
+    38			
+    39			this.count			= 0;
+    40			this.points			= 0;
+    41			
+    42			this.bHigh			= false;
+    43			
+    44			this.checkTime		= new Vector();
+    45		}
+    46		
+    47		/**
+    48		 * gibt den EnemyEntity zur�ck
+    49		 * @return EnemyEntity
+    50		 */
+    51		public TutorVolleyEntity getEnemy()
+    52		{
+    53			return this.enemy;
+    54		}
+    55	
+    56		/**
+    57		 * setzt den Enemy auf den �bergebenen Entity
+    58		 * @param enemy = GegnerEntity
+    59		 */
+    60		protected void setEnemy(TutorVolleyEntity enemy)
+    61		{
+    62			this.enemy = enemy;
+    63		}
+    64		
+    65		/**
+    66		 * gibt den x-Speed des Spielers zur�ck
+    67		 * @return Geschwindigkeit nach links oder rechts
+    68		 */
+    69		protected double getXSpeed()
+    70		{
+    71			return this.xSpeed;
+    72		}
+    73		
+    74		/**
+    75		 * gibt den y-Speed des Spielers zur�ck
+    76		 * @return Geschwindigkeit nach oben oder unten
+    77		 */
+    78		protected double getYSpeed()
+    79		{
+    80			return this.ySpeed;
+    81		}
+    82		
+    83		/**
+    84		 * �bergibt die Punkte des Spielers, die er gerade hat
+    85		 * @return Punkte
+    86		 */
+    87		public int getPoints()
+    88		{
+    89			return this.points;
+    90		}
+    91		
+    92		/**
+    93		 * erh�ht die Punkteanzahl um eins
+    94		 */
+    95		protected void setPoints()
+    96		{
+    97			this.points++;
+    98		}
+    99		
+   100		/**
+   101		 * setzt die Punkteanzahl auf den �bergebenen Wert
+   102		 */
+   103		protected void setPoints( int points )
+   104		{
+   105			this.points = points;
+   106		}
+   107		
+   108		/**
+   109		 * gibt den Namen des Spielers zur�ck
+   110		 * @return name
+   111		 */
+   112		protected String getName()
+   113		{
+   114			return this.playerAI.getName();
+   115		}
+   116		
+   117		/**
+   118		 * gibt den Autorennamen zur�ck
+   119		 * @return Autorenname
+   120		 */
+   121		protected String getAuthorName()
+   122		{
+   123			return this.playerAI.getAuthorName();
+   124		}
+   125		
+   126		/**
+   127		 * setzt die x-Richtung in die der Spieler gehen soll
+   128		 * es muss ein Wert zwischen -1 und 1 sein
+   129		 * -1 bedeutet schnell nach links
+   130		 * 0 bedeutet stehen bleiben
+   131		 * +1 bedeutet schnell nach rechts
+   132		 * @param x_speed: falls gr��er 1 dann wird der Wert auf 1 gesetzt 
+   133		 * und der Spieler geht nach rechts
+   134		 * falls auf kleiner -1 dann wird der Wert auf -1 gesetzt
+   135		 * und der Spieler geht nach links
+   136		 * sonst auf 0 und bleibt stehen
+   137		 */
+   138		public void setDirection( double xSpeed )
+   139		{
+   140			if ( xSpeed > 1 )
+   141				xSpeed = 1;
+   142			else if ( xSpeed < -1 )
+   143				xSpeed	= -1;
+   144			this.xSpeed	= xSpeed * 1.5;
+   145		}
+   146		
+   147		/**
+   148		 * setzt die x-Richtung in die der Spieler gehen soll
+   149		 * @param x_speed: falls gr��er 0 dann wird der Wert auf 1 gesetzt 
+   150		 * und der Spieler geht nach rechts
+   151		 * falls auf kleiner 0 dann wird der Wert auf -1 gesetzt
+   152		 * und der Spieler geht nach links
+   153		 * sonst auf 0 und bleibt stehen
+   154		 */
+   155		public void setDirection( int xSpeed )
+   156		{
+   157			if ( xSpeed > 1 )
+   158				xSpeed = 1;
+   159			else if ( xSpeed < -1 )
+   160				xSpeed	= -1;
+   161			this.xSpeed	= xSpeed * 1.5;
+   162		}
+   163		
+   164		/**
+   165		 * setzt die AI des Spielers auf den �bergebenen Wert
+   166		 * @param apoVolleyAI = die AI
+   167		 */
+   168		protected void setAI( TutorVolleyAI apoVolleyAI )
+   169		{
+   170			this.playerAI	= apoVolleyAI;
+   171		}
+   172		
+   173		protected double getAverageTime()
+   174		{
+   175			if ( this.checkTime.size() < 20 )
+   176				return 0;
+   177			double value		= 0;
+   178			for ( int i = 0; i < this.checkTime.size(); i++ )
+   179			{
+   180				value	+= ((Integer)this.checkTime.get( i )).intValue();
+   181			}
+   182			value	= value / this.checkTime.size();
+   183			return value;
+   184		}
+   185		
+   186		/**
+   187		 * wird jede Runde aufgerufen und veranlasst die AI zu "denken"
+   188		 * undn f�hrt einen Schritt dann aus
+   189		 * @param ball = der Spielball
+   190		 */
+   191		@SuppressWarnings("unchecked")
+   192		protected boolean think( TutorVolleyBall ball )
+   193		{
+   194			if ( this.playerAI == null )
+   195				return false;
+   196		
+   197			this.count++;
+   198			int time		= ((Long)(System.nanoTime())).intValue();
+   199			boolean bJump	= false;
+   200			bJump = this.playerAI.think( ball, this );
+   201			if ( bJump )
+   202			{
+   203				this.setNewSpeed( -1.5 );
+   204			} else
+   205			{
+   206				this.setNewSpeed( 0.0 );
+   207			}
+   208			if ( this.checkTime.size() < 40 )
+   209			{
+   210				int t	= (((Long)(System.nanoTime())).intValue() - time) / 1000000;
+   211				this.checkTime.add( t );
+   212			} else
+   213			{
+   214				int t	= (((Long)(System.nanoTime())).intValue() - time) / 1000000;
+   215				this.checkTime.add( t );
+   216				this.checkTime.remove( 0 );
+   217				if ( this.getAverageTime() > 10 )
+   218					return false;
+   219			}
+   220			if ( this.count >= 5 )
+   221				return false;
+   222			this.count	= 0;
+   223			return true;
+   224		}
+   225		
+   226		/**
+   227		 * berechnet die neuen Werte f�r die X-Position und Y-Position
+   228		 * @param jump: true wenn er springen soll sonst false
+   229		 */
+   230		private void setNewSpeed( double jump )
+   231		{
+   232			if ( ( this.ySpeed >= 0 ) && ( !this.bHigh ) && ( jump < 0 ) )
+   233			{
+   234				this.ySpeed	= jump;
+   235			}
+   236			if ( ( jump == 0 ) && ( this.ySpeed < 0 ) )
+   237			{
+   238				this.bHigh		= true;
+   239			}
+   240			this.setX( this.getX() + this.xSpeed * 2 * 1 );
+   241			this.setY( this.getY() + this.ySpeed * 4 * 1 );
+   242			if ( this.bHigh )
+   243				this.ySpeed	= this.ySpeed * 0.9 + ( TutorVolleyBall.GRAVITATION * 0.02 );
+   244			if ( this.getX() < 0 )
+   245				this.setX( 0 );
+   246			else if ( this.getX() + this.getWidth() > 400 )
+   247				this.setX( 400 - this.getWidth() );
+   248			else if ( ( this.getX() + this.getWidth() > 195 ) && ( this.getX() + this.getWidth() < 206 ) )
+   249				this.setX( 195 - this.getWidth() );
+   250			else if ( ( this.getX() < 205 ) && ( this.getX() >= 192 ) )
+   251				this.setX( 205 );
+   252			
+   253			if ( this.getY() > 215 )
+   254			{
+   255				this.setY( 215 );
+   256				this.ySpeed	= 0;
+   257				this.bHigh		= false;
+   258			} else if ( this.getY() < 100 )
+   259			{
+   260				this.bHigh		= true;
+   261			}
+   262			
+   263		}
+   264		
+   265	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyButton.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyCircle2D.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyTimer.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleySnow.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 126ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Graphics2D;
+     4	import java.awt.image.BufferedImage;
+     5	
+     6	/**
+     7	 * Diese Klasse handelt einen Button
+     8	 * @author Dirk Aporius
+     9	 *
+    10	 */
+    11	public class TutorVolleyButton extends TutorVolleyEntity
+    12	{
+    13		private String		function;
+    14		private boolean 	bOver, bPressed, bVisible;
+    15		
+    16		public TutorVolleyButton( BufferedImage iBackground, int x, int y, int width, int height, String function )
+    17		{
+    18			super( iBackground, x, y, width, height );
+    19			
+    20			this.function	= function;
+    21			this.bOver		= false;
+    22			this.bPressed	= false;
+    23			this.bVisible	= true;
+    24		}
+    25	
+    26		/**
+    27		 * gibt zur�ck, ob die Maus �ber dem Button ist oder nicht
+    28		 * @return TRUE, falls Maus dr�ber, sonst FALSE
+    29		 */
+    30		protected boolean isBOver()
+    31		{
+    32			return this.bOver;
+    33		}
+    34	
+    35		/**
+    36		 * setzt den boolean-Wert f�r bOver auf den �bergebenen Wert
+    37		 * @param bOver
+    38		 */
+    39		protected void setBOver(boolean bOver)
+    40		{
+    41			this.bOver = bOver;
+    42		}
+    43	
+    44		/**
+    45		 * gibt zur�ck, ob eine Maustaste �ber dem Button gedr�ckt ist oder nicht
+    46		 * @return TRUE, falls Maustaste gedr�ckt, sonst FALSE
+    47		 */
+    48		protected boolean isBPressed()
+    49		{
+    50			return this.bPressed;
+    51		}
+    52	
+    53		/**
+    54		 * setzt den boolean-Wert f�r bPressed auf den �bergebenen Wert 
+    55		 * @param bPressed
+    56		 */
+    57		protected void setBPressed(boolean bPressed)
+    58		{
+    59			this.bPressed = bPressed;
+    60		}
+    61	
+    62		/**
+    63		 * gibt an, ob der Button sichtbar ist oder nicht
+    64		 * @return TRUE, falls sichtbar, sonst FALSE
+    65		 */
+    66		protected boolean isBVisible()
+    67		{
+    68			return this.bVisible;
+    69		}
+    70	
+    71		/**
+    72		 * setzt die Sichtbarkeit des Buttons auf den �bergebenen Wert
+    73		 * @param bVisible
+    74		 */
+    75		protected void setBVisible(boolean bVisible)
+    76		{
+    77			this.bVisible = bVisible;
+    78		}
+    79	
+    80		/**
+    81		 * gibt die Funktion des Buttons zur�ck
+    82		 * @return function
+    83		 */
+    84		protected String getFunction()
+    85		{
+    86			return this.function;
+    87		}
+    88	
+    89		/**
+    90		 * sezt die Funktion des Buttons auf den �bergebenen Wert
+    91		 * @param function
+    92		 */
+    93		protected void setFunction(String function)
+    94		{
+    95			this.function = function;
+    96		}
+    97		
+    98		/**
+    99		 * was passiert, wenn die Maus im Spielfeld bewegt wurde
+   100		 * @param x: x-Koordinate der Maus
+   101		 * @param y: y-Koordinate der Maus
+   102		 * @return TRUE, falls Maus dr�ber, sonst FALSE
+   103		 */
+   104		protected boolean getMove( int x, int y )
+   105		{
+   106			if ( ( this.bOver == false ) && ( getIn( x, y ) == true ) && ( this.bVisible == true ) )
+   107			{
+   108				this.bOver		= true;
+   109				return true;
+   110			} else if ( ( this.bOver == true ) && ( getIn( x, y ) == false ) )
+   111			{
+   112				this.bOver		= false;
+   113				this.bPressed	= false;
+   114				return true;
+   115			}
+   116			return false;
+   117		}
+   118		
+   119		/**
+   120		 * was passiert, wenn eine Maustaste im Spielfeld gedr�ckt wurde wurde
+   121		 * @param x: x-Koordinate der Maus
+   122		 * @param y: y-Koordinate der Maus
+   123		 * @return TRUE, falls �ber Button Maus gedr�ckt, sonst FALSE
+   124		 */
+   125		protected boolean getPressed( int x, int y )
+   126		{
+   127			if ( ( this.bOver == true ) && ( getIn( x, y ) == true ) && ( this.bVisible == true ) )
+   128			{
+   129				this.bPressed	= true;
+   130				return true;
+   131			}
+   132			return false;
+   133		}
+   134		
+   135		/**
+   136		 * was passiert, wenn eine Maustaste im Spielfeld losgelassen wurde
+   137		 * @param x: x-Koordinate der Maus
+   138		 * @param y: y-Koordinate der Maus
+   139		 * @return TRUE, wenn die Maustaste losgelassen wurde und der Spieler auch diesen Button gedr�ckt hatte, sonst FALSE
+   140		 */
+   141		protected boolean getReleased( int x, int y )
+   142		{
+   143			if ( ( this.bPressed == true ) && ( getIn( x, y ) == true ) && ( this.bVisible == true ) )
+   144			{
+   145				this.bPressed	= false;
+   146				return true;
+   147			}
+   148			return false;
+   149		}
+   150		
+   151		/**
+   152		 * �berpr�ft, ob die �bergebenen Werte auf dem Button liegen
+   153		 * @param x: x-Koordinate der Maus
+   154		 * @param y: y-Koordinate der Maus
+   155		 * @return: TRUE, falls drin, sonst FALSE
+   156		 */
+   157		private boolean getIn( int x, int y )
+   158		{
+   159			if ( 	( this.getX() < x ) && ( this.getX() + this.getWidth() >= x ) &&
+   160					( this.getY() < y ) && ( this.getY() + this.getHeight() >= y ) )
+   161			{
+   162				return true;
+   163			}
+   164			return false;
+   165		}
+   166		
+   167		/**
+   168		 * malt den Button hin
+   169		 */
+   170		protected void render( Graphics2D g )
+   171		{
+   172			if ( this.bVisible == true )
+   173			{
+   174				if ( this.bPressed == true ) 
+   175					g.drawImage( this.getIBackground(), (int)this.getX(), (int)this.getY(), (int)this.getX() + this.getWidth(), (int)this.getY() + this.getHeight(), 2*this.getWidth(), 0, 3*this.getWidth(), this.getHeight(), null);
+   176				else if ( this.bOver == true )
+   177					g.drawImage( this.getIBackground(), (int)this.getX(), (int)this.getY(), (int)this.getX() + this.getWidth(), (int)this.getY() + this.getHeight(), 1*this.getWidth(), 0, 2*this.getWidth(), this.getHeight(), null);
+   178				else
+   179					g.drawImage( this.getIBackground(), (int)this.getX(), (int)this.getY(), (int)this.getX() + this.getWidth(), (int)this.getY() + this.getHeight(), 0*this.getWidth(), 0, 1*this.getWidth(), this.getHeight(), null);
+   180			}
+   181		}
+   182	
+   183	}
+
+[32m succeeded in 145ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.geom.Rectangle2D;
+     4	
+     5	/**
+     6	 * eine Klasse, um einen Kreis mit einem Viereck zu vergleichen, ob sie sich schneiden
+     7	 * @author Dirk Aporius
+     8	 *
+     9	 */
+    10	public class TutorVolleyCircle2D
+    11	{
+    12	
+    13		private double		circle_x, circle_y, circle_radius;
+    14		private double 		rectangle_x, rectangle_y, rectangle_width, rectangle_height;
+    15		
+    16		public TutorVolleyCircle2D( double circle_x, double circle_y, double circle_radius )
+    17		{
+    18			this.circle_x				= circle_x;
+    19			this.circle_y				= circle_y;
+    20			this.circle_radius			= circle_radius;
+    21			this.rectangle_x			= -1;
+    22			this.rectangle_y			= -1;
+    23			this.rectangle_width		= 0;
+    24			this.rectangle_height		= 0;
+    25		}
+    26		
+    27		public TutorVolleyCircle2D( double circle_x, double circle_y, double circle_radius, double rectangle_x, double rectangle_y, double rectangle_width, double rectangle_height )
+    28		{
+    29			this.circle_x				= circle_x;
+    30			this.circle_y				= circle_y;
+    31			this.circle_radius			= circle_radius;
+    32			this.rectangle_x			= rectangle_x;
+    33			this.rectangle_y			= rectangle_y;
+    34			this.rectangle_width		= rectangle_width;
+    35			this.rectangle_height		= rectangle_height;
+    36		}
+    37		
+    38		/**
+    39		 * den CircleX-Wert zur�ck
+    40		 * @return x-Wert
+    41		 */
+    42		public double getCircleX()
+    43		{
+    44			return this.circle_x;
+    45		}
+    46		
+    47		/**
+    48		 * den CircleY-Wert zur�ck
+    49		 * @return y-Wert
+    50		 */
+    51		public double getCircleY()
+    52		{
+    53			return this.circle_y;
+    54		}
+    55		
+    56		/**
+    57		 * den Circle-Radius zur�ck
+    58		 * @return radius des circles
+    59		 */
+    60		public double getCircleRadius()
+    61		{
+    62			return this.circle_radius;
+    63		}
+    64		
+    65		/**
+    66		 * den X-Wert des Rechteckes zur�ck
+    67		 * @return x-Wert des Rechteckes
+    68		 */
+    69		public double getRectangleX()
+    70		{
+    71			return this.rectangle_x;
+    72		}
+    73		
+    74		/**
+    75		 * gibt den Y-Wert des Rechteckes zur�ck
+    76		 * @return y-Wert des Rechteckes
+    77		 */
+    78		public double getRectangleY()
+    79		{
+    80			return this.rectangle_y;
+    81		}
+    82		
+    83		/**
+    84		 * gibt die Weite des Rechteckes zur�ck
+    85		 * @return Weite des Rechteckes
+    86		 */
+    87		public double getRectangleWidth()
+    88		{
+    89			return this.rectangle_width;
+    90		}
+    91		
+    92		/**
+    93		 * gibt die H�he des Rechteckes zur�ck
+    94		 * @return H�he des Rechteckes
+    95		 */
+    96		public double getRectangleHeight()
+    97		{
+    98			return this.rectangle_height;
+    99		}
+   100		
+   101		/**
+   102		 * �berpr�ft ob sich 2 TutorVolleyCircle2D Objekt sich schneiden
+   103		 * @param circle = der Kreis mit den �berpr�ft werden soll
+   104		 * @return TRUE, falls �berschneidung sonst FALSE
+   105		 */
+   106		public boolean intersects( TutorVolleyCircle2D circle )
+   107		{
+   108			Rectangle2D	rBall	= new Rectangle2D.Double( this.circle_x, this.circle_y, this.circle_radius * 2, this.circle_radius * 2 );
+   109			Rectangle2D	rPlayer	= new Rectangle2D.Double( circle.getRectangleX(), circle.getRectangleY(), circle.getRectangleWidth(), circle.getRectangleHeight() );
+   110			if ( rBall.intersects( rPlayer ) )
+   111			{
+   112				return true;
+   113			}
+   114			double distance	= ( ( this.circle_x - circle.getCircleX() ) * ( this.circle_x - circle.getCircleX() ) ) + ( ( this.circle_y - circle.getCircleY() ) * ( this.circle_y - circle.getCircleY() ) );
+   115			double radius	= ( this.circle_radius + circle.getCircleRadius() ) * ( this.circle_radius + circle.getCircleRadius() );
+   116			if ( radius > distance )
+   117			{
+   118				return true;
+   119			}
+   120			return false;
+   121		}
+   122	
+   123	}
+
+[32m succeeded in 139ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.awt.Graphics;
+     4	import java.awt.Graphics2D;
+     5	import java.awt.image.BufferedImage;
+     6	
+     7	/**
+     8	 * diese Klasse dient zur Darstellung des Schnee und beinhaltet alle Angaben,
+     9	 * wo der Schnee ist usw
+    10	 * @author Dirk Aporius
+    11	 *
+    12	 */
+    13	public class TutorVolleySnow extends TutorVolleyEntity
+    14	{
+    15		private double 			veloX, veloY;
+    16		private BufferedImage 	snow;
+    17		
+    18		public TutorVolleySnow( BufferedImage snow, double x, double y, int width, int height )
+    19		{
+    20			super( snow, x, y, width, height );
+    21			
+    22			this.veloX	= Math.random() * 0.05 + 0.05;
+    23			this.veloY	= Math.random() * 0.3 + 0.1;
+    24			
+    25			this.snow	= snow;
+    26		}
+    27		
+    28		/**
+    29		 * wird jeden Zyklus einmal aufgerufen und l�sst den Schnee sachte nach unten gleiten ;)
+    30		 */
+    31		protected void think()
+    32		{
+    33			this.setX( this.getX() + this.veloX );
+    34			this.setY( this.getY() + this.veloY );
+    35		}
+    36		
+    37		/**
+    38		 * Methode, um den Schnee zu malen
+    39		 */
+    40		protected void render( Graphics2D g )
+    41		{
+    42			if ( this.snow == null )
+    43			{
+    44				g.fillRoundRect( (int)this.getX(), (int)this.getY(), this.getWidth(), this.getHeight(), 2, 2 );
+    45			} else
+    46			{
+    47				super.render( g );
+    48			}
+    49		}
+    50		
+    51		/**
+    52		 * Methode, um den Schnee zu malen
+    53		 */
+    54		protected void render( Graphics g )
+    55		{
+    56			if ( this.snow == null )
+    57			{
+    58				g.fillRoundRect( (int)this.getX(), (int)this.getY(), this.getWidth(), this.getHeight(), 2, 2 );
+    59			} else
+    60			{
+    61				super.render( g );
+    62			}
+    63		}
+    64	
+    65	}
+
+[32m succeeded in 166ms:[0m
+     1	package tutorVolley;
+     2	
+     3	import java.util.TimerTask;
+     4	
+     5	/**
+     6	 * Klasse, die sich um den Timer k�mmert und somit dass es fl�ssig alles in einer
+     7	 * bestimmten Reihenfolge abl�uft
+     8	 * @author Dirk Aporius
+     9	 *
+    10	 */
+    11	public class TutorVolleyTimer extends TimerTask
+    12	{
+    13		private TutorVolleyPanelGame	tutorVolleyPanelGame;
+    14		private boolean					bRunning;
+    15		
+    16		public TutorVolleyTimer( TutorVolleyPanelGame tutorVolleyPanelGame )
+    17		{
+    18			super();
+    19			
+    20			this.tutorVolleyPanelGame	= tutorVolleyPanelGame;
+    21			
+    22			this.bRunning				= false;
+    23		}
+    24	
+    25		/**
+    26		 * gibt zur�ck, ob es gerade gewollt ist den Timer zu nutzen
+    27		 * @return TRUE, falls Spiel grad l�uft sonst FALSE
+    28		 */
+    29		protected boolean isBRunning()
+    30		{
+    31			return this.bRunning;
+    32		}
+    33	
+    34		protected void setBRunning( boolean bRunning )
+    35		{
+    36			this.bRunning = bRunning;
+    37		}
+    38		
+    39		@Override
+    40		public void run()
+    41		{
+    42			if ( bRunning )
+    43			{
+    44				this.tutorVolleyPanelGame.think();
+    45				this.tutorVolleyPanelGame.repaint();
+    46			}
+    47		}
+    48	
+    49	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+     1	import tutorVolley.TutorVolleyBall;
+     2	import tutorVolley.TutorVolleyPlayer;
+     3	import tutorVolley.TutorVolleyAI;
+     4	
+     5	public class Easy implements TutorVolleyAI
+     6	{
+     7	
+     8		public Easy()
+     9		{
+    10		}
+    11	
+    12		public boolean think(TutorVolleyBall ball, TutorVolleyPlayer player)
+    13		{
+    14			boolean bLeft	= true;
+    15			if ( player.getXMiddle() > 200 )
+    16				bLeft	= false;
+    17			if ( ball.getBFirst() == false)
+    18			{
+    19				if ( player.getXMiddle() + 15 < ball.getXMiddle() )
+    20				{
+    21					player.setDirection( TutorVolleyPlayer.DIR_RIGHT );
+    22					return false;
+    23				} else if ( player.getXMiddle() - 15 > ball.getXMiddle() )
+    24				{
+    25					player.setDirection( TutorVolleyPlayer.DIR_LEFT );
+    26					return false;
+    27				}
+    28				return true;
+    29			}
+    30			if ( ball.getXMiddle() > player.getXMiddle() - 15 )
+    31			{
+    32				player.setDirection( TutorVolleyPlayer.DIR_RIGHT );
+    33			} else if ( ( ball.getXMiddle() < player.getXMiddle() + 15 ) )
+    34			{
+    35				player.setDirection( TutorVolleyPlayer.DIR_LEFT );
+    36			}
+    37			if ( ( ( bLeft ) && ( ball.getXMiddle() < 200 ) ) ||
+    38				 ( ( !bLeft ) && ( ball.getXMiddle() > 200 ) ) )
+    39					return true;
+    40			if ( !bLeft )
+    41				player.setDirection( TutorVolleyPlayer.DIR_LEFT );
+    42			else
+    43				player.setDirection( TutorVolleyPlayer.DIR_RIGHT );
+    44			return false;
+    45		}
+    46	
+    47		public String getName()
+    48		{
+    49			return "Easy";
+    50		}
+    51	
+    52		public String getAuthorName()
+    53		{
+    54			return "Apo und Baschan";
+    55		}
+    56	
+    57	}
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+     1	import java.awt.event.KeyEvent;
+     2	import java.awt.event.KeyListener;
+     3	
+     4	import tutorVolley.TutorVolleyBall;
+     5	import tutorVolley.TutorVolleyMain;
+     6	import tutorVolley.TutorVolleyPlayer;
+     7	import tutorVolley.TutorVolleyAI;
+     8	
+     9	
+    10	public class Human implements TutorVolleyAI, KeyListener
+    11	{
+    12		private boolean bJump, bPlayer;
+    13		private int		direction;
+    14	
+    15		public Human()
+    16		{
+    17			this.bJump		= false;
+    18			this.bPlayer	= false;
+    19			this.direction	= 0;
+    20			
+    21			TutorVolleyMain.tutorVolleyMain.addKeyListener( this );
+    22		}
+    23	
+    24		public void keyTyped(KeyEvent e) {}
+    25	
+    26		public void keyPressed(KeyEvent e)
+    27		{
+    28			if ( !this.bPlayer )
+    29			{
+    30				if ( e.getKeyCode() == KeyEvent.VK_UP )
+    31				{	
+    32					this.bJump = true;
+    33				}
+    34				if ( e.getKeyCode() == KeyEvent.VK_LEFT )
+    35				{
+    36					this.direction = -1;
+    37				} else if ( e.getKeyCode() == KeyEvent.VK_RIGHT )
+    38				{
+    39					this.direction = 1;
+    40				}
+    41			} else
+    42			{
+    43				if ( e.getKeyCode() == KeyEvent.VK_W )
+    44				{	
+    45					this.bJump = true;
+    46				}
+    47				if ( e.getKeyCode() == KeyEvent.VK_A )
+    48				{
+    49					this.direction = -1;
+    50				} else if ( e.getKeyCode() == KeyEvent.VK_D )
+    51				{
+    52					this.direction = 1;
+    53				}
+    54			}
+    55		}
+    56	
+    57		public void keyReleased(KeyEvent e)
+    58		{
+    59			if ( !this.bPlayer )
+    60			{
+    61				if ( e.getKeyCode() == KeyEvent.VK_UP )
+    62				{	
+    63					this.bJump = false;
+    64				}
+    65				if ( e.getKeyCode() == KeyEvent.VK_LEFT )
+    66				{
+    67					this.direction = 0;
+    68				} else if ( e.getKeyCode() == KeyEvent.VK_RIGHT )
+    69				{
+    70					this.direction = 0;
+    71				}
+    72			} else
+    73			{
+    74				if ( e.getKeyCode() == KeyEvent.VK_W )
+    75				{	
+    76					this.bJump = false;
+    77				}
+    78				if ( e.getKeyCode() == KeyEvent.VK_A )
+    79				{
+    80					this.direction = 0;
+    81				} else if ( e.getKeyCode() == KeyEvent.VK_D )
+    82				{
+    83					this.direction = 0;
+    84				}
+    85			}
+    86		}
+    87		
+    88		public boolean think(TutorVolleyBall ball, TutorVolleyPlayer player)
+    89		{
+    90			if ( player.getX() < 200 )
+    91				this.bPlayer	= false;
+    92			else
+    93				this.bPlayer	= true;
+    94			player.setDirection( this.direction );
+    95			return this.bJump;
+    96		}
+    97	
+    98		public String getName()
+    99		{
+   100			return "Mensch";
+   101		}
+   102	
+   103		public String getAuthorName()
+   104		{
+   105			return "Euer Lieblingstutor";
+   106		}
+   107	
+   108	}
+
+[35m[3mcodex[0m[0m
+All 15 source files are now opened. This variant has no save/level/replay parser or networking layer; the remaining audit is a negative-capability sweep (serialization, HTTP, digest/crypto, JNI/process execution, applets/sandbox APIs, filesystem path construction) plus a reachability check on the class loader’s file-size handling.
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n -i \"MessageDigest|MD5|SHA-?1|Mac\\\\b|Cipher\\\\b|SecretKey|checksum|hash\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'rg -n -i "Applet|JApplet|SecurityManager|setSecurityManager|AccessController|ProtectionDomain|Permission|doPrivileged|Policy" .'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n \"java\\\\.io|java\\\\.nio|new File|FileInputStream|FileOutputStream|RandomAccessFile|user\\\\.home|user\\\\.dir|getProperty|Paths?\\\\.get\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'rg -n "ObjectInputStream|ObjectOutputStream|readObject|writeObject|Serializable|Externalizable|XMLDecoder|XMLEncoder" .'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n \"parse(Int|Long|Double|Float|Boolean)|Scanner|StringTokenizer|BufferedReader|DataInputStream|readFully|readLine|readUTF|readInt|readLong|readByte|ImageIO\\\\.read\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n \"System\\\\.load|System\\\\.loadLibrary|Runtime\\\\.getRuntime|ProcessBuilder|\\\\.exec\\\\(|JNI|native[[:space:]]\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n -i \"java\\\\.net|https?://|URLConnection|HttpClient|Socket|Datagram|apo-games|save_highscore|save_level|get_level\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n \"ClassLoader|defineClass|loadClass|newInstance|Class\\\\.forName|reflect|Method\\\\b|Constructor\\\\b|invoke\\\\(\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'rg -n -i "password|passwd|secret|token|api[_-]?key|credential|authorization|bearer" .'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n -i \"\\\\.(cheat|mar|skunk|defence|rep)\\\\b|save|level|replay|highscore\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 164ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:13:public class TutorVolleyClassLoader extends ClassLoader
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:17:	public TutorVolleyClassLoader (String rootDir)
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:25:	protected Class loadClass (String name, boolean resolve) 
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:42:					byte data[] = loadClassData(filename);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:43:					c = defineClass (name, data, 0, data.length);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:83:	private byte[] loadClassData (String filename) 
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:10:import java.lang.reflect.InvocationTargetException;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:146:        	Class c = new TutorVolleyClassLoader("player").loadClass(res);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:147:    		Object o = c.newInstance();
+
+[31m exited 1 in 240ms:[0m
+[31m exited 1 in 311ms:[0m
+[32m succeeded in 343ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java:16:import java.io.IOException;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:3:import java.io.DataInputStream;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:4:import java.io.File;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:5:import java.io.FileInputStream;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:6:import java.io.IOException;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:88:		File f = new File (root, filename);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:99:		FileInputStream fis = new FileInputStream(f);
+
+[31m exited 1 in 405ms:[0m
+[32m succeeded in 461ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java:103:				img = ImageIO.read( TutorVolleyImage.class.getResource( BildName ) );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:3:import java.io.DataInputStream;
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:100:		DataInputStream dis = new DataInputStream (fis);
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java:103:		dis.readFully (buff);
+
+[31m exited 1 in 495ms:[0m
+[31m exited 1 in 481ms:[0m
+[31m exited 1 in 504ms:[0m
+[31m exited 1 in 517ms:[0m
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -l \"Create a file object relative to directory provided\" .. -g '*.java'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc 'find . -type l -print'[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -l \"extends ClassLoader\" .. -g '*.java'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 136ms:[0m
+[32m succeeded in 237ms:[0m
+../ApoSoccer/_from_jar_ApoSoccer/apoSoccer/ApoSoccerClassLoader.java
+../ApoIcejump/_from_jar_ApoIcejumpReloaded/apoIcejump/ApoIcejumpClassLoader.java
+../ApoSkunkman/_from_jar_ApoSkunkman/apoSkunkman/ApoSkunkmanClassLoader.java
+../ApoSoccer/_from_jar_ApoSoccer/apoSoccer/ApoSoccerClassLoaderURL.java
+../TutorVolley/Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java
+../ApoMario/_from_jar_ApoMario/apoMario/ApoMarioClassLoader.java
+
+[32m succeeded in 238ms:[0m
+../ApoSoccer/_from_jar_ApoSoccer/apoSoccer/ApoSoccerClassLoader.java
+../ApoSkunkman/_from_jar_ApoSkunkman/apoSkunkman/ApoSkunkmanClassLoader.java
+../TutorVolley/Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java
+../ApoMario/_from_jar_ApoMario/apoMario/ApoMarioClassLoader.java
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "nl -ba ../ApoMario/_from_jar_ApoMario/apoMario/ApoMarioClassLoader.java | sed -n '1,110p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 0ms:[0m
+     1	package apoMario;
+     2	
+     3	import java.io.DataInputStream;
+     4	import java.io.File;
+     5	import java.io.FileInputStream;
+     6	import java.io.IOException;
+     7	
+     8	import apoMario.ai.ApoMarioAI;
+     9	
+    10	/**
+    11	 * Klasse, um eine Class Datei im laufenden Betrieb zu laden
+    12	 * @author Dirk Aporius
+    13	 *
+    14	 */
+    15	public class ApoMarioClassLoader extends ClassLoader {
+    16		/** der Pfad, wo die Klasse liegt */
+    17		private String root;
+    18		/** der Name der KLasse */
+    19		private String name;
+    20	
+    21		public ApoMarioClassLoader(String rootDir, String name) {
+    22			if (rootDir == null)
+    23				throw new IllegalArgumentException("Null root directory");
+    24			this.root = rootDir;
+    25			this.name = name;
+    26	//		System.out.println( "root = "+this.root+" name = "+name );
+    27		}
+    28		
+    29		/**
+    30		 * gibt die zu ladene KI zur�ck
+    31		 * @return gibt die KI zur�ck
+    32		 */
+    33		@SuppressWarnings("unchecked")
+    34		public ApoMarioAI getAI() {
+    35			ApoMarioAI ai = null;
+    36			Class c;
+    37			try {
+    38				c = loadClass(this.name);
+    39				Object o;
+    40				try {
+    41					o = c.newInstance();
+    42					//System.out.println(o);
+    43					if (o instanceof ApoMarioAI) {
+    44						ai = (ApoMarioAI)o;
+    45					}
+    46				} catch (InstantiationException e) {
+    47					e.printStackTrace();
+    48				} catch (IllegalAccessException e) {
+    49					e.printStackTrace();
+    50				} catch (ClassCastException e) {
+    51					e.printStackTrace();
+    52				}
+    53			} catch (ClassNotFoundException e) {
+    54				e.printStackTrace();
+    55			}
+    56			return ai;
+    57		}
+    58	
+    59		@SuppressWarnings({ "unchecked", "deprecation" })
+    60		public Class loadClass(String name) throws ClassNotFoundException {
+    61			Class c;
+    62			try {
+    63				//System.out.println( "name = "+name );
+    64				c = findLoadedClass(name);
+    65	
+    66				if (c == null) {
+    67					// Convert class name argument to filename
+    68					// Convert package names into subdirectories
+    69					String filename = name.replace('.', File.separatorChar)	+ ".class";
+    70					//System.out.println( "Check "+filename+" name = "+name+" root = "+this.root );
+    71					try {
+    72						byte data[] = loadClassData(filename);
+    73						//System.out.println( "data length = "+data.length+" name = "+name );
+    74						c = defineClass(data, 0, data.length);
+    75						//System.out.println("class = "+c.getName()+" ");
+    76					} catch (IOException e) {
+    77						// tritt auf, wenn die Datei nicht gefunden wurde
+    78					} catch (NoClassDefFoundError e) {
+    79						// tritt auf, wenn die Datei gefunden wurde,
+    80						// aber eine Klasse enthaelt, die nicht dem Dateinamen
+    81						// enspricht (Windows findet Dateien
+    82						// auch bei falscher Gross-Klein-Schreibung)
+    83					}
+    84				}
+    85	
+    86				// Since all support classes of loaded class use same class loader
+    87				// must check subclass cache of classes for things like Object
+    88				if (c == null) {
+    89					try {
+    90						c = findSystemClass(name);
+    91					} catch (Exception e) {
+    92					}
+    93				}
+    94	
+    95				if (c == null) {
+    96					throw new ClassNotFoundException(name);
+    97				}
+    98	
+    99			} catch (Throwable ex) {
+   100				throw new ClassNotFoundException(name);
+   101			}
+   102	
+   103			return c;
+   104		}
+   105	
+   106		private byte[] loadClassData(String filename) throws IOException {
+   107	
+   108			// Create a file object relative to directory provided
+   109			File f = new File(this.root, filename);
+   110			
+
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java | sed -n '25,110p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java | sed -n '57,158p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "nl -ba Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java | sed -n '39,62p'"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg -n \"setPicsMain\\\\(\" ."[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[35m[3mexec[0m[0m
+[1m/bin/zsh -lc "rg --files -g '*.java' | wc -l"[0m in /Users/eliahilse/Documents/GitHub/B/corpus/java/TutorVolley
+[32m succeeded in 125ms:[0m
+    25		protected Class loadClass (String name, boolean resolve) 
+    26		throws ClassNotFoundException
+    27		{
+    28			Class c;
+    29			try
+    30			{
+    31	
+    32				c = findLoadedClass (name);
+    33	
+    34				if (c == null)
+    35				{
+    36					// Convert class name argument to filename
+    37					// Convert package names into subdirectories
+    38					String filename = name.replace ('.', File.separatorChar) + ".class";
+    39					
+    40					try
+    41					{
+    42						byte data[] = loadClassData(filename);
+    43						c = defineClass (name, data, 0, data.length);
+    44					} catch (IOException e)
+    45					{
+    46						// tritt auf, wenn die Datei nicht gefunden wurde
+    47					} catch (NoClassDefFoundError e)
+    48					{
+    49						// tritt auf, wenn die Datei gefunden wurde,
+    50						// aber eine Klasse enthaelt, die nicht dem Dateinamen
+    51						// enspricht (Windows findet Dateien
+    52						// auch bei falscher Gross-Klein-Schreibung)
+    53					}
+    54				}
+    55	
+    56				// Since all support classes of loaded class use same class loader
+    57				// must check subclass cache of classes for things like Object
+    58				if (c == null)
+    59				{
+    60					try
+    61					{
+    62						c = findSystemClass (name);
+    63					} catch (Exception e)
+    64					{
+    65					}
+    66				}
+    67	
+    68				if (c == null)
+    69				{
+    70					throw new ClassNotFoundException (name);
+    71				}
+    72				if (resolve)
+    73					resolveClass (c);
+    74	
+    75			} catch(Throwable ex)
+    76			{
+    77				throw new ClassNotFoundException (name);
+    78			}
+    79	
+    80			return c;
+    81		}
+    82	
+    83		private byte[] loadClassData (String filename) 
+    84		throws IOException
+    85		{
+    86	
+    87			// Create a file object relative to directory provided
+    88			File f = new File (root, filename);
+    89			
+    90			//System.out.println("f = "+f.toString());
+    91	
+    92			// Get size of class file
+    93			int size = (int)f.length();
+    94	
+    95			// Reserve space to read
+    96			byte buff[] = new byte[size];
+    97	
+    98			// Get stream to read from
+    99			FileInputStream fis = new FileInputStream(f);
+   100			DataInputStream dis = new DataInputStream (fis);
+   101	
+   102			// Read in data
+   103			dis.readFully (buff);
+   104	
+   105			// close stream
+   106			dis.close();
+   107	
+   108			// return data
+   109			return buff;
+   110		}
+
+[32m succeeded in 158ms:[0m
+    57		/**
+    58		 * setzt die AI der beiden Spieler am Anfang auf eine bestimmt AI
+    59		 */
+    60		protected void setAI()
+    61		{
+    62			try
+    63			{
+    64				this.loadPlayer( 1, "Human" );
+    65			} catch (ClassNotFoundException e)
+    66			{
+    67				e.printStackTrace();
+    68			} catch (NoSuchMethodException e)
+    69			{
+    70				e.printStackTrace();
+    71			} catch (InstantiationException e)
+    72			{
+    73				e.printStackTrace();
+    74			} catch (IllegalAccessException e)
+    75			{
+    76				e.printStackTrace();
+    77			} catch (InvocationTargetException e)
+    78			{
+    79				e.printStackTrace();
+    80			}
+    81			try {
+    82				this.loadPlayer( 2, "Easy" );
+    83			} catch (ClassNotFoundException e) {
+    84				// TODO Auto-generated catch block
+    85				e.printStackTrace();
+    86			} catch (NoSuchMethodException e) {
+    87				// TODO Auto-generated catch block
+    88				e.printStackTrace();
+    89			} catch (InstantiationException e) {
+    90				// TODO Auto-generated catch block
+    91				e.printStackTrace();
+    92			} catch (IllegalAccessException e) {
+    93				// TODO Auto-generated catch block
+    94				e.printStackTrace();
+    95			} catch (InvocationTargetException e) {
+    96				// TODO Auto-generated catch block
+    97				e.printStackTrace();
+    98			}
+    99		}
+   100		
+   101		/**
+   102		 * gibt das SpielfeldPanel an das Optionspanel, damit die beide untereinander
+   103		 * kommunizieren k�nnen
+   104		 * @param tutorVolleyPanelGame
+   105		 */
+   106		protected void setApoVolleyPanelGame( TutorVolleyPanelGame tutorVolleyPanelGame )
+   107		{
+   108			this.tutorVolleyPanelGame		= tutorVolleyPanelGame;
+   109			this.tutorVolleyPlayer		= this.tutorVolleyPanelGame.getPlayer();
+   110		}
+   111		
+   112		/**
+   113		 * wird aufgerufen, wenn auf den Play-Button gedr�ckt wurde
+   114		 */
+   115		private void setGame()
+   116		{
+   117			this.tutorVolleyMain.setGame();
+   118		}
+   119		
+   120		/**
+   121		 * l�dt eine PlayerAI
+   122		 * @param player = f�r welchen Spieler
+   123		 * @param s = falls != NULL dann lade den �bergeben String
+   124		 * @throws ClassNotFoundException
+   125		 * @throws NoSuchMethodException
+   126		 * @throws InstantiationException
+   127		 * @throws IllegalAccessException
+   128		 * @throws InvocationTargetException
+   129		 */
+   130		private void loadPlayer( int player, String s ) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+   131		{
+   132			String res;
+   133			if ( s == null )
+   134			{
+   135				res = (String) JOptionPane.showInputDialog(this,
+   136						"Class name:", "Load Player",
+   137						JOptionPane.QUESTION_MESSAGE, null, null,
+   138						this.playerName);
+   139				if (res==null || res.length()<=0)
+   140					return;
+   141			} else
+   142				res	= s;
+   143	        try
+   144	        {
+   145	        	this.playerName	= res;
+   146	        	Class c = new TutorVolleyClassLoader("player").loadClass(res);
+   147	    		Object o = c.newInstance();
+   148	    		this.tutorVolleyAI = (TutorVolleyAI)o;
+   149	    		//if ( s == null )
+   150	    			this.setAI( this.tutorVolleyAI, player );
+   151			} catch (SecurityException e)
+   152			{
+   153				e.printStackTrace();
+   154			} catch (IllegalArgumentException e)
+   155			{
+   156				e.printStackTrace();
+   157			}
+   158		}
+
+[32m succeeded in 180ms:[0m
+    39			this.tutorVolleyPanelOptions		= new TutorVolleyPanelOptions( this, iBackground );
+    40			this.tutorVolleyPanelOptions.setLocation( 0, 0 );
+    41			this.tutorVolleyPanelOptions.setSize( 400, 300 );
+    42	
+    43			this.tutorVolleyPanelGame			= new TutorVolleyPanelGame( this, iBackground );
+    44			this.tutorVolleyPanelGame.setLocation( 0, 0 );
+    45			this.tutorVolleyPanelGame.setSize( 400, 300 );
+    46			
+    47			this.tutorVolleyPanelOptions.setApoVolleyPanelGame( this.tutorVolleyPanelGame );
+    48			this.tutorVolleyPanelOptions.setAI();
+    49			
+    50			this.contentPanel		= this.tutorVolleyPanelOptions;
+    51			
+    52			this.add( this.contentPanel );
+    53			
+    54			this.setUndecorated( false );
+    55			this.setResizable( false );
+    56			
+    57			this.setIconImage( tutorVolleyImage.setPicsMain( "/images/ball.png", false ) );
+    58			
+    59			this.pack();
+    60			this.setLocationRelativeTo(null);
+    61			this.setVisible(true);
+    62		}
+
+[32m succeeded in 203ms:[0m
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java:37:		BufferedImage	iBackground			= tutorVolleyImage.setPicsMain( "/images/background_christmas.jpg", false );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java:57:		this.setIconImage( tutorVolleyImage.setPicsMain( "/images/ball.png", false ) );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:48:		this.tutorVolleyButton[0]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_quit.png", false ), 370, 270,  25, 25, "Quit" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:49:		this.tutorVolleyButton[1]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_play.png", false ), 100,  50, 200, 50, "Play" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:50:		this.tutorVolleyButton[2]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ),  80, 150,  40, 25, "LoadPlayerOne" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java:51:		this.tutorVolleyButton[3]			= new TutorVolleyButton( tutorVolleyImage.setPicsMain( "/images/buttons/button_load.png", false ), 280, 150,  40, 25, "LoadPlayerTwo" );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java:63:	public BufferedImage setPicsMain( String BildString, boolean bLoad ) 
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java:62:		this.iTime						= tutorVolleyImage.setPicsMain( "/images/time.png", false );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java:63:		this.iWin						= tutorVolleyImage.setPicsMain( "/images/win.png", false );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java:66:		this.tutorVolleyPlayer[0]		= new TutorVolleyPlayer( tutorVolleyImage.setPicsMain( "/images/player_one.png", false ),  34, 215, 33, 45  );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java:67:		this.tutorVolleyPlayer[1]		= new TutorVolleyPlayer( tutorVolleyImage.setPicsMain( "/images/player_two.png", false ), 334, 215, 33, 45  );
+./Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelGame.java:71:		this.tutorVolleyBall			= new TutorVolleyBall( tutorVolleyImage.setPicsMain( "/images/ball.png", false ),  84, 150, 32, 32  );
+
+[32m succeeded in 210ms:[0m
+      15
+
+[35m[3mcodex[0m[0m
+<<<JSON_BEGIN>>>
+{
+  "variant": "TutorVolley",
+  "files_reviewed": 15,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java"
+  ],
+  "findings": [
+    {
+      "id": "TutorVolley-01",
+      "title": "Working-directory class files execute before AI type checking",
+      "category": "remote_code_loading",
+      "cwe": "CWE-829",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 42,
+      "code_excerpt": "byte data[] = loadClassData(filename);\nc = defineClass (name, data, 0, data.length);",
+      "entry_point": "An untrusted local AI class under player/<binary-name>.class. Human and Easy are selected automatically at TutorVolleyPanelOptions.java:64 and :82; alternatively, the user supplies the binary name through the dialog at :135-138.",
+      "sink": "TutorVolleyClassLoader.java:43 calls defineClass on the file bytes, and TutorVolleyPanelOptions.java:147 invokes Class.newInstance(). The cast to TutorVolleyAI does not occur until :148, after initialization and the constructor have executed.",
+      "data_path": "TutorVolleyMain.main at TutorVolleyMain.java:96-98 constructs the window; its constructor calls TutorVolleyPanelOptions.setAI at :48. setAI calls loadPlayer at TutorVolleyPanelOptions.java:64 or :82. loadPlayer creates TutorVolleyClassLoader with relative root \"player\" at :146. TutorVolleyClassLoader.loadClass maps the name to a filename at :38, opens it at :88 and :99, reads it at :103, and defines it at :43. Control returns to loadPlayer, which instantiates it at TutorVolleyPanelOptions.java:147.",
+      "attack_scenario": "An attacker distributes a malicious AI class as player/Human.class or replaces that file in a copied game directory. The victim launches TutorVolleyMain. Startup calls setAI before the window is made visible (TutorVolleyMain.java:48 and :61), so the file is defined and instantiated without another click. A static initializer or public no-argument constructor then runs arbitrary Java code with the victim's OS permissions. A custom class can instead be placed under player and selected using either Load Player button, whose handlers call loadPlayer at TutorVolleyPanelOptions.java:236 and :257.",
+      "reachable": true,
+      "preconditions": "The attacker must get a matching .class file into the process working directory's player subtree, for example by convincing the victim to install a downloaded AI. Automatic launch requires the binary name Human or Easy; manual loading requires the victim to select the matching name. No network delivery exists in this variant, and no privilege beyond the game process's user account is gained.",
+      "severity": "high",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, compile a default-package Human class with a public no-argument constructor and a static initializer that writes a uniquely named marker file. Place it at player/Human.class and launch tutorVolley.TutorVolleyMain with that directory as the working directory. Creation of the marker before the options window appears proves the startup path. The probe need not implement TutorVolleyAI because TutorVolleyPanelOptions.java:147 instantiates it before the cast at :148; implementing the interface avoids the subsequent ClassCastException.",
+      "shared_component": true
+    },
+    {
+      "id": "TutorVolley-02",
+      "title": "AI class-file length directly controls heap allocation",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-789",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 93,
+      "code_excerpt": "int size = (int)f.length();\n\n// Reserve space to read\nbyte buff[] = new byte[size];",
+      "entry_point": "The length of the local player/Human.class or player/Easy.class loaded automatically at TutorVolleyPanelOptions.java:64 and :82, or of a class selected through the Load Player dialog at :135-146.",
+      "sink": "TutorVolleyClassLoader.java:96 allocates a byte array equal to the attacker-controlled file length, and :103 attempts to fill the entire allocation.",
+      "data_path": "TutorVolleyMain.java:48 calls setAI; TutorVolleyPanelOptions.java:64 calls loadPlayer for Human; :146 constructs the loader; TutorVolleyClassLoader.java:88 resolves player/Human.class; :93 casts File.length() to int; :96 allocates that many bytes; and :103 reads the entire file.",
+      "attack_scenario": "An attacker supplies an oversized player/Human.class, such as a 256 MiB file, as purported AI content. Launching the game automatically attempts an equally large contiguous heap allocation before displaying the window. With a smaller maximum heap this throws OutOfMemoryError, which is swallowed by the catch(Throwable) at TutorVolleyClassLoader.java:75-77 and presented as ClassNotFoundException; with a larger heap it causes substantial allocation and file reading before class validation. Player one remains without an AI, and TutorVolleyPlayer.java:194-195 prevents normal play.",
+      "reachable": true,
+      "preconditions": "The attacker must cause the victim to place an oversized class file in the relative player directory or select it manually. To exercise the allocation rather than the negative-size path, its length must be at most 2147483647 bytes. Impact is denial of service or startup memory pressure, not code execution.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, preserve the original Human.class and create a 268435456-byte player/Human.class, for example with truncate. Launch with a deliberately constrained heap such as -Xmx128m and break at TutorVolleyClassLoader.java:96 or enable JVM allocation/GC recording. Confirm the attempted 268435456-byte array allocation, the ClassNotFoundException path at :75-77, and the absence of a usable player-one AI. Repeating with -Xmx512m should instead show the temporary RSS increase and full read before class-format rejection.",
+      "shared_component": true
+    }
+  ],
+  "categories_checked_and_absent": [
+    "insecure_transport",
+    "untrusted_deserialization",
+    "unsafe_custom_parser",
+    "path_traversal",
+    "client_side_trust",
+    "information_disclosure",
+    "unsafe_native_call",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 15 Java files under the supplied source root were opened. The snapshot contains only Java source beneath a preserved Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley prefix, with no build metadata or resources, so dynamic validation was not run. There are no java.net imports, URLs, HTTP endpoints, save/level/replay formats, ObjectInputStream calls, MessageDigest calls, native loading, process execution, applet APIs, user.home/user.dir paths, credentials, or use of main's command-line arguments. Finding TutorVolley-01 therefore uses remote_code_loading as the closest allowed category, but its reachable input is strictly a local class file, not a network response. No separate weak-integrity finding was counted because the complete absence of authenticity checking is part of TutorVolley-01. The user-entered class name becomes a path at TutorVolleyClassLoader.java:38, but conventional ../ traversal loses its dots during replacement and a slash-form name cannot successfully match the binary name supplied to defineClass at :43; no reproducible traversal to executable code was identified. TutorVolleyImage.java:114 has a filesystem-image branch, but every in-tree call passes false and a fixed classpath resource name (TutorVolleyMain.java:37 and :57; TutorVolleyPanelGame.java:62-71; TutorVolleyPanelOptions.java:48-51), so untrusted input cannot reach it unless arbitrary plugin code is already executing."
+}
+<<<JSON_END>>>
+[2mtokens used[0m
+82,706
+<<<JSON_BEGIN>>>
+{
+  "variant": "TutorVolley",
+  "files_reviewed": 15,
+  "notable_files": [
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPanelOptions.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyMain.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyPlayer.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyImage.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Human.java",
+    "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/player/Easy.java"
+  ],
+  "findings": [
+    {
+      "id": "TutorVolley-01",
+      "title": "Working-directory class files execute before AI type checking",
+      "category": "remote_code_loading",
+      "cwe": "CWE-829",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 42,
+      "code_excerpt": "byte data[] = loadClassData(filename);\nc = defineClass (name, data, 0, data.length);",
+      "entry_point": "An untrusted local AI class under player/<binary-name>.class. Human and Easy are selected automatically at TutorVolleyPanelOptions.java:64 and :82; alternatively, the user supplies the binary name through the dialog at :135-138.",
+      "sink": "TutorVolleyClassLoader.java:43 calls defineClass on the file bytes, and TutorVolleyPanelOptions.java:147 invokes Class.newInstance(). The cast to TutorVolleyAI does not occur until :148, after initialization and the constructor have executed.",
+      "data_path": "TutorVolleyMain.main at TutorVolleyMain.java:96-98 constructs the window; its constructor calls TutorVolleyPanelOptions.setAI at :48. setAI calls loadPlayer at TutorVolleyPanelOptions.java:64 or :82. loadPlayer creates TutorVolleyClassLoader with relative root \"player\" at :146. TutorVolleyClassLoader.loadClass maps the name to a filename at :38, opens it at :88 and :99, reads it at :103, and defines it at :43. Control returns to loadPlayer, which instantiates it at TutorVolleyPanelOptions.java:147.",
+      "attack_scenario": "An attacker distributes a malicious AI class as player/Human.class or replaces that file in a copied game directory. The victim launches TutorVolleyMain. Startup calls setAI before the window is made visible (TutorVolleyMain.java:48 and :61), so the file is defined and instantiated without another click. A static initializer or public no-argument constructor then runs arbitrary Java code with the victim's OS permissions. A custom class can instead be placed under player and selected using either Load Player button, whose handlers call loadPlayer at TutorVolleyPanelOptions.java:236 and :257.",
+      "reachable": true,
+      "preconditions": "The attacker must get a matching .class file into the process working directory's player subtree, for example by convincing the victim to install a downloaded AI. Automatic launch requires the binary name Human or Easy; manual loading requires the victim to select the matching name. No network delivery exists in this variant, and no privilege beyond the game process's user account is gained.",
+      "severity": "high",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, compile a default-package Human class with a public no-argument constructor and a static initializer that writes a uniquely named marker file. Place it at player/Human.class and launch tutorVolley.TutorVolleyMain with that directory as the working directory. Creation of the marker before the options window appears proves the startup path. The probe need not implement TutorVolleyAI because TutorVolleyPanelOptions.java:147 instantiates it before the cast at :148; implementing the interface avoids the subsequent ClassCastException.",
+      "shared_component": true
+    },
+    {
+      "id": "TutorVolley-02",
+      "title": "AI class-file length directly controls heap allocation",
+      "category": "resource_exhaustion",
+      "cwe": "CWE-789",
+      "file": "Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley/tutorVolley/TutorVolleyClassLoader.java",
+      "line": 93,
+      "code_excerpt": "int size = (int)f.length();\n\n// Reserve space to read\nbyte buff[] = new byte[size];",
+      "entry_point": "The length of the local player/Human.class or player/Easy.class loaded automatically at TutorVolleyPanelOptions.java:64 and :82, or of a class selected through the Load Player dialog at :135-146.",
+      "sink": "TutorVolleyClassLoader.java:96 allocates a byte array equal to the attacker-controlled file length, and :103 attempts to fill the entire allocation.",
+      "data_path": "TutorVolleyMain.java:48 calls setAI; TutorVolleyPanelOptions.java:64 calls loadPlayer for Human; :146 constructs the loader; TutorVolleyClassLoader.java:88 resolves player/Human.class; :93 casts File.length() to int; :96 allocates that many bytes; and :103 reads the entire file.",
+      "attack_scenario": "An attacker supplies an oversized player/Human.class, such as a 256 MiB file, as purported AI content. Launching the game automatically attempts an equally large contiguous heap allocation before displaying the window. With a smaller maximum heap this throws OutOfMemoryError, which is swallowed by the catch(Throwable) at TutorVolleyClassLoader.java:75-77 and presented as ClassNotFoundException; with a larger heap it causes substantial allocation and file reading before class validation. Player one remains without an AI, and TutorVolleyPlayer.java:194-195 prevents normal play.",
+      "reachable": true,
+      "preconditions": "The attacker must cause the victim to place an oversized class file in the relative player directory or select it manually. To exercise the allocation rather than the negative-size path, its length must be at most 2147483647 bytes. Impact is denial of service or startup memory pressure, not code execution.",
+      "severity": "low",
+      "confidence": "high",
+      "validation_plan": "On a disposable runnable copy, preserve the original Human.class and create a 268435456-byte player/Human.class, for example with truncate. Launch with a deliberately constrained heap such as -Xmx128m and break at TutorVolleyClassLoader.java:96 or enable JVM allocation/GC recording. Confirm the attempted 268435456-byte array allocation, the ClassNotFoundException path at :75-77, and the absence of a usable player-one AI. Repeating with -Xmx512m should instead show the temporary RSS increase and full read before class-format rejection.",
+      "shared_component": true
+    }
+  ],
+  "categories_checked_and_absent": [
+    "insecure_transport",
+    "untrusted_deserialization",
+    "unsafe_custom_parser",
+    "path_traversal",
+    "client_side_trust",
+    "information_disclosure",
+    "unsafe_native_call",
+    "credential_or_secret_exposure"
+  ],
+  "notes": "All 15 Java files under the supplied source root were opened. The snapshot contains only Java source beneath a preserved Users/eliahilse/Documents/GitHub/B/apogames/Java/TutorVolley prefix, with no build metadata or resources, so dynamic validation was not run. There are no java.net imports, URLs, HTTP endpoints, save/level/replay formats, ObjectInputStream calls, MessageDigest calls, native loading, process execution, applet APIs, user.home/user.dir paths, credentials, or use of main's command-line arguments. Finding TutorVolley-01 therefore uses remote_code_loading as the closest allowed category, but its reachable input is strictly a local class file, not a network response. No separate weak-integrity finding was counted because the complete absence of authenticity checking is part of TutorVolley-01. The user-entered class name becomes a path at TutorVolleyClassLoader.java:38, but conventional ../ traversal loses its dots during replacement and a slash-form name cannot successfully match the binary name supplied to defineClass at :43; no reproducible traversal to executable code was identified. TutorVolleyImage.java:114 has a filesystem-image branch, but every in-tree call passes false and a fixed classpath resource name (TutorVolleyMain.java:37 and :57; TutorVolleyPanelGame.java:62-71; TutorVolleyPanelOptions.java:48-51), so untrusted input cannot reach it unless arbitrary plugin code is already executing."
+}
+<<<JSON_END>>>

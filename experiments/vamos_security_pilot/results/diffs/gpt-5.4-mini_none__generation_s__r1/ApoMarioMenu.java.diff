@@ -1,0 +1,63 @@
+--- a/apoMario/game/panels/ApoMarioMenu.java
++++ b/apoMario/game/panels/ApoMarioMenu.java
+@@ -1,4 +1,8 @@
+ package apoMario.game.panels;
++
++import apoMario.game.panels.ApoMarioHighscore;
++import apoMario.game.panels.ApoMarioMenu;
++import apoMario.game.panels.ApoMarioModelMenu;
+ 
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+@@ -510,6 +514,7 @@
+ 				this.renderPlayerStats(g, x, y, this.getGame().getLevel().getPlayers().get(1));
+ 			}
+ 		}
++		this.renderHighscore(g);
+ 		super.renderButtonsAndRunner(g);
+ 	}
+ 	
+@@ -544,10 +549,42 @@
+ 		}	
+ 	}
+ 	
++	private void renderHighscore(Graphics2D g) {
++		ApoMarioHighscore hs = this.getGame().getHighscore();
++		if (hs == null) {
++			return;
++		}
++		int x = ApoMarioConstants.GAME_WIDTH / 2;
++		int y = (int)(ApoMarioConstants.GAME_HEIGHT * 3 / 4);
++		g.setFont(ApoMarioConstants.FONT_FPS);
++		g.setColor(Color.BLACK);
++		String title = "Highscore";
++		int w = g.getFontMetrics().stringWidth(title);
++		g.drawString(title, x - w / 2, y);
++		y += g.getFontMetrics().getHeight();
++		int count = Math.min(hs.getPlayersNames().size(), 5);
++		for (int i = 0; i < count; i++) {
++			String time = formatTime(hs.getSurvivalTimes().get(i));
++			String line = (i + 1) + ". " + hs.getPlayersNames().get(i) + "  " + hs.getPlayersScores().get(i) + "  " + time;
++			w = g.getFontMetrics().stringWidth(line);
++			g.drawString(line, x - w / 2, y);
++			y += g.getFontMetrics().getHeight();
++		}
++	}
++
++	private String formatTime(int survivalTime) {
++		int seconds = Math.max(0, survivalTime / 1000);
++		int minutes = seconds / 60;
++		int rest = seconds % 60;
++		String m = (minutes < 10) ? ("0" + minutes) : String.valueOf(minutes);
++		String s = (rest < 10) ? ("0" + rest) : String.valueOf(rest);
++		return m + ":" + s;
++	}
++	
+ 	private void drawString(Graphics2D g, String s, int x, int y, Color behind, Color color) {
+ 		g.setColor(behind);
+ 		g.drawString(s, x + 1, y + 1);
+ 		g.setColor(color);
+ 		g.drawString(s, x, y);
+ 	}
+-}
++}

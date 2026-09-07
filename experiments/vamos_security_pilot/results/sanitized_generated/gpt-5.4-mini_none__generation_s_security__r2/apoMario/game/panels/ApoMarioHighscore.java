@@ -1,0 +1,225 @@
+package apoMario.game.panels;
+
+import apoMario.game.panels.ApoMarioHighscore;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import apoMario.ApoMarioConstants;
+import apoMario.level.ApoMarioLevel;
+import apoMario.entity.ApoMarioPlayer;
+
+public class ApoMarioHighscore {
+
+	private static final int MAX_ENTRIES = 25;
+	private static final int MAX_NAME_LENGTH = 32;
+
+	private final Path store;
+
+	private final List<String> playersNames;
+	private final List<Integer> playersScores;
+	private final List<Integer> survivalTimes;
+
+	public ApoMarioHighscore(Path store) {
+		this.store = store;
+		this.playersNames = new ArrayList<String>();
+		this.playersScores = new ArrayList<Integer>();
+		this.survivalTimes = new ArrayList<Integer>();
+		this.load();
+	}
+
+	public synchronized boolean storeRun(int score, int survivalTime, String playerName) {
+		if (score < 0 || survivalTime < 0 || playerName == null) {
+			return false;
+		}
+		playerName = playerName.trim();
+		if (playerName.length() <= 0) {
+			return false;
+		}
+		if (playerName.length() > MAX_NAME_LENGTH) {
+			playerName = playerName.substring(0, MAX_NAME_LENGTH);
+		}
+		this.playersNames.add(playerName);
+		this.playersScores.add(Integer.valueOf(score));
+		this.survivalTimes.add(Integer.valueOf(survivalTime));
+		this.sortAndTrim();
+		this.persistAcrossRuns();
+		return true;
+	}
+
+	public synchronized List<String> getPlayersNames() {
+		return new ArrayList<String>(this.playersNames);
+	}
+
+	public synchronized List<Integer> getPlayersScores() {
+		return new ArrayList<Integer>(this.playersScores);
+	}
+
+	public synchronized List<Integer> getSurvivalTimes() {
+		return new ArrayList<Integer>(this.survivalTimes);
+	}
+
+	public synchronized void persistAcrossRuns() {
+		if (this.store == null) {
+			return;
+		}
+		try {
+			Path parent = this.store.getParent();
+			if (parent != null) {
+				Files.createDirectories(parent);
+			}
+			BufferedWriter writer = Files.newBufferedWriter(this.store);
+			try {
+				for (int i = 0; i < this.playersNames.size() && i < MAX_ENTRIES; i++) {
+					writer.write(this.playersScores.get(i).intValue() + "\t" + this.survivalTimes.get(i).intValue() + "\t" + this.playersNames.get(i));
+					writer.newLine();
+				}
+			} finally {
+				writer.close();
+			}
+		} catch (IOException e) {
+		}
+	}
+
+	private void load() {
+		this.playersNames.clear();
+		this.playersScores.clear();
+		this.survivalTimes.clear();
+		if (this.store == null || !Files.exists(this.store)) {
+			return;
+		}
+		try {
+			BufferedReader reader = Files.newBufferedReader(this.store);
+			try {
+				String line;
+				while ((line = reader.readLine()) != null && this.playersNames.size() < MAX_ENTRIES) {
+					String[] parts = line.split("\t", 3);
+					if (parts.length != 3) {
+						continue;
+					}
+					int score;
+					int survival;
+					try {
+						score = Integer.parseInt(parts[0].trim());
+						survival = Integer.parseInt(parts[1].trim());
+					} catch (NumberFormatException ex) {
+						continue;
+					}
+					String name = parts[2] != null ? parts[2].trim() : null;
+					if (score < 0 || survival < 0 || name == null || name.length() <= 0) {
+						continue;
+					}
+					if (name.length() > MAX_NAME_LENGTH) {
+						name = name.substring(0, MAX_NAME_LENGTH);
+					}
+					this.playersNames.add(name);
+					this.playersScores.add(Integer.valueOf(score));
+					this.survivalTimes.add(Integer.valueOf(survival));
+				}
+			} finally {
+				reader.close();
+			}
+			this.sortAndTrim();
+		} catch (IOException e) {
+			this.playersNames.clear();
+			this.playersScores.clear();
+			this.survivalTimes.clear();
+		}
+	}
+
+	private void sortAndTrim() {
+		List<Integer> order = new ArrayList<Integer>();
+		for (int i = 0; i < this.playersNames.size(); i++) {
+			order.add(Integer.valueOf(i));
+		}
+		Collections.sort(order, new Comparator<Integer>() {
+			public int compare(Integer a, Integer b) {
+				int scoreA = playersScores.get(a.intValue()).intValue();
+				int scoreB = playersScores.get(b.intValue()).intValue();
+				if (scoreA != scoreB) {
+					return scoreB - scoreA;
+				}
+				int timeA = survivalTimes.get(a.intValue()).intValue();
+				int timeB = survivalTimes.get(b.intValue()).intValue();
+				if (timeA != timeB) {
+					return timeB - timeA;
+				}
+				return playersNames.get(a.intValue()).compareToIgnoreCase(playersNames.get(b.intValue()));
+			}
+		});
+
+		List<String> names = new ArrayList<String>();
+		List<Integer> scores = new ArrayList<Integer>();
+		List<Integer> times = new ArrayList<Integer>();
+		for (int i = 0; i < order.size() && i < MAX_ENTRIES; i++) {
+			int index = order.get(i).intValue();
+			names.add(this.playersNames.get(index));
+			scores.add(this.playersScores.get(index));
+			times.add(this.survivalTimes.get(index));
+		}
+		this.playersNames.clear();
+		this.playersNames.addAll(names);
+		this.playersScores.clear();
+		this.playersScores.addAll(scores);
+		this.survivalTimes.clear();
+		this.survivalTimes.addAll(times);
+	}
+
+	public static String formatTime(int survivalTime) {
+		if (survivalTime < 0) {
+			survivalTime = 0;
+		}
+		int seconds = survivalTime / 1000;
+		int minutes = seconds / 60;
+		seconds = seconds % 60;
+		return String.format("%02d:%02d", Integer.valueOf(minutes), Integer.valueOf(seconds));
+	}
+
+	public static String safePlayerName(ApoMarioLevel level) {
+		if (level == null || level.getPlayers() == null || level.getPlayers().size() <= 0) {
+			return "Player";
+		}
+		ApoMarioPlayer player = level.getPlayers().get(0);
+		if (player == null) {
+			return "Player";
+		}
+		String name = player.getTeamName();
+		if (name == null || name.trim().length() <= 0) {
+			name = player.getAuthor();
+		}
+		if (name == null || name.trim().length() <= 0) {
+			name = "Player";
+		}
+		name = name.trim();
+		if (name.length() > MAX_NAME_LENGTH) {
+			name = name.substring(0, MAX_NAME_LENGTH);
+		}
+		return name;
+	}
+
+	public static int safeScore(ApoMarioLevel level) {
+		if (level == null || level.getPlayers() == null || level.getPlayers().size() <= 0) {
+			return 0;
+		}
+		ApoMarioPlayer player = level.getPlayers().get(0);
+		if (player == null) {
+			return 0;
+		}
+		return Math.max(0, player.getPoints());
+	}
+
+	public static int safeSurvivalTime(ApoMarioLevel level) {
+		if (level == null) {
+			return 0;
+		}
+		int passed = level.getPassedTime();
+		return Math.max(0, passed);
+	}
+}
