@@ -7,7 +7,7 @@ const strategies = [
 ];
 type Evidence = { path: string; start_line: number; end_line: number; quote: string; sourceMatch: boolean; inspected: boolean; sourceSha256: string | null };
 type Item = { id: string; kind: string; topic: string; statement: string; task_relevance: string; cwes: string[]; evidence: Evidence[]; suggested_check: string; citationStatus: string };
-type Turn = { number: number; status: string; requestSha256: string; request: { messages: { role: string; content: string }[] }; response?: { output_text: string; model: string; finish_reason: string; usage?: Record<string, number | null> }; toolResult?: { excerpts?: { path: string; start_line: number; end_line: number; text: string }[]; error?: string; totalMatches?: number; truncated?: boolean } };
+type Turn = { candidateOutput?: { items: Item[] }; number: number; status: string; requestSha256: string; request: { messages: { role: string; content: string }[] }; response?: { output_text: string; model: string; finish_reason: string; usage?: Record<string, number | null> }; toolResult?: { citationErrors?: unknown[]; excerpts?: { path: string; start_line: number; end_line: number; text: string }[]; error?: string; totalMatches?: number; truncated?: boolean } };
 type Generation = { id: string; status: string; repository: string; strategy: string; task: string; model: string; settings: { reasoning_effort: string }; settingsVerified: boolean | null; startedAt: string; snapshotFingerprint: string; sourceFiles: number; sourceLines: number; omittedFiles: number; inspectedFiles?: number; inspectedLines?: number; maxTurns: number; generatorHashes?: Record<string, string>; initialPrompt: string; turns: Turn[]; output: { summary: string; items: Item[]; limitations: string[] } | null; citationChecks: { matched: number; total: number; uncitedItems: number; limitation: string } | null; errorCategory?: string };
 type Index = { local: boolean; adapterReady: boolean; targets: string[]; runs: { id: string; repository: string; task: string; strategy: string; status: string; startedAt: string; turns: number; items: number | null; generatorHash?: string | null }[] };
 const label = (value: string) => value.replaceAll('_', ' ');
@@ -47,6 +47,7 @@ export function ContextGeneration() {
     catch (e) { setError((e as Error).message); }
     finally { setSubmitting(false); }
   };
+  const candidates = run?.turns.flatMap(t => t.candidateOutput ? [t.candidateOutput] : []) ?? [];
   const items = run?.output?.items.filter(item => kind === 'all' || item.kind === kind) || [];
   return <section aria-label="Context generation">
     <p>Repository + task → Luna inspects files → security context.</p>
@@ -64,6 +65,7 @@ export function ContextGeneration() {
       <h2>Output · {run.repository} · {strategies.find(s => s.id === run.strategy)?.label}</h2>
       <p>{label(run.status)} · {run.turns.length}/{run.maxTurns} turns · {run.inspectedFiles ?? 0}/{run.sourceFiles} files inspected · {run.inspectedLines ?? 0}/{run.sourceLines} source lines shown</p>
       <p className="note">{run.task}</p>
+      {candidates.length > 0 && <p className="note">{candidates[0].items.length} items in the first candidate → {run.output?.items.length ?? '—'} in the final context · {run.turns.filter(t => t.toolResult?.citationErrors?.length).length} turns of citation feedback. Open the trace to inspect changes; item identifiers alone do not establish whether a claim was lost.</p>}
       {run.settingsVerified === false && <p role="alert">The service did not verify effective model settings. Preserve this distinction when interpreting the output.</p>}
       {run.errorCategory && <p role="alert">{label(run.errorCategory)}. The recorded attempt will not be retried automatically.</p>}
       <div className="generation-actions"><button onClick={() => download(run, `${run.id}.json`)}>Export generation JSON</button>{run.output && <button onClick={() => download(run.output, `${run.id}-context.json`)}>Export context JSON</button>}</div>
