@@ -7,6 +7,7 @@ import math
 from pathlib import Path
 
 from research.import_evidence import ROOT, canonical, digest
+from research.acquisition_diagnostics import diagnose
 from research.run_experiment import timestamp
 from research.study_results import index
 
@@ -100,6 +101,11 @@ def render(data: dict, created: str) -> str:
             lines += [f"#### {c['id']}", '', table(['Test', 'Pass', 'Fail', 'Not run', 'Unknown', 'Compile error', 'Environment error', 'Pass / tested', 'Pass / attempts'], [
                 [t['id'], t['pass'], t['fail'], t['not_run'], t['unknown'], t['compile_error'], t['infrastructure_error'], rate(t['pass'], t['executed']), rate(t['pass'], t['attempts'])] for t in rows[c['id']]['checks']]), '']
         lines += ['### Protocol differences and limits', '', *['- ' + d for d in plan['deviations']], '']
+    diagnostics = data.get('acquisitionDiagnostics', [])
+    if diagnostics:
+        lines += ['## Acquisition process measurements', '', table(['Method', 'Strategy', 'Files inspected / indexed', 'Lines shown / indexed', 'Turns', 'Tool-error turns', 'Citation-feedback turns', 'First candidate items', 'Final items'], [
+            [a['method'], a['strategy'], f"{a['inspectedFiles']}/{a['sourceFiles']}", f"{a['inspectedLines']}/{a['sourceLines']}", a['turns'], a['toolErrorTurns'], a['citationFeedbackTurns'], a['firstCandidateItems'], a['finalItems']] for a in diagnostics]), '',
+            'Candidate-size changes reveal that citation feedback can change the amount of context ultimately injected. These are observed outputs of this frozen acquisition protocol, not independent replications of each strategy. The JSON retains identifier changes for review; identifiers alone do not establish semantic claim loss.', '']
     lines += ['## Interpretation limits', '',
               'This exploratory sample does not establish a general model ranking or absence of vulnerabilities. Security checks cover explicit fixtures in an isolated feature harness; a pass there does not establish that the integrated game works. Additional information and token length accompany the security treatment. The six acquired contexts are not replicated, and the follow-up is conditional on selection and those specific contexts.', '',
               'Exact attempts, evaluator diagnostics and generated contexts remain local. The companion JSON contains hashes of the underlying records and reports; the explorer exposes individual evidence. The committed protocol is research/MATRIX_EXPERIMENT.md.', '']
@@ -109,12 +115,19 @@ def render(data: dict, created: str) -> str:
 def write(output: Path):
     data = index()
     hashes = {}
+    data['acquisitionDiagnostics'] = []
     for s in data['studies']:
+        for a in s['plan'].get('acquisitions', []):
+            path = ROOT / a['directory'] / 'record.json'
+            expected = s['plan']['sourceHashes'][str(path.relative_to(ROOT))]
+            if digest(path.read_bytes()) != expected: raise ValueError('Frozen acquisition record changed')
+            data['acquisitionDiagnostics'].append({'method': a['method'], **diagnose(json.loads(path.read_text()))})
+            hashes[str(path.relative_to(ROOT))] = expected
         base = ROOT / '.local/experiments' / s['plan']['id']
         for path in sorted([*base.glob('runs/*.json'), *base.glob('evaluations/*/report.json')]):
             hashes[str(path.relative_to(ROOT))] = digest(path.read_bytes())
     artifact = {'createdAt': timestamp(), 'data': data, 'evidenceHashes': hashes,
-                'reportSourceSha256': digest(Path(__file__).read_bytes())}
+                'analysisSourceHashes': {str(p.relative_to(ROOT)): digest(p.read_bytes()) for p in (Path(__file__).resolve(), ROOT / 'research/acquisition_diagnostics.py', ROOT / 'research/study_results.py', ROOT / 'research/study_execution.py')}}
     artifact['fingerprint'] = digest(canonical(artifact))
     output.mkdir(parents=True, exist_ok=True)
     (output / 'results.json').write_bytes(canonical(artifact))
