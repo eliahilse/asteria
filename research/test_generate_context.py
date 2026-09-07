@@ -1,4 +1,5 @@
 import json
+import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -51,6 +52,17 @@ class GenerationTests(unittest.TestCase):
             self.assertEqual(snap['fingerprint'], snapshot(repo)['fingerprint'])
             self.assertIn('game.jar!/a/Other.java', [f['path'] for f in snap['files']])
             self.assertNotIn('game.jar!/a/Other.class', [f['path'] for f in snap['files']])
+
+    def test_gitignored_text_is_not_model_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            repo = self.repo(root)
+            subprocess.run(['git', 'init', '-q', str(repo)], check=True)
+            (repo / '.gitignore').write_text('private.txt\n')
+            (repo / 'private.txt').write_text('DO NOT SEND THIS LOCAL CONTENT')
+            snap = snapshot(repo)
+            self.assertNotIn('DO NOT SEND THIS LOCAL CONTENT', json.dumps(snap))
+            self.assertIn('private.txt', [f['path'] for f in snap['omitted']])
 
     def test_model_acquires_then_finishes_with_citation_checks(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -111,7 +123,8 @@ class GenerationTests(unittest.TestCase):
             def model(command, request, timeout):
                 nonlocal count
                 count += 1
-                self.assertEqual(request['response_format'], {'type': 'json_object'})
+                self.assertEqual(request['tool_choice']['function']['name'], 'emit_context_action')
+                self.assertFalse(request['parallel_tool_calls'])
                 if count == 1: action = {'action': 'read', 'files': [{'path': 'Score.java', 'start_line': 1, 'end_line': 3}]}
                 else:
                     self.assertIn('2:   String input;', json.dumps(request['messages']))
