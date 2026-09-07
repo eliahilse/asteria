@@ -38,15 +38,16 @@ test('matrix distinguishes tested rates from all attempts and opens raw diagnost
   });
   await page.route('**/api/experiment/*/run/browser-test-only', route => route.fulfill({ json: {
     observation: { runId: 'browser-test-only', request: {}, response: { output_text: 'Browser test fixture, not a model result' } },
-    evaluation: { diagnostic: 'Fixture compiler output' },
+    evaluation: { processes: [{ command: ['fixture-compiler'], exitCode: 1, stdout: '', stderr: 'Fixture compiler output' }] },
   } }));
   await page.goto('/');
+  await page.getByLabel('Cell measure', { exact: true }).selectOption('full');
   await page.getByRole('button', { name: 'Reuse None No security context', exact: true }).click();
   const row = page.locator('.matrix-checks tbody tr').first();
   await expect(row).toContainText('100.0%');
   await expect(row).toContainText('50.0%');
   await page.getByRole('button', { name: 'Repetition 1', exact: true }).click();
-  await expect(page.getByText('Fixture compiler output', { exact: false })).toBeVisible();
+  await expect(page.getByText('Fixture compiler output', { exact: true })).toBeVisible();
   await page.getByText('Original model response', { exact: true }).click();
   await expect(page.getByText('Browser test fixture, not a model result', { exact: true })).toBeVisible();
 });
