@@ -64,6 +64,7 @@ export async function buildWorkbook(data: Dataset, runs: Run[], selection: Selec
     ...data.limitations.map((value, i) => ({ field: `limitation_${i + 1}`, value })),
   ]);
   sheet('Cohorts', data.cohorts.map(c => ({ ...c })));
+  sheet('Control checks', data.securityProtocols.flatMap(p => p.controls.flatMap(c => c.checks.map(t => ({ protocol: p.protocol, target: c.target, control_validated: c.validated, expected: c.expected[t.name], ...t })))), ['protocol','target','name','status','expected']);
   sheet('Conditions', cells(runs).map(c => ({ cohort: c.run.cohort, model: c.run.model, reasoning: c.run.reasoning, temperature: c.run.temperature, strategy: c.run.strategy, condition: c.run.condition,
     base_context: c.run.baseContext, security_context: c.run.securityContext, security_type_count: c.run.contextTypes.length, security_fact_count: c.run.factIds.length,
     attempts: c.n, compiled: c.compiled, compile_denominator: c.n, compile_rate: c.compiled / c.n, compile_ci_low: wilson(c.compiled,c.n)?.[0], compile_ci_high: wilson(c.compiled,c.n)?.[1],

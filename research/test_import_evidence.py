@@ -38,6 +38,18 @@ class EvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             Importer().artifact('../outside.txt')
 
+    def test_new_execution_preserves_historical_errors(self):
+        if not self.data['securityProtocols']:
+            self.skipTest('No new security evaluation imported')
+        observed = [r for r in self.fresh if r['securityEvaluation']]
+        self.assertEqual(len(observed), 4)
+        self.assertTrue(all(len(r['securityEvaluation']['checks']) == 11 for r in observed))
+        self.assertTrue(all(t['status'] == 'infrastructure_error' for r in observed for t in r['tests'] if t['suite'] == 'security'))
+        constrained = next(r for r in observed if r['securityContext'])
+        self.assertEqual(constrained['assessment'], 'no_targeted_findings')
+        self.assertEqual(constrained['securityEvaluation']['status'], 'fail')
+        self.assertEqual([t['name'] for t in constrained['securityEvaluation']['checks'] if t['status'] == 'fail'], ['oversizedPhysicalLine'])
+
 
 if __name__ == '__main__':
     unittest.main()
