@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import ExcelJS from 'exceljs';
 
 test('research overview, filters, evidence record and exact prompt comparison', async ({ page }) => {
   const errors: string[] = [];
@@ -26,6 +27,20 @@ test('research overview, filters, evidence record and exact prompt comparison', 
   await page.getByRole('button', { name: 'Highscore code', exact: true }).click();
   await expect(page.locator('.diff-code')).toContainText('MAX_ENTRIES');
   expect(errors).toEqual([]);
+});
+
+test('filtered XLSX export contains individual checks and exact evidence', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Model filter').selectOption('gpt-5.4-mini');
+  const downloaded = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export XLSX' }).click();
+  const download = await downloaded;
+  expect(download.suggestedFilename()).toBe('asteria-highscore-evidence.xlsx');
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile((await download.path())!);
+  expect(workbook.getWorksheet('Runs')!.rowCount).toBe(9);
+  expect(workbook.getWorksheet('Historical checks')!.rowCount).toBe(177);
+  expect(workbook.getWorksheet('Evidence text')!.rowCount).toBeGreaterThan(20);
 });
 
 test('cohorts remain separate and narrow viewports remain navigable', async ({ page }) => {
