@@ -1,5 +1,21 @@
 # Asteria — bachelor-thesis workspace
 
+The current [research workbench](workbench/README.md) provides run-level results,
+individual functional/security checks, source evidence, exact prompt comparisons,
+typed security contexts and XLSX export. Start with the
+[meeting brief](docs/MEETING_BRIEF.md) for the current findings and their limits.
+
+```sh
+cd workbench
+npm ci
+npm run dev
+```
+
+The next Luna study has 16 frozen conditions and 140 planned attempts. Connect
+your provider through the [private adapter protocol](research/ADAPTER.md); local
+adapters, credentials and observations stay gitignored. Validate the plan without
+making model calls with `python3 -m research.run_experiment` from the root.
+
 Migrated from the local `B` workspace. The reports, experiments, audit evidence,
 corpus, and upstream source snapshots are preserved here. See
 [`docs/MIGRATION.md`](docs/MIGRATION.md) for provenance and migration details.
@@ -11,7 +27,7 @@ Working area for the security track of the bachelor-thesis collaboration
 Apo-Games corpus carry the security angle of the project, and what security
 issues does it actually contain?**
 
-## Start here
+## Earlier corpus audit
 - **`docs/REPORT.md`** — feasibility verdict, threat model, validated findings,
   recommendation for the meeting. Read this first.
 - **`docs/RESULTS.md`** — auto-generated category taxonomy + corroborated

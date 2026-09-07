@@ -44,3 +44,19 @@ against its SHA-256 before export; a mismatch fails the export visibly.
 The source dataset fingerprint identifies the complete dataset. JSON exports
 declare that fingerprint separately from the filtered selection. Missing values
 remain blank in XLSX. Strings are written as string cells, never formulas.
+
+Automatic context records, extraction coverage, all frozen conditions, fact
+links and the planned schedule are exported on separate global sheets. These
+planned-study sheets are unaffected by historical run filters and contain no
+model outcome observations. Their full extraction record, manifest and exact
+prompts are also embedded and verified.
+
+## Continuous verification and publication
+
+The repository workflow validates Python evidence/adapter tests, security
+controls, TypeScript analysis, XLSX round trips and browser workflows before
+publishing `dist/` to GitHub Pages on `main`. Actions are pinned to immutable
+commits. Pull requests run verification without deployment. CI never invokes
+a model adapter or accesses private `.local/` results.
+
+Deployment follows GitHub's [custom Pages workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
