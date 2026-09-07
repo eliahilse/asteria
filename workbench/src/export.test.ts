@@ -13,6 +13,9 @@ it('exports granular observations, nulls, safe strings and exact long prompts in
   expect(workbook.getWorksheet('Adjudicated findings')!.rowCount).toBe(4);
   expect(workbook.getWorksheet('Context facts')!.rowCount).toBe(6);
   expect(workbook.getWorksheet('Run context links')!.rowCount).toBe(41);
+  expect(workbook.getWorksheet('Extracted context')!.rowCount).toBe(146);
+  expect(workbook.getWorksheet('Planned conditions')!.rowCount).toBe(17);
+  expect(workbook.getWorksheet('Planned schedule')!.rowCount).toBe(141);
   const sheet = workbook.getWorksheet('Runs')!;
   const costColumn = sheet.columns.findIndex(c=>c.key==='billed_cost_usd')+1;
   expect(sheet.getCell(2,costColumn).value).toBeNull();
@@ -20,6 +23,10 @@ it('exports granular observations, nulls, safe strings and exact long prompts in
   const prompt = runs[0].prompt!; let reconstructed = '';
   rows.eachRow((row,i)=>{if(i>1 && row.getCell(1).value===prompt.sha256) reconstructed+=row.getCell(5).value;});
   expect(reconstructed).toBe(await readFile(`public/${prompt.href}`,'utf8'));
+  const planned = data.experimentPlans[0].conditions.find(c => c.id === 'generation_security_all')!.prompt;
+  let plannedText = '';
+  rows.eachRow((row,i)=>{if(i>1 && row.getCell(1).value===planned.sha256) plannedText+=row.getCell(5).value;});
+  expect(plannedText).toBe(await readFile(`public/${planned.href}`,'utf8'));
   // String cells must stay strings even when they look like formulas.
   workbook.getWorksheet('Read me')!.addRow({field:'formula_test',value:'=HYPERLINK("https://invalid.example","x")'});
   const loaded = new ExcelJS.Workbook(); await loaded.xlsx.load(await workbook.xlsx.writeBuffer());

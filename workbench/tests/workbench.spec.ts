@@ -52,7 +52,24 @@ test('cohorts remain separate and narrow viewports remain navigable', async ({ p
   await page.getByRole('button', { name: 'Context catalogue' }).click();
   await expect(page.getByRole('heading', { name: 'Context catalogue' })).toBeVisible();
   await expect(page.locator('.fact-card')).toHaveCount(5);
+  await page.getByLabel('Extracted context type').selectOption('C4');
+  await expect(page.locator('.extracted-fact')).toHaveCount(6);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
   expect(overflow).toBe(false);
   await page.screenshot({ path: 'test-results/contexts-mobile.png', fullPage: true });
+});
+
+test('context provenance and planned prompt differences remain separate from outcomes', async ({ page }) => {
+  await page.goto('/?view=contexts');
+  await page.getByLabel('Extracted context type').selectOption('C2');
+  await expect(page.locator('.extracted-fact').first()).toContainText('syntactic flow candidate');
+  await expect(page.locator('.extracted-fact').first()).toContainText('input.readLine');
+  await page.getByRole('button', { name: 'Luna experiment plan' }).click();
+  await expect(page.getByRole('heading', { name: 'Luna experiment plan' })).toBeVisible();
+  await expect(page.getByText('Planned · no observations published')).toBeVisible();
+  await page.getByRole('button', { name: 'Inspect planned generation_security_c4', exact: true }).click();
+  await expect(page.locator('.diff-added')).toContainText('Do not deserialize arbitrary Java objects');
+  await page.getByRole('button', { name: 'Inspect complete frozen prompt' }).click();
+  await expect(page.locator('.source-code')).toContainText('BEGIN ATTACHED TARGET SOURCE');
+  await page.screenshot({ path: 'test-results/luna-plan-desktop.png', fullPage: true });
 });

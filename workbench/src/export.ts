@@ -60,7 +60,7 @@ export async function buildWorkbook(data: Dataset, runs: Run[], selection: Selec
     { field: 'missing_values', value: 'Blank means unrecorded. not_run, compile_error and infrastructure_error are not executed pass/fail observations.' },
     { field: 'cohort_selection', value: data.cohorts.find(c => c.id === selection.cohort)?.selection ?? 'See Cohorts sheet.' },
     { field: 'evidence_text', value: 'Exact selected prompts, original responses, generated code and context artifacts are split into ordered chunks. Concatenate by SHA-256 and part; encoding is declared. SHA-256 is verified before export.' },
-    { field: 'manifest_scope', value: 'Artifacts lists the entire source dataset manifest. Evidence text embeds the artifacts used by the selected runs plus the historical context block.' },
+    { field: 'manifest_scope', value: 'Artifacts lists the entire source dataset manifest. Evidence text embeds selected-run artifacts, their historical context, the full automatic extraction, and every frozen planned prompt/manifest. Planned-study sheets are global and unaffected by run filters; they contain no model observations.' },
     ...data.limitations.map((value, i) => ({ field: `limitation_${i + 1}`, value })),
   ]);
   sheet('Cohorts', data.cohorts.map(c => ({ ...c })));
@@ -91,11 +91,27 @@ export async function buildWorkbook(data: Dataset, runs: Run[], selection: Selec
   const usedFacts = data.facts.filter(f => runs.some(r => r.factIds.includes(f.id)));
   sheet('Context facts', usedFacts.map(f => ({ id: f.id, type: f.type, scope: f.scope, status: f.status, cwes: f.cwes.join(', '), text: f.text, extraction: f.extraction, source: f.source.path, source_sha256: f.source.sha256 })), ['id','type','scope','text']);
   sheet('Run context links', runs.flatMap(r => r.factIds.map(id => ({ run_id: r.id, fact_id: id }))), ['run_id','fact_id']);
+  sheet('Extraction coverage', [{ extractor: data.contextExtraction.extractor, fingerprint: data.contextExtraction.fingerprint,
+    source_files: data.contextExtraction.coverage.sourceFiles, parsed_files: data.contextExtraction.coverage.parsedFiles,
+    parse_errors: JSON.stringify(data.contextExtraction.coverage.parseErrors), limits: data.contextExtraction.limitations.join('\n') }]);
+  sheet('Extracted context', data.contextExtraction.facts.map(f => ({ id: f.id, type: f.type, category: f.category, scope: f.scope,
+    evidence_status: f.status, cwes: f.cwes.join(', '), text: f.text, source_path: f.source.path, source_sha256: f.source.sha256,
+    source_member: f.source.member, source_line: f.source.line, source_snippet: f.source.snippet, origins: f.origins,
+    policy_rule: f.source.rule, audit_record: f.source.record, reported_code: JSON.stringify(f.source.reportedCode), reported_line: f.source.reportedLine })), ['id','type','text']);
+  sheet('Planned conditions', data.experimentPlans.flatMap(p => p.conditions.map(c => ({ plan: p.id, plan_fingerprint: p.fingerprint,
+    status: 'planned', model: p.model, reasoning: p.reasoning, temperature: p.temperature, max_output_tokens: p.maxOutputTokens,
+    condition: c.id, stage: c.stage, strategy: c.strategy, base_context: c.baseContext, security_types: c.contextTypes.join(', '),
+    fact_count: c.factCount, prompt_characters: c.promptCharacters, prompt_bytes: c.promptBytes, prompt_tokens: c.promptTokens,
+    prompt_sha256: c.promptSha256, planned_repetitions: c.repetitions, primary_endpoint: p.analysis.primary, confounds: p.analysis.confounds }))), ['plan','condition','status']);
+  sheet('Planned fact links', data.experimentPlans.flatMap(p => p.conditions.flatMap(c => c.factIds.map(id => ({ plan: p.id, condition: c.id, fact_id: id })))), ['plan','condition','fact_id']);
+  sheet('Planned schedule', data.experimentPlans.flatMap(p => p.schedule.map((r, i) => ({ plan: p.id, order: i + 1, schedule_seed: p.scheduleSeed, ...r }))), ['plan','order','runId','status']);
   sheet('Attachments', runs.flatMap(r => r.attachments.map(a => ({ run_id: r.id, ...a }))), ['run_id','kind','name','bytes','sha256']);
   sheet('Artifacts', data.artifacts.map(a => ({ ...a })));
   const included = new Map<string, Artifact>();
   for (const r of runs) for (const a of [r.prompt, r.rawResponse, ...r.code, ...r.findings.map(f => f.evidence)]) if (a) included.set(a.sha256,a);
   for (const f of usedFacts) included.set(f.source.sha256, f.source);
+  included.set(data.contextExtraction.artifact.sha256, data.contextExtraction.artifact);
+  for (const p of data.experimentPlans) for (const a of [p.artifact, ...p.conditions.map(c => c.prompt)]) included.set(a.sha256, a);
   const textRows: Row[] = [];
   for (const artifact of included.values()) {
     const bytes = await read(artifact);
