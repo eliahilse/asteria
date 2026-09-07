@@ -1,75 +1,53 @@
 import { test, expect } from '@playwright/test';
 import ExcelJS from 'exceljs';
 
-test('research overview, filters, evidence record and exact prompt comparison', async ({ page }) => {
-  const errors: string[] = [];
-  page.on('pageerror', e => errors.push(e.message));
+test('opens the test table, removes old runs and exposes exact test contracts', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'From context to evidence.' })).toBeVisible();
-  await expect(page.locator('.metric').nth(0)).toContainText('16');
-  await expect(page.locator('.metric').nth(1)).toContainText('4/16');
-  await expect(page.locator('.metric').nth(2)).toContainText('1/16');
-  await expect(page.locator('.metric').nth(3)).toContainText('3/4');
-  await page.screenshot({ path: 'test-results/overview-desktop.png', fullPage: true });
-  await page.getByRole('button', { name: 'Run explorer', exact: true }).click();
-  await page.getByLabel('Model filter').selectOption('gpt-5.4-mini');
-  await expect(page.getByRole('heading', { name: '8 observations' })).toBeVisible();
-  await page.getByRole('button', { name: 'Inspect gpt-5.4-mini_none__generation_s__r1', exact: true }).click();
-  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Highscore', exact: true })).toBeVisible();
+  await expect(page.locator('.results-table tbody tr')).toHaveCount(11);
+  await expect(page.getByText('No new evaluations imported. Rates are unreported until tests run.')).toBeVisible();
+  await page.getByRole('button', { name: 'Bound physical-line processing', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('64 MiB');
   await expect(page.getByRole('dialog')).toContainText('Environment error');
-  await page.getByRole('button', { name: 'findings', exact: true }).click();
-  await page.getByRole('button', { name: 'Inspect cited code · lines 130, 131' }).click();
-  await expect(page.locator('.highlight-line').first()).toContainText('int size = data.readInt()');
+  await page.getByText('Test source', { exact: true }).click();
+  await expect(page.getByRole('dialog').locator('pre')).toContainText('oversizedPhysicalLine');
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).not.toBeVisible();
-  await page.getByRole('button', { name: 'Compare evidence', exact: true }).click();
-  await expect(page.locator('.diff-added')).toContainText('BEGIN SECURITY FINDINGS CONTEXT');
-  await page.getByRole('button', { name: 'Highscore code', exact: true }).click();
-  await expect(page.locator('.diff-code')).toContainText('MAX_ENTRIES');
+  await page.getByLabel('Tests', { exact: true }).selectOption('functional');
+  await expect(page.locator('.results-table tbody tr')).toHaveCount(16);
+  await page.getByRole('button', { name: 'Runs', exact: true }).click();
+  await expect(page.getByText('No new runs imported.')).toBeVisible();
   expect(errors).toEqual([]);
 });
 
-test('filtered XLSX export contains individual checks and exact evidence', async ({ page }) => {
-  await page.goto('/');
-  await page.getByLabel('Model filter').selectOption('gpt-5.4-mini');
-  const downloaded = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export XLSX' }).click();
-  const download = await downloaded;
-  expect(download.suggestedFilename()).toBe('asteria-highscore-evidence.xlsx');
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile((await download.path())!);
-  expect(workbook.getWorksheet('Runs')!.rowCount).toBe(9);
-  expect(workbook.getWorksheet('Historical checks')!.rowCount).toBe(177);
-  expect(workbook.getWorksheet('Evidence text')!.rowCount).toBeGreaterThan(20);
-});
-
-test('cohorts remain separate and narrow viewports remain navigable', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
-  await page.getByLabel('Evidence cohort').selectOption('published_selected');
-  await expect(page.locator('.metric').first()).toContainText('6');
-  await expect(page.locator('.notice').first()).toContainText('cannot describe all 80');
-  await page.getByRole('button', { name: 'Context catalogue' }).click();
-  await expect(page.getByRole('heading', { name: 'Context catalogue' })).toBeVisible();
-  await expect(page.locator('.fact-card')).toHaveCount(5);
-  await page.getByLabel('Extracted context type').selectOption('C4');
-  await expect(page.locator('.extracted-fact')).toHaveCount(6);
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
-  expect(overflow).toBe(false);
-  await page.screenshot({ path: 'test-results/contexts-mobile.png', fullPage: true });
-});
-
-test('context provenance and planned prompt differences remain separate from outcomes', async ({ page }) => {
+test('context filtering, source details and actual coverage gaps', async ({ page }) => {
   await page.goto('/?view=contexts');
-  await page.getByLabel('Extracted context type').selectOption('C2');
-  await expect(page.locator('.extracted-fact').first()).toContainText('syntactic flow candidate');
-  await expect(page.locator('.extracted-fact').first()).toContainText('input.readLine');
-  await page.getByRole('button', { name: 'Luna experiment plan' }).click();
-  await expect(page.getByRole('heading', { name: 'Luna experiment plan' })).toBeVisible();
-  await expect(page.getByText('Planned · no observations published')).toBeVisible();
-  await page.getByRole('button', { name: 'Inspect planned generation_security_c4', exact: true }).click();
+  await page.getByLabel('Context type', { exact: true }).selectOption('C2');
+  await expect(page.locator('.context-table tbody tr')).toHaveCount(3);
+  await page.locator('.context-table summary').first().click();
+  await expect(page.locator('.context-table')).toContainText('syntactic flow candidate');
+  await expect(page.locator('.context-table')).toContainText('input.readLine');
+  await page.getByText('Context types and test coverage', { exact: true }).click();
+  await expect(page.getByText('None — coverage gap').first()).toBeVisible();
+});
+
+test('planned prompt diffs and XLSX carry details without invented results', async ({ page }) => {
+  await page.goto('/?view=conditions');
+  await page.getByRole('button', { name: 'generation_security_c4', exact: true }).click();
   await expect(page.locator('.diff-added')).toContainText('Do not deserialize arbitrary Java objects');
-  await page.getByRole('button', { name: 'Inspect complete frozen prompt' }).click();
-  await expect(page.locator('.source-code')).toContainText('BEGIN ATTACHED TARGET SOURCE');
-  await page.screenshot({ path: 'test-results/luna-plan-desktop.png', fullPage: true });
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export XLSX', exact: true }).click();
+  const wb = new ExcelJS.Workbook(); await wb.xlsx.readFile((await (await download).path())!);
+  expect(wb.getWorksheet('Runs')!.rowCount).toBe(1);
+  expect(wb.getWorksheet('Test comparisons')!.rowCount).toBe(12);
+  expect(wb.getWorksheet('Test definitions')!.rowCount).toBe(28);
+});
+
+test('plain navigation remains usable on narrow screens', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 }); await page.goto('/');
+  await page.getByRole('button', { name: 'Contexts', exact: true }).click();
+  await page.getByLabel('Context type').selectOption('C4');
+  await expect(page.locator('.context-table tbody tr')).toHaveCount(6);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  await page.screenshot({ path: 'test-results/simple-mobile.png' });
 });
