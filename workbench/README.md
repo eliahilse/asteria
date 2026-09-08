@@ -28,8 +28,10 @@ its own JSON exports; experiment exports do not include private generations.
 
 ## Earlier single-axis study views
 
-Results, Runs, Contexts and Conditions retain the previous study design for
-inspection. They are separate from the current paper-matrix experiment.
+The normal navigation contains Experiment and Context generation. Earlier Results,
+Runs, Contexts and Conditions views remain accessible through explicit `?view=results`,
+`?view=runs`, `?view=contexts` and `?view=conditions` links for reference; they do not
+show the current paper-matrix observations.
 
 The [adapter](../research/ADAPTER.md) writes run records and the
 [evaluator](../research/EVALUATION.md) writes separate reports. Select those

@@ -7,6 +7,7 @@ test('paper matrix starts with 16 empty cells and exports missing rates as blank
     await route.fulfill({ json: await response.json() });
   });
   await page.goto('/');
+  await expect(page.getByRole('navigation', { name: 'Explorer' }).getByRole('button')).toHaveCount(2);
   await expect(page.locator('.experiment-matrix tbody tr')).toHaveCount(16);
   await expect(page.locator('.experiment-matrix tbody button')).toHaveCount(16);
   await expect(page.getByText('After selection', { exact: true })).toHaveCount(48);
