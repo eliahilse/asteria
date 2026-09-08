@@ -15,6 +15,14 @@ I03 uses `generate_security_context.py`, protocol
 | Requirements | The feature's security obligations and the operations where safeguards belong. | Prospective validation, persistence, resource-use and failure-handling recommendations, with repository observations where available. |
 | Trust boundaries | Sources, transformations, sensitive operations and guards across related files, including persisted bytes and new records. | Data-flow risks and proposed guards before relevant operations, with unresolved edges explicit. |
 
+I06 introduces an exploratory **Operational guards** strategy through
+`operational_context.py`. It reuses the frozen v3 search, read and evidence
+machinery in a dedicated process and adds five explicit fields: operation,
+untrusted input, invariant, enforcement point and failure behavior. These fields
+are mandatory for proposed guards and may be unset for unknowns. Validation checks
+representation and references, not whether a guard is correct. I06's protocol
+is `repository-security-context-v4-operational-fields`; I03/I04/I05 remain unchanged.
+
 The no-security control adds no insert. Strategy is the acquisition instruction;
 content kind labels an item produced by the model. They are separate concepts and
 are not independently manipulated here. Prompt length and added information also
