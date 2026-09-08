@@ -4,9 +4,13 @@ import json
 
 from research.import_evidence import ROOT, canonical
 from research.iteration_results import index as original_index
+from research.saved_iteration import resolve
 
 
 def index(public=False, iteration=None, original=False):
+    public, iteration = resolve(ROOT, public, iteration)
+    if public and iteration and iteration != 'original' and not (ROOT / 'research/iterations' / iteration / 'results.json').exists():
+        raise ValueError('No saved results for the requested iteration')
     data = original_index(public=public, iteration=iteration)
     if original or len(data['studies']) != 1: return data
     identifier = data['studies'][0]['plan']['id']
