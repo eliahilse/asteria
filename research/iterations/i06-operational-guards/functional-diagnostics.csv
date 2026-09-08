@@ -1,0 +1,110 @@
+runId,condition,submission,suite,category,exitCode,junitReportedTestsRun,passedChecks,failedChecks,unresolvedChecks,report,reportSha256,diagnosticExcerpt,omittedNonblankLines,stdoutCharacters,stderrCharacters,fullDiagnostics
+i06-operational-guards__generation_s__requirements__r2,generation_s__requirements,5,autonomous,functional_assertion_failure,1,5,1,4,0,.local/iterations/i06-operational-guards/runs/i06-operational-guards__generation_s__requirements__r2/submission-5/evaluation/report.json,bfccbf73da300b6255fbeaa96e5e840d7fe1a58e16168d474ab11f06173c2481,"JUnit version 4.13.2
+.
+E.
+E.
+.
+E.
+E
+Time: 0.814
+There were 4 failures:
+1) runEndRecordsScoreWithoutHelp(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: ending a run must make the GAME record the score by itself (no test call); scores=[]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.runEndRecordsScoreWithoutHelp(ApoMarioHighscoreWiringTest.java:61)
+2) recordedNameIsTheRealPlayersName(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 777-point run must be on the board; scores=[]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedNameIsTheRealPlayersName(ApoMarioHighscoreWiringTest.java:71)
+3) recordedSurvivalTimeIsTheRealElapsedTime(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 31337-point run must be on the board; scores=[]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedSurvivalTimeIsTheRealElapsedTime(ApoMarioHighscoreWiringTest.java:94)
+4) secondRunAlsoRecordedAndBoardSortedDescending(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: both runs must be on the board; scores=[]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.secondRunAlsoRecordedAndBoardSortedDescending(ApoMarioHighscoreWiringTest.java:109)
+FAILURES!!!
+Tests run: 5,  Failures: 4",0,5442,0,functional-diagnostics.json
+i06-operational-guards__reuse_b__operations__r3,reuse_b__operations,5,autonomous,functional_assertion_failure,1,5,2,3,0,.local/iterations/i06-operational-guards/runs/i06-operational-guards__reuse_b__operations__r3/submission-5/evaluation/report.json,e336d7c222e58fb605016b41e62bd4041ffe8e5bff9247a34bf5dac51dbb66ad,"JUnit version 4.13.2
+.
+.
+E.
+.
+E.
+E
+Time: 0.526
+There were 3 failures:
+1) recordedNameIsTheRealPlayersName(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 777-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedNameIsTheRealPlayersName(ApoMarioHighscoreWiringTest.java:71)
+2) recordedSurvivalTimeIsTheRealElapsedTime(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 31337-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedSurvivalTimeIsTheRealElapsedTime(ApoMarioHighscoreWiringTest.java:94)
+3) secondRunAlsoRecordedAndBoardSortedDescending(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: both runs must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.secondRunAlsoRecordedAndBoardSortedDescending(ApoMarioHighscoreWiringTest.java:109)
+FAILURES!!!
+Tests run: 5,  Failures: 3",0,5137,0,functional-diagnostics.json
+i06-operational-guards__reuse_b__requirements__r5,reuse_b__requirements,5,autonomous,functional_assertion_failure,1,5,2,3,0,.local/iterations/i06-operational-guards/runs/i06-operational-guards__reuse_b__requirements__r5/submission-5/evaluation/report.json,81bc19d91bda60d86b439648695f9880c2ced2be5d0efbd051b415e5eeb7bcce,"JUnit version 4.13.2
+.
+.
+E.
+.
+E.
+E
+Time: 0.872
+There were 3 failures:
+1) recordedNameIsTheRealPlayersName(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 777-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedNameIsTheRealPlayersName(ApoMarioHighscoreWiringTest.java:71)
+2) recordedSurvivalTimeIsTheRealElapsedTime(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 31337-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedSurvivalTimeIsTheRealElapsedTime(ApoMarioHighscoreWiringTest.java:94)
+3) secondRunAlsoRecordedAndBoardSortedDescending(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: both runs must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.secondRunAlsoRecordedAndBoardSortedDescending(ApoMarioHighscoreWiringTest.java:109)
+FAILURES!!!
+Tests run: 5,  Failures: 3",0,4962,0,functional-diagnostics.json
+i06-operational-guards__generation_sfb__requirements__r5,generation_sfb__requirements,5,autonomous,functional_assertion_failure,1,5,2,3,0,.local/iterations/i06-operational-guards/runs/i06-operational-guards__generation_sfb__requirements__r5/submission-5/evaluation/report.json,cbdfd0f2ada43fb24df1ecb10d876d9e749b4aa359f5db65b7e48aaceacd16f5,"JUnit version 4.13.2
+.
+.
+E.
+.
+E.
+E
+Time: 1.009
+There were 3 failures:
+1) recordedNameIsTheRealPlayersName(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 777-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedNameIsTheRealPlayersName(ApoMarioHighscoreWiringTest.java:71)
+2) recordedSurvivalTimeIsTheRealElapsedTime(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: the 31337-point run must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.recordedSurvivalTimeIsTheRealElapsedTime(ApoMarioHighscoreWiringTest.java:94)
+3) secondRunAlsoRecordedAndBoardSortedDescending(apoMario.game.panels.ApoMarioHighscoreWiringTest)
+java.lang.AssertionError: both runs must be on the board; scores=[54321]
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at apoMario.game.panels.ApoMarioHighscoreWiringTest.secondRunAlsoRecordedAndBoardSortedDescending(ApoMarioHighscoreWiringTest.java:109)
+FAILURES!!!
+Tests run: 5,  Failures: 3",0,5105,0,functional-diagnostics.json
