@@ -1,4 +1,8 @@
+import json
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 from research import generate_security_context as base
 from research import operational_context as operations
 from research.test_generate_security_context import item
@@ -26,6 +30,26 @@ class OperationalContextTests(unittest.TestCase):
         self.assertNotIn('operations', base.STRATEGIES)
         self.assertIs(base.TOOL, original_tool); self.assertEqual(base.PROTOCOL, original_protocol)
         self.assertIs(base.validate_output, original_validator)
+
+    def test_acquisition_request_and_insert_preserve_the_operation_fields(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); repo = root / 'repo'; repo.mkdir()
+            (repo / 'Score.java').write_text('class Score { String name; }\n')
+            proposal = item(); proposal.update({field: 'Proposed ' + field for field in operations.FIELDS})
+            def invoke(command, request, timeout):
+                fields = request['tools'][0]['function']['parameters']['properties']['items']['items']['properties']
+                self.assertTrue(set(operations.FIELDS).issubset(fields))
+                self.assertIn('OPERATION REPRESENTATION', request['messages'][0]['content'])
+                action = {'action': 'finish', 'summary': 'Prospective storage constraints', 'items': [proposal], 'limitations': ['No source inspected; proposals only.']}
+                return {'model': request['model'], 'request_id': request['request_id'], 'settings': None,
+                    'finish_reason': 'stop', 'output_text': json.dumps(action)}
+            with operations.protocol(), patch.object(base, 'invoke', side_effect=invoke):
+                record, snapshot, directory = base.prepare(repo, 'Persist highscore records', 'operations', root / 'records', max_turns=2)
+                result = base.execute(record, snapshot, directory, ['fixture'])
+            self.assertEqual(result['status'], 'settings_unverified')
+            for field in operations.FIELDS: self.assertIn('Proposed ' + field, result['promptInsert'])
+            self.assertEqual(len(result['turns']), 1)
+            self.assertNotIn('operation', base.TOOL['function']['parameters']['properties']['items']['items']['properties'])
 
 
 if __name__ == '__main__': unittest.main()
