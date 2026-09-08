@@ -1,93 +1,98 @@
 # Repository-to-context acquisition
 
-Open **Context generation** in the explorer to read and copy the exact security
-prompt inserts for the active task. Context acquisition runs through the research
-harness; inputs, raw outputs and traces are saved in each iteration's archive.
+The explorer's **Context generation** tab shows the task and the exact security
+text inserted into code-generation prompts. Counts, evidence and complete model
+exchanges remain in exported results and iteration archives.
 
-| Strategy | What Luna investigates |
+## Current strategies
+
+I03 uses `generate_security_context.py`, protocol
+`repository-security-context-v3-explicit-unknowns`:
+
+| Acquisition strategy | What Luna investigates | Prompt insert |
+| --- | --- | --- |
+| Overview | Relevant architecture, entry points, trust boundaries, persistence, dependencies, remote calls and cryptography. | A high-level security map with uncertainty, without detailed implementation guards. |
+| Requirements | The feature's security obligations and the operations where safeguards belong. | Prospective validation, persistence, resource-use and failure-handling recommendations, with repository observations where available. |
+| Trust boundaries | Sources, transformations, sensitive operations and guards across related files, including persisted bytes and new records. | Data-flow risks and proposed guards before relevant operations, with unresolved edges explicit. |
+
+The no-security control adds no insert. Strategy is the acquisition instruction;
+content kind labels an item produced by the model. They are separate concepts and
+are not independently manipulated here. Prompt length and added information also
+vary, so this design does not isolate the effect of security wording alone.
+
+## Start from repository and task
+
+Each acquisition has a new identity and empty conversation history. Generation
+sees ApoMario; reuse additionally sees the ApoIcarus donor. Both receive the
+relevant Highscore task. They receive no S/F/B JSON, prior generated code, audit,
+earlier context, evaluation feedback, test code or security fixture thresholds.
+The researcher supplies a general security perspective as the instruction.
+
+The immutable snapshot indexes supported source/configuration text plus embedded
+Java source and manifests in JAR/ZIP archives. Compiled classes are not decompiled.
+Omitted binaries and unsupported files remain listed. Symlinks, ignored files,
+dotenv files, credential types and common generated directories are excluded.
+Original-byte hashes, encodings and a snapshot fingerprint are recorded.
+
+Literal search returns up to 80 matching lines with truncation disclosed. Read
+accepts 1–5 ranges, at most 240 lines each and 30,000 characters total. Acquisition
+executes no repository or model-supplied code.
+
+Every returned excerpt has a stable evidence ID. The model selects IDs; the
+harness resolves exact inspected source text and locations. This avoids the
+quote/line-number reproduction errors that removed many I01 recommendations.
+Inspection matching does not establish that source entails a security claim.
+
+## Item representation
+
+Each item has an ID, kind, basis, model-derived topic, statement, task relevance,
+optional CWE annotations, inspected evidence IDs and a suggested verification.
+
+| Kind | Meaning |
 | --- | --- |
-| Repository overview | Security-relevant architecture, trust boundaries, persistence, remote calls, cryptography and dependencies, related to the task. |
-| Task-focused review | The feature implementation and relevant callers, callees, storage and integration points. |
-| Data-flow review | Input paths, parsing, guards and sensitive operations across the relevant source files. |
+| `security_property` | A claimed observed property of inspected source. |
+| `existing_risk` | A suspected risk in existing code, with inspected evidence. |
+| `change_risk` | A risk associated with implementing the task. |
+| `recommendation` | A prospective safeguard, not a claim that it already exists. |
+| `unknown` | Information the acquisition could not establish. |
 
-These are different acquisition instructions, not predefined facts or context
-types. All three use the same model, tools and default budget. The task is supplied
-in every condition. No prior generation, audit, C1–C4 record or evaluator result is
-loaded into the model context. Existing source within the selected game is input;
-files elsewhere in the thesis workspace are not.
+Basis is `observed`, `task` or `reasoned`. Observed properties and existing risks
+require inspected references. Prospective recommendations can be uncited when
+their basis is explicit. An uncited unknown stays unverified: a search miss is
+not proof of absence. CWE labels and suggested checks are model annotations;
+they are not validated findings or evidence that a test ran.
 
-## Input and execution
+The insert contains the literal generated summary, typed statements, relevance,
+source locations, suggested verification and limitations. Complete quoted excerpts
+remain in the acquisition record. Each insert has a SHA-256 and is appended after
+the unchanged task/paper attachments. The control omits it.
 
-The default targets are `apogames/Java/ApoMario` and `apogames/Java/ApoIcarus`.
-Custom local targets can be configured through `ASTERIA_CONTEXT_REPOS`, a JSON
-object mapping display names to source directories. The CLI accepts any explicit
-source directory:
+## Execution and preservation
 
-```sh
-python3 -m research.generate_context \
-  --repo apogames/Java/ApoMario \
-  --task 'Implement persistent Highscore storage and integrate submission and display.' \
-  --strategy task                          # snapshot only
-# Add --execute to submit through ASTERIA_ADAPTER_COMMAND.
-```
+The current budget is 16 model turns including the final answer, with requested
+medium reasoning and 8,192 output tokens per turn on Luna. Every turn carries that
+acquisition's retained conversation; acquisitions share no conversation history.
 
-The generic [adapter protocol](ADAPTER.md) is committed. Keep the implementation,
-endpoint, credentials and transport diagnostics in gitignored `.local/` and
-`.env.local`. Vite reads `ASTERIA_` variables from the root `.env.local` on startup;
-the CLI uses its process environment. Restart Vite after changing adapter settings.
-The static GitHub Pages deployment has no generation backend or private outputs.
+Requests are saved before submission. Responses, candidates and validation errors
+are retained. Invalid output receives feedback within the fixed budget. A failed
+acquisition cannot silently become an empty control. An interrupted request is
+not automatically resubmitted. I02's failure and the fresh all-arm replacement
+in I03 are documented in the iteration index.
 
-Snapshots include supported text source/configuration files and embedded Java
-source and manifests in JAR/ZIP archives. Binary assets and unsupported formats
-are listed as omitted; compiled classes are not decompiled. Symlinks, credential
-file extensions, dotenv files, ignored files and common generated directories are
-excluded. Git ignore rules apply when the target is in a Git worktree. Budgets
-reject oversized source input rather than silently truncating it. Every source's
-original-byte hash and encoding are recorded; the snapshot has a content hash.
+The generic [adapter protocol](ADAPTER.md) is committed. Its implementation,
+endpoint, credentials and provider transport traces stay gitignored. Calls use
+`ASTERIA_ADAPTER_COMMAND`; returned model/request identities must match. Missing
+provider attestation of settings remains `settings_unverified`.
 
-Each attempt has a new identity, empty conversation history, a fixed snapshot,
-the exact task, strategy instruction and generator source hashes. The default is
-`gpt-5.6-luna`, requested medium effort, 8192 output tokens per call and 12 calls
-including the final answer. Calls are fresh protocol submissions carrying that
-attempt's full history; there is no conversation shared between attempts.
+Each experiment freezes acquisition records, snapshots, exact tasks, inserts and
+producing source hashes before code collection. Completed evidence is archived,
+committed and copied outside the repo. The static site publishes committed
+results and inserts; it has no model-calling backend.
 
-Luna can request literal search or bounded file ranges. Search returns up to 80
-matching lines and reports truncation. Read accepts up to five ranges, 240 lines
-per range and 30000 characters total. Excerpts carry explicit line numbers.
-The runner supplies a single structured action tool and executes only reads of
-snapshot bytes. It does not execute model-supplied or repository code.
+## Earlier protocols
 
-## Outputs and checks
-
-Each output item has a category derived by the model, a statement, task relevance,
-optional CWE tags, exact source citations and a proposed check. Items distinguish:
-
-- `security_property`: an observed property of inspected source;
-- `existing_risk`: a suspected issue in existing code;
-- `change_risk`: a risk relevant to implementing the task;
-- `unknown`: information that could not be established.
-
-These labels describe model claims. They are not validated vulnerabilities.
-CWE tags are model annotations. Citation checking confirms that quoted bytes
-match the claimed line range and that the model inspected that excerpt. It does
-not establish that the cited source supports the security interpretation.
-
-When citations fail, Luna receives source-matching feedback within the same turn
-budget. Earlier candidates and feedback remain in the trace. Remaining citation
-errors at the final turn are retained and labeled `citation_issues`. Uncited items
-are counted separately. Missing repository or server code stays an unknown.
-
-The explorer shows the task and the exact inserted text, without acquisition
-metrics or trace panels. Full output items, citations, token usage and model
-requests remain in the archived generation records.
-
-Attempt and per-call records are written before submission. Timeouts and transport
-errors are preserved; interrupted attempts are never resubmitted automatically.
-The provider's reported model must match Luna. If effective settings are not
-reported, the output is retained with `settings_unverified`; requested settings
-are not presented as independently verified. Usage and cost are never estimated.
-
-The main experiment does not yet inject these generated outputs. This phase is
-for inspecting acquisition behavior and defining the subsequent study. Changing
-the acquisition protocol changes its recorded generator hashes; outputs from
-different protocol versions must not be pooled as one experimental condition.
+`generate_context.py` remains the original exact-quote acquisition implementation.
+The original matrix's overview/task/flow arms and I01's `iteration_contexts.py`
+use it. Its CLI accepts `--repo`, `--task`, `--strategy` and optional `--execute`.
+Do not edit frozen implementations to reinterpret earlier outputs; use producing
+hashes and each iteration's plan when reproducing historical results.
