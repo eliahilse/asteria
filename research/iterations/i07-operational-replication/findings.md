@@ -53,6 +53,10 @@ but the effect size and coverage differ. I07's six failures are actual
 recommendation does not ensure a correct bounded parser in the generated code.
 The [diagnostics](failure-diagnostics.json) retain exact messages, source hashes
 and candidate guard/reader lines for inspection.
+The [six-artifact source review](source-review.md) finds unbounded physical-line
+reads in every failure. Entry and name limits occur after those reads; four
+artifacts first read an unchecked header line. The acquired context proposed
+bounds before allocation, but these implementations omitted that enforcement.
 
 On the two-check resource category, Generation S operations have fewer affected
 trajectories even under adverse missingness assumptions. Generation S+F+B ranges

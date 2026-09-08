@@ -1,0 +1,113 @@
+{
+  "selection": "All six I07 operational artifacts failing the oversized-line fixture; post-collection source inspection with original outcomes unchanged.",
+  "artifacts": [
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_s__operations__r2/submission-2/evaluation/report.json",
+      "reportSha256": "210dba1e0212ccacf323aa8c60e9ceb563443948af6c2ff4bd68d514e265ea4e",
+      "responseSha256": "3d57d7432497436bbfd2f3e86e6960dd2a3e20b2e1ed76797785f50f06b2a54d",
+      "runId": "i07-operational-replication__generation_s__operations__r2",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_s__operations__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "4a09452df438efa98f5f0d1a0af3a9530cc593c13b64b72b48221b50b1af92c2",
+      "copy": "source-review/generation_s-r2-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 88,
+        "endLine": 111,
+        "text": "    private void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try {\n            BufferedReader r = Files.newBufferedReader(store, StandardCharsets.UTF_8);\n            try {\n                if (!\"APO_MARIO_HIGHSCORE_1\".equals(r.readLine())) return;\n                String line; int count = 0;\n                while (count++ < MAX_ENTRIES && (line = r.readLine()) != null) {\n                    String[] p = line.split(\"\\\\t\", -1); if (p.length != 3) continue;\n                    try { String n = normalize(new String(Base64.getDecoder().decode(p[0]), StandardCharsets.UTF_8)); int s = Integer.parseInt(p[1]); int t = Integer.parseInt(p[2]); if (n.length() > 0 && t >= 0) runs.add(new Run(n, s, t)); } catch (RuntimeException e) { }\n                }\n            } finally { r.close(); }\n            sortAndTrim();\n        } catch (IOException e) { runs.clear(); }\n    }\n    private String normalize(String s) {\n        StringBuilder b = new StringBuilder(); for (int i=0; i<s.length() && b.length()<MAX_NAME; i++) { char c=s.charAt(i); if (c >= 32 && c != 127) b.append(c); }\n        return b.toString().trim();\n    }\n    private void sortAndTrim() {\n        Collections.sort(runs, new Comparator<Run>() { public int compare(Run a, Run b) { return b.score == a.score ? 0 : (b.score < a.score ? -1 : 1); } });\n        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size()-1);\n    }\n}"
+      }
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r2/submission-3/evaluation/report.json",
+      "reportSha256": "774f4007509293a370e075a10c3b41deedfcf8100ccf06f16aad592a3feefed6",
+      "responseSha256": "369c31773d66a2563493b90d3f6a2faf08efac609245dcbd48241156ea3ab61e",
+      "runId": "i07-operational-replication__generation_sfb__operations__r2",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fb3d7bfaae8e75ee197543d55d1047af081a4a35711c077ebbb510c7df8c057e",
+      "copy": "source-review/generation_sfb-r2-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 128,
+        "endLine": 159,
+        "text": "    private synchronized void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try {\n            BufferedReader reader = Files.newBufferedReader(store, StandardCharsets.UTF_8);\n            try {\n                if (!\"APO_MARIO_HIGHSCORE_1\".equals(reader.readLine())) return;\n                String line;\n                while (entries.size() < MAX_ENTRIES && (line = reader.readLine()) != null) {\n                    String[] fields = line.split(\"\\\\|\", -1);\n                    if (fields.length != 3 || fields[0].length() == 0 || fields[0].length() > MAX_NAME) continue;\n                    try {\n                        int score = Integer.parseInt(fields[1]);\n                        int time = Integer.parseInt(fields[2]);\n                        if (time >= 0) entries.add(new Entry(normalizeName(fields[0]), score, time));\n                    } catch (NumberFormatException ignored) { }\n                }\n            } finally {\n                reader.close();\n            }\n            sortEntries();\n        } catch (IOException ignored) { }\n    }\n\n    public synchronized void render(Graphics2D graphics, int x, int y, int width, int height) {\n        Color oldColor = graphics.getColor();\n        Font oldFont = graphics.getFont();\n        graphics.setColor(new Color(255, 255, 255, 230));\n        graphics.fillRoundRect(x, y, width, height, 18, 18);\n        graphics.setColor(Color.BLACK);\n        graphics.drawRoundRect(x, y, width, height, 18, 18);\n        graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));\n        graphics.drawString(\"HIGHSCORES\", x + 15, y + 25);"
+      }
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r3/submission-3/evaluation/report.json",
+      "reportSha256": "ba7bc3227416149dfdc45c7240373a893af213a2558a30433318455c198a8433",
+      "responseSha256": "f731eea35c23072e8d08121e3fc8fbbe19aead841190f32455b200f0e11c07c1",
+      "runId": "i07-operational-replication__generation_sfb__operations__r3",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fd2622a78b7d14c05ebbeb98cef8b933556036067a808e618a860f47e9081b29",
+      "copy": "source-review/generation_sfb-r3-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 121,
+        "endLine": 149,
+        "text": "    private void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try {\n            BufferedReader in = Files.newBufferedReader(store, StandardCharsets.UTF_8);\n            try {\n                if (!\"APO_MARIO_HIGHSCORE_1\".equals(in.readLine())) return;\n                String line; int count = 0;\n                while (count++ < MAX_ENTRIES && (line = in.readLine()) != null) {\n                    String[] p = line.split(\"\\\\t\", -1); if (p.length != 3) continue;\n                    try {\n                        String name = normalize(new String(Base64.getDecoder().decode(p[0]), StandardCharsets.UTF_8));\n                        int score = Integer.parseInt(p[1]), time = Integer.parseInt(p[2]);\n                        if (name.length() > 0 && time >= 0) entries.add(new Entry(name, score, time));\n                    } catch (IllegalArgumentException ex) { /* skip malformed records */ }\n                }\n            } finally { in.close(); }\n            sort();\n        } catch (IOException ex) { /* start with an empty table */ }\n    }\n    private void sort() { Collections.sort(entries, new Comparator<Entry>() { public int compare(Entry a, Entry b) { return b.score < a.score ? -1 : (b.score == a.score ? 0 : 1); } }); }\n    private static String normalize(String value) {\n        StringBuilder b = new StringBuilder();\n        for (int i = 0; i < value.length() && b.length() < MAX_NAME; i++) if (!Character.isISOControl(value.charAt(i))) b.append(value.charAt(i));\n        return b.toString().trim();\n    }\n    private static String formatTime(int millis) {\n        long seconds = millis / 1000L; return (seconds / 60L) + \":\" + String.format(\"%02d\", Long.valueOf(seconds % 60L));\n    }\n}"
+      }
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r4/submission-1/evaluation/report.json",
+      "reportSha256": "3b796fe80593aef2ea027befbbe5a0e88195c798cd22b8a1e01faa7609bfd9a8",
+      "responseSha256": "f6f79e73b4a2d57d99abacc3607d63b1b56966f459f65c671be09951736cae43",
+      "runId": "i07-operational-replication__generation_sfb__operations__r4",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "233fde7860373317e7a96ad7c6cc512f17dc88e02e28bb35e2c4f8504b993e6f",
+      "copy": "source-review/generation_sfb-r4-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 98,
+        "endLine": 129,
+        "text": "    private void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try (BufferedReader r = Files.newBufferedReader(store, StandardCharsets.UTF_8)) {\n            String line;\n            while ((line = r.readLine()) != null && entries.size() < MAX_ENTRIES) {\n                String[] p = line.split(\":\", -1);\n                if (p.length != 3 || !\"HS1\".equals(p[0])) continue;\n                try {\n                    int score = Integer.parseInt(p[1]);\n                    int time = Integer.parseInt(p[2].substring(0, p[2].indexOf('|')));\n                    String name = normalize(p[2].substring(p[2].indexOf('|') + 1));\n                    if (name.length() > 0 && time >= 0) entries.add(new Entry(name, score, time));\n                } catch (RuntimeException ignored) { }\n            }\n            sortAndLimit();\n        } catch (IOException ignored) { }\n    }\n\n    private boolean persistInternal() {\n        if (store == null) return false;\n        try {\n            Path parent = store.toAbsolutePath().getParent();\n            if (parent != null) Files.createDirectories(parent);\n            Path temp = store.resolveSibling(store.getFileName().toString() + \".tmp\");\n            try (BufferedWriter w = Files.newBufferedWriter(temp, StandardCharsets.UTF_8)) {\n                for (Entry e : entries) w.write(\"HS1:\" + e.score + \":\" + e.time + \"|\" + e.name + \"\\n\");\n            }\n            try {\n                Files.move(temp, store, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);\n            } catch (AtomicMoveNotSupportedException ex) {\n                Files.move(temp, store, StandardCopyOption.REPLACE_EXISTING);\n            }"
+      }
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_s__operations__r5/submission-1/evaluation/report.json",
+      "reportSha256": "29da580e1a56b1ded7b3b09f141c7d984a882ee5915fe1e3570388b2cb405eaf",
+      "responseSha256": "bcb037e4cbf889cdbaaff8afffc134a84b71583968cad48823b06e53d0dbff79",
+      "runId": "i07-operational-replication__generation_s__operations__r5",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_s__operations__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5da3621b1f7e67ff8a5890863fad399b1c616e3c207f9f2350e03c751e248ee0",
+      "copy": "source-review/generation_s-r5-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 83,
+        "endLine": 114,
+        "text": "    private void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try (BufferedReader r = Files.newBufferedReader(store, StandardCharsets.UTF_8)) {\n            if (!HEADER.equals(r.readLine())) return;\n            String line; int count = 0;\n            while (count++ < MAX_ENTRIES && (line = r.readLine()) != null) {\n                String[] p = line.split(\"\\\\t\", -1);\n                if (p.length != 3 || p[0].length() > 128) continue;\n                try {\n                    String n = normalize(new String(Base64.getDecoder().decode(p[0]), StandardCharsets.UTF_8));\n                    int score = Integer.parseInt(p[1]); int time = Integer.parseInt(p[2]);\n                    if (time >= 0) entries.add(new Entry(n, score, time));\n                } catch (IllegalArgumentException ex) { /* ignore corrupt records */ }\n            }\n            sortAndTrim();\n        } catch (IOException ex) { entries.clear(); }\n    }\n\n    private boolean persistFile() {\n        if (store == null) return false;\n        try {\n            Path parent = store.toAbsolutePath().getParent();\n            if (parent != null) Files.createDirectories(parent);\n            Path tmp = store.resolveSibling(store.getFileName().toString() + \".tmp\");\n            try (BufferedWriter w = Files.newBufferedWriter(tmp, StandardCharsets.UTF_8)) {\n                w.write(HEADER); w.newLine();\n                for (Entry e : entries) {\n                    w.write(Base64.getEncoder().encodeToString(e.name.getBytes(StandardCharsets.UTF_8)));\n                    w.write('\\t'); w.write(Integer.toString(e.score)); w.write('\\t'); w.write(Integer.toString(e.time)); w.newLine();\n                }\n            }\n            try { Files.move(tmp, store, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE); }"
+      }
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__operations",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r5/submission-5/evaluation/report.json",
+      "reportSha256": "e62ed1e0405525bf247ecb30dfa4f0f9aefba6abbe15a752f93a30cd6e4845cc",
+      "responseSha256": "c10eecb8f0b2cf29ef91f38230db51733359cc6c61a56d8c5866c2f270c3624d",
+      "runId": "i07-operational-replication__generation_sfb__operations__r5",
+      "test": "oversizedPhysicalLine",
+      "originalSource": ".local/iterations/i07-operational-replication/runs/i07-operational-replication__generation_sfb__operations__r5/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d9210cd335f465587fed6b5b8ec7abaafae5202b3d5624fcdda50ad6f1e44dbc",
+      "copy": "source-review/generation_sfb-r5-ApoMarioHighscore.java",
+      "loadExcerpt": {
+        "startLine": 114,
+        "endLine": 145,
+        "text": "    private void load() {\n        if (store == null || !Files.isRegularFile(store)) return;\n        try {\n            BufferedReader reader = Files.newBufferedReader(store, StandardCharsets.UTF_8);\n            try {\n                String line;\n                int count = 0;\n                while (count++ < MAX_ENTRIES && (line = reader.readLine()) != null) {\n                    String[] fields = line.split(\"\\\\t\", 3);\n                    if (fields.length != 3) continue;\n                    try {\n                        int score = Integer.parseInt(fields[0]);\n                        int time = Integer.parseInt(fields[1]);\n                        String name = normalize(fields[2]);\n                        if (time >= 0 && name.length() > 0) runs.add(new Run(name, score, time));\n                    } catch (NumberFormatException ignored) { }\n                }\n            } finally {\n                reader.close();\n            }\n            sortAndTrim();\n        } catch (IOException ignored) { }\n    }\n\n    private String normalize(String value) {\n        StringBuilder result = new StringBuilder();\n        for (int i = 0; i < value.length() && result.length() < MAX_NAME_LENGTH; i++) {\n            char c = value.charAt(i);\n            if (c >= 32 && c != 127) result.append(c);\n        }\n        return result.toString().trim();\n    }"
+      }
+    }
+  ]
+}
