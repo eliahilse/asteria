@@ -1,4 +1,5 @@
-import { spawn } from 'node:child_process';
+import { spawn, execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,6 +14,16 @@ export function contextApi(): Plugin {
     name: 'local-context-generation',
     apply: 'serve',
     configureServer(server) {
+      server.middlewares.use('/api/context-inserts', async (req, res) => {
+        res.setHeader('Content-Type', 'application/json'); res.setHeader('Cache-Control', 'no-store');
+        try {
+          if (req.method !== 'GET') throw new Error();
+          const iteration = new URL(req.url || '/', 'http://localhost').searchParams.get('iteration');
+          const args = ['-m', 'research.context_inserts', ...(iteration ? ['--iteration', iteration] : [])];
+          const { stdout } = await promisify(execFile)('python3', args, { cwd: root, maxBuffer: 16 * 1024 * 1024 });
+          res.end(stdout);
+        } catch { res.statusCode = 400; res.end(JSON.stringify({ error: 'Cannot read the saved prompt inserts.' })); }
+      });
       // Server-only environment. No provider configuration is sent to the browser or build.
       const env = { ...loadEnv(server.config.mode, root, 'ASTERIA_'), ...process.env };
       const targets: Record<string, string> = env.ASTERIA_CONTEXT_REPOS

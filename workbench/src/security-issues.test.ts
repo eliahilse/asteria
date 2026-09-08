@@ -5,7 +5,7 @@ import type { MatrixData } from './experiment-types';
 
 function fixture() {
   // Use the public protocol's complete test catalog, with synthetic outcomes only.
-  const data = JSON.parse(readFileSync(new URL('../public/data/matrix.json', import.meta.url), 'utf8')) as MatrixData;
+  const data = JSON.parse(readFileSync(new URL('../public/data/original-matrix.json', import.meta.url), 'utf8')) as MatrixData;
   const summary = data.studies[0].summary.conditions[0];
   Object.assign(summary, { attempts: 5, pending: 0 });
   for (const check of summary.checks) Object.assign(check, { pass: 5, fail: 0, executed: 5, attempts: 5 });

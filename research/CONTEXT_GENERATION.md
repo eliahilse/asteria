@@ -1,9 +1,8 @@
 # Repository-to-context acquisition
 
-Open **Context generation** in the local explorer. Select the target repository,
-describe the feature task, select a strategy and generate. Luna starts with the
-task and a fresh file index, chooses files to search/read, and returns security
-context. **Inspect inputs** creates a snapshot without submitting a model request.
+Open **Context generation** in the explorer to read and copy the exact security
+prompt inserts for the active task. Context acquisition runs through the research
+harness; inputs, raw outputs and traces are saved in each iteration's archive.
 
 | Strategy | What Luna investigates |
 | --- | --- |
@@ -78,10 +77,9 @@ budget. Earlier candidates and feedback remain in the trace. Remaining citation
 errors at the final turn are retained and labeled `citation_issues`. Uncited items
 are counted separately. Missing repository or server code stays an unknown.
 
-The explorer shows outputs by kind, source excerpts, per-call token usage, file
-and line inspection coverage, failed tool calls and exact requests/responses.
-JSON exports cover either the context alone, the complete generation trace or
-the input snapshot. These are deliberately separate from experiment exports.
+The explorer shows the task and the exact inserted text, without acquisition
+metrics or trace panels. Full output items, citations, token usage and model
+requests remain in the archived generation records.
 
 Attempt and per-call records are written before submission. Timeouts and transport
 errors are preserved; interrupted attempts are never resubmitted automatically.

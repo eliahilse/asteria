@@ -9,6 +9,8 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | Snapshot | Contents | Summary |
 | --- | --- | --- |
 | [2026-09-08-original-results](2026-09-08-original-results/manifest.json) | All existing research evidence before overnight iterations; 1,471 files | [Original experiment findings](2026-09-08-original-results/overview.md) |
+| [i01-prepared](i01-prepared/manifest.json) | Frozen I01 plan and four fresh acquisitions before code collection; 226 files | [Protocol](../iterations/i01-actionable-context/README.md) |
+| [i01-complete](i01-complete/manifest.json) | All 18 trajectories, including rejected submissions and intermediate evaluations; 628 files | [Results](../iterations/i01-actionable-context/results.md), [setup assessment](../iterations/i01-actionable-context/assessment.md) |
 
 Verify the repository and external copies:
 
