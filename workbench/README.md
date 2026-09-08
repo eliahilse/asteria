@@ -13,24 +13,29 @@ Open http://localhost:5173. Changes update live. No model connection is needed t
 inspect the test definitions, extracted contexts or frozen prompts.
 
 **Experiment** is the default tab: one row per cohort × Generation/Reuse × S/F/B
-combination × security strategy, with every combination visible without selectors.
-Purple identifies security strategies and the separate counts of security content
-types (properties, existing risks, change risks, unknowns). Counts describe the
-injected context; they are not counts of confirmed vulnerabilities or independently
-varied treatments.
+combination × security strategy. All combinations are visible without selectors;
+security strategies are marked in purple.
 
-Every statistic has its own numeric column: compilation and functional success,
-each security check's pass percentage, difference from its matching fresh control
-in percentage points, unresolved count, functional suite rates, citation coverage
-and token means. Pass percentages use all attempts; tested N is N minus unresolved.
-Missing rates are blank, not zero. Scroll horizontally to compare all eleven
-security checks; context labels remain visible on desktop.
+The table keeps N and the existing quality metrics: compilation, unit checks,
+invoked integration, live integration, and full functional success. Percentages
+use all attempts. A single **Security issues** column shows failed issue checks /
+evaluated issue checks across the condition's attempts, followed by the change
+from its matching fresh control. For example, `27/47 (↓5)` means 27 failed checks
+out of 47 evaluated, five fewer than the control. These are repeated check
+failures, not unique vulnerabilities. The valid-record round trip is excluded
+because it is a positive functional check, not an issue detector.
+
+Count differences require equal attempt counts, no pending attempts, and equal
+evaluated counts for every issue check. Otherwise the cell shows `Δ —`; a missing
+test must not look like an improvement. Hover for unresolved counts. Replay and
+control rows have no treatment difference, and absent observations remain blank.
 
 Local attempts are read automatically from `.local/experiments/<study-id>`.
-XLSX starts with a numeric **Combinations** sheet matching the table and retains
-test rates, individual observations and diagnostics in separate sheets. JSON
-retains the complete data. The public build contains plans only.
-See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
+XLSX starts with the compact **Combinations** sheet; security counts, evaluated and
+unresolved checks, and count differences remain separate numeric fields for
+analysis. Per-test outcomes, context-type counts and other details remain in the
+supporting sheets. JSON retains the complete data. The public build contains plans
+only. See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
 
 **Context generation** creates fresh Luna security context from a selected game
 repository and a feature task. Its local backend reads the gitignored adapter
