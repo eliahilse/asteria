@@ -7,12 +7,12 @@ export type CombinationRow = { study: string; condition: string; phase: string; 
 const issueTests = ['rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName', 'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet'];
 const pct = (p: number, n: number) => n ? 100 * p / n : null;
 export const statColumns: StatColumn[] = [
-  { key: 'attempts', label: 'N', description: 'All recorded code requests, including provider errors.', format: 'count' },
+  { key: 'attempts', label: 'N', description: 'All recorded observations, including provider errors. The table states whether N counts requests or trajectories.', format: 'count' },
   { key: 'compiled', label: 'Compile %', description: 'Game compiled / all attempts.', format: 'percent' },
   { key: 'unit', label: 'Unit %', description: 'Passed unit checks / (7 × all attempts).', format: 'percent' },
   { key: 'invoked', label: 'Invoked %', description: 'Passed invoked-integration checks / (4 × all attempts).', format: 'percent' },
   { key: 'autonomous', label: 'Live %', description: 'Passed autonomous-integration checks / (5 × all attempts).', format: 'percent' },
-  { key: 'full', label: 'Full %', description: 'All 16 functional checks pass on one response / all attempts.', format: 'percent' },
+  { key: 'full', label: 'Full %', description: 'All 16 functional checks pass on the evaluated feature / all N observations.', format: 'percent' },
 ];
 
 export function securityIssues(summary: Summary, control?: Summary): SecurityIssues {
@@ -35,10 +35,10 @@ function row(study: MatrixStudy, condition: MatrixCondition): CombinationRow {
   const control = controlCondition ? study.summary.conditions.find(c => c.id === controlCondition.id) : undefined;
   const values: CombinationRow['values'] = { attempts: summary.attempts, compiled: pct(summary.compiled, summary.attempts), full: pct(summary.fullFunctional, summary.attempts) };
   for (const [suite, count] of [['unit', 7], ['invoked', 4], ['autonomous', 5]] as const) values[suite] = pct(summary.checks.filter(c => c.suite === suite).reduce((n, c) => n + c.pass, 0), count * summary.attempts);
-  return { study: study.plan.id, condition: condition.id, phase: study.plan.phase === 'screening' ? 'Replay' : 'Follow-up', method: condition.strategy,
+  return { study: study.plan.id, condition: condition.id, phase: study.plan.label ?? (study.plan.phase === 'screening' ? 'Replay' : 'Follow-up'), method: condition.strategy,
     paper: condition.contextTypes, security: condition.securityStrategy, values, issues: securityIssues(summary, control) };
 }
 export function combinationRows(data: MatrixData): CombinationRow[] {
   return [...data.studies].sort((a, b) => Number(a.plan.phase === 'screening') - Number(b.plan.phase === 'screening')).flatMap(study =>
-    [...study.plan.conditions].sort((a, b) => a.strategy.localeCompare(b.strategy) || a.paperPromptId - b.paperPromptId || ['none', 'overview', 'task', 'flows'].indexOf(a.securityStrategy) - ['none', 'overview', 'task', 'flows'].indexOf(b.securityStrategy)).map(c => row(study, c)));
+    [...study.plan.conditions].sort((a, b) => a.strategy.localeCompare(b.strategy) || a.paperPromptId - b.paperPromptId || (study.plan.axes?.securityContext ?? ['none', 'overview', 'task', 'flows']).indexOf(a.securityStrategy) - (study.plan.axes?.securityContext ?? ['none', 'overview', 'task', 'flows']).indexOf(b.securityStrategy)).map(c => row(study, c)));
 }

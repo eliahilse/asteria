@@ -1,51 +1,26 @@
 import { test, expect } from '@playwright/test';
 
-test('generation tab submits only repository, task and strategy, and exposes output evidence', async ({ page }) => {
-  // Synthetic browser transport only. Nothing is saved as a model generation.
-  const id = 'context-' + 'a'.repeat(32);
-  const requests: unknown[] = [];
-  let generated = false;
-  const run = {
-    id, status: 'settings_unverified', repository: 'ApoMario', strategy: 'task', task: 'Add highscore for the game',
-    model: 'gpt-5.6-luna', settings: { reasoning_effort: 'medium' }, settingsVerified: false,
-    startedAt: '2026-09-08T10:00:00Z', snapshotFingerprint: 'snapshot-fixture', sourceFiles: 10, sourceLines: 100,
-    inspectedFiles: 1, inspectedLines: 3, omittedFiles: 2, maxTurns: 12, initialPrompt: 'TEST INPUT ONLY',
-    turns: [{ number: 1, status: 'received', requestSha256: 'request-fixture', request: { messages: [{ role: 'user', content: 'TEST INPUT ONLY' }] },
-      response: { output_text: 'TEST OUTPUT ONLY', model: 'gpt-5.6-luna', finish_reason: 'stop', usage: { input_tokens: 120, output_tokens: 20 } } }],
-    output: { summary: 'Synthetic citation review', limitations: ['No vulnerability was tested'], items: [
-      { id: 'one', kind: 'existing_risk', topic: 'persistence', statement: 'A model claim requiring review', task_relevance: 'Stored scores', cwes: ['CWE-20'],
-        suggested_check: 'Try a malformed stored score', citationStatus: 'matched', evidence: [
-          { path: 'Score.java', start_line: 2, end_line: 3, quote: 'readScore();', sourceMatch: true, inspected: true, sourceSha256: 'source-fixture' }] },
-      { id: 'two', kind: 'unknown', topic: 'server', statement: 'The server code is absent', task_relevance: 'Remote score acceptance', cwes: [], suggested_check: 'Inspect the server', citationStatus: 'uncited', evidence: [] },
-    ] }, citationChecks: { matched: 1, total: 1, uncitedItems: 1, limitation: 'Citation matching does not validate the claim.' },
-  };
-  await page.route('**/api/context-generation**', async route => {
-    if (route.request().method() === 'POST') { requests.push(route.request().postDataJSON()); generated = true; await route.fulfill({ json: { id } }); }
-    else if (new URL(route.request().url()).pathname.endsWith(id)) await route.fulfill({ json: run });
-    else await route.fulfill({ json: { local: true, adapterReady: true, targets: ['ApoMario', 'ApoIcarus'], runs: generated ? [{ ...run, turns: 1, items: 2 }] : [] } });
-  });
+test('context page shows the task and exact prompt inserts without generation controls or traces', async ({ page, context }) => {
+  const text = '--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---\nPreserve this exact prompt insert.\nSource: Scores.java:2-3\n--- END REPOSITORY-DERIVED SECURITY CONTEXT ---\n';
+  await page.route('**/api/context-inserts**', route => route.fulfill({ json: { local: true, iteration: 'fixture', groups: [
+    { method: 'Generation', task: 'Add highscore for the game', inserts: [{ id: 'fixture', strategy: 'requirements', label: 'Requirements', text, sha256: 'fixture' }] },
+  ] } }));
   await page.goto('/?view=generation');
-  await expect(page.getByRole('button', { name: 'Context generation', exact: true })).toHaveAttribute('aria-current', 'page');
-  await page.getByLabel('Feature task').fill('Add highscore for the game');
-  await page.getByRole('button', { name: 'Generate context', exact: true }).click();
-  await expect(page.getByText('Synthetic citation review', { exact: true })).toBeVisible();
-  expect(requests).toEqual([{ repository: 'ApoMario', strategy: 'task', task: 'Add highscore for the game', action: 'generate' }]);
-  await expect(page.getByText('1/10 files inspected', { exact: false })).toBeVisible();
-  await expect(page.getByRole('alert')).toContainText('did not verify effective model settings');
-  await page.getByText('Score.java:2–3 · matched').click();
-  await expect(page.getByText('readScore();', { exact: true })).toBeVisible();
-  await page.getByLabel('Output type').selectOption('unknown');
-  await expect(page.locator('.generated-context tbody tr')).toHaveCount(1);
-  const downloadEvent = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export generation JSON' }).click();
-  expect((await downloadEvent).suggestedFilename()).toBe(`${id}.json`);
-});
-
-test('static deployment explains that generation requires the local server', async ({ page }) => {
-  await page.route('**/api/context-generation**', route => route.fulfill({ contentType: 'text/html', body: '<html>Static page</html>' }));
-  await page.goto('/?view=generation');
-  await expect(page.getByRole('alert')).toContainText('Generation runs locally');
-  await expect(page.getByRole('button', { name: 'Generate context', exact: true })).toBeDisabled();
+  await expect(page.getByLabel('Task', { exact: true })).toHaveValue('Add highscore for the game');
+  expect(await page.locator('.prompt-insert').textContent()).toBe(text);
+  await expect(page.locator('select')).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Generate context', exact: true })).toHaveCount(0);
+  await expect(page.getByText('Acquisition trace')).toHaveCount(0);
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.getByRole('button', { name: 'Copy insert' }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(text);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+});
+
+test('missing context data is reported without fabricating a prompt insert', async ({ page }) => {
+  await page.route('**/api/context-inserts**', route => route.fulfill({ contentType: 'text/html', body: '<html>Unavailable</html>' }));
+  await page.goto('/?view=generation');
+  await expect(page.getByRole('alert')).toContainText('Cannot load saved prompt inserts');
+  await expect(page.locator('.prompt-insert')).toHaveCount(0);
 });

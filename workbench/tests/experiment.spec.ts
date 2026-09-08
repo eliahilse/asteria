@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import ExcelJS from 'exceljs';
 
 test('every combination is visible without selectors and empty rates export as blanks', async ({ page }) => {
-  await page.route('**/api/experiment', async route => route.fulfill({ json: await (await page.request.get('/data/matrix.json')).json() }));
+  await page.route('**/api/experiment', async route => route.fulfill({ json: await (await page.request.get('/data/original-matrix.json')).json() }));
   await page.goto('/');
   await expect(page.locator('.combination-table tbody tr')).toHaveCount(16);
   await expect(page.locator('.combination-table thead th')).toHaveCount(11);
@@ -26,7 +26,7 @@ test('every combination is visible without selectors and empty rates export as b
 test('quality metrics and one security issue column fit on desktop, with coverage-aware changes', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.route('**/api/experiment', async route => {
-    const data = await (await page.request.get('/data/matrix.json')).json(); data.local = true;
+    const data = await (await page.request.get('/data/original-matrix.json')).json(); data.local = true;
     const baseline = data.studies[0], selected = ['reuse_b', 'reuse_sb', 'generation_s', 'generation_sfb'];
     const followup = structuredClone(baseline);
     followup.plan.id = 'browser-followup-only'; followup.plan.phase = 'security_followup';

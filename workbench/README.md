@@ -37,11 +37,20 @@ analysis. Per-test outcomes, context-type counts and other details remain in the
 supporting sheets. JSON retains the complete data. The public build contains plans
 only. See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
 
-**Context generation** creates fresh Luna security context from a selected game
-repository and a feature task. Its local backend reads the gitignored adapter
-configuration and saves inputs, outputs and traces in `.local/context-generation`.
-See [the acquisition protocol](../research/CONTEXT_GENERATION.md). Generation has
-its own JSON exports; experiment exports do not include private generations.
+**Context generation** shows the exact generated security prompt inserts for the
+active task and iteration, with a copy button. It contains no acquisition form,
+metrics or trace dashboard. The harness acquires contexts automatically from the
+repository and task; complete traces remain in the saved iteration archives.
+See [the acquisition protocol](../research/CONTEXT_GENERATION.md).
+
+The active iteration is read from `.local/iterations/active.json`. Its N counts
+independent trajectories; the permitted submission budget is shown above the
+table. XLSX retains first-submission success and total model calls separately.
+To reopen the original study, use `?iteration=original`; saved iterations can be
+opened with `?iteration=<id>`. The same parameter works on the context page.
+[Saved snapshots and restore instructions](../research/results/README.md) remain
+available in the repository. The static site reads only committed result snapshots
+and prompt inserts; provider configuration stays private.
 
 ## Earlier single-axis study views
 
