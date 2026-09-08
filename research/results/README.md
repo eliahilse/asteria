@@ -11,6 +11,9 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [2026-09-08-original-results](2026-09-08-original-results/manifest.json) | All existing research evidence before overnight iterations; 1,471 files | [Original experiment findings](2026-09-08-original-results/overview.md) |
 | [i01-prepared](i01-prepared/manifest.json) | Frozen I01 plan and four fresh acquisitions before code collection; 226 files | [Protocol](../iterations/i01-actionable-context/README.md) |
 | [i01-complete](i01-complete/manifest.json) | All 18 trajectories, including rejected submissions and intermediate evaluations; 628 files | [Results](../iterations/i01-actionable-context/results.md), [setup assessment](../iterations/i01-actionable-context/assessment.md) |
+| [i01-home-isolated](i01-home-isolated/manifest.json) | All 28 saved submissions re-evaluated with separate JVM homes; 1,031 files | [Paired comparison](../iterations/i01-home-isolated/README.md) |
+| [i02-context-acquisition](i02-context-acquisition/manifest.json) | Six acquisitions, including the budget-exhausted context and all earlier candidates; 1,493 files | [Acquisition trial](../iterations/i02-context-acquisition/README.md) |
+| [i03-prepared](i03-prepared/manifest.json) | Frozen 40-trajectory schedule, six fresh contexts and calibrated v3 evaluator; 1,654 files | [Protocol](../iterations/i03-security-perspectives/README.md) |
 
 Verify the repository and external copies:
 
@@ -36,9 +39,3 @@ Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
 because it is unfavorable. Development iterations and subsequent fresh replication
 must be reported separately.
-# Environment correction
-
-The [I01 paired remeasurement](../iterations/i01-home-isolated/README.md) retains
-all 28 evaluated submissions under isolated JVM homes. Its complete source and
-evaluation evidence are in `i01-home-isolated/evidence.tar.gz`, with a verified
-second copy in `../asteria-research-backups/i01-home-isolated` outside this repo.

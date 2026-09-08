@@ -1,5 +1,24 @@
 # Evaluate a model response
 
+I03 uses `research.evaluate_integrated`, protocol
+`highscore-response-v3-integrated-security`. It retains the original test
+contracts while giving every generated-code JVM a fresh home/temp directory and
+linking security probes against the exact successful whole-game compilation.
+The compiled classes are saved with hashes before JUnit classes are added.
+Compilation failure cannot produce security passes from a partial feature build.
+
+```sh
+python3 -m research.evaluate_integrated \
+  --response path/to/complete-files.txt \
+  --output .local/evaluations/a-new-directory
+```
+
+`evaluate_response` below remains the unchanged v1 evaluator used for the original
+replay and I01. `evaluate_isolated` is the intermediate v2 wrapper used to measure
+the home-directory effect separately. [I01 remeasurement](iterations/i01-home-isolated/README.md)
+retains both sides of that same-code comparison. Do not combine evaluator versions
+within a condition or overwrite earlier reports.
+
 After receiving a completed adapter observation:
 
 ```sh

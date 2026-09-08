@@ -1,9 +1,10 @@
 # Asteria — bachelor-thesis workspace
 
-The [Highscore explorer](https://eliahilse.github.io/asteria/) shows individual
-test results, security context records and exact prompt comparisons. Old runs
-are excluded; new observations are imported explicitly. See
-[local setup](workbench/README.md) and [data semantics](docs/EVIDENCE_MODEL.md).
+The [Highscore explorer](https://eliahilse.github.io/asteria/) compares code quality
+and detected security-issue checks for each context combination. Its context tab
+shows the exact generated prompt inserts. See the [iteration index](research/iterations/README.md),
+[preserved evidence and restore instructions](research/results/README.md), and
+[local setup](workbench/README.md).
 
 ```sh
 cd workbench
@@ -11,12 +12,16 @@ npm ci
 npm run dev
 ```
 
-The main experiment replays the original **2 methods × 8 context combinations**
-for Highscore: 80 Luna attempts, followed by 80 fresh control/security attempts
-on the four selected combinations. See the [frozen protocol](research/MATRIX_EXPERIMENT.md).
+The original **2 methods × 8 context combinations** replay and its security
+follow-up are preserved. Subsequent experiments use complete feature edits,
+bounded functional feedback and a corrected evaluator. Read each iteration's
+frozen plan before comparing its results with the original
+[single-response protocol](research/MATRIX_EXPERIMENT.md).
 Connect your provider through the [private adapter protocol](research/ADAPTER.md);
-local adapters, credentials and observations stay gitignored. The default
-Experiment tab reads local observations as they are evaluated.
+local adapters, credentials and provider traces stay gitignored. Research
+observations are committed in verified archives and copied to the sibling
+`asteria-research-backups` folder between iterations. The local Experiment tab
+reads current observations as they are evaluated.
 
 Migrated from the local `B` workspace. The reports, experiments, audit evidence,
 corpus, and upstream source snapshots are preserved here. See

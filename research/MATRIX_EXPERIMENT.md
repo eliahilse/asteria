@@ -1,5 +1,13 @@
 # Highscore: paper matrix and security follow-up
 
+This document describes the preserved original single-response replay and overlay.
+The [iteration index](iterations/README.md) describes subsequent source-edit
+experiments and evaluator corrections. Research evidence is now committed in
+verified archives; private adapter configuration and raw provider transport
+traces remain excluded. The static explorer publishes the latest committed
+iteration's results and exact inserts, and the local explorer follows active
+collection.
+
 This study replays the Highscore rows of the authors’ replication package in
 `vamos-artifact/Pipeline/Prompts.csv`. The unit of observation is one independently
 requested code response. The task is to integrate ApoMario Highscore; ApoIcarus
@@ -108,7 +116,7 @@ per-test pass, fail, not-run, unknown, compile-error and environment-error count
 and attempt-level check diagnostics in supporting sheets. Acquisition strategy
 and content types remain distinct: a strategy determines how context is acquired;
 types describe its contents and are not independently varied here. Context-type
-counts remain in the export and the context generation tab. JSON retains study
+counts remain in the export; the context tab shows only task and exact inserts. JSON retains study
 plans, summaries and check observations; exact requests, responses and compiler
 logs remain in the local experiment folders. A security pass in the isolated
 feature harness does not establish that the whole game works or is vulnerability-free.
@@ -130,7 +138,8 @@ local and are excluded from the active matrix.
 
 ## Local operation
 
-The model adapter command and all responses remain gitignored. Configure
+The model adapter command remains gitignored; raw responses are preserved in
+research evidence archives. Configure
 `ASTERIA_ADAPTER_COMMAND` as described in `ADAPTER.md`, then validate or execute:
 
 ```sh
@@ -142,8 +151,8 @@ npm run dev
 
 The default **Experiment** tab reads local records without initiating model calls.
 Its JSON/XLSX exports include condition and test-level counts and observations.
-The static deployment contains only public plans; private requests and responses
-are never included in its assets.
+The static deployment contains the latest explicitly committed results and inserts.
+Adapter configuration and provider traces are never included in its assets.
 
 To export a reviewable local results report and evidence-hash snapshot:
 
