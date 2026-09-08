@@ -31,7 +31,7 @@ control demonstrates the necessary precondition.
 
 ```sh
 python3 -m research.amplification_audit --iteration ITERATION_ID \
-  --output .local/reports/ITERATION_ID-amplification-audit
+  --output .local/iterations/ITERATION_ID-amplification-audit
 python3 -m research.qualification --iteration ITERATION_ID
 python3 -m research.scientific_summary --iteration ITERATION_ID --qualified
 ```
