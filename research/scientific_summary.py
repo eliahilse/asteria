@@ -116,16 +116,24 @@ def csv_bytes(rows):
     return output.getvalue().encode()
 
 
-def save(identifier):
+def save(identifier, qualified=False):
     directory = ROOT / 'research/iterations' / identifier
-    result = summarize(read_study(ROOT / '.local/iterations' / identifier)); directory.mkdir(parents=True, exist_ok=True)
-    (directory / 'analysis.json').write_bytes(canonical(result))
-    (directory / 'per-test.csv').write_bytes(csv_bytes(result['perTest']))
-    (directory / 'security-effects.csv').write_bytes(csv_bytes([{'parent': c['parent'], 'strategy': c['securityStrategy'], **t} for c in result['comparisons'] for t in c['tests']]))
-    lines = [f'# {identifier}: per-test effects and uncertainty', '',
+    study = read_study(ROOT / '.local/iterations' / identifier)
+    metadata = None
+    if qualified:
+        from research.qualification import apply_available
+        study, metadata = apply_available(study)
+    result = summarize(study); directory.mkdir(parents=True, exist_ok=True)
+    prefix = 'qualified-' if qualified else ''
+    if metadata: result['measurementQualification'] = metadata
+    (directory / f'{prefix}analysis.json').write_bytes(canonical(result))
+    (directory / f'{prefix}per-test.csv').write_bytes(csv_bytes(result['perTest']))
+    (directory / f'{prefix}security-effects.csv').write_bytes(csv_bytes([{'parent': c['parent'], 'strategy': c['securityStrategy'], **t} for c in result['comparisons'] for t in c['tests']]))
+    lines = [f'# {identifier}: {"qualified " if qualified else ""}per-test effects and uncertainty', '',
         'All scheduled trajectories are included. First-submission and within-budget success use the full trajectory denominator; rejected edits and transport failures are retained.', '',
         '| Condition | N | First full | Within-budget full | Full rate, Wilson 95% | Joint functional + all 11 security | Issue failures / evaluated | Unresolved | Calls |',
         '| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: |']
+    if metadata: lines[2:2] = [metadata['meaning'], '']
     for c in result['conditions']:
         lo, hi = c['withinBudgetFullWilson95']; issues = c['issues']
         lines.append(f"| {c['condition']} | {c['n']} | {c['firstFull']} | {c['withinBudgetFull']} | {100*c['withinBudgetFullRate']:.1f}% [{100*lo:.1f}, {100*hi:.1f}] | {c['functionalAndAllDeclaredSecurityPass']} | {issues['failed']}/{issues['evaluated']} | {issues['unresolved']} | {c['modelSubmissions']} |")
@@ -148,12 +156,13 @@ def save(identifier):
     lines += ['', '## Interpretation limits', '',
         f"Individual rate intervals use the [Wilson method described by NIST]({WILSON_SOURCE}). They describe uncertainty conditional on this fixed task and acquired context; they do not establish generalization across repositories or independently acquired contexts.", '',
         result['methods']['scope'], '', result['methods']['unit'], '',
-        'The complete per-test rates and intervals are in `per-test.csv`; all fresh-control check effects are in `security-effects.csv`. Exact values and context provenance are in `analysis.json`. Context prompt inserts remain in `contexts/`. No results are selected for omission, and no significance claim is inferred from a favorable count.', '']
-    (directory / 'analysis.md').write_text('\n'.join(lines))
+        f'The complete per-test rates and intervals are in `{prefix}per-test.csv`; all fresh-control check effects are in `{prefix}security-effects.csv`. Exact values and context provenance are in `{prefix}analysis.json`. Context prompt inserts remain in `contexts/`. No results are selected for omission, and no significance claim is inferred from a favorable count.', '']
+    (directory / f'{prefix}analysis.md').write_text('\n'.join(lines))
     print(f"Saved {len(result['conditions'])} conditions, {len(result['perTest'])} test-rate rows and {len(result['comparisons']) * len(ISSUES)} issue comparisons")
     return result
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--iteration', required=True)
-    args = parser.parse_args(); save(args.iteration)
+    parser.add_argument('--qualified', action='store_true')
+    args = parser.parse_args(); save(args.iteration, args.qualified)

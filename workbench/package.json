@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "data": "cd .. && python3 -m research.import_evidence && python3 -m research.study_results --write-public && python3 -m research.iteration_results --write-public && python3 -m research.context_inserts --write-public",
+    "data": "cd .. && python3 -m research.import_evidence && python3 -m research.study_results --write-public && python3 -m research.iteration_results --write-public && python3 -m research.explorer_results --write-public && python3 -m research.context_inserts --write-public",
     "predev": "npm run data",
     "dev": "vite --host 127.0.0.1",
     "prebuild": "npm run data",

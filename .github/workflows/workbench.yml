@@ -35,6 +35,8 @@ jobs:
         run: python3 -m unittest discover -s research -p 'test_*.py' -v
       - name: Validate security controls on this environment
         run: python3 -m research.evaluate_security --controls-only --output "$RUNNER_TEMP/security-controls.json"
+      - name: Validate large-record adapter preconditions
+        run: python3 -m research.amplification_audit --calibrate --output "$RUNNER_TEMP/amplification-calibration"
       - name: Install workbench dependencies
         working-directory: workbench
         run: npm ci

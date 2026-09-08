@@ -23,10 +23,10 @@ CHECK_LABELS = ['Negative score', 'Negative time', 'Null name', 'Blank name', 'E
                 'Malformed store', 'Oversized line', 'Deserialization hook', 'Large record set']
 
 
-def render(identifier):
+def render(identifier, qualified=False):
     directory = ROOT / 'research/iterations' / identifier
-    source = directory / 'analysis.json'; raw = source.read_bytes(); data = json.loads(raw)
-    target = directory / 'figures'; target.mkdir(exist_ok=True)
+    source = directory / ('qualified-analysis.json' if qualified else 'analysis.json'); raw = source.read_bytes(); data = json.loads(raw)
+    target = directory / ('figures-qualified' if qualified else 'figures'); target.mkdir(exist_ok=True)
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.spines.top': False, 'axes.spines.right': False,
                          'svg.hashsalt': identifier, 'pdf.fonttype': 42, 'ps.fonttype': 42})
     parents = list(dict.fromkeys(c['parent'] for c in data['comparisons']))
@@ -69,7 +69,7 @@ def render(identifier):
     fig.subplots_adjust(left=.16, right=.97, top=.93, bottom=.23, wspace=.48, hspace=.65)
     fig.text(.02, .055, 'Functionality: filled dot = within budget; cross = first submission; bars = marginal Wilson 95% intervals.\n'
              'Security: filled dot = observed failures; open dot = all unresolved checks failing. This range is not a confidence interval.\n'
-             f"{identifier}; N={n_label} trajectories per combination; at most {budget} submissions each. Fixed task and acquired contexts.", fontsize=9, va='bottom')
+             f"{identifier}{' (qualified)' if qualified else ''}; N={n_label} trajectories per combination; at most {budget} submissions each. Fixed task and acquired contexts.", fontsize=9, va='bottom')
     save(fig, 'quality-and-security')
 
     fig, axes = plt.subplots(1, len(parents), figsize=(5 * len(parents) + 2, 6.8), squeeze=False)
@@ -101,4 +101,5 @@ def render(identifier):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--iteration', required=True)
-    render(parser.parse_args().iteration)
+    parser.add_argument('--qualified', action='store_true'); args = parser.parse_args()
+    render(args.iteration, args.qualified)
