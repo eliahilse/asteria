@@ -50,7 +50,14 @@ def save(identifier):
         'meaning': 'Diagnostics of the original final functional JUnit processes; no outcome or feedback is modified. A bootstrap failure may leave all named tests unexecuted rather than failed. Compilations and missing delivered artifacts remain represented by the full result table. These diagnostic categories describe process evidence, not security vulnerabilities.'}
     directory = ROOT / 'research/iterations' / identifier
     (directory / 'functional-diagnostics.json').write_bytes(canonical(result))
-    (directory / 'functional-diagnostics.csv').write_bytes(csv_bytes(rows))
+    compact = []
+    for row in rows:
+        lines = [line for line in (row['stdout'] + '\n' + row['stderr']).splitlines() if line.strip()]
+        compact.append({**{key: value for key, value in row.items() if key not in ('stdout', 'stderr')},
+            'diagnosticExcerpt': '\n'.join(lines[-120:]), 'omittedNonblankLines': max(0, len(lines) - 120),
+            'stdoutCharacters': len(row['stdout']), 'stderrCharacters': len(row['stderr']),
+            'fullDiagnostics': 'functional-diagnostics.json'})
+    (directory / 'functional-diagnostics.csv').write_bytes(csv_bytes(compact))
     print(f'{identifier}: {len(rows)} unsuccessful functional suite processes retained with exact stdout/stderr and report hashes')
     return result
 
