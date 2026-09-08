@@ -19,6 +19,10 @@ sanitized files and diffs, original author-suite output, per-process diagnostics
 The runner observation stays unchanged. No model repair is performed. A response
 with no extractable Java is an unsuccessful output, with all checks unevaluated.
 
+For a separate development workflow that requests edits to existing game classes
+and returns bounded functional feedback, see [feature delivery calibration](FEATURE_DELIVERY.md).
+Those multi-submission trajectories are excluded from the single-response matrix.
+
 The functional evaluator reuses the original author integration and the pilot's
 documented package/import/environment repairs. It parses JUnit output separately:
 unnamed tests can pass only after a consistent complete suite execution. Missing
