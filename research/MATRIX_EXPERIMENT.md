@@ -87,21 +87,31 @@ checks run separately with positive/negative controls and bounded resources.
 See `EVALUATION.md` for contracts and limitations.
 
 The explorer displays all combinations in one table, with no condition selectors.
-Security acquisition strategy and security content-type counts occupy separate
-columns: a strategy determines how context is acquired; the types describe what
-the resulting context contains. The content types are not independently varied
-in this study. Each security check has numeric columns for pass/all-attempt
-percentage, its difference from the matching fresh control in percentage points,
-and unresolved count. Replay and control rows have no treatment difference.
-Functional suite rates, compilation, complete functional success, source-citation
-coverage and token means remain separate statistics.
+It retains the existing quality metrics: compilation, unit, invoked integration,
+autonomous integration and full functional success, alongside N. One security
+column shows the aggregate **failed / evaluated issue checks** across a condition's
+attempts. It excludes the positive valid-record round trip. It counts repeated
+failed contracts, not distinct vulnerabilities or CVEs; each check covers only
+its fixture.
 
-XLSX starts with the same numeric combination table and retains the detailed pass,
-fail, not-run, unknown, compile-error and environment-error counts, alongside
-attempt-level check diagnostics. JSON retains study plans, summaries and check
-observations; exact requests, responses and compiler logs remain in the local
-experiment folders. A security pass in the isolated feature harness does not
-establish that the whole game works or that no vulnerability exists.
+The arrow is the difference in failed-check counts from the matching fresh
+follow-up control. It is shown only when attempt counts match, neither condition
+has pending attempts, and every issue check has the same evaluated count in both
+conditions. Equal total evaluation counts alone are insufficient. Otherwise the
+change is unavailable (`Δ —`), so missing checks cannot appear as an improvement.
+A difference with partial but matching coverage describes only observed checks.
+Replay and control rows have no treatment difference. This is a descriptive count
+comparison, not a significance test or an estimate of the total vulnerabilities.
+
+XLSX retains numeric counts, coverage and differences separately, with the
+per-test pass, fail, not-run, unknown, compile-error and environment-error counts
+and attempt-level check diagnostics in supporting sheets. Acquisition strategy
+and content types remain distinct: a strategy determines how context is acquired;
+types describe its contents and are not independently varied here. Context-type
+counts remain in the export and the context generation tab. JSON retains study
+plans, summaries and check observations; exact requests, responses and compiler
+logs remain in the local experiment folders. A security pass in the isolated
+feature harness does not establish that the whole game works or is vulnerability-free.
 
 All-attempt rates retain failures to obtain/evaluate usable code. Tested rates
 condition on a test actually yielding pass or fail; both denominators are shown.
