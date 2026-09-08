@@ -20,6 +20,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i05-prepared](i05-prepared/manifest.json) | All earlier evidence, qualified reports/figures/workbooks, and frozen I05; 25,536 files in 18 parts, both copies verified | [Qualified I04 findings](../iterations/i04-matrix-replication/findings.md), [I05 protocol](../iterations/i05-budget-sensitivity/README.md) |
 | [i05-complete](i05-complete/manifest.json) | All 80 trajectories and 184 submissions, the 80-artifact format audit, earlier evidence and prepared I06 acquisition records; 43,469 files in 26 parts, both copies verified | [Qualified findings](../iterations/i05-budget-sensitivity/findings.md), [workbook](../iterations/i05-budget-sensitivity/qualified-results.xlsx) |
 | [i06-prepared](i06-prepared/manifest.json) | Two completed operation-context acquisitions, the frozen 80-trajectory comparison and all earlier evidence; 43,506 files in 26 parts, both copies verified | [Protocol](../iterations/i06-operational-guards/README.md), [frozen plan](../iterations/i06-operational-guards/plan.json) |
+| [i06-complete](i06-complete/manifest.json) | All 80 trajectories and 190 submissions, the format audit, qualified exports and earlier evidence; 63,836 files in 35 parts, both copies verified | [Findings](../iterations/i06-operational-guards/findings.md), [workbook](../iterations/i06-operational-guards/qualified-results.xlsx) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -61,11 +62,17 @@ Both qualified explorer datasets and scientific analyses reproduced exactly:
 40 + 80 trajectories and 216 + 432 per-test rows, with no model or Java rerun.
 See [qualified restore proof](i05-prepared/restore-proof.json).
 
-The latest directly readable external copy is `i05-complete-review/`: 123 verified
+The earlier directly readable external copy is `i05-complete-review/`: 123 verified
 files, with a README linking the findings, table, workbook and exact inserts.
 During I05, completed trajectory directories were additionally copied to
 `i05-budget-sensitivity-live/`, with checksummed checkpoints at 21, 50 and 73
 finished trajectories. Active outputs were excluded until sealed.
+
+The latest directly readable external copy is `i06-complete-review/`: 187 verified
+files covering all iteration reports, exports, figures and exact inserts, with
+`START-HERE.md` linking the completed I06 findings. The complete raw I06 archive
+has its own verified external copy. Sealed trajectories were also copied during
+collection at checkpoints of 28 and 57 finished trajectories.
 
 A fresh checkout can open the latest committed table and context inserts without
 restoring `.local`. Restoration is needed to inspect the complete raw exchanges,
