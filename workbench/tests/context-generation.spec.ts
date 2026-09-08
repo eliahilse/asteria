@@ -3,10 +3,11 @@ import { test, expect } from '@playwright/test';
 test('context page shows the task and exact prompt inserts without generation controls or traces', async ({ page, context }) => {
   const text = '--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---\nPreserve this exact prompt insert.\nSource: Scores.java:2-3\n--- END REPOSITORY-DERIVED SECURITY CONTEXT ---\n';
   await page.route('**/api/context-inserts**', route => route.fulfill({ json: { local: true, iteration: 'fixture', groups: [
-    { method: 'Generation', task: 'Add highscore for the game', inserts: [{ id: 'fixture', strategy: 'requirements', label: 'Requirements', text, sha256: 'fixture' }] },
+    { method: 'Generation', task: 'Add highscore for the game', inserts: [{ id: 'fixture', strategy: 'task_only', label: 'Task only', text, sha256: 'fixture' }] },
   ] } }));
   await page.goto('/?view=generation');
   await expect(page.getByLabel('Task', { exact: true })).toHaveValue('Add highscore for the game');
+  await expect(page.getByRole('heading', { name: 'Task only', exact: true })).toBeVisible();
   expect(await page.locator('.prompt-insert').textContent()).toBe(text);
   await expect(page.locator('select')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Generate context', exact: true })).toHaveCount(0);

@@ -44,9 +44,9 @@ export function contextApi(): Plugin {
               const r = await record(id);
               return { id, repository: r.repository, task: r.task, strategy: r.strategy, status: r.status,
                 startedAt: r.startedAt, turns: r.turns.length, items: r.output?.items.length ?? null,
-                generatorHash: r.generatorHashes?.['research/generate_context.py'] ?? null };
+                generatorHash: r.generatorHashes?.['research/task_context.py'] ?? r.generatorHashes?.['research/generate_context.py'] ?? null };
             }));
-            send(200, { local: true, adapterReady: ready, targets: Object.keys(targets), runs: runs.sort((a, b) => b.startedAt.localeCompare(a.startedAt)) });
+            send(200, { local: true, adapterReady: ready, strategy: 'task_only', targets: Object.keys(targets), runs: runs.sort((a, b) => b.startedAt.localeCompare(a.startedAt)) });
           } else if (req.method === 'GET' && path.length === 1) {
             send(200, await record(path[0]));
           } else if (req.method === 'GET' && path.length === 2 && path[1] === 'snapshot' && validId.test(path[0])) {
@@ -59,13 +59,13 @@ export function contextApi(): Plugin {
             let body = '';
             for await (const chunk of req) { body += chunk; if (Buffer.byteLength(body) > 20000) { send(413, { error: 'Task is too large.' }); return; } }
             const input = JSON.parse(body);
-            if (!Object.hasOwn(targets, input.repository) || !['overview', 'task', 'flows'].includes(input.strategy) ||
+            if (!Object.hasOwn(targets, input.repository) || (input.strategy !== undefined && input.strategy !== 'task_only') ||
                 typeof input.task !== 'string' || !input.task.trim() || input.task.length > 12000 || !['prepare', 'generate'].includes(input.action)) {
-              send(400, { error: 'Choose a repository, strategy and task.' }); return;
+              send(400, { error: 'Provide a repository and task. New acquisitions use task_only without strategy guidance.' }); return;
             }
             if (input.action === 'generate' && !ready) { send(409, { error: 'Configure ASTERIA_ADAPTER_COMMAND locally first.' }); return; }
-            const args = ['-m', 'research.generate_context', '--repo', resolve(root, targets[input.repository]),
-              '--task', input.task, '--strategy', input.strategy, '--output', output];
+            const args = ['-m', 'research.task_context', '--repo', resolve(root, targets[input.repository]),
+              '--task', input.task, '--output', output];
             if (input.action === 'generate') args.push('--execute');
             const id = await new Promise<string>((accept, reject) => {
               const child = spawn(env.ASTERIA_PYTHON || 'python3', args, { cwd: root, env, stdio: ['ignore', 'pipe', 'ignore'] });
