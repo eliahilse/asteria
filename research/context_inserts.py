@@ -10,7 +10,7 @@ from research.import_evidence import ROOT, canonical, digest
 from research.security_followup import security_block
 from research.saved_iteration import resolve
 
-LABELS = {'overview': 'Overview', 'task': 'Task-focused', 'flows': 'Data-flow', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards'}
+LABELS = {'overview': 'Overview', 'task': 'Task-focused', 'flows': 'Data-flow', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards', 'task_only': 'Task only'}
 
 
 def index(public=False, iteration=None):
