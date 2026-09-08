@@ -59,6 +59,9 @@ and all five Reuse S+B artifacts. Excessive-name rejection fails in 5/5 Generati
 S and 4/5 Generation S+F+B artifacts. Reuse S+B retention failures **increase from
 0/5 controls to 2/5 operations**. These policy outcomes are reported separately
 from resource stress; adding their counts must not obscure the regression.
+The [post-collection source review](source-review.md) shows both retention failures
+use a finite 1,000-record cap, compared with the fixture's 100-record requirement;
+this is policy nonconformance, not demonstrated absence of a storage bound.
 Malformed-store and deserialization-canary checks pass in every arm and therefore
 provide no evidence that context improves those outcomes in this round.
 
