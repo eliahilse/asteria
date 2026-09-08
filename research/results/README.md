@@ -17,6 +17,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i03-complete](i03-complete/manifest.json) | All 40 trajectories and 68 code submissions, plus readable reports and exports; 9,094 files | [Findings](../iterations/i03-security-perspectives/findings.md), [per-test analysis](../iterations/i03-security-perspectives/analysis.md) |
 | [i04-prepared](i04-prepared/manifest.json) | Frozen 80-trajectory replication and six new acquisitions; 9,279 files | [Protocol](../iterations/i04-matrix-replication/README.md) |
 | [i04-complete](i04-complete/manifest.json) | All 80 trajectories and 150 submissions, plus I03/I04 format audits; 24,113 files | [Findings and measurement update](../iterations/i04-matrix-replication/findings.md) |
+| [i05-prepared](i05-prepared/manifest.json) | All earlier evidence, qualified reports/figures/workbooks, and frozen I05; 25,536 files in 18 parts, both copies verified | [Qualified I04 findings](../iterations/i04-matrix-replication/findings.md), [I05 protocol](../iterations/i05-budget-sensitivity/README.md) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -48,6 +49,10 @@ saved 40-trajectory table, 216 per-test rates and 60 issue comparisons exactly.
 See [restore proof](../iterations/i03-security-perspectives/restore-proof.json).
 The outside `i03-complete/review/` folder also provides directly readable CSV,
 XLSX, PDF, source excerpts and a per-file SHA-256 manifest.
+
+The newer outside `i04-qualified-review/` folder contains 80 directly readable
+review files: I03/I04 raw and qualified summaries, XLSX, figures, audit reports,
+exact context inserts and I05's frozen plan. Its manifest verifies every copy.
 
 Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
