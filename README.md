@@ -7,6 +7,9 @@ shows the exact generated prompt inserts. See the [iteration index](research/ite
 [local setup](workbench/README.md).
 The [research readout](research/iterations/REVIEW.md) connects the context definitions,
 experimental units, per-check findings and interpretation limits.
+New [security-context acquisitions](research/CONTEXT_GENERATION.md) use a minimal
+task-only instruction, with repository tools and evidence recording. Completed
+results below retain their original perspective-guided prompts.
 
 Latest completed evidence: [I07 findings](research/iterations/i07-operational-replication/findings.md),
 [two-round comparison](research/iterations/i07-operational-replication/replication-analysis.md)
