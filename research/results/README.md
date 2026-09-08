@@ -18,6 +18,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i04-prepared](i04-prepared/manifest.json) | Frozen 80-trajectory replication and six new acquisitions; 9,279 files | [Protocol](../iterations/i04-matrix-replication/README.md) |
 | [i04-complete](i04-complete/manifest.json) | All 80 trajectories and 150 submissions, plus I03/I04 format audits; 24,113 files | [Findings and measurement update](../iterations/i04-matrix-replication/findings.md) |
 | [i05-prepared](i05-prepared/manifest.json) | All earlier evidence, qualified reports/figures/workbooks, and frozen I05; 25,536 files in 18 parts, both copies verified | [Qualified I04 findings](../iterations/i04-matrix-replication/findings.md), [I05 protocol](../iterations/i05-budget-sensitivity/README.md) |
+| [i05-complete](i05-complete/manifest.json) | All 80 trajectories and 184 submissions, the 80-artifact format audit, earlier evidence and prepared I06 acquisition records; 43,469 files in 26 parts, both copies verified | [Qualified findings](../iterations/i05-budget-sensitivity/findings.md), [workbook](../iterations/i05-budget-sensitivity/qualified-results.xlsx) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -58,6 +59,16 @@ The split `i05-prepared` snapshot was restored at clean checkout `660a4ec`.
 Both qualified explorer datasets and scientific analyses reproduced exactly:
 40 + 80 trajectories and 216 + 432 per-test rows, with no model or Java rerun.
 See [qualified restore proof](i05-prepared/restore-proof.json).
+
+The latest directly readable external copy is `i05-complete-review/`: 123 verified
+files, with a README linking the findings, table, workbook and exact inserts.
+During I05, completed trajectory directories were additionally copied to
+`i05-budget-sensitivity-live/`, with checksummed checkpoints at 21, 50 and 73
+finished trajectories. Active outputs were excluded until sealed.
+
+A fresh checkout can open the latest committed table and context inserts without
+restoring `.local`. Restoration is needed to inspect the complete raw exchanges,
+rerun analysis from them, or access the archived compiled artifacts.
 
 Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
