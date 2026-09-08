@@ -103,6 +103,8 @@ def one(repeat_id):
         compiled = ((report.get('security') or {}).get('linkage') or {}).get('compiledClasses')
         precondition = {'status': 'unknown', 'reason': 'No compiled artifact available for the precondition probe.'}
         if compiled:
+            for name, sha in compiled.items():
+                if digest((output / 'evaluation/security-project-classes' / name).read_bytes()) != sha: raise ValueError('Compiled artifact changed before precondition audit')
             classpath = os.pathsep.join([str(ROOT / plan['probeClasses']), str(output / 'evaluation/security-project-classes'), str(JAR)])
             precondition = probe(find_jdk(), classpath, 'apoMario.game.panels.ApoMarioHighscore', output / 'precondition')
         result.update(status='evaluated', sanitizedSourceMatches=report['sanitizedHashes'] == item['sanitizedHashes'],
@@ -135,6 +137,10 @@ def summarize():
         if record['status'] == 'started' or record['planFingerprint'] != plan['fingerprint']: raise ValueError('Incomplete or mismatched repeat')
         if record['status'] == 'evaluated':
             if digest((path.parent / 'evaluation/report.json').read_bytes()) != record['reportSha256']: raise ValueError('Repeated report changed')
+            report = json.loads((path.parent / 'evaluation/report.json').read_text())
+            if record['measures'] != measures(report, record['precondition']): raise ValueError('Repeated measures differ from source report')
+            precondition_path = path.parent / 'precondition/report.json'
+            if precondition_path.exists() and canonical(json.loads(precondition_path.read_text())) != canonical(record['precondition']): raise ValueError('Repeated precondition differs')
             item = next(s for s in plan['selected'] if s['runId'] == row['runId'])
             for measurement in ('rawChecks', 'qualifiedChecks'):
                 for test, before in item['expected'][measurement].items():
