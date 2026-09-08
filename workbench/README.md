@@ -97,3 +97,12 @@ PLAYWRIGHT_CHANNEL=chrome npm run test:e2e
 
 CI verifies data, controls, browser behavior and full functional calibration before
 publishing the static site. See [data semantics](../docs/EVIDENCE_MODEL.md).
+# Interpreting the security column
+
+The cell contains failed/evaluated issue checks and a fresh-control difference.
+When checks are unmeasured, the arrow range covers every possible assignment of
+those outcomes in both arms. `3/46 (↓28–32)` means 28–32 fewer failed checks than
+the matched control, allowing all missing outcomes. It is not a confidence
+interval. Ranges spanning zero, unequal N and pending comparisons have no arrow.
+The XLSX export retains each check, diagnostic, denominator, interval and count
+bound separately; the table keeps one security column.

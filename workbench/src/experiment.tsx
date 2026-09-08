@@ -6,10 +6,12 @@ export type * from './experiment-types';
 const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries' };
 const format = (value: number | null, column: StatColumn) => value === null ? '—' : column.format === 'count' ? String(value) : value.toFixed(1);
 function IssueCount({ issues: s }: { issues: SecurityIssues }) {
+  const bounds = s.deltaBounds;
+  const trend = !bounds ? 'Δ —' : bounds[1] < 0 ? `↓${-bounds[1]}${bounds[0] === bounds[1] ? '' : `–${-bounds[0]}`}` : bounds[0] > 0 ? `↑${bounds[0]}${bounds[0] === bounds[1] ? '' : `–${bounds[1]}`}` : bounds[0] === 0 && bounds[1] === 0 ? '→0' : 'Δ —';
   const explanation = `${s.detected ?? 0} failed issue checks; ${s.evaluated} evaluated; ${s.expected - s.evaluated} unresolved. ` +
-    (s.hasControl ? s.delta === null ? 'Change unavailable: different per-check coverage, pending attempts or no observations.' : `${s.delta > 0 ? '+' : ''}${s.delta} failures versus the matching fresh control at equal per-check coverage.` : 'No treatment comparison for replay or control rows.');
+    (s.hasControl ? !bounds ? 'Change unavailable: unequal N, pending observations or missing check catalog.' : `Failure-count difference from the fresh control lies between ${bounds[0]} and ${bounds[1]} for every possible assignment of unmeasured checks. This is not a confidence interval. A range containing zero has no directional arrow.` : 'No treatment comparison for replay or control rows.');
   return <td className="numeric security-issues" data-stat="securityIssues" title={explanation}>
-    {s.detected === null ? '—' : <>{s.detected}/{s.evaluated}{s.hasControl && <span className={s.delta === null || s.delta === 0 ? '' : s.delta < 0 ? 'pass' : 'fail'}> ({s.delta === null ? 'Δ —' : s.delta < 0 ? `↓${-s.delta}` : s.delta > 0 ? `↑${s.delta}` : '→0'})</span>}</>}
+    {s.detected === null ? '—' : <>{s.detected}/{s.evaluated}{s.hasControl && <span className={bounds && bounds[1] < 0 ? 'pass' : bounds && bounds[0] > 0 ? 'fail' : ''}> ({trend})</span>}</>}
   </td>;
 }
 async function json(url: string) { const r = await fetch(url); if (!r.ok || !r.headers.get('content-type')?.includes('application/json')) throw new Error('Experiment data unavailable'); const d = await r.json(); if (d.error) throw new Error(d.error); return d; }
@@ -47,6 +49,6 @@ export function Experiment() {
       <td>{r.phase}</td><td>{r.method}</td><td>{r.paper.length ? r.paper.map(p => <span key={p} className="paper-context">{p}</span>) : 'None'}</td><td>{r.security === 'none' ? 'None' : <span className={`security-context security-${r.security}`}>{securityNames[r.security] ?? r.security}</span>}</td>
       {statColumns.map(c => <td key={c.key} data-stat={c.key} className="numeric">{format(r.values[c.key], c)}</td>)}<IssueCount issues={r.issues} />
     </tr>)}</tbody></table></div>
-    <p className="note">Security issues = failed / evaluated security checks across N {unit}, not unique vulnerabilities. Arrows compare fresh controls with matching coverage; Δ — = not comparable. Per-test detail remains in the export.</p>
+    <p className="note">Security issues = failed / evaluated checks across N {unit}, not unique vulnerabilities. Arrow ranges allow every unmeasured check to pass or fail; they are not confidence intervals. Δ — = no clear direction or comparison unavailable. Per-test detail remains in the export.</p>
   </section>;
 }

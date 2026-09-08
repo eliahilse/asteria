@@ -56,7 +56,8 @@ test('quality metrics and one security issue column fit on desktop, with coverag
   await expect(row.locator('[data-stat="unit"]')).toHaveText('100.0');
   await expect(row.locator('[data-stat="securityIssues"]')).toHaveText('2/50 (↓3)');
   await expect(page.locator('[data-condition="generation_sfb__overview"] [data-stat="securityIssues"]')).toHaveText('7/50 (↑2)');
-  await expect(page.locator('[data-condition="generation_sfb__flows"] [data-stat="securityIssues"]')).toHaveText('1/49 (Δ —)');
+  await expect(page.locator('[data-condition="generation_sfb__flows"] [data-stat="securityIssues"]')).toHaveText('1/49 (↓3–4)');
+  await expect(page.locator('[data-condition="generation_sfb__flows"] [data-stat="securityIssues"]')).toHaveAttribute('title', /not a confidence interval/);
   await expect(page.locator('[data-condition="generation_sfb__none"] [data-stat="securityIssues"]')).toHaveText('5/50');
   expect(await page.locator('.combination-scroll').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   const download = page.waitForEvent('download');
