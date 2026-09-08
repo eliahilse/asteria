@@ -14,7 +14,9 @@ and [XLSX](research/iterations/i07-operational-replication/qualified-results.xls
 The local table is at `http://127.0.0.1:5173/?iteration=i07-operational-replication`.
 I07 reached 74/80 full-functional trajectories. Lower total issue counts recur,
 but the earlier perfect operational resource result did not fully replicate.
-I08 checks evaluator repeatability on unchanged artifacts.
+[I08](research/iterations/i08-evaluator-repeatability/findings.md) repeated 32 fixed
+artifacts twice: no measurement changes or source/class mismatches; unsupported
+checks remain unresolved.
 
 ```sh
 cd workbench

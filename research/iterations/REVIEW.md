@@ -9,8 +9,9 @@ code collection and completed with unfavorable outcomes retained.
 Start with the [latest completed I07 findings](i07-operational-replication/findings.md),
 [workbook](i07-operational-replication/qualified-results.xlsx) and
 [two-round comparison](i07-operational-replication/replication-analysis.md).
-I07 completes a fresh acquisition replication. I08 is the declared follow-up
-that repeats evaluation of fixed artifacts, without new model samples.
+I07 completes a fresh acquisition replication.
+[I08](i08-evaluator-repeatability/findings.md) completes 64 repeat evaluations of
+32 fixed artifacts, without new model samples or measurement transitions.
 
 ## What the context is
 
@@ -99,7 +100,10 @@ claim that all passing artifacts are secure. I07 repeats lower total counts in
 every combination, but operations achieve only 13 oversized-line passes, six
 heap-exhaustion failures and one unmeasured result; full functionality is 18/20
 versus 19/20 controls. There are no qualified joint passes in I07. The perfect
-resource result did not fully replicate. I08 will check local evaluator repeatability.
+resource result did not fully replicate. I08 found no raw or qualified measurement
+changes in its fixed selection. Its 819 fully measured artifact/check triples
+were stable; 45 unresolved triples provide no evidence of a pass. This supports
+local repeatability, not universal determinism or independent context replication.
 
 ## Recovery and review
 
