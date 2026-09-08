@@ -1,0 +1,63 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Security context for implementing persistent highscores: the current game exposes per-level elapsed-time and per-player score state, but the inspected snapshot provides no evidence of an existing highscore class, player-name API, or persistence format. Integration must capture the final state at the single run/level terminal transition, before leaving or resetting the level, and must not substitute the remaining countdown for elapsed survival time. Persistence will consume a caller-supplied Path and stored content is untrusted input.
+
+[security_property; observed; authoritative run data] The existing level exposes remaining time through getTime() and elapsed time through getPassedTime(); the highscore integration should use the elapsed-time value at terminal handling, in milliseconds as required by the task, and capture score only after finish/loss scoring has completed.
+Task relevance: Prevents recording a countdown value or a pre-finalization score as the player's actual run result.
+Inspected source E0008: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:380-410
+Inspected source E0009: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1145-1205
+Suggested verification: Exercise both clear and loss terminal paths and verify the stored survival time is elapsed milliseconds and score equals the finalized player score.
+
+[change_risk; observed; terminal integration] Score changes occur in level terminal analysis and exception/loss paths, while the game renders player score from the level's player object; adding recording at an earlier menu/game transition risks stale or duplicate entries.
+Task relevance: The feature requires one record for finishing a run/level, including clearing and losing.
+Inspected source E0015: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:411-411
+Inspected source E0016: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1193-1193
+Inspected source E0032: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1224-1224
+Inspected source E0033: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1314-1314
+Suggested verification: Trace every clear/loss transition and assert recordRunEnd is invoked exactly once per run after final score mutation, including repeated update ticks.
+
+[recommendation; task; input validation] At storeRun, reject or safely normalize null/blank/overlong player names and reject negative or otherwise out-of-contract score/time values; enforce bounds before sorting, rendering, or persistence. Do not let control characters or line delimiters alter the record format or UI.
+Task relevance: Player names are input and are persisted/displayed; malformed values can corrupt records or the menu view.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Test null, whitespace, delimiter/control-character, very long, negative, and integer-boundary inputs and verify deterministic rejection or safe normalization.
+
+[recommendation; task; safe persistence] Treat the constructor Path as a file target, not as permission to follow arbitrary derived paths; use a bounded, documented record format with explicit encoding, strict parsing, validation, and a size/entry-count cap. Write atomically via a temporary file in the same directory followed by a replace, and handle missing, unreadable, truncated, or corrupt stores without crashing the game.
+Task relevance: The board must persist across runs, and the store is a file whose contents can be tampered with or partially written.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Use malformed records, huge files, permission failures, interrupted writes, and a missing parent directory; verify bounded resource use, no path traversal from names, and graceful fallback.
+
+[recommendation; reasoned; untrusted stored data and API exposure] Return defensive, read-only or copied lists from getPlayersNames/getPlayersScores/getSurvivalTimes, and maintain aligned records internally so a caller cannot mutate ordering or mismatch names, scores, and times. Sort records by score descending with a deterministic tie rule.
+Task relevance: The public getters expose persisted player data and the task requires descending score order.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Mutate returned lists, reload after ties, and verify records remain aligned and scores are nonincreasing.
+
+[recommendation; task; resource limits] Bound the number of retained entries, name length, decoded line/record length, and total store bytes before allocation or sorting; avoid unbounded accumulation from repeated runs or hostile files.
+Task relevance: Persistence and decoding are file-input operations and the board is displayed in a menu.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Feed oversized files, oversized names, and many records; verify bounded memory/CPU and a defined policy for overflow.
+
+[recommendation; task; time display] Keep survivalTime as milliseconds in the public/storage model and convert only at presentation to mm:ss using nonnegative long arithmetic, with seconds/minutes calculated from milliseconds rather than locale-dependent parsing or integer overflow.
+Task relevance: The task explicitly defines milliseconds and requires mm:ss display.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Render zero, subsecond, minute-boundary, long-duration, and invalid values and verify exact mm:ss behavior.
+
+[recommendation; task; failure behavior and UI] A persistence failure must not terminate or corrupt the active run; define whether the in-memory entry remains visible and surface a safe non-sensitive error. Escape/safely render names in the dedicated panel, and ensure panel navigation cannot trigger repeated writes.
+Task relevance: The feature integrates file I/O and untrusted names into the menu UI.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Simulate I/O exceptions and names containing markup/control characters, then navigate/repaint repeatedly and verify no crash, injection, or duplicate persistence.
+
+[unknown; observed; identity source] The inspected searches found no player-name API or existing name persistence; the source of the required playerName, its allowed character set, and whether one- or two-player runs produce one or multiple entries remain unverified.
+Task relevance: recordRunEnd must record the player's name, but integration cannot safely assume an existing identity source.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect the complete player/options/input flow before implementation and define an explicit fallback and validation policy.
+
+[unknown; observed; terminal lifecycle] The inspected excerpts do not identify the complete clear/loss callback or whether level reset can occur before a final score mutation; exact insertion points and duplicate-event behavior remain unverified.
+Task relevance: Correctly recording once at run end is central to the feature.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect all callers of setAnalysis, setBWin, level replacement/reset, and game-over transitions before wiring recordRunEnd.
+
+Uncertainty and limits:
+- Only indexed Java source excerpts were inspected; no implementation was made and no tests were run.
+- Searches for score/time/name APIs were partial and several searches returned no matches; those misses do not prove absence.
+- Binary archive contents other than individually indexed embedded source files and omitted unsupported data files were not inspected.
+- The task does not specify entry-count limits, name policy, file format, tie ordering, or recovery semantics; these require an explicit implementation decision.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
