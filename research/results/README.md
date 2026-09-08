@@ -36,3 +36,9 @@ Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
 because it is unfavorable. Development iterations and subsequent fresh replication
 must be reported separately.
+# Environment correction
+
+The [I01 paired remeasurement](../iterations/i01-home-isolated/README.md) retains
+all 28 evaluated submissions under isolated JVM homes. Its complete source and
+evaluation evidence are in `i01-home-isolated/evidence.tar.gz`, with a verified
+second copy in `../asteria-research-backups/i01-home-isolated` outside this repo.
