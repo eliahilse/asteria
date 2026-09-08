@@ -8,13 +8,13 @@ shows the exact generated prompt inserts. See the [iteration index](research/ite
 The [research readout](research/iterations/REVIEW.md) connects the context definitions,
 experimental units, per-check findings and interpretation limits.
 
-Latest completed evidence: [I06 findings](research/iterations/i06-operational-guards/findings.md),
-[qualified per-test results](research/iterations/i06-operational-guards/qualified-analysis.md)
-and [XLSX](research/iterations/i06-operational-guards/qualified-results.xlsx).
-The local table is at `http://127.0.0.1:5173/?iteration=i06-operational-guards`.
-I06 reached 76/80 full-functional trajectories. Operational context improved the
-oversized-line fixture, with other policy failures and missing measurements retained.
-I07 repeats the operational acquisition; I08 checks evaluator repeatability.
+Latest completed evidence: [I07 findings](research/iterations/i07-operational-replication/findings.md),
+[two-round comparison](research/iterations/i07-operational-replication/replication-analysis.md)
+and [XLSX](research/iterations/i07-operational-replication/qualified-results.xlsx).
+The local table is at `http://127.0.0.1:5173/?iteration=i07-operational-replication`.
+I07 reached 74/80 full-functional trajectories. Lower total issue counts recur,
+but the earlier perfect operational resource result did not fully replicate.
+I08 checks evaluator repeatability on unchanged artifacts.
 
 ```sh
 cd workbench
