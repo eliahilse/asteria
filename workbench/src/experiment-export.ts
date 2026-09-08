@@ -3,6 +3,7 @@ import type { MatrixData } from './experiment';
 import { textChunks } from './export';
 import { matrixComparisons } from './experiment-analysis';
 import { combinationRows, statColumns } from './combination-stats';
+import { wilson } from './analysis';
 type Row = Record<string, string | number | boolean | null | undefined>;
 export function experimentWorkbook(data: MatrixData) {
   const wb = new ExcelJS.Workbook(), overflow: Row[] = [];
@@ -20,7 +21,11 @@ export function experimentWorkbook(data: MatrixData) {
   sheet('Selection', data.studies.flatMap(s => Object.entries(s.summary.ranking ?? {}).flatMap(([method, conditions]) => conditions.map((condition, i) => ({ study: s.plan.id, method, rank: i + 1, condition, selected: s.summary.selected.includes(condition) })))), ['study', 'method', 'rank', 'condition', 'selected']);
   sheet('Context acquisitions', data.studies.flatMap(s => (s.plan.acquisitions ?? []).map(a => ({ study: s.plan.id, id: a.id, method: a.method, strategy: a.strategy, status: a.status, settings_verified: a.settingsVerified, items: a.items, citations_matched: a.citationChecks.matched, citations_total: a.citationChecks.total, uncited_items: a.citationChecks.uncitedItems, ...a.citationChecks.itemsByKind, snapshot_sha256: a.snapshotFingerprint, task_sha256: a.taskSha256 }))), ['study', 'id', 'method', 'strategy', 'items', 'citations_matched', 'citations_total', 'uncited_items']);
   sheet('Source hashes', data.studies.flatMap(s => Object.entries(s.plan.sourceHashes ?? {}).map(([path, sha256]) => ({ study: s.plan.id, path, sha256 }))), ['study', 'path', 'sha256']);
-  sheet('Test rates', data.studies.flatMap(s => s.summary.conditions.flatMap(c => c.checks.map(t => ({ study: s.plan.id, condition: c.id, ...t })))));
+  sheet('Functional intervals', data.studies.flatMap(s => s.summary.conditions.flatMap(c => [
+    { metric: 'compiled', passed: c.compiled }, { metric: 'within_budget_full', passed: c.fullFunctional },
+    ...(c.firstFullFunctional === undefined ? [] : [{ metric: 'first_submission_full', passed: c.firstFullFunctional }]),
+  ].map(m => { const ci = s.summary.complete ? wilson(m.passed, c.attempts) : null; return { study: s.plan.id, condition: c.id, metric: m.metric, passed: m.passed, trajectories: c.attempts, rate: c.attempts ? m.passed / c.attempts : null, wilson95_low: ci?.[0], wilson95_high: ci?.[1], scope: 'Conditional on fixed task and acquired context; marginal interval without multiplicity adjustment. No confirmatory significance claim.' }; }))));
+  sheet('Test rates', data.studies.flatMap(s => s.summary.conditions.flatMap(c => c.checks.map(t => { const ci = s.summary.complete ? wilson(t.pass, t.executed) : null; return { study: s.plan.id, condition: c.id, ...t, wilson95_low: ci?.[0], wilson95_high: ci?.[1] }; }))));
   sheet('Security comparisons', data.studies.flatMap(s => matrixComparisons(s).map(c => ({ study: s.plan.id, parent_condition: c.parentCondition, control: c.control, treatment: c.treatment, security_strategy: c.securityStrategy, test: c.testId,
     control_pass: c.controlCounts.pass, control_tested: c.controlCounts.executed, control_attempts: c.controlCounts.attempts,
     treatment_pass: c.treatmentCounts.pass, treatment_tested: c.treatmentCounts.executed, treatment_attempts: c.treatmentCounts.attempts,
