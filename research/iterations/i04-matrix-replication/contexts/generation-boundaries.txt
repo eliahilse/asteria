@@ -1,0 +1,78 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+The indexed snapshot is a Java game packaged as an embedded-source JAR. Relevant state is held by ApoMarioLevel and its players; ApoMarioGame renders the active HUD; ApoMarioMenu/ApoMarioModelMenu provide the menu-panel architecture. The feature needs a new dedicated panel, integration through ApoMarioPanel/menu navigation, and run-end hooks for both clearing and losing. The exact player-name source, complete game-over/level-clear transition path, and existing menu button/function layout remain unresolved.
+
+[recommendation; task; highscore ordering and run data] Implement each completed run as one coherent record containing actual score, player name, and survival duration in milliseconds; expose records sorted by descending score.
+Task relevance: Core feature contract; avoid deriving score or duration from display strings or stale menu state.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: At the run-end boundary, capture values from authoritative level/player objects once, validate them, then insert and sort records using a comparator.
+
+[recommendation; task; time representation] Store survivalTime in milliseconds and convert only at presentation to mm:ss, using bounded arithmetic and explicit handling for nonnegative values.
+Task relevance: Prevents unit confusion in the public API and board display.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Keep integer milliseconds in storage/API; format total seconds into minutes and two-digit seconds without overflow.
+
+[recommendation; reasoned; persistent store parsing] Treat the highscore file as untrusted persisted input: use a versioned bounded record format; cap record count, name length, line/field sizes, and numeric ranges; ignore malformed records without aborting the game; write atomically where practical.
+Task relevance: The feature persists across runs and reads bytes from a file path supplied to the public constructor.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Resolve the supplied Path as a file, avoid interpreting names as paths or code, use bounded parsing and defensive getter snapshots, and replace the target file via a temporary file plus move if supported.
+
+[recommendation; reasoned; name handling] Normalize and bound player names before persistence and rendering, preserve them as data, and render them with graphics APIs rather than concatenating them into commands or file paths.
+Task relevance: Player names cross UI, persistence, and rendering boundaries.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Define behavior for null, blank, control-character, and overlong names; remove or encode line delimiters before serialization; keep rendering within panel bounds.
+
+[change_risk; observed; authoritative score source] ApoMarioLevel awards points directly to ApoMarioPlayer instances during analysis, including finish/time/difficulty/width points and loss-related points; the actual run score therefore appears to be player.getPoints() at the run-end boundary, not a menu or HUD value.
+Task relevance: recordRunEnd must capture the real score after all awards have been applied.
+Inspected source E0081: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1150-1245
+Inspected source E0086: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:170-170
+Inspected source E0087: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:735-735
+Suggested verification: Trace every path that ends a run and invoke recording only after scoring updates; choose the human player rather than AI/replay participants.
+
+[change_risk; observed; level timing source and unit mismatch] ApoMarioLevel exposes getTime(), getStartTime(), and getPassedTime(); its time fields are int values initialized from level durations, and the active HUD displays getTime() as a countdown-like value. The excerpts do not establish that any of these values are elapsed milliseconds suitable for the required survivalTime contract.
+Task relevance: Survival time must be actual elapsed milliseconds, not remaining level time or an inferred display value.
+Inspected source E0036: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:84-84
+Inspected source E0037: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:124-124
+Inspected source E0039: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:308-308
+Inspected source E0040: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:309-309
+Inspected source E0045: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:393-393
+Inspected source E0047: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:397-397
+Inspected source E0066: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1172-1172
+Inspected source E0067: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Inspected source E0083: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:300-390
+Suggested verification: Trace the update method that decrements level time and identify whether delta is milliseconds; add an authoritative elapsed-run field/accessor if necessary, initialized at run start and finalized once at win/loss.
+
+[change_risk; observed; run-end integration] ApoMarioGame handles keyboard escape by returning to the menu, and ApoMarioPanel exposes setMenu(); the inspected excerpts do not show the level-clear/loss transition or an existing run-end callback. Recording only on menu entry would risk recording abandoned runs or recording after state reset.
+Task relevance: The feature requires recording specifically when clearing a level or losing.
+Inspected source E0082: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:1-120
+Inspected source E0088: ApoMario/ApoMario.jar!/apoMario/game/ApoMarioPanel.java:130-130
+Inspected source E0089: ApoMario/ApoMario.jar!/apoMario/game/ApoMarioPanel.java:214-214
+Inspected source E0090: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:91-91
+Suggested verification: Locate both win and loss state transitions, invoke a once-per-run record hook before level replacement/reset, and guard against duplicate callbacks during repeated update frames.
+
+[change_risk; observed; menu architecture] ApoMarioMenu extends ApoMarioModelMenu, whose init builds background, animation, runner, and search state; ApoMarioMenu defines menu action constants and initializes a generated background. A dedicated highscore panel will need explicit navigation/action integration rather than being assumed to exist in the current menu.
+Task relevance: The board must be displayed in a dedicated panel/view in the menu.
+Inspected source E0084: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioMenu.java:1-140
+Inspected source E0085: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioModelMenu.java:1-120
+Suggested verification: Add a distinct menu action and panel lifecycle, preserve existing escape/back behavior, and handle empty and bounded lists.
+
+[unknown; observed; player-name source] The inspected excerpts do not identify where the human player's name is stored or edited; no evidence establishes an existing name field, option, or text-entry flow.
+Task relevance: recordRunEnd(level) must obtain the required player name without inventing a disconnected source.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Search player/options/text-field and game initialization code for name state; if absent, introduce one shared validated name setting and expose it through existing options/UI flow.
+
+[unknown; observed; persistence location and lifecycle] The task supplies a Path to ApoMarioHighscore, but the inspected excerpts do not establish the application-selected store path, ownership/lifecycle of the highscore object, or whether persistAcrossRuns is intended to load, save, or both.
+Task relevance: Incorrect lifecycle or path selection can make persistence ineffective or overwrite unrelated files.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Trace ApoMarioPanel construction and application data paths; define constructor load behavior and make persistAcrossRuns deterministic, failure-tolerant, and idempotent.
+
+[unknown; observed; concurrency] The inspected excerpts do not establish whether game updates, rendering, menu events, and persistence execute on one thread or multiple threads.
+Task relevance: Unsynchronized mutable highscore lists could expose partially updated records or concurrent modification during rendering.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Trace the framework thread/event model; synchronize mutations and snapshots or publish immutable lists to renderers.
+
+Uncertainty and limits:
+- Only indexed embedded Java source excerpts were inspected; no implementation was made.
+- Several searches returned no matches, which does not establish absence because the snapshot/search indexing may omit relevant syntax or paths.
+- The complete ApoMarioPanel transition logic, ApoMarioPlayer accessors/name state, update timing code, and menu button/function dispatch were not fully inspected.
+- The binary archive itself and unsupported level/replay data files were not inspected as raw content.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

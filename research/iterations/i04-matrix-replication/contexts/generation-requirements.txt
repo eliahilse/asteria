@@ -1,0 +1,60 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Security context for integrating persistent highscores. Existing excerpts show mutable player scores, game-panel score rendering, finish-related score adjustments in ApoMarioLevel, elapsed-time APIs, and level player-list access. The exact player-name source, authoritative win/loss transition, and existing highscore persistence/view integration remain unverified. Proposed safeguards below are design recommendations, not existing implementation facts.
+
+[recommendation; task; run-end authenticity] At the single authoritative run/level completion transition (both clearing and losing), record the actual score, player name, and elapsed milliseconds from live ApoMarioLevel state; do not accept UI-supplied score/time. Make the hook idempotent so repeated terminal updates cannot create duplicate records.
+Task relevance: The feature explicitly requires recordRunEnd(level) to capture the finished run's actual values.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Exercise both win and loss paths, including repeated end-state updates, and verify exactly one record with final score and elapsed time.
+
+[change_risk; observed; score source and timing] Score is mutable on the player and can be incremented during finish processing, while the game displays player.getPoints(); recording before final finish scoring would persist an incorrect value.
+Task relevance: The integration point must be after terminal score adjustments but before the run state is discarded.
+Inspected source E0006: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:170-170
+Inspected source E0008: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:411-411
+Inspected source E0009: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1193-1193
+Inspected source E0011: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1196-1196
+Inspected source E0014: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1200-1200
+Inspected source E0025: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1224-1224
+Suggested verification: Verify a completed level's stored score equals the post-finish player score, including finish bonuses and time/difficulty/width contributions.
+
+[recommendation; task; input validation] At storeRun, reject or safely normalize null, blank, or overlong player names and define bounds for score and nonnegative survival milliseconds. Treat names as data rather than executable markup or format strings.
+Task relevance: Names are user-controlled input that will be persisted and displayed.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Test null, whitespace, control characters, delimiters, long Unicode names, negative/extreme integers, and verify safe display and deterministic rejection or normalization.
+
+[recommendation; task; ordering and record integrity] Represent each score entry as one aligned record and sort records numerically by score descending; do not sort parallel lists independently or compare scores lexicographically.
+Task relevance: The board must display names and survival times while ranking by descending points.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Insert unsorted records, including ties and boundary values, then assert descending scores and preserved name/score/time associations.
+
+[recommendation; task; safe persistence] Treat the supplied Path store as untrusted and potentially unavailable: use a bounded documented format, strictly validate decoded counts/fields/bytes, tolerate malformed records without crashing the game, and write atomically through a temporary file and replacement. Do not derive paths from player names.
+Task relevance: The board must persist across runs and the constructor receives a file path.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Load missing, empty, truncated, oversized, malformed, and hostile-content files; simulate interrupted or failed writes and verify graceful recovery without partial corruption.
+
+[recommendation; reasoned; resource bounds] Enforce maximum retained entries, store size, name length, and decoded numeric ranges before allocating or rendering; avoid unbounded parsing and repeated persistence on every frame.
+Task relevance: Persistent data may be corrupted or grow unexpectedly, and the game loop must remain responsive.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Use oversized files and many records, verifying bounded memory/time and defined failure behavior.
+
+[recommendation; task; API exposure] Return immutable snapshots or defensive copies from the three required list getters, preserving equal lengths and record alignment so the panel cannot mutate ranking state.
+Task relevance: The public getter lists are consumed by the dedicated board view and exposed to callers.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Mutate returned lists and confirm internal data/order remain unchanged; verify all lists always have equal lengths.
+
+[recommendation; task; time representation] Keep survivalTime in milliseconds internally and in persistence; format only at rendering as mm:ss with two-digit seconds and nonnegative arithmetic. Define behavior for durations over 59 minutes rather than wrapping unexpectedly.
+Task relevance: The task explicitly defines milliseconds for the API and mm:ss for display.
+Inspected source E0001: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:329-329
+Inspected source E0003: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:397-397
+Inspected source E0004: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Suggested verification: Test zero, sub-second, 59:59, 60:00, and multi-hour durations; assert persistence remains milliseconds while display uses the required format.
+
+[unknown; observed; identity and lifecycle integration] The inspected excerpts do not identify the authoritative player-name field/source, exact win/loss terminal transition, or existing menu navigation/registration mechanism for a highscore panel.
+Task relevance: These details determine where recordRunEnd integrates without recording AI/replay players or missing loss paths.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect constructors, terminal-state methods, player fields/accessors, menu routing, and game initialization before implementation.
+
+Uncertainty and limits:
+- Only indexed Java excerpts returned by repository search were inspected; search misses do not prove absence.
+- No implementation, tests, exploitability, or runtime behavior was executed or established.
+- The existing excerpts do not reveal the persistence format, player-name API, or exact terminal lifecycle.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

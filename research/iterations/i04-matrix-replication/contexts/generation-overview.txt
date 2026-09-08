@@ -1,0 +1,73 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Task-relevant security context for ApoMario highscore integration: the game already maintains mutable per-player points and a level countdown, and computes final score adjustments in the level completion path. A highscore feature will cross the gameplay/menu boundary and introduce file persistence of player-controlled names and run metrics. The inspected snapshot does not show an existing highscore implementation or establish a complete run-end dispatch path, so those integration details remain unverified.
+
+[change_risk; observed; score authenticity and run-end timing] ApoMarioLevel.setAnalysis(boolean) is the observed completion/analysis transition and mutates player points for wins and losses; recording before these adjustments would not capture the finished run's actual score.
+Task relevance: recordRunEnd must use the final score at both level clear and loss paths.
+Inspected source E0081: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1160-1235
+Inspected source E0087: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1193-1193
+Inspected source E0101: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1217-1217
+Inspected source E0103: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1224-1224
+Suggested verification: Trace every gameplay transition that invokes the level completion logic and ensure exactly one highscore record is made after all score mutations.
+
+[change_risk; observed; time semantics] ApoMarioLevel exposes a mutable remaining-time value via getTime(), initializes it from level data, and exposes getPassedTime() as random-level time minus remaining time; the game HUD renders getTime() as its displayed countdown.
+Task relevance: The required survival time is elapsed milliseconds, so the implementation must select an elapsed-time source rather than accidentally persisting the remaining countdown.
+Inspected source E0036: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:84-84
+Inspected source E0039: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:308-308
+Inspected source E0040: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:309-309
+Inspected source E0047: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:397-397
+Inspected source E0048: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:398-398
+Inspected source E0066: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1172-1172
+Inspected source E0067: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Inspected source E0034: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:329-329
+Suggested verification: Confirm the value passed to storeRun is elapsed milliseconds for both normal and random levels, and format only at presentation as mm:ss.
+
+[change_risk; observed; multi-player identity and score selection] A level can contain multiple ApoMarioPlayer objects, and the game distinguishes one-player mode from other/replay cases; score updates can apply separately to player one and player two.
+Task relevance: recordRunEnd needs a defined player-selection/name policy and must not silently record the wrong participant or duplicate a two-player run.
+Inspected source E0049: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:423-423
+Inspected source E0050: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:429-429
+Inspected source E0051: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:431-431
+Inspected source E0082: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:300-380
+Inspected source E0081: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1160-1235
+Suggested verification: Trace the normal, two-player, AI, and replay end states and verify which player name and final score are authoritative for a single highscore entry.
+
+[change_risk; task; persistent local storage] The required constructor accepts a Path representing a file and the feature must persist highscores across runs.
+Task relevance: File parsing, writing, malformed-content handling, permissions, partial writes, and concurrent access become part of the trust boundary.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Define a stable record format and failure behavior, treat the supplied store path as the persistence boundary, and avoid allowing stored names or malformed records to corrupt the in-memory ordering or UI.
+
+[change_risk; task; player-name input and display] The feature persists and displays player-controlled names, but the inspected excerpts do not establish an existing name source or sanitization/display policy.
+Task relevance: Names cross input, storage, and rendering boundaries and may contain delimiters, control characters, or unusually long text.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Trace the existing player-name source and constrain/encode names consistently for persistence and menu rendering without treating stored content as markup or control data.
+
+[recommendation; task; ordering invariant] Preserve aligned names, scores, and survival times in score-descending order across insertion and reload.
+Task relevance: This is an explicit feature requirement and applies to all three public getters.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Check insertion, reload, ties, invalid or extreme values, and getter mutability/aliasing against the ordering invariant.
+
+[recommendation; task; single finalization] Make terminal recording idempotent so a run produces one persisted record whether it clears a level or loses.
+Task relevance: Repeated update ticks, transitions, retries, and menu navigation must not duplicate a finished run.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Exercise both terminal outcomes and verify repeated completion callbacks do not create duplicate entries.
+
+[unknown; reasoned; existing highscore surface] No highscore class or explicit highscore menu panel was observed in the inspected excerpts; the search miss is not proof that no such code exists elsewhere in the indexed snapshot.
+Task relevance: The later implementation must account for any uninspected panel registration, button graph, and lifecycle code.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Search the complete indexed repository for panel creation, menu node registration, and any existing persistence conventions before coding.
+
+[unknown; reasoned; run-end integration entry points] The exact callers of ApoMarioLevel.setAnalysis and the game's panel transition methods were not fully inspected, so the authoritative place to invoke recordRunEnd remains unverified.
+Task relevance: Incorrect placement could miss losses, record pre-final scores, or record multiple times.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect all references to setAnalysis, setBWin, setAnalysis(), setEditor(), and game-panel transitions.
+
+[unknown; reasoned; cryptography and remote calls] No remote network calls or cryptographic operations are relevant in the inspected evidence; the requested feature appears local-file based, but the complete repository was not exhaustively searched for unrelated integrations.
+Task relevance: The highscore design should not assume a server trust model unless broader integration reveals one.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: If persistence is later synchronized remotely, reassess authenticity, transport, and replay/tampering boundaries separately.
+
+Uncertainty and limits:
+- The repository is an immutable indexed snapshot with Java sources embedded in a JAR; omitted binary and unsupported files were not inspectable as source evidence.
+- Several requested ranges returned tool validation errors, so only the successfully returned excerpts support observed claims.
+- The supplied search for score initially returned no matches because the literal query did not match the source vocabulary; later evidence confirms points-based scoring.
+- No implementation was performed and no tests or exploitability assessment were run.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
