@@ -24,6 +24,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i07-prepared](i07-prepared/manifest.json) | Two fresh operational acquisitions and the frozen replication schedule before any I07 code call; 63,871 files in 35 parts, both copies verified | [Protocol](../iterations/i07-operational-replication/README.md), [frozen plan](../iterations/i07-operational-replication/plan.json) |
 | [i07-complete](i07-complete/manifest.json) | All 80 trajectories and 203 submissions, the 78-artifact format audit, qualified comparison and all earlier evidence; 82,972 files in 44 parts, both copies verified | [Findings](../iterations/i07-operational-replication/findings.md), [two-round comparison](../iterations/i07-operational-replication/replication-analysis.md) |
 | [i08-prepared](i08-prepared/manifest.json) | The 32 fixed source artifacts, 64-repeat plan and all earlier evidence before repeatability execution; 82,980 files in 44 parts, both copies verified | [Protocol](../iterations/i08-evaluator-repeatability/README.md), [frozen selection](../iterations/i08-evaluator-repeatability/plan.json) |
+| [i08-complete](i08-complete/manifest.json) | All 64 repeat measurements, qualified stability results, source reviews and all earlier evidence; 91,300 files in 46 parts, both copies verified | [Repeatability findings](../iterations/i08-evaluator-repeatability/findings.md), [research readout](../iterations/REVIEW.md) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -77,10 +78,26 @@ files covering all iteration reports, exports, figures and exact inserts, with
 has its own verified external copy. Sealed trajectories were also copied during
 collection at checkpoints of 28 and 57 finished trajectories.
 
-The latest directly readable external copy is `i07-complete-review/`: 236 verified
+The earlier directly readable external copy is `i07-complete-review/`: 236 verified
 files, with `START-HERE.md` linking the research readout, qualified workbook and
 two-round comparison. The complete archive is independently verified outside the
 repo. I07 also has sealed-trajectory checkpoints at 21, 51 and 70 finished runs.
+
+The latest directly readable external copy is `i08-complete-review/`: 249 verified
+files, including the full research readout, I07 workbook, I06/I07 comparison,
+all source reviews and the completed repeatability validation. Open its
+`START-HERE.md`. The independent complete archive contains all raw repeat reports,
+sources, compiled artifacts and probe evidence; private provider details remain
+excluded.
+
+The final `i08-complete` archive was restored in clean checkout `16d17d1`.
+All five qualified studies (360 trajectories and 1,944 per-test rows) reproduced
+their saved datasets and scientific values. Only the top-level producer-version
+hash is normalized for older-round comparisons; the original/current hashes are
+recorded and every other field must match. The full 64-repeat I08 report matched
+without normalization, including verification of saved source and class bytes.
+No model calls or Java executions were needed. See the
+[recovery proof](i08-complete/restore-proof.json), also copied outside the repo.
 
 A fresh checkout can open the latest committed table and context inserts without
 restoring `.local`. Restoration is needed to inspect the complete raw exchanges,
