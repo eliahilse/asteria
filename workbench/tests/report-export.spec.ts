@@ -17,6 +17,9 @@ test('downloads the report layout separately from the detailed XLSX', async ({ p
   expect(workbook.getWorksheet('Compile Rate')).toBeDefined();
   expect(workbook.getWorksheet('Per-Test Breakdown')).toBeDefined();
   expect(workbook.getWorksheet('Raw Data')!.rowCount).toBe(81);
+  expect(workbook.getWorksheet('Security Issues')!.rowCount).toBe(17);
+  expect(workbook.getWorksheet('Security Checks')!.rowCount).toBe(177);
+  expect(workbook.getWorksheet('Provenance')).toBeDefined();
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
 });

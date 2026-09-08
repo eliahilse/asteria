@@ -9,7 +9,7 @@ it('recreates the report sheets with numeric values, context columns, and blank 
   const loaded = new ExcelJS.Workbook();
   await loaded.xlsx.load(await reportWorkbook(data).xlsx.writeBuffer());
   expect(loaded.worksheets.map(s => s.name)).toEqual(['Overview', 'Compile Rate', 'Pass Rate', 'Reuse vs Generation', 'Compile Failure Analysis',
-    'Test Failure Analysis', 'Per-Test Breakdown', 'Tier Breakdown', 'Context Effect', 'Delivery & Errors', 'Raw Data']);
+    'Test Failure Analysis', 'Per-Test Breakdown', 'Tier Breakdown', 'Context Effect', 'Delivery & Errors', 'Raw Data', 'Security Issues', 'Security Checks', 'Provenance']);
   const compile = loaded.getWorksheet('Compile Rate')!;
   expect(compile.getRow(1).values).toEqual([undefined, 'Study', 'Task', 'Method', 'Security strategy', 'None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B', 'Overall']);
   const generation = compile.getRows(2, compile.rowCount - 1)!.find(r => r.getCell(3).value === 'Generation' && r.getCell(4).value === 'none')!;
@@ -24,6 +24,19 @@ it('recreates the report sheets with numeric values, context columns, and blank 
   expect(failed.getCell(9).value).toBeNull();
   expect(failed.getCell(18).value).toBeNull();
   expect(failed.getCell(19).value).toBe('game compile-fail');
+  const issues = loaded.getWorksheet('Security Issues')!;
+  const requirements = issues.getRows(2, issues.rowCount - 1)!.find(r => r.getCell(6).value === 'reuse_sb__requirements')!;
+  expect(requirements.getCell(8).value).toBe(0);
+  expect(requirements.getCell(9).value).toBe(45);
+  expect(requirements.getCell(10).value).toBe(5);
+  expect(requirements.getCell(11).value).toBe(50);
+  expect(requirements.getCell(12).value).toBeNull();
+  expect(requirements.getCell(13).value).toBe(-33);
+  expect(requirements.getCell(14).value).toBe(-27);
+  expect(loaded.getWorksheet('Security Checks')!.rowCount).toBe(177);
+  const provenance = loaded.getWorksheet('Provenance')!;
+  const qualification = provenance.getRows(2, provenance.rowCount - 1)!.find(r => r.getCell(2).value === 'Changed measurements')!;
+  expect(qualification.getCell(3).value).toBe(16);
 });
 
 it('leaves planned-but-unobserved report rates blank', async () => {
