@@ -1,5 +1,17 @@
 # I03 findings for review
 
+**Measurement update:** the table and counts below record the original evaluation.
+Use the [qualified analysis](qualified-analysis.md), [qualified workbook](qualified-results.xlsx)
+and [qualified figures](figures-qualified/quality-and-security.pdf) for current reporting.
+The format audit makes three large-record outcomes unknown: two passes and one
+failure. Requirements therefore have 12/92 failed/evaluated issue checks, with
+eight unresolved; boundaries have 18/97, with three unresolved. Functional outcomes
+are unchanged. Both strategies still reduce aggregate failures against both fresh
+controls under every assignment of unresolved outcomes. The minimum reductions
+are 28 and 23 for requirements, and 23 and 27 for boundaries, respectively.
+The original memory-exhaustion observation remains evidence about those exact
+bytes, even where valid-record amplification was not demonstrated.
+
 Task-specific requirements and trust-boundary context reduced failed security
 checks in both tested paper-context cells while preserving within-budget
 functional success. The effect was strongest on explicit input policies. This is

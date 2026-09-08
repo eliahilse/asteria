@@ -72,22 +72,24 @@ def render(identifier, qualified=False):
              f"{identifier}{' (qualified)' if qualified else ''}; N={n_label} trajectories per combination; at most {budget} submissions each. Fixed task and acquired contexts.", fontsize=9, va='bottom')
     save(fig, 'quality-and-security')
 
-    fig, axes = plt.subplots(1, len(parents), figsize=(5 * len(parents) + 2, 6.8), squeeze=False)
+    columns = min(2, len(parents)); rows = (len(parents) + columns - 1) // columns
+    fig, axes = plt.subplots(rows, columns, figsize=(12, 4.8 * rows + 2), squeeze=False)
     cmap = plt.get_cmap('RdBu_r').copy(); cmap.set_bad('#e8e8e8')
     for column, parent in enumerate(parents):
         comparisons = [next(c for c in data['comparisons'] if c['parent'] == parent and c['securityStrategy'] == strategy) for strategy in list(LABELS)[1:]]
         values = np.array([[np.nan if c['tests'][row]['failureRateDelta'] is None else 100 * c['tests'][row]['failureRateDelta'] for c in comparisons] for row in range(len(ISSUES))])
-        ax = axes[0, column]; shown = ax.imshow(values, cmap=cmap, vmin=-100, vmax=100, aspect='auto')
+        ax = axes.flat[column]; shown = ax.imshow(values, cmap=cmap, vmin=-100, vmax=100, aspect='auto')
         ax.set_title(parent_label(parent), fontsize=11)
         ax.set_xticks(range(3), ['Overview', 'Requirements', 'Boundaries'])
-        ax.set_yticks(range(len(ISSUES)), CHECK_LABELS if column == 0 else [])
+        ax.set_yticks(range(len(ISSUES)), CHECK_LABELS if column % columns == 0 else [])
         for row in range(len(ISSUES)):
             for x in range(3):
                 value = values[row, x]
                 ax.text(x, row, '?' if np.isnan(value) else f'{value:+.0f}' if value != 0 else '0', ha='center', va='center', color='white' if not np.isnan(value) and abs(value) >= 70 else '#222222', fontsize=10)
         ax.tick_params(length=0)
-    fig.subplots_adjust(left=.19, right=.96, top=.92, bottom=.30, wspace=.1)
-    color_axis = fig.add_axes([.28, .19, .5, .025]); fig.colorbar(shown, cax=color_axis, orientation='horizontal', ticks=[-100, -50, 0, 50, 100]).set_label('Failure-rate difference from fresh control (percentage points)')
+    for ax in list(axes.flat)[len(parents):]: ax.set_visible(False)
+    fig.subplots_adjust(left=.19, right=.96, top=.94, bottom=.26 if rows == 1 else .18, wspace=.1, hspace=.28)
+    color_axis = fig.add_axes([.28, .16 if rows == 1 else .12, .5, .02]); fig.colorbar(shown, cax=color_axis, orientation='horizontal', ticks=[-100, -50, 0, 50, 100]).set_label('Failure-rate difference from fresh control (percentage points)')
     fig.text(.04, .025, 'Negative = fewer failed checks. ? = at least one unresolved observation in either arm; no directional estimate.\n'
              f'Each check is measured across N={n_label} trajectories per arm. Checks within an artifact are correlated; no significance claim.\n'
              'These contracts and finite fixtures do not enumerate all vulnerabilities.', fontsize=9, va='bottom')
