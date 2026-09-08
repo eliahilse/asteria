@@ -22,6 +22,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i06-prepared](i06-prepared/manifest.json) | Two completed operation-context acquisitions, the frozen 80-trajectory comparison and all earlier evidence; 43,506 files in 26 parts, both copies verified | [Protocol](../iterations/i06-operational-guards/README.md), [frozen plan](../iterations/i06-operational-guards/plan.json) |
 | [i06-complete](i06-complete/manifest.json) | All 80 trajectories and 190 submissions, the format audit, qualified exports and earlier evidence; 63,836 files in 35 parts, both copies verified | [Findings](../iterations/i06-operational-guards/findings.md), [workbook](../iterations/i06-operational-guards/qualified-results.xlsx) |
 | [i07-prepared](i07-prepared/manifest.json) | Two fresh operational acquisitions and the frozen replication schedule before any I07 code call; 63,871 files in 35 parts, both copies verified | [Protocol](../iterations/i07-operational-replication/README.md), [frozen plan](../iterations/i07-operational-replication/plan.json) |
+| [i07-complete](i07-complete/manifest.json) | All 80 trajectories and 203 submissions, the 78-artifact format audit, qualified comparison and all earlier evidence; 82,972 files in 44 parts, both copies verified | [Findings](../iterations/i07-operational-replication/findings.md), [two-round comparison](../iterations/i07-operational-replication/replication-analysis.md) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -69,11 +70,16 @@ During I05, completed trajectory directories were additionally copied to
 `i05-budget-sensitivity-live/`, with checksummed checkpoints at 21, 50 and 73
 finished trajectories. Active outputs were excluded until sealed.
 
-The latest directly readable external copy is `i06-complete-review/`: 187 verified
+The earlier directly readable external copy is `i06-complete-review/`: 187 verified
 files covering all iteration reports, exports, figures and exact inserts, with
 `START-HERE.md` linking the completed I06 findings. The complete raw I06 archive
 has its own verified external copy. Sealed trajectories were also copied during
 collection at checkpoints of 28 and 57 finished trajectories.
+
+The latest directly readable external copy is `i07-complete-review/`: 236 verified
+files, with `START-HERE.md` linking the research readout, qualified workbook and
+two-round comparison. The complete archive is independently verified outside the
+repo. I07 also has sealed-trajectory checkpoints at 21, 51 and 70 finished runs.
 
 A fresh checkout can open the latest committed table and context inserts without
 restoring `.local`. Restoration is needed to inspect the complete raw exchanges,
