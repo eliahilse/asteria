@@ -6,12 +6,13 @@ shows the exact generated prompt inserts. See the [iteration index](research/ite
 [preserved evidence and restore instructions](research/results/README.md), and
 [local setup](workbench/README.md).
 
-Latest completed evidence: [I05 findings](research/iterations/i05-budget-sensitivity/findings.md),
-[qualified per-test results](research/iterations/i05-budget-sensitivity/qualified-analysis.md)
-and [XLSX](research/iterations/i05-budget-sensitivity/qualified-results.xlsx).
-The local table is at `http://127.0.0.1:5173/?iteration=i05-budget-sensitivity`.
-I05 tests a larger repair budget with all I04 context inserts held fixed; I06 adds
-explicit operational guards to newly acquired context.
+Latest completed evidence: [I06 findings](research/iterations/i06-operational-guards/findings.md),
+[qualified per-test results](research/iterations/i06-operational-guards/qualified-analysis.md)
+and [XLSX](research/iterations/i06-operational-guards/qualified-results.xlsx).
+The local table is at `http://127.0.0.1:5173/?iteration=i06-operational-guards`.
+I06 reached 76/80 full-functional trajectories. Operational context improved the
+oversized-line fixture, with other policy failures and missing measurements retained.
+I07 repeats the operational acquisition; I08 checks evaluator repeatability.
 
 ```sh
 cd workbench
