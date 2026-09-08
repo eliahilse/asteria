@@ -34,8 +34,12 @@ Local attempts are read automatically from `.local/experiments/<study-id>`.
 XLSX starts with the compact **Combinations** sheet; security counts, evaluated and
 unresolved checks, and count differences remain separate numeric fields for
 analysis. Per-test outcomes, context-type counts and other details remain in the
-supporting sheets. JSON retains the complete data. The public build contains plans
-only. See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
+supporting sheets. JSON retains the complete data. **Export report XLSX** creates
+the supplied report layout with context columns, per-test sheets and security
+coverage. Its test-pass percentages use evaluated checks on compiled runs;
+the table percentages use all N. See [report definitions and reproduction](../research/REPORT_EXPORT.md).
+The public build contains the committed completed results.
+See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
 
 **Context generation** shows the exact generated security prompt inserts for the
 active task and iteration, with a copy button. It contains no acquisition form,
