@@ -1,4 +1,4 @@
-"""Fresh I02 acquisitions with explicit prospective recommendations and stable references."""
+"""Fresh perspective acquisitions with explicit recommendations and stable references."""
 from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path

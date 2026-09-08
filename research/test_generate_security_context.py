@@ -26,6 +26,14 @@ class ContextV2Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Unknown evidence ID'):
             generator.validate_output({'summary': 'Claim', 'items': [item(refs=['E9999'])], 'limitations': []}, {})
 
+    def test_search_miss_remains_an_uncited_unknown_without_becoming_an_observed_property(self):
+        unknown = item('unknown', 'observed')
+        unknown['statement'] = 'The selected searches did not identify the name source.'
+        output, _ = generator.validate_output({'summary': 'Limited evidence', 'items': [unknown], 'limitations': []}, {})
+        self.assertEqual(output['items'][0]['citationStatus'], 'uncited_unknown')
+        self.assertEqual(output['items'][0]['evidence'], [])
+        self.assertIn('does not establish absence', generator.prompt_insert({'output': output}))
+
     def test_search_evidence_is_resolved_from_the_snapshot_and_full_exchange_is_retained(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary); repo = root / 'repo'; repo.mkdir()
