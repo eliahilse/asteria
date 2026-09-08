@@ -12,13 +12,25 @@ npm run dev -- --port 5173
 Open http://localhost:5173. Changes update live. No model connection is needed to
 inspect the test definitions, extracted contexts or frozen prompts.
 
-**Experiment** is the default tab. It shows the original Generation/Reuse ×
-S/F/B matrix with security cases as additional columns. Local attempts are read
-automatically from `.local/experiments/<study-id>`; no import environment variables
-are needed for this matrix. Open a cell for all 27 test contracts, separate outcome
-counts, raw diagnostics and exact submitted prompts. JSON/XLSX exports retain
-condition, attempt and test-level denominators. The public build contains plans
-only. See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
+**Experiment** is the default tab: one row per cohort × Generation/Reuse × S/F/B
+combination × security strategy, with every combination visible without selectors.
+Purple identifies security strategies and the separate counts of security content
+types (properties, existing risks, change risks, unknowns). Counts describe the
+injected context; they are not counts of confirmed vulnerabilities or independently
+varied treatments.
+
+Every statistic has its own numeric column: compilation and functional success,
+each security check's pass percentage, difference from its matching fresh control
+in percentage points, unresolved count, functional suite rates, citation coverage
+and token means. Pass percentages use all attempts; tested N is N minus unresolved.
+Missing rates are blank, not zero. Scroll horizontally to compare all eleven
+security checks; context labels remain visible on desktop.
+
+Local attempts are read automatically from `.local/experiments/<study-id>`.
+XLSX starts with a numeric **Combinations** sheet matching the table and retains
+test rates, individual observations and diagnostics in separate sheets. JSON
+retains the complete data. The public build contains plans only.
+See [the two-stage protocol](../research/MATRIX_EXPERIMENT.md).
 
 **Context generation** creates fresh Luna security context from a selected game
 repository and a feature task. Its local backend reads the gitignored adapter

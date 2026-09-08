@@ -1,85 +1,56 @@
 import { test, expect } from '@playwright/test';
 import ExcelJS from 'exceljs';
 
-test('paper matrix starts with 16 empty cells and exports missing rates as blanks', async ({ page }) => {
-  await page.route('**/api/experiment', async route => {
-    const response = await page.request.get('/data/matrix.json');
-    await route.fulfill({ json: await response.json() });
-  });
+test('every combination is visible without selectors and empty rates export as blanks', async ({ page }) => {
+  await page.route('**/api/experiment', async route => route.fulfill({ json: await (await page.request.get('/data/matrix.json')).json() }));
   await page.goto('/');
-  await expect(page.getByRole('navigation', { name: 'Explorer' }).getByRole('button')).toHaveCount(2);
-  await expect(page.locator('.experiment-matrix tbody tr')).toHaveCount(16);
-  await expect(page.locator('.experiment-matrix tbody button')).toHaveCount(16);
-  await expect(page.getByText('After selection', { exact: true })).toHaveCount(48);
-  await page.getByRole('button', { name: 'Generation None No security context', exact: true }).click();
-  await expect(page.locator('.matrix-checks tbody tr')).toHaveCount(16);
-  await expect(page.locator('.matrix-checks tbody tr').first()).toContainText('—');
-  await page.getByLabel('Test suite', { exact: true }).selectOption('security');
-  await expect(page.locator('.matrix-checks tbody tr')).toHaveCount(11);
+  await expect(page.locator('.combination-table tbody tr')).toHaveCount(16);
+  await expect(page.locator('select')).toHaveCount(0);
+  await expect(page.locator('.combination-table tbody button')).toHaveCount(0);
+  const row = page.locator('[data-condition="generation_none"]');
+  await expect(row.locator('[data-stat="attempts"]')).toHaveText('0');
+  await expect(row.locator('[data-stat="rejectsNegativeScore.pass"]')).toHaveText('—');
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export results XLSX', exact: true }).click();
+  await page.getByRole('button', { name: 'Export XLSX', exact: true }).click();
   const wb = new ExcelJS.Workbook(); await wb.xlsx.readFile((await (await download).path())!);
-  expect(wb.getWorksheet('Matrix')!.rowCount).toBe(17);
+  const sheet = wb.getWorksheet('Combinations')!, columns = sheet.getRow(1).values as string[];
+  expect(sheet.rowCount).toBe(17);
+  expect(sheet.getRow(2).getCell(columns.indexOf('Negative score · Pass %')).value).toBeNull();
   expect(wb.getWorksheet('Test rates')!.rowCount).toBe(433);
   expect(wb.getWorksheet('Attempts')!.rowCount).toBe(1);
-  const rates = wb.getWorksheet('Test rates')!;
-  const columns = rates.getRow(1).values as string[];
-  expect(rates.getRow(2).getCell(columns.indexOf('passRate')).value).toBeNull();
 });
 
-test('matrix distinguishes tested rates from all attempts and opens raw diagnostics', async ({ page }) => {
+test('security impact and distinct content-type counts appear directly in the combination row', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.route('**/api/experiment', async route => {
-    const data = await (await page.request.get('/data/matrix.json')).json();
-    data.local = true;
-    const study = data.studies[0], condition = study.summary.conditions[0];
-    Object.assign(condition, { attempts: 2, compiled: 1, fullFunctional: 1, unverifiedSettings: 2 });
-    Object.assign(condition.checks[0], { pass: 1, not_run: 1, attempts: 2, executed: 1, passRate: 1, allAttemptRate: 0.5 });
-    study.runs = [{ runId: 'browser-test-only', condition: condition.id, repetition: 1, status: 'settings_unverified', evaluationStatus: 'evaluated', mainCompilation: 'pass', checks: [] }];
-    await route.fulfill({ json: data });
-  });
-  await page.route('**/api/experiment/*/run/browser-test-only', route => route.fulfill({ json: {
-    observation: { runId: 'browser-test-only', request: {}, response: { output_text: 'Browser test fixture, not a model result' } },
-    evaluation: { processes: [{ command: ['fixture-compiler'], exitCode: 1, stdout: '', stderr: 'Fixture compiler output' }] },
-  } }));
-  await page.goto('/');
-  await page.getByLabel('Cell measure', { exact: true }).selectOption('full');
-  await page.getByRole('button', { name: 'Reuse None No security context', exact: true }).click();
-  const row = page.locator('.matrix-checks tbody tr').first();
-  await expect(row).toContainText('100.0%');
-  await expect(row).toContainText('50.0%');
-  await page.getByRole('button', { name: 'Repetition 1', exact: true }).click();
-  await expect(page.getByText('Fixture compiler output', { exact: true })).toBeVisible();
-  await page.getByText('Original model response', { exact: true }).click();
-  await expect(page.getByText('Browser test fixture, not a model result', { exact: true })).toBeVisible();
-});
-
-test('follow-up overlays only selected rows and compares their fresh controls', async ({ page }) => {
-  await page.route('**/api/experiment', async route => {
-    const data = await (await page.request.get('/data/matrix.json')).json();
-    data.local = true;
+    const data = await (await page.request.get('/data/matrix.json')).json(); data.local = true;
     const baseline = data.studies[0], selected = ['reuse_b', 'reuse_sb', 'generation_s', 'generation_sfb'];
-    const next = structuredClone(baseline);
-    next.plan.id = 'browser-followup-only'; next.plan.phase = 'security_followup';
-    next.plan.conditions = baseline.plan.conditions.filter((c: { id: string }) => selected.includes(c.id)).flatMap((c: { id: string }) => ['none', 'overview', 'task', 'flows'].map(strategy => ({ ...c, id: `${c.id}__${strategy}`, parentCondition: c.id, securityStrategy: strategy })));
-    next.summary.conditions = next.plan.conditions.map((c: { id: string; parentCondition: string; securityStrategy: string }) => {
+    const followup = structuredClone(baseline);
+    followup.plan.id = 'browser-followup-only'; followup.plan.phase = 'security_followup';
+    followup.plan.conditions = baseline.plan.conditions.filter((c: { id: string }) => selected.includes(c.id)).flatMap((c: { id: string }) => ['none', 'overview', 'task', 'flows'].map(strategy => ({ ...c, id: `${c.id}__${strategy}`, parentCondition: c.id, securityStrategy: strategy, contextAcquisitionId: strategy === 'task' ? 'test-acquisition' : undefined })));
+    followup.plan.acquisitions = [{ id: 'test-acquisition', citationChecks: { matched: 2, total: 2, uncitedItems: 1, itemsByKind: { security_property: 3, existing_risk: 0, change_risk: 2, unknown: 1 } } }];
+    followup.summary.conditions = followup.plan.conditions.map((c: { id: string; parentCondition: string; securityStrategy: string }) => {
       const r = structuredClone(baseline.summary.conditions.find((r: { id: string }) => r.id === c.parentCondition));
-      r.id = c.id;
-      if (c.parentCondition === 'reuse_b' && ['none', 'flows'].includes(c.securityStrategy)) {
-        r.attempts = 2;
-        Object.assign(r.checks[0], { pass: 1, fail: c.securityStrategy === 'flows' ? 1 : 0, not_run: c.securityStrategy === 'none' ? 1 : 0, attempts: 2, executed: c.securityStrategy === 'flows' ? 2 : 1, passRate: c.securityStrategy === 'flows' ? 0.5 : 1, allAttemptRate: 0.5 });
-      }
+      r.id = c.id; r.attempts = 5; r.planned = 5; r.compiled = 5;
+      const check = r.checks.find((t: { name: string }) => t.name === 'oversizedPhysicalLine');
+      Object.assign(check, { pass: c.securityStrategy === 'task' ? 3 : 0, fail: c.securityStrategy === 'task' ? 1 : 5, unknown: c.securityStrategy === 'task' ? 1 : 0, attempts: 5, executed: c.securityStrategy === 'task' ? 4 : 5, passRate: c.securityStrategy === 'task' ? 0.75 : 0, allAttemptRate: c.securityStrategy === 'task' ? 0.6 : 0 });
       return r;
     });
-    data.studies.push(next);
-    await route.fulfill({ json: data });
+    data.studies.push(followup); await route.fulfill({ json: data });
   });
   await page.goto('/');
-  await page.getByLabel('Stage', { exact: true }).selectOption('browser-followup-only');
-  await expect(page.locator('.experiment-matrix tbody tr')).toHaveCount(16);
-  await expect(page.locator('.experiment-matrix tbody button')).toHaveCount(16);
-  await expect(page.getByText('Not selected', { exact: true })).toHaveCount(48);
-  await page.getByRole('button', { name: 'Reuse B Security data flows', exact: true }).click();
-  const row = page.locator('.security-comparison tbody tr').first();
-  await expect(row).toContainText('-50.0');
-  await expect(row.locator('td').last()).toHaveText('0.0');
+  await expect(page.locator('.combination-table tbody tr')).toHaveCount(32);
+  await expect(page.locator('select')).toHaveCount(0);
+  const row = page.locator('[data-condition="generation_sfb__task"]');
+  await expect(row.locator('.security-context')).toHaveText('Task-focused');
+  await expect(row.locator('[data-stat="security_property"]')).toHaveText('3');
+  await expect(row.locator('[data-stat="change_risk"]')).toHaveText('2');
+  await expect(row.locator('[data-stat="oversizedPhysicalLine.pass"]')).toHaveText('60.0');
+  await expect(row.locator('[data-stat="oversizedPhysicalLine.delta"]')).toHaveText('+60.0');
+  await expect(row.locator('[data-stat="oversizedPhysicalLine.unresolved"]')).toHaveText('1');
+  await expect(page.locator('[data-condition="generation_sfb__none"] [data-stat="oversizedPhysicalLine.delta"]')).toHaveText('—');
+  await expect(page.locator('[data-condition="generation_sfb"] [data-stat="oversizedPhysicalLine.delta"]')).toHaveText('—');
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  expect(errors).toEqual([]);
 });

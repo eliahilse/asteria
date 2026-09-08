@@ -86,10 +86,22 @@ four invoked-integration and five autonomous-integration checks. Eleven security
 checks run separately with positive/negative controls and bounded resources.
 See `EVALUATION.md` for contracts and limitations.
 
-The explorer shows each test’s pass, fail, not-run, unknown, compile-error and
-environment-error counts, alongside attempt-level compiler/test diagnostics and
-exact requests/responses. A security pass in the isolated feature harness does
-not establish that the whole game works or that no vulnerability exists.
+The explorer displays all combinations in one table, with no condition selectors.
+Security acquisition strategy and security content-type counts occupy separate
+columns: a strategy determines how context is acquired; the types describe what
+the resulting context contains. The content types are not independently varied
+in this study. Each security check has numeric columns for pass/all-attempt
+percentage, its difference from the matching fresh control in percentage points,
+and unresolved count. Replay and control rows have no treatment difference.
+Functional suite rates, compilation, complete functional success, source-citation
+coverage and token means remain separate statistics.
+
+XLSX starts with the same numeric combination table and retains the detailed pass,
+fail, not-run, unknown, compile-error and environment-error counts, alongside
+attempt-level check diagnostics. JSON retains study plans, summaries and check
+observations; exact requests, responses and compiler logs remain in the local
+experiment folders. A security pass in the isolated feature harness does not
+establish that the whole game works or that no vulnerability exists.
 
 All-attempt rates retain failures to obtain/evaluate usable code. Tested rates
 condition on a test actually yielding pass or fail; both denominators are shown.
