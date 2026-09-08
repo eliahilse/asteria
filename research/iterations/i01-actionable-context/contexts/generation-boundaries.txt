@@ -1,0 +1,74 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Apply this task-specific context while implementing the feature. Observations and recommendations are model-generated; preserve stated uncertainty.
+
+Revised task-relevant security context with citations checked against the numbered excerpts inspected in the immediately preceding read. The level exposes mutable player points and a countdown-like internal timer, while the player exposes team/author strings; the persistence format, name source, terminal callback, and timer units remain unresolved.
+
+[security_property: score provenance] ApoMarioPlayer exposes the current points through getPoints(), and ApoMarioLevel updates player points during completion and loss/win handling. This establishes a level-owned score source, but the excerpts do not establish which player should be recorded for a single-player highscore or exactly when all final scoring has completed.
+Task relevance: recordRunEnd should obtain the final score from the selected level player rather than trusting a separately supplied score or UI value.
+Source: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:166-175
+	/**
+	 * gibt die Punkte des Spielers zurück
+	 * @return gibt die Punkte des Spielers zurück
+	 */
+	public int getPoints() {
+		return this.points;
+	}
+
+	public void setPoints(int points) {
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1190-1197
+			if (!this.isOnePlayer()) {
+				if (bWin) {
+					if ((playerOne.getX() > playerTwo.getX()) && (playerOne.isBVisible())) {
+						playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+						playerTwo.setPoints(playerTwo.getPoints() + (int)(addTimeDifficultyWidthPoints * percentTwo));
+					} else if ((playerOne.getX() < playerTwo.getX()) && (playerTwo.isBVisible())) {
+						playerTwo.setPoints(playerTwo.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1215-1219
+				} else {
+					if ((!playerOne.isBVisible()) && (playerTwo.isBVisible())) {
+						playerTwo.setPoints(playerTwo.getPoints() + ApoMarioConstants.POINTS_WIN_AGAINST_ANOTHER);
+					} else if ((playerOne.isBVisible()) && (!playerTwo.isBVisible())) {
+						playerOne.setPoints(playerOne.getPoints() + ApoMarioConstants.POINTS_WIN_AGAINST_ANOTHER);
+Suggested verification: Trace the full terminal transition and select the intended human player; ensure recordRunEnd reads points after completion/loss scoring and is guarded against duplicate recording.
+
+[unknown: survival-time provenance] ApoMarioLevel stores time and levelStartTime as int values and initializes both from level setup, including a value computed as 60000 plus a width-based increment. The inspected evidence does not establish whether these values are elapsed milliseconds, remaining milliseconds, ticks, or another unit, nor does it show the terminal elapsed-time accessor.
+Task relevance: The required API stores survivalTime in milliseconds, so deriving it from this internal state without confirming semantics could record incorrect or negative durations.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:305-309
+			for (int i = 0; i < this.players.size(); i++) {
+				this.players.get(i).init();
+			}
+			this.time = 60000 + this.levelEntities[0].length * 400;
+			this.levelStartTime = this.time;
+Suggested verification: Locate the timer update and terminal-state code, then expose or calculate a monotonic elapsed duration explicitly in milliseconds; validate nonnegative and bounded values before storing and format only at display time.
+
+[unknown: player name input] ApoMarioPlayer contains teamName and author string fields with public getters and setters, but the inspected evidence does not establish that either is the intended player display name or that either is validated.
+Task relevance: A name selected for persistence and menu rendering must be bounded and safely encoded to prevent malformed records, control-character injection, and excessive rendering/resource use.
+Source: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:116-129
+	public String getTeamName() {
+		return this.teamName;
+	}
+	
+	public String getAuthor() {
+		return this.author;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+	}
+
+	public void setAuthor(String author) {
+Suggested verification: Identify the authoritative display-name source and enforce null handling, maximum Unicode/encoded length, and removal or escaping of line/control separators before persistence and plain-text rendering.
+
+[change_risk: persisted store decoding] No current highscore persistence implementation or format was evidenced. Persisted bytes supplied through the required Path boundary must therefore be treated as untrusted input; unsafe deserialization and unbounded parsing remain prospective risks rather than proven vulnerabilities.
+Task relevance: Loading can consume attacker-controlled disk content before the board is displayed and can cause code execution, memory/CPU exhaustion, parse failures, or inconsistent records if not bounded.
+Suggested verification: Use a non-executable, versioned format with strict file-size, record-count, field-length, numeric-range, and total-read limits; handle malformed/truncated records safely and write atomically to avoid partial stores.
+
+[change_risk: ranking representation] The required public API returns separate lists for names, scores, and survival times, but no implementation exists in the inspected snapshot. Maintaining independent mutable lists could allow misalignment during sorting, insertion, or malformed-record recovery.
+Task relevance: The board must sort by descending score while keeping each player's name and survival time paired with that score.
+Suggested verification: Store one validated entry object internally, sort entries by descending score with a deterministic tie-breaker, and derive all three public lists from the same ordered entries; enforce equal lengths and a maximum board size.
+
+Uncertainty and limits:
+- The supplied evidence is limited to indexed Java excerpts and does not establish runtime behavior.
+- The exact player-name source, timer units and update semantics, terminal callbacks, replay/abandonment policy, persistence format, file permissions, board capacity, and concurrency behavior remain unknown.
+- No tests were run and no vulnerability was proven.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

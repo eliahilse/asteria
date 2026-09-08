@@ -1,0 +1,15 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Apply this task-specific context while implementing the feature. Observations and recommendations are model-generated; preserve stated uncertainty.
+
+Revised task-relevant security context with the previously invalid getPassedTime citation corrected to the exact inspected line.
+
+[security_property: Actual score and elapsed-time sources] ApoMarioLevel exposes a getPassedTime method, but the newly inspected evidence confirms only its declaration line; its implementation and units were not re-inspected in this correction. The target therefore still requires tracing the method body and run-end callers before using it as the required millisecond survival time.
+Task relevance: recordRunEnd must read the finished run's actual score and elapsed time, and must not assume that an existing integer time API already satisfies the millisecond contract.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1172-1172
+public int getPassedTime() {
+Suggested verification: Read the complete getPassedTime method and the update/time initialization code, then verify the unit conversion to milliseconds and wire recording after the authoritative win/loss score update.
+
+Uncertainty and limits:
+- Only the declaration line for getPassedTime was re-inspected in this correction; no claim is made about its return expression or units.
+- No implementation or runtime test was performed.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
