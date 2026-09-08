@@ -5,6 +5,8 @@ and detected security-issue checks for each context combination. Its context tab
 shows the exact generated prompt inserts. See the [iteration index](research/iterations/README.md),
 [preserved evidence and restore instructions](research/results/README.md), and
 [local setup](workbench/README.md).
+The [research readout](research/iterations/REVIEW.md) connects the context definitions,
+experimental units, per-check findings and interpretation limits.
 
 Latest completed evidence: [I06 findings](research/iterations/i06-operational-guards/findings.md),
 [qualified per-test results](research/iterations/i06-operational-guards/qualified-analysis.md)
