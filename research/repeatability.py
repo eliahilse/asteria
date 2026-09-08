@@ -128,6 +128,28 @@ def execute():
         with ThreadPoolExecutor(max_workers=plan['workers']) as pool: list(pool.map(run, pending))
 
 
+def verify_measurement(directory, record, item):
+    """Recompute provenance checks from saved artifacts, not cached booleans."""
+    evaluation = directory / 'evaluation'; report_path = evaluation / 'report.json'
+    if digest(report_path.read_bytes()) != record['reportSha256']: raise ValueError('Repeated report changed')
+    report = json.loads(report_path.read_text())
+    if report['responseSha256'] != item['sourceSha256'] or digest((evaluation / 'response.txt').read_bytes()) != item['sourceSha256']:
+        raise ValueError('Repeated source differs from the selected artifact')
+    for name, sha in report['sanitizedHashes'].items():
+        if digest((evaluation / 'author-evidence/sanitized_generated/response' / name).read_bytes()) != sha:
+            raise ValueError('Repeated sanitized source changed')
+    compiled = ((report.get('security') or {}).get('linkage') or {}).get('compiledClasses')
+    for name, sha in (compiled or {}).items():
+        if digest((evaluation / 'security-project-classes' / name).read_bytes()) != sha: raise ValueError('Repeated compiled class changed')
+    if record['sanitizedSourceMatches'] != (report['sanitizedHashes'] == item['sanitizedHashes']) or record['compiledClassesMatch'] != (compiled == item['compiledClasses']):
+        raise ValueError('Cached source/class comparison differs from the artifacts')
+    precondition_path = directory / 'precondition/report.json'
+    if compiled and not precondition_path.is_file(): raise ValueError('Missing repeated precondition evidence')
+    if precondition_path.exists() and canonical(json.loads(precondition_path.read_text())) != canonical(record['precondition']):
+        raise ValueError('Repeated precondition differs')
+    if record['measures'] != measures(report, record['precondition']): raise ValueError('Repeated measures differ from source report')
+
+
 def summarize():
     directory = ROOT / '.local/iterations' / IDENTIFIER; plan = validate(directory / 'manifest.json'); repeats, transitions = [], []
     for row in plan['schedule']:
@@ -136,12 +158,8 @@ def summarize():
         record = json.loads(path.read_text())
         if record['status'] == 'started' or record['planFingerprint'] != plan['fingerprint']: raise ValueError('Incomplete or mismatched repeat')
         if record['status'] == 'evaluated':
-            if digest((path.parent / 'evaluation/report.json').read_bytes()) != record['reportSha256']: raise ValueError('Repeated report changed')
-            report = json.loads((path.parent / 'evaluation/report.json').read_text())
-            if record['measures'] != measures(report, record['precondition']): raise ValueError('Repeated measures differ from source report')
-            precondition_path = path.parent / 'precondition/report.json'
-            if precondition_path.exists() and canonical(json.loads(precondition_path.read_text())) != canonical(record['precondition']): raise ValueError('Repeated precondition differs')
             item = next(s for s in plan['selected'] if s['runId'] == row['runId'])
+            verify_measurement(path.parent, record, item)
             for measurement in ('rawChecks', 'qualifiedChecks'):
                 for test, before in item['expected'][measurement].items():
                     after = record['measures'][measurement][test]
