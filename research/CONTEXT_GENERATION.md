@@ -4,7 +4,48 @@ The explorer's **Context generation** tab shows the task and the exact security
 text inserted into code-generation prompts. Counts, evidence and complete model
 exchanges remain in exported results and iteration archives.
 
-## Current strategies
+## New acquisitions: task only
+
+New local API acquisitions use `task_context.py`, protocol
+`repository-security-context-v5-task-only`. Its security instruction is:
+
+> Generate security context for implementing the following task in this repository.
+
+The supplied feature task follows verbatim, apart from trimming surrounding
+whitespace. There is no perspective instruction, list of security topics, example
+vulnerability, safeguard, threshold or target item count. Luna chooses what to
+investigate from the repository and task. The previous operational fields are
+not requested.
+
+The remaining instructions explain repository tools and evidence references.
+The v3 output schema, five item kinds, basis labels, optional CWE annotations,
+suggested verification fields and citation validation are retained. Thus
+"task only" describes the security guidance; the model still receives a tool
+schema and provenance requirements. This is not an unstructured text completion.
+The search/read limits, Luna settings and 16-turn budget also remain the same.
+
+Prepare a prompt and snapshot without making a model call:
+
+```sh
+python3 -m research.task_context --repo apogames/Java/ApoMario \
+  --task 'Implement a Highscore feature in ApoMario.'
+```
+
+Add `--execute` to run through the existing private `ASTERIA_ADAPTER_COMMAND`.
+For an experiment, supply the exact feature task used for implementation and
+include both target and donor in the repository snapshot for Reuse. The local
+`POST /api/context-generation` accepts `repository`, `task` and `action`
+(`prepare` or `generate`); `strategy` can be omitted or set to `task_only`.
+Legacy strategy requests are rejected rather than silently relabeled.
+
+Records retain the exact initial prompt and its hash, generator hashes, source
+snapshot, complete exchanges and literal output insert. The new strategy is
+`task_only` ("Task only" in the explorer), distinct from the older `task`
+("Task-focused") strategy. Existing I03–I08 evidence and the active completed
+results remain under their original protocols. They have not been rerun with
+this instruction. Historical acquisition modules remain available for replay.
+
+## Historical perspective strategies
 
 I03 uses `generate_security_context.py`, protocol
 `repository-security-context-v3-explicit-unknowns`:
