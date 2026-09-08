@@ -16,6 +16,12 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i03-prepared](i03-prepared/manifest.json) | Frozen 40-trajectory schedule, six fresh contexts and calibrated v3 evaluator; 1,654 files | [Protocol](../iterations/i03-security-perspectives/README.md) |
 | [i03-complete](i03-complete/manifest.json) | All 40 trajectories and 68 code submissions, plus readable reports and exports; 9,094 files | [Findings](../iterations/i03-security-perspectives/findings.md), [per-test analysis](../iterations/i03-security-perspectives/analysis.md) |
 | [i04-prepared](i04-prepared/manifest.json) | Frozen 80-trajectory replication and six new acquisitions; 9,279 files | [Protocol](../iterations/i04-matrix-replication/README.md) |
+| [i04-complete](i04-complete/manifest.json) | All 80 trajectories and 150 submissions, plus I03/I04 format audits; 24,113 files | [Findings and measurement update](../iterations/i04-matrix-replication/findings.md) |
+
+New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
+small. Every part is hashed; verification and restore cover the complete set.
+Original single-file snapshots remain supported. Restore validates every target
+across all parts before writing anything.
 
 Verify the repository and external copies:
 
