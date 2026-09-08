@@ -11,7 +11,9 @@ attested by the provider. All returned model identities are checked against Luna
 | I01 environment correction | Re-measure all 28 evaluated submissions with isolated JVM homes. No model calls or source changes. | [Paired comparison](i01-home-isolated/README.md) |
 | I02 | Six acquisitions using stable evidence IDs: five completed, one exhausted its budget because of an overly strict unknown-item validator. No feature generation. | [Acquisition trial](i02-context-acquisition/README.md) |
 | I03 | 40 fresh trajectories: two paper-context cells × four security perspectives × five repetitions; corrected evaluation and six fresh context acquisitions. | [Findings](i03-security-perspectives/findings.md), [per-test analysis](i03-security-perspectives/analysis.md), [workbook](i03-security-perspectives/results.xlsx) |
-| I04 | 80 fresh trajectories across all four originally selected paper-context cells, with the same four security arms and six new acquisitions. | [Frozen replication plan](i04-matrix-replication/README.md) |
+| I04 | 80 fresh trajectories across all four originally selected paper-context cells, with the same four security arms and six new acquisitions. | [Findings](i04-matrix-replication/findings.md), [qualified per-test analysis](i04-matrix-replication/qualified-analysis.md), [workbook](i04-matrix-replication/qualified-results.xlsx) |
+| I03/I04 measurement qualification | Audit exact compiled artifacts for valid-record amplification; retain original outcomes, mark unsupported observations unknown separately. | [I03 qualified analysis](i03-security-perspectives/qualified-analysis.md), [I04 qualified analysis](i04-matrix-replication/qualified-analysis.md) |
+| I05 | 80 fresh trajectories with up to five submissions, holding I04 context inserts fixed; all four paper cells and security arms retained. | [Prospective budget-sensitivity plan](i05-budget-sensitivity/README.md) |
 
 Do not pool single responses with multi-submission trajectories or count the
 same saved code's remeasurement as a new model sample. Context acquisition itself

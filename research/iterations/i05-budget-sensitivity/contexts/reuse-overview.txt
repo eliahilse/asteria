@@ -1,0 +1,82 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+ApoIcarus provides a reusable highscore model and menu-view pattern, but its inspected implementation is a singleton backed by remote HTTP endpoints rather than the requested Path-based local store. ApoMario stores gameplay sources inside an indexed JAR snapshot. Its level exposes player score, remaining time, and elapsed passed time; run completion scoring occurs in setAnalysis(boolean), which also transitions the panel to analysis. The Mario menu is an existing dedicated menu model with button/function routing, but no Mario highscore class or persistence implementation was observed in the inspected excerpts. The later implementation must define the local persistence boundary, connect the run-end transition exactly once, and expose the required public API while preserving score/time semantics.
+
+[security_property; observed; run-end score authority] ApoMarioLevel owns the players collection and player points are mutated throughout gameplay; completion scoring is additionally applied in ApoMarioLevel.setAnalysis(boolean), including finish/time/difficulty/width bonuses for a win and survivor-related points for a loss.
+Task relevance: recordRunEnd must read the final actual score only after the completion scoring path has settled, and must choose the intended player in the two-player case.
+Inspected source E0153: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1150-1230
+Inspected source E0048: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioEnemy.java:110-110
+Inspected source E0052: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:170-170
+Inspected source E0073: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1193-1193
+Inspected source E0087: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1217-1217
+Suggested verification: Trace every clear/loss transition and verify a single highscore record is produced after final score mutation.
+
+[security_property; observed; time provenance and units] Mario exposes getPassedTime() as randomLevel.getTime() minus remaining time, while getTime() returns the remaining level time; the existing UI formats passed time through ApoHelp.getTimeToDraw. The task separately requires survivalTime in milliseconds and mm:ss display.
+Task relevance: The integration must not persist the countdown remaining value as survival duration, and must establish a conversion from the level's elapsed-time representation to the required millisecond contract.
+Inspected source E0152: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:380-410
+Inspected source E0153: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1150-1230
+Inspected source E0127: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Inspected source E0115: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioAnalysis.java:538-538
+Inspected source E0135: ApoMario/ApoMario.jar!/org/apogames/help/ApoHelp.java:231-231
+Suggested verification: Confirm the selected level time source and units at both win and loss, including zero/expired-time paths, before writing a record.
+
+[change_risk; observed; completion lifecycle] setAnalysis(boolean) is guarded by bAnalysis, sets the panel win state, applies end-of-run scoring, and then calls game.setAnalysis(); player code also invokes level.setAnalysis(false/true) at gameplay state transitions.
+Task relevance: Adding recording at an incorrect caller can duplicate entries or capture pre-bonus scores; the lifecycle has multiple nearby entry points that require coordinated integration.
+Inspected source E0163: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1176-1176
+Inspected source E0153: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1150-1230
+Inspected source E0164: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1230-1230
+Inspected source E0155: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:487-487
+Inspected source E0156: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:507-507
+Inspected source E0157: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:542-542
+Inspected source E0165: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1269-1269
+Suggested verification: Identify the authoritative one-shot transition and test both clearing and losing, plus retries/re-entry into analysis.
+
+[change_risk; observed; donor highscore trust boundary] ApoIcarus ApoHighscore stores parallel names, time, and points lists and communicates with configured HTTP endpoints using URLConnection and form-encoded player input; the highscore view loads and sorts these records for display.
+Task relevance: This is useful as a data/view ordering reference, but direct reuse would introduce a network trust boundary and does not satisfy the requested local Path store contract.
+Inspected source E0150: ApoIcarus/org/apogames/help/ApoHighscore.java:1-151
+Inspected source E0151: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:70-125
+Suggested verification: Reuse the donor's conceptual record/list/view structure only after confirming the Mario implementation has no unintended network calls and handles malformed local records safely.
+
+[security_property; observed; ordering and parallel data integrity] The donor view inserts each record before the first lower-point entry, producing descending points order while keeping time and name associated with the same record during insertion.
+Task relevance: Mario getters must return aligned names, scores, and survival times after insertion and reload; sorting must not independently reorder parallel lists.
+Inspected source E0151: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:70-125
+Inspected source E0015: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:90-90
+Inspected source E0019: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:114-114
+Inspected source E0020: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:115-115
+Suggested verification: Test equal scores, negative/large values, malformed records, and reload to ensure alignment and deterministic ordering.
+
+[change_risk; observed; local persistence] The inspected Mario code already writes local files for properties and replay data using FileOutputStream, while the donor highscore implementation inspected here has no local persistence method and searches found no persist match.
+Task relevance: The requested store Path is a new durable local-data boundary; atomicity, corruption handling, permissions, and failure behavior need explicit design rather than assuming donor behavior.
+Inspected source E0141: ApoMario/ApoMario.jar!/apoMario/ApoMarioConstants.java:5-5
+Inspected source E0142: ApoMario/ApoMario.jar!/apoMario/ApoMarioConstants.java:76-76
+Inspected source E0143: ApoMario/ApoMario.jar!/apoMario/game/ApoMarioReplay.java:6-6
+Inspected source E0144: ApoMario/ApoMario.jar!/apoMario/game/ApoMarioReplay.java:334-334
+Inspected source E0150: ApoIcarus/org/apogames/help/ApoHighscore.java:1-151
+Suggested verification: Exercise nonexistent, empty, truncated, unexpectedly large, and unwritable store paths; verify failed persistence cannot silently report a successful durable write.
+
+[change_risk; observed; player-name input] Names cross the UI-to-storage boundary and are later rendered; the donor run-end path obtains the name from a text field before saving, and the donor persistence request URL-encodes it.
+Task relevance: Names cross the UI-to-storage boundary and are later rendered; define bounded, malformed, and control-character handling so stored data cannot corrupt the file format or distort the board.
+Inspected source E0002: ApoIcarus/apoJump/game/ApoJumpStateGame.java:219-219
+Inspected source E0150: ApoIcarus/org/apogames/help/ApoHighscore.java:1-151
+Suggested verification: Test null/blank/long names, delimiters/newlines, Unicode, and names containing rendering-sensitive characters.
+
+[unknown; reasoned; Mario menu wiring] The indexed excerpts establish ApoMarioMenu as the menu model and show existing function constants, but do not establish the complete button routing or whether an existing highscore view is absent across the full snapshot.
+Task relevance: The dedicated-panel integration point and navigation behavior remain to be verified before changing menu state architecture.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect the remaining menu initialization, button creation, event dispatch, and model-state classes before implementation.
+
+[unknown; reasoned; player identity and multiplayer semantics] The excerpts show two players and AI/team names, but do not establish the required human player-name source or whether one or multiple records should be created for a two-player run.
+Task relevance: recordRunEnd(level) needs an unambiguous identity policy to avoid recording the wrong player or producing unintended duplicate entries.
+Uncited unknown; the absence of a finding does not establish absence from the repository.
+Suggested verification: Inspect player identity/name fields, options/configuration, and run-start setup, then define the record policy for one- and two-player modes.
+
+[recommendation; task; required public contract] Implement the requested public contract for ApoMarioHighscore and recordRunEnd(ApoMarioLevel): Path-backed storage, aligned list getters, persistence across fresh instances, millisecond survivalTime values, descending score order, and mm:ss display.
+Task relevance: These are explicit task requirements and should be treated as externally tested API and data invariants.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Validate exact package/class/method signatures, getter alignment, persistence across fresh instances, descending ordering, and mm:ss rendering.
+
+Uncertainty and limits:
+- Only indexed text excerpts were inspected; the Mario implementation is represented primarily as Java sources embedded in an indexed JAR snapshot.
+- No implementation was made and no tests or exploitability claims were performed.
+- Search misses do not prove repository-wide absence of a class, wiring, or persistence behavior.
+- The complete menu event-routing code and player identity/name source were not inspected.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
