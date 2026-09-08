@@ -58,6 +58,12 @@ a `NullPointerException` during the autonomous suite's bootstrap because it call
 suite, so those five observations remain unknown. All these trajectories stay in
 the full-functional denominator.
 
+The [functional process diagnostics](functional-diagnostics.csv) retain the exact
+JUnit output and report hashes. The frozen repair feedback provided the generic
+unknown-check messages for the bootstrap failure, without the underlying runtime
+stack trace; that limits the guidance available to repair it. This reporting
+addition changes neither the supplied feedback nor any recorded outcome.
+
 ## A complete passing artifact, with incomplete arm-level coverage
 
 Reuse S+B requirements repetition 2 is the first artifact across I03–I05 to pass
