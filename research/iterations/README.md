@@ -16,6 +16,7 @@ attested by the provider. All returned model identities are checked against Luna
 | I05 | 80 fresh trajectories with up to five submissions, holding I04 context inserts fixed; 75 full-functional results, with tradeoffs retained. | [Findings](i05-budget-sensitivity/findings.md), [qualified analysis](i05-budget-sensitivity/qualified-analysis.md), [workbook](i05-budget-sensitivity/qualified-results.xlsx) |
 | I06 | New operation-level context representation, declared during I05; resource outcomes emphasized, all earlier evidence retained. | [Prospective protocol](i06-operational-guards/README.md) |
 | I07 | Repeat I06 with two newly acquired operational contexts and fresh code in every arm; declared before reviewing I06 outcomes. | [Prospective replication protocol](i07-operational-replication/README.md) |
+| I08 | Re-evaluate the fixed first artifact of each I06/I07 combination twice, after code collection, without new model samples. | [Prospective repeatability protocol](i08-evaluator-repeatability/README.md) |
 
 Do not pool single responses with multi-submission trajectories or count the
 same saved code's remeasurement as a new model sample. Context acquisition itself
