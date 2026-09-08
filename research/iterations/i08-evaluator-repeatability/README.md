@@ -6,6 +6,8 @@ take repetition 1 from every paper-context/security combination in both rounds:
 original measurement plus two additional measurements. This introduces **zero
 new model calls** and does not replace any study outcome or create new model
 samples. Selection is by fixed schedule position, not pass/fail status.
+If a selected trajectory delivered no evaluable source, retain its planned slots
+as unavailable with the reason; do not choose a replacement artifact.
 
 Use the unchanged v3 evaluator, isolated JVM homes, compiled whole-game security
 classpath and original test contracts. Apply the same large-record precondition
