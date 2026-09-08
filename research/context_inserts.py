@@ -8,14 +8,13 @@ import re
 
 from research.import_evidence import ROOT, canonical, digest
 from research.security_followup import security_block
+from research.saved_iteration import resolve
 
 LABELS = {'overview': 'Overview', 'task': 'Task-focused', 'flows': 'Data-flow', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards'}
 
 
 def index(public=False, iteration=None):
-    pointer = ROOT / ('research/iterations/current.json' if public else '.local/iterations/active.json')
-    if iteration is None and pointer.exists(): iteration = json.loads(pointer.read_text())['id']
-    if iteration and not re.fullmatch(r'[a-z0-9][a-z0-9_-]+', iteration): raise ValueError('Invalid iteration')
+    public, iteration = resolve(ROOT, public, iteration)
     if iteration and iteration != 'original':
         directory = ROOT / ('research/iterations' if public else '.local/iterations') / iteration
         plan = json.loads((directory / ('plan.json' if public else 'manifest.json')).read_text())
