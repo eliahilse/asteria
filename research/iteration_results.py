@@ -121,7 +121,7 @@ def save(identifier: str):
     (ROOT / 'research/iterations/current.json').write_bytes(canonical({'id': identifier}))
     study = data['studies'][0]
     lines = [f'# {identifier}: results', '', f'Saved {timestamp()}. Collection complete: {study["summary"]["complete"]}.', '',
-             'N is independent trajectories; each permits up to three model submissions. Security issues count failed checks, excluding the positive valid-record round trip. Unresolved checks are not passes.', '',
+             f'N counts code-generation trajectories sharing the acquired context within each arm; each permits up to {study["plan"]["maxSubmissions"]} model submissions. Security issues count failed checks, excluding the positive valid-record round trip. Unresolved checks are not passes.', '',
              '| Condition | N | First-submit full | Within-budget full | Compiled | Issue failures / evaluated | Unresolved | Model calls |',
              '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     if study['plan'].get('evaluationNote'): lines[4:4] = [study['plan']['evaluationNote'], '']

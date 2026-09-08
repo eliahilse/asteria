@@ -39,6 +39,13 @@ three autonomous lifecycle checks: the second run was not recorded. These are
 distinct delivery and integration failures. Their missing security observations
 remain in the bounds and never become passes.
 
+Across the complete matrix, cumulative full-functional success rises from 33/80
+after one submission to 57/80 after two and 69/80 after three. The 150 submissions
+include 31 rejected edits and ten failed compilations. The
+[submission curves](submission-curves.csv) give these values per combination;
+[delivery errors](delivery-errors.csv) preserve every rejected edit's diagnostic.
+These are successive observations of the same trajectories, not independent samples.
+
 Requirements' impact also varied by check and method. All eight compiled Reuse
 requirements artifacts passed the five input-policy checks. Generation requirements
 still failed negative-score rejection in every trajectory, despite passing most
