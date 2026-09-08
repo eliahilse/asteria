@@ -50,6 +50,12 @@ def snapshot(identifier: str, scopes=SCOPES) -> dict:
     # Save the producing tools alongside artifacts, without overwriting current tools on restore.
     for p in sorted((ROOT / 'research').glob('*.py')):
         files[f'.local/archive-tooling/{identifier}/{p.name}'] = p
+    # Human-readable plans, CSV/XLSX exports and figures travel with the raw
+    # evidence too. Restore them under .local to avoid replacing checked-in work.
+    review = ROOT / 'research/iterations'
+    for p in sorted(review.rglob('*')):
+        if p.is_symlink(): raise ValueError('Review links are not archived')
+        if p.is_file(): files[f'.local/archive-review/{identifier}/{p.relative_to(review)}'] = p
     manifest = {'id': identifier, 'createdAt': timestamp(), 'repositoryCommit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                 'scopes': list(scopes), 'files': {}, 'exclusions': ['provider-traces', 'adapter/configuration', '.git', '__pycache__']}
     with (directory / 'evidence.tar.gz').open('xb') as output, gzip.GzipFile(filename='', mode='wb', fileobj=output, mtime=0) as compressed, tarfile.open(fileobj=compressed, mode='w') as bundle:
