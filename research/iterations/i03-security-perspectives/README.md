@@ -1,5 +1,8 @@
 # I03: security perspectives under corrected evaluation
 
+Collection is complete. Read the [findings](findings.md), [per-test analysis](analysis.md),
+or [workbook](results.xlsx). The following is the protocol frozen before collection.
+
 This exploratory experiment freezes 40 fresh Luna trajectories: Generation S+F+B
 and Reuse B, each with no security context, a repository security overview,
 concrete security requirements, or trust-boundary guidance; five trajectories per

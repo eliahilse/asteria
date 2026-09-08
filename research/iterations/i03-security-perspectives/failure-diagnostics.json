@@ -1,0 +1,2766 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_sfb__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 10,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_sfb__overview",
+      "input_rejection_policy": 18,
+      "issueChecksEvaluated": 36,
+      "issueChecksUnresolved": 14,
+      "n": 5,
+      "observed_heap_exhaustion": 4,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 4
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 46,
+      "issueChecksUnresolved": 4,
+      "n": 5,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "input_rejection_policy": 7,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "reuse_b__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 9,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "reuse_b__overview",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 8,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 4
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "input_rejection_policy": 3,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    }
+  ],
+  "failures": [
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "65fb6c1f16379dca4aca79b4b84de7e63c0ae2a60cc912dd17238660cbb0a906",
+      "responseSha256": "c71d886a5cd8c128df35f1aa7486a9bdda1bfe0064169ce8f07323e3b913ff94",
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__requirements",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r1/submission-2/evaluation/report.json",
+      "reportSha256": "14baaa0ac77fcbaeb696315b2404d96d3f632442f581534a8828c8ce0363fcea",
+      "responseSha256": "3d443bd6b855b6c78644495af25d401d65f76468451b104498a47c652f01fc8c",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1875c828fa81728ac921b53d86de4076ce7d7cc652eba495e0f2e54c5ef1cfb7",
+      "responseSha256": "3578f6e0743e315739792e446fff1bcd7c6337a93894fa038b8a6aa93f0fb366",
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r1/submission-2/evaluation/report.json",
+      "reportSha256": "116cf97c14338480b8f697678c5ff4de1bd9a2e66f0a1eb8d2dbc1226a77d34b",
+      "responseSha256": "da8608fe5b3e1cdab4dfadd35e2bdb41f762128378fd9ab2201102874e001467",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r1/submission-2/evaluation/report.json",
+      "reportSha256": "116cf97c14338480b8f697678c5ff4de1bd9a2e66f0a1eb8d2dbc1226a77d34b",
+      "responseSha256": "da8608fe5b3e1cdab4dfadd35e2bdb41f762128378fd9ab2201102874e001467",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "bed9d80dde52edbdd8bf78b38c57b07fc13bb2d121a887cce7f75986fbb056b9",
+      "responseSha256": "1a23a0d330fcba47d57df259a6b12312dcc2fd5836690ef2cc04ba164feb0d0e",
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r1/submission-2/evaluation/report.json",
+      "reportSha256": "8b48ea8ea43968bb4e7424cdb8312c7679f06789a1c3a42b2ce7a89565dd5fd0",
+      "responseSha256": "95901d9e04a417fa24531a98e9e50d1e072b63917010509fdd2adcc8098c7996",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "6e7a0e063984b55f54258c57b7ba5f4f1af69d025f2bd58816bde376fca886ce",
+      "responseSha256": "2e17998d46e8511906d32655dec161d047b86bce72ccc7e472aea5ffebd7915d",
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "af37461712feffadd9877fb14bf8d2e213d40d8d7406bf27177c8584ca82ef4d",
+      "responseSha256": "ee309807977246226d0b0cbae40b99b475ce88b4d4dc942cbaaea642213ec267",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r2/submission-1/evaluation/report.json",
+      "reportSha256": "722d3db808566ec0459483bb88c43fb9b61da365b4af99c7de32d00998f84f68",
+      "responseSha256": "89851b4913f65d05044b4040aa97643ad297b3b675df70cdf27976120d3b886d",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r2/submission-1/evaluation/report.json",
+      "reportSha256": "0c1c2ee1f00ef7232673243c765eaa6d67c1c2e29e83e8ec0fa9b483f933fce0",
+      "responseSha256": "4d9a4192087f6016a110cd2e513520e79e70a3408f9aea1174032a45fe15471c",
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7c563618008e6f381194f30f3e835f32479f189837d1e1301daf331446a0351d",
+      "responseSha256": "a5e25c54f2ab74533003caf1cd948ec393aff04324b601f44bd84712fd12e074",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7c563618008e6f381194f30f3e835f32479f189837d1e1301daf331446a0351d",
+      "responseSha256": "a5e25c54f2ab74533003caf1cd948ec393aff04324b601f44bd84712fd12e074",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7c563618008e6f381194f30f3e835f32479f189837d1e1301daf331446a0351d",
+      "responseSha256": "a5e25c54f2ab74533003caf1cd948ec393aff04324b601f44bd84712fd12e074",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__requirements",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r2/submission-2/evaluation/report.json",
+      "reportSha256": "7613d28a17b3451e4d9d541ebb9db9e1f385550cb2c7a8d4408e16fecc5699bb",
+      "responseSha256": "f8b5cdcc5817569c4e1a05f82d22ce4e9b101de8b8af89e4776f7ebd4d6490b6",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r2/submission-2/evaluation/report.json",
+      "reportSha256": "7613d28a17b3451e4d9d541ebb9db9e1f385550cb2c7a8d4408e16fecc5699bb",
+      "responseSha256": "f8b5cdcc5817569c4e1a05f82d22ce4e9b101de8b8af89e4776f7ebd4d6490b6",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "aab9028d7bbd2707f561ca265ac513faaef6f453950c0623d19aba6d4dc685a5",
+      "responseSha256": "d6ae32aa22f7d0e8132f2da3e3043bcfd8919101f9f73b0155afabe54bfb76cc",
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/report.json",
+      "reportSha256": "f4b8b445689a40e7afd0516976b70cc8d6e37b4a3ff39ca0a086cf5def508c95",
+      "responseSha256": "39543a82235404ff808e153f1bef39d799411073c7e0e6cc68b5014e8cba4287",
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "15f6bae4b23ade4325d658667304f85a264601d1d4ee28abb4a07e24ba763734",
+      "responseSha256": "1b494a9d60466320a966ca5817e6672768b0f68d77ea0d1218bd20b81eb94eb9",
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r3/submission-1/evaluation/report.json",
+      "reportSha256": "f45502ec4b98bf8a064465eb5d1085408893a7da017f81ea1257b3d99712755c",
+      "responseSha256": "ca64c40ab058f98547d9f7f484888d74ff199cbfb78d693704114c7623eeccd3",
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r3/submission-3/evaluation/report.json",
+      "reportSha256": "090c67610a988f1edee4cd4e4917b02d964fba81964903a9ea282956991f8801",
+      "responseSha256": "245023826b9e3ab768a3679004c72df130ed318daf9202a6418978ea137a9bbc",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r3/submission-3/evaluation/report.json",
+      "reportSha256": "090c67610a988f1edee4cd4e4917b02d964fba81964903a9ea282956991f8801",
+      "responseSha256": "245023826b9e3ab768a3679004c72df130ed318daf9202a6418978ea137a9bbc",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "fad32791bee24fe29166d630f1381f3365a8a45e7c4883d230fbae348b2ef58e",
+      "responseSha256": "44c4f2fb5b6264a5674096b026f85449be9329a33e10b5fe3752998bd6d81321",
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r3/submission-1/evaluation/report.json",
+      "reportSha256": "53bcc72e177feb1e990a7f44b44b93c992347c4855e5104e28e5f641806819c1",
+      "responseSha256": "7ea00c45d0a1f442970bffa8f22ff238f609106e4af7d98eddae4885a16f45ef",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r3/submission-1/evaluation/report.json",
+      "reportSha256": "53bcc72e177feb1e990a7f44b44b93c992347c4855e5104e28e5f641806819c1",
+      "responseSha256": "7ea00c45d0a1f442970bffa8f22ff238f609106e4af7d98eddae4885a16f45ef",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/report.json",
+      "reportSha256": "75e424f9230b9dcbf7c95408a90093fcc1cdfb6119dbb7dcc7c35a4ee4db75e1",
+      "responseSha256": "d6e1a954c1908cdfba8f46cdf02febe81aa439f968987cf57a5d3f43625ae441",
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r3/submission-2/evaluation/report.json",
+      "reportSha256": "c12e3f296816fa11922fde6ceeac886d6d764251ffbafac348e02f9c9b8da481",
+      "responseSha256": "cf83606d813e1b0776da62e4687f067a19ccd3bbcae4032648bf88d9774b8038",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r3/submission-3/evaluation/report.json",
+      "reportSha256": "22048ae5353094d5404919b85c9118e988187ad86638c8d09eda2f06f58eaeb9",
+      "responseSha256": "ef0d1475bb249fdf0baa7dd6685af4faca7e4003725d7a8f23bce2e81b2a7b48",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r3/submission-3/evaluation/report.json",
+      "reportSha256": "22048ae5353094d5404919b85c9118e988187ad86638c8d09eda2f06f58eaeb9",
+      "responseSha256": "ef0d1475bb249fdf0baa7dd6685af4faca7e4003725d7a8f23bce2e81b2a7b48",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r3/submission-3/evaluation/report.json",
+      "reportSha256": "22048ae5353094d5404919b85c9118e988187ad86638c8d09eda2f06f58eaeb9",
+      "responseSha256": "ef0d1475bb249fdf0baa7dd6685af4faca7e4003725d7a8f23bce2e81b2a7b48",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r3/submission-3/evaluation/report.json",
+      "reportSha256": "22048ae5353094d5404919b85c9118e988187ad86638c8d09eda2f06f58eaeb9",
+      "responseSha256": "ef0d1475bb249fdf0baa7dd6685af4faca7e4003725d7a8f23bce2e81b2a7b48",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "df0298435f9f67bcfc1815288a1db319eaab0c1d0e8aa35574a792e580e724d0",
+      "responseSha256": "73c7eb5a3e34013ce63b6035c2922357c47aefcfaada75848cca5b5fc7ba06c5",
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "ef3d7751378642ce9c4c2cb1bb6390dbe7b2ba13cf465d9057f6bb8090d6f4a2",
+      "responseSha256": "2f16c130dc90ceb6b7d311de488f1b493adc14c53f4561bf2f3fd5108f310026",
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r4/submission-1/evaluation/report.json",
+      "reportSha256": "d17c41ea539b756c452a8557b4b5b6921852f43b1b49e1d0f85afac6e765061d",
+      "responseSha256": "8562a8cb5f8a411744c891a049e52d8e705b8095f530251e023a957249cd4886",
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r4/submission-3/evaluation/report.json",
+      "reportSha256": "e5807cd882a1384613f8f5bd1d3aa0ec9727065449496b671143e1be6c1a5cb3",
+      "responseSha256": "5c1d0e9d15b17da7f35c66aab18369b30186cf0ac152f64532f6223e88687b13",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r4/submission-3/evaluation/report.json",
+      "reportSha256": "e5807cd882a1384613f8f5bd1d3aa0ec9727065449496b671143e1be6c1a5cb3",
+      "responseSha256": "5c1d0e9d15b17da7f35c66aab18369b30186cf0ac152f64532f6223e88687b13",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/report.json",
+      "reportSha256": "beba8b5f56ba20b07ac4bff96490f4bbd4ea436521b07f4858872f7e8733b903",
+      "responseSha256": "0991bf6e34ac4a01849251e0cb65c63ea6439cf5f3cbcb827da17e6e0856ec0b",
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ff4b4468357121723dfde8eeaad0d8293900a0576297d18a52ccd2c86066d117",
+      "responseSha256": "0ad602faaacfd14d98921a314419c7349a06bbdf14f2d58f2609db732636be2a",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__requirements",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r4/submission-3/evaluation/report.json",
+      "reportSha256": "04bc9c14e9c07a46edf3e3a7f2ede2a0da158c5ffdf4c3ae866d617b798795b8",
+      "responseSha256": "d3af3fd671388cd380ede4630a4185186708141af0a9ffe53fdd3a1ce70ca038",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r4/submission-3/evaluation/report.json",
+      "reportSha256": "04bc9c14e9c07a46edf3e3a7f2ede2a0da158c5ffdf4c3ae866d617b798795b8",
+      "responseSha256": "d3af3fd671388cd380ede4630a4185186708141af0a9ffe53fdd3a1ce70ca038",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r4/submission-3/evaluation/report.json",
+      "reportSha256": "04bc9c14e9c07a46edf3e3a7f2ede2a0da158c5ffdf4c3ae866d617b798795b8",
+      "responseSha256": "d3af3fd671388cd380ede4630a4185186708141af0a9ffe53fdd3a1ce70ca038",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r4/submission-2/evaluation/report.json",
+      "reportSha256": "6312340e90976016d7907103991b0fbcbb3464ab1c5a5fdb6e22a509ec936363",
+      "responseSha256": "b19d7a0d4868fd977579b69dc10e49a7059c43ff6c9f0ea101aaca874297e379",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r4/submission-2/evaluation/report.json",
+      "reportSha256": "6312340e90976016d7907103991b0fbcbb3464ab1c5a5fdb6e22a509ec936363",
+      "responseSha256": "b19d7a0d4868fd977579b69dc10e49a7059c43ff6c9f0ea101aaca874297e379",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r4/submission-2/evaluation/report.json",
+      "reportSha256": "6312340e90976016d7907103991b0fbcbb3464ab1c5a5fdb6e22a509ec936363",
+      "responseSha256": "b19d7a0d4868fd977579b69dc10e49a7059c43ff6c9f0ea101aaca874297e379",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "ba0e1d2436819ceeddda445b66e777357d33480fe868a2e7029c39307cba3d87",
+      "responseSha256": "21a11a9e15dd5bc33fd06cd9656e51a6ba59b04cbfa9b1049e0596e0d41cf20e",
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__boundaries",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r5/submission-3/evaluation/report.json",
+      "reportSha256": "f3856c07c79949d23409cd093dc23e6b42f75f21b0ed3b9c6a739ee124731750",
+      "responseSha256": "f83fe2b2951426bcedbb6eabd8dee947c8f5f3c831ad2962ced0eb15db93f402",
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "2048ce81423e259a0a2554db7c60e71d18e01018181cd40e65b47437efa97dd1",
+      "responseSha256": "5084cdabde6a0394e296607e455bcc653fc152dadd5b6a3d79a07f93f4f4adb4",
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_b__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "8cd57bbf08725e175078d90535ab1526dea12963e7d2acfddea403d71df2f578",
+      "responseSha256": "6eb0414fee4565e6ed5725a69c69e456e20a356f249908cd2136526e726813d8",
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__requirements",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r5/submission-1/evaluation/report.json",
+      "reportSha256": "fc9897b7c088db4b7c8e7a77c0b00174134cd4b5739924206ad60e9ad4834b67",
+      "responseSha256": "32ac6440f84e5910900a1f0e523a8764127a479d5951800ab213aaa8ec4a3ce0",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_b__requirements",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r5/submission-1/evaluation/report.json",
+      "reportSha256": "fc9897b7c088db4b7c8e7a77c0b00174134cd4b5739924206ad60e9ad4834b67",
+      "responseSha256": "32ac6440f84e5910900a1f0e523a8764127a479d5951800ab213aaa8ec4a3ce0",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_b__requirements",
+      "detail": "AssertionError: Reload retained more than 100 records.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r5/submission-1/evaluation/report.json",
+      "reportSha256": "fc9897b7c088db4b7c8e7a77c0b00174134cd4b5739924206ad60e9ad4834b67",
+      "responseSha256": "32ac6440f84e5910900a1f0e523a8764127a479d5951800ab213aaa8ec4a3ce0",
+      "runId": "i03-security-perspectives__reuse_b__requirements__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__overview",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_sfb__overview",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/report.json",
+      "reportSha256": "4306d3448a882a94e785af4156354896ac37eedb46b1bedbf23f1458071861f0",
+      "responseSha256": "b49f774ce3fab019f0782c10b700c41ac23a3c962644091aba32ebd966d8f771",
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_sfb__boundaries",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r5/submission-3/evaluation/report.json",
+      "reportSha256": "059fae54c4d4b3c5d466ec2ebffb03a0767eb065474c76ca2eabd5084870ffb0",
+      "responseSha256": "30590e550216acfc55929705abd6d7c0546004acec6e07ce639739d22145e96e",
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r5",
+      "test": "rejectsNegativeScore"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i03-security-perspectives",
+  "manifestFingerprint": "7bd7794722c62609c9ee63dcda923c4f4b7c357646879d7a6cb0e74a2e5df938",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_sfb__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 20;"
+        },
+        {
+          "line": 50,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 89,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 98,
+          "text": "            while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__none__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "52dcf8b2baa5ef750c80b69a5dca8d366eafc8341b2ad7728d88b8bf9c934add"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 43,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 50,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 103,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) { in.close(); return; }"
+        },
+        {
+          "line": 106,
+          "text": "                if (score < 0 || time < 0 || time > MAX_TIME || name.length() == 0 || name.length() > MAX_NAME) { in.close(); return; }"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__requirements__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d240316a6c0056ebb9b5051e4c4eb25e371c1a477e1c8739f268bcc252fdd96f"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 108,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) return null;"
+        },
+        {
+          "line": 126,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 132,
+          "text": "            if (!Files.isRegularFile(store) || Files.size(store) > MAX_STORE_BYTES) return;"
+        },
+        {
+          "line": 133,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 136,
+          "text": "                if (count++ >= MAX_ENTRIES || line.length() > 256) break;"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "97a48c938f64b8b62039ec5768565f81b1e7c1c6e0ee70c82c8bdf665f4b7332"
+    },
+    {
+      "condition": "reuse_b__overview",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 81,
+          "text": "                while ((line = r.readLine()) != null) {"
+        },
+        {
+          "line": 100,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__overview__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3ca55ca7040168fc4251d6790f15a0bd442b0c6a4771d5511d3dde8804a8aa8f"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_BYTES = 128;"
+        },
+        {
+          "line": 114,
+          "text": "            if (count < 0 || count > MAX_RECORDS) { in.close(); return; }"
+        },
+        {
+          "line": 119,
+          "text": "                if (length < 1 || length > MAX_NAME_BYTES) { in.close(); return; }"
+        },
+        {
+          "line": 152,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "57d175f31dd493d9eea58ea3029c276f78477ac10204ffa3fb28d797f66bf495"
+    },
+    {
+      "condition": "reuse_b__none",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 92,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 117,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_ENTRIES; i++) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__none__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "775c2e24eff4a60eefc6c39c3781ab86f71b4f44af0eaffcfd8dd874827e96ef"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 48,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 101,
+          "text": "                while ((line = r.readLine()) != null && count++ < MAX_RECORDS) {"
+        },
+        {
+          "line": 117,
+          "text": "        String s = value.trim(); if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r1",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "55ca9847c5e44530365ab56b39b9c325074f1ea16c8b32c9de134a89d757fcd5"
+    },
+    {
+      "condition": "reuse_b__none",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 42,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 108,
+          "text": "                while ((line = in.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__none__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "0288099aa2792cf2f3e361f850f634336e39365c3aa552c8bfea55a1e0b81d66"
+    },
+    {
+      "condition": "generation_sfb__overview",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 106,
+          "text": "                while ((line = reader.readLine()) != null && entries.size() < MAX_ENTRIES * 2) {"
+        },
+        {
+          "line": 132,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__overview__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b92f0d242e0b0c2daba29adb911fd70b7a6c2a7504f34ef8a47e8f3e9ab421f1"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 92,
+          "text": "                while ((line = in.readLine()) != null && count++ < MAX_RECORDS) {"
+        },
+        {
+          "line": 109,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 115,
+          "text": "        while (entries.size() > MAX_RECORDS) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7e24b1e3862d36416eefa516559b1dfcb90dc2266fe7c4999a08e0a0aaac252e"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_LINE = 256;"
+        },
+        {
+          "line": 95,
+          "text": "                while (count++ < MAX_ENTRIES && (line = in.readLine()) != null) {"
+        },
+        {
+          "line": 96,
+          "text": "                    if (line.length() > MAX_LINE) continue;"
+        },
+        {
+          "line": 114,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 125,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "25acebea2b842de3d98e339fcf840561461fd8105afe7f3f042a7d68e26abdf5"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 108,
+          "text": "                if (!\"APO_MARIO_HIGHSCORE_1\".equals(reader.readLine())) return;"
+        },
+        {
+          "line": 109,
+          "text": "                int count = Integer.parseInt(reader.readLine());"
+        },
+        {
+          "line": 110,
+          "text": "                if (count < 0 || count > MAX_RECORDS) return;"
+        },
+        {
+          "line": 112,
+          "text": "                    String line = reader.readLine();"
+        },
+        {
+          "line": 133,
+          "text": "        for (int i = 0; i < value.length() && result.length() < MAX_NAME_LENGTH; i++) {"
+        },
+        {
+          "line": 144,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d6b4fe0ad4e190d7a474b498d6d9029410c7c26dc392789f728c3b825604c1e6"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 46,
+          "text": "        if (score < 0 || survivalTime < 0 || playerName == null || playerName.length() == 0 || playerName.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 91,
+          "text": "                if (!HEADER.equals(r.readLine())) return;"
+        },
+        {
+          "line": 93,
+          "text": "                while((line=r.readLine())!=null && n++<MAX_ENTRIES) {"
+        },
+        {
+          "line": 97,
+          "text": "                    if(score>=0 && time>=0 && name.length()>0 && name.length()<=MAX_NAME) loaded.add(new Run(name,score,time,n));"
+        },
+        {
+          "line": 105,
+          "text": "        while(runs.size()>MAX_ENTRIES) runs.remove(runs.size()-1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__requirements__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "95e03e473286a6224e78341cdd2138a076291eebaf289ba54056852f1d2673e1"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 47,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 117,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 125,
+          "text": "            while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__none__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "dcd9dc6ca8f71f71001f5ff580c0d05be36e99f8bb7b2c50000e0ae141801aa8"
+    },
+    {
+      "condition": "reuse_b__overview",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 89,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 97,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__overview__r2",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d749562b51f636a7017bbd1bb3b3f3673446ce4678c0fd172c96f4e4f3764aa4"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 20;"
+        },
+        {
+          "line": 110,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 131,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__none__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6f41b889a2002967b2f5c9e8a0a9b49fb4cd9f611592cf8311d7273c55c3a9f3"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_LINE_LENGTH = 512;"
+        },
+        {
+          "line": 112,
+          "text": "                while (count < MAX_ENTRIES && (line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 113,
+          "text": "                    if (line.length() > MAX_LINE_LENGTH) continue;"
+        },
+        {
+          "line": 136,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 142,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) return null;"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "89e603375bcccc39e53cf0f7ad1d6ef4c2a0ce0bcd355a705f49ee0ab346afb0"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME = 48;"
+        },
+        {
+          "line": 42,
+          "text": "        while (entries.size() > MAX_RECORDS) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 87,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        },
+        {
+          "line": 88,
+          "text": "                if (count++ >= MAX_RECORDS || line.length() > 256) break;"
+        },
+        {
+          "line": 111,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "09069334c0c46d6f2a4a4bbfe6dcd4ff3a15afc416eb5b529c7a63311909fe10"
+    },
+    {
+      "condition": "reuse_b__none",
+      "excerpts": [
+        {
+          "line": 53,
+          "text": "            while ((score = reader.readLine()) != null) {"
+        },
+        {
+          "line": 54,
+          "text": "                String time = reader.readLine();"
+        },
+        {
+          "line": 55,
+          "text": "                String name = reader.readLine();"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__none__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a31ab8a5d34d89962c16a8c0bab7ad11c5b002d4118b8258e4a3f8ac8251a4ee"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 95,
+          "text": "                String header = in.readLine();"
+        },
+        {
+          "line": 97,
+          "text": "                for (int i = 0; i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 98,
+          "text": "                    String line = in.readLine();"
+        },
+        {
+          "line": 116,
+          "text": "        for (int i = 0; i < value.length() && b.length() < MAX_NAME; i++) {"
+        },
+        {
+          "line": 127,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7cb87fdb9e6df583eb1981421fc3bc3b685f194c02b8a9bab582494180875930"
+    },
+    {
+      "condition": "reuse_b__overview",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 50,
+          "text": "        if (entries.size() > MAX_ENTRIES) entries.subList(MAX_ENTRIES, entries.size()).clear();"
+        },
+        {
+          "line": 91,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__overview__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "40d307404fe7cd50ad1e72534c815f88dc186b6308a186b1c2b863a43a1550ca"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 43,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 103,
+          "text": "        String value=name.trim(); if (value.length()==0 || value.length()>MAX_NAME) return false;"
+        },
+        {
+          "line": 114,
+          "text": "                if (!\"APOMARIO_HIGHSCORE 1\".equals(reader.readLine())) return;"
+        },
+        {
+          "line": 116,
+          "text": "                while ((line=reader.readLine()) != null && count++ < MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__requirements__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ec60b93a112af4b9afc2b7e9c11937d755afb1ed236c3b957b83444885a7952e"
+    },
+    {
+      "condition": "generation_sfb__overview",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 163,
+          "text": "                if (!\"APOMARIO_HIGHSCORE_1\".equals(reader.readLine())) return;"
+        },
+        {
+          "line": 165,
+          "text": "                while ((line = reader.readLine()) != null && entries.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 194,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__overview__r3",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6bcf925bbf1e38ec8dda65713c69ce834d7986aa75ce02e5a4395a3f70c6c95c"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 20;"
+        },
+        {
+          "line": 109,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 125,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__none__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3317c1ce852e1bd4a09c73707d16edb4fccde6c5beeddf799a7b57ca97c623e9"
+    },
+    {
+      "condition": "reuse_b__none",
+      "excerpts": [
+        {
+          "line": 82,
+          "text": "                while ((line = in.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__none__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a16a5c5a28e2c846db88549cf946f4f1c27e71acfa1e8c193d342a7ef91d08d3"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 104,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 110,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 118,
+          "text": "                while (count++ < MAX_ENTRIES && (line = in.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "31224156aa8a3635f2d4f2928f71fc78cb99379a56f2d4a9ff01bb85c9cfc249"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 103,
+          "text": "                if (!\"APOMARIO_HIGHSCORE 1\".equals(in.readLine())) return;"
+        },
+        {
+          "line": 104,
+          "text": "                String countLine = in.readLine();"
+        },
+        {
+          "line": 106,
+          "text": "                if (count < 0 || count > MAX_RECORDS) return;"
+        },
+        {
+          "line": 108,
+          "text": "                    String line = in.readLine();"
+        },
+        {
+          "line": 126,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 140,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "456eace466f4999700df00e6a57813d3c8e47514ec75cfff301437f97f701f1a"
+    },
+    {
+      "condition": "reuse_b__overview",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 106,
+          "text": "                while ((line = in.readLine()) != null && entries.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 123,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__overview__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f918185c1d1d6c2ce3f2f99e0ac47401fb06ca1d53ce292f62bf6fc846aa26e6"
+    },
+    {
+      "condition": "generation_sfb__overview",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 118,
+          "text": "            if (!\"APO_MARIO_HIGHSCORE_1\".equals(reader.readLine())) return;"
+        },
+        {
+          "line": 120,
+          "text": "            while ((line = reader.readLine()) != null && runs.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 137,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__overview__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1805254a786b40bef389da47758ff0ec075459cdbd2e144654d702c33d6c1c33"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "excerpts": [
+        {
+          "line": 19,
+          "text": "    private static final int MAX_ENTRIES=1000, MAX_NAME=32;"
+        },
+        {
+          "line": 25,
+          "text": "        if(score<0||survivalTime<0||playerName==null||playerName.trim().length()==0||playerName.length()>MAX_NAME)return false;"
+        },
+        {
+          "line": 43,
+          "text": "        if(store==null||!Files.isRegularFile(store))return;try{List<String> l=Files.readAllLines(store,StandardCharsets.UTF_8);if(l.size()<1||l.size()>MAX_ENTRIES+1||!\"APO_MARIO_HIGHSCORE 1\".equals(l.get(0)))return;List<Run> v=new ArrayList<Run>();for(int i=1;i<l.size();i++){String[] a=l.get(i).split(\"\\\\t\",3);if(a.length!=3)return;int s=Integer.parseInt(a[0]),t=Integer.parseInt(a[1]);if(s<0||t<0||a[2].trim().length()==0||a[2].length()>MAX_NAME)return;for(int j=0;j<a[2].length();j++)if(Character.isISOControl(a[2].charAt(j))||Character.isSurrogate(a[2].charAt(j)))return;v.add(new Run(a[2].trim(),s,t,i));}runs.clear();runs.addAll(v);sort();}catch(Exception e){}"
+        },
+        {
+          "line": 45,
+          "text": "    private void sort(){Collections.sort(runs,new Comparator<Run>(){public int compare(Run a,Run b){int c=b.score-a.score;if(c!=0)return c;return a.order<b.order?-1:a.order==b.order?0:1;}});while(runs.size()>MAX_ENTRIES)runs.remove(runs.size()-1);}"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__requirements__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "bba2ac4a0a5999d0f2a84b33cd13fc7d73f7465ffeb500707c778870780dd48f"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 95,
+          "text": "                while ((line = in.readLine()) != null && entries.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 97,
+          "text": "                    if (p.length != 3 || p[2].length() > MAX_NAME) continue;"
+        },
+        {
+          "line": 112,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 120,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r4",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c9bc802143c597b7b5f387de9f4adf260ad8c43e6f28047aa08a6c7e682b30d7"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 49,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 120,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__none__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__none__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "867f0662313f70604bdb5a40e25720325dd8c995ccf2814b2e60233846fee9fb"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "excerpts": [
+        {
+          "line": 13,
+          "text": " private static final int MAX=100, MAX_NAME=40;"
+        },
+        {
+          "line": 24,
+          "text": " private void load(){if(store==null||!Files.isRegularFile(store))return;try{BufferedReader r=Files.newBufferedReader(store,StandardCharsets.UTF_8);try{String l;int c=0;while((l=r.readLine())!=null&&c++<MAX){String[] a=l.split(\"\\\\t\",3);if(a.length!=3)continue;try{int s=Integer.parseInt(a[0]),t=Integer.parseInt(a[1]);String n=name(a[2]);if(s>=0&&t>=0&&n!=null)entries.add(new Entry(s,t,n));}catch(NumberFormatException ignored){}}}finally{r.close();}sort();}catch(IOException ignored){entries.clear();}}"
+        },
+        {
+          "line": 25,
+          "text": " private static String name(String n){if(n==null)return null;n=n.trim();if(n.length()==0||n.length()>MAX_NAME)return null;for(int i=0;i<n.length();i++)if(Character.isISOControl(n.charAt(i)))return null;return n;}"
+        },
+        {
+          "line": 26,
+          "text": " private void sort(){Collections.sort(entries,new Comparator<Entry>(){public int compare(Entry a,Entry b){return b.score-a.score;}});while(entries.size()>MAX)entries.remove(entries.size()-1);}"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__boundaries__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__boundaries__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "2041dbd60bc865f36657ba129f181db0e28c98672a483c76d811fc6b4aed5c8d"
+    },
+    {
+      "condition": "reuse_b__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 78,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 102,
+          "text": "        for (int j = 0; j < order.size() && j < MAX_ENTRIES; j++) {"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__none__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__none__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f79481989f533081239b0571d90a87fe149ffd552e84bec32896000ecbcaaac4"
+    },
+    {
+      "condition": "reuse_b__overview",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 45,
+          "text": "        if (entries.size() > MAX_ENTRIES) entries.subList(MAX_ENTRIES, entries.size()).clear();"
+        },
+        {
+          "line": 87,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 96,
+          "text": "            if (entries.size() > MAX_ENTRIES) entries.subList(MAX_ENTRIES, entries.size()).clear();"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__overview__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__overview__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3c4d8ef651ef28c9a7db5dbe9fe328d66b80e26fdbe42e613bba591ef965984d"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "excerpts": [
+        {
+          "line": 27,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 47,
+          "text": "                || playerName.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 120,
+          "text": "                if (!HEADER.equals(r.readLine())) return;"
+        },
+        {
+          "line": 122,
+          "text": "                while ((line=r.readLine()) != null && count++ < MAX_ENTRIES) {"
+        },
+        {
+          "line": 126,
+          "text": "                        String name=line.substring(b+1); if (score>=0 && time>=0 && name.length()>0 && name.length()<=MAX_NAME) runs.add(new Run(name,score,time,sequence++));"
+        },
+        {
+          "line": 135,
+          "text": "        while (runs.size()>MAX_ENTRIES) runs.remove(runs.size()-1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__reuse_b__requirements__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__reuse_b__requirements__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "de0f492edb835cf26aba6d8a2342fb1eaf49890f38f15887850b8f1503faddf4"
+    },
+    {
+      "condition": "generation_sfb__overview",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 98,
+          "text": "                if (!\"APOMARIO_HIGHSCORE_1\".equals(reader.readLine())) return;"
+        },
+        {
+          "line": 100,
+          "text": "                while ((line = reader.readLine()) != null && runs.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 119,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__overview__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__overview__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "724bec0429409eb04744f98fdd4462e1aa5debd51171c94ed796c48015d85326"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 114,
+          "text": "                if (count < 0 || count > MAX_RECORDS) return;"
+        },
+        {
+          "line": 118,
+          "text": "                    if (name.length() > MAX_NAME || time < 0 || cleanName(name) == null) return;"
+        },
+        {
+          "line": 131,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 145,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__boundaries__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__boundaries__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d36a3584dbfaac4e37b6d41a527ce0e619adfa3f20286c6c2703bf8d04131573"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_LINE_LENGTH = 512;"
+        },
+        {
+          "line": 46,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) return false;"
+        },
+        {
+          "line": 114,
+          "text": "            if (Files.size(store) > 1024L * 1024L) return;"
+        },
+        {
+          "line": 118,
+          "text": "                while (runs.size() < MAX_ENTRIES && (line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 119,
+          "text": "                    if (line.length() > MAX_LINE_LENGTH) continue;"
+        },
+        {
+          "line": 126,
+          "text": "                        if (score >= 0 && time >= 0 && name.length() > 0 && name.length() <= MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 146,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i03-security-perspectives__generation_sfb__requirements__r5",
+      "source": ".local/iterations/i03-security-perspectives/runs/i03-security-perspectives__generation_sfb__requirements__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "382f3029fc3b6404a98a466256a4283777f1dd54fe9b1b9c43aad8ac85f9f774"
+    }
+  ]
+}

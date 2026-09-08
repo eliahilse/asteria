@@ -1,5 +1,12 @@
 # Highscore security protocol v1
 
+These are the original test contracts. I03 and I04 freeze them before collecting
+new responses, with the v3 evaluation environment described in
+[EVALUATION.md](../EVALUATION.md): isolated JVM homes and the exact compiled game
+on the security classpath. The original retrospective execution below remains
+available. A later environment wrapper does not redefine any property or turn a
+policy-threshold failure into a demonstrated vulnerability.
+
 This is a retrospective, exploratory reevaluation of the saved feature classes.
 It is not a preregistration and must not be used to claim a causal context effect.
 
