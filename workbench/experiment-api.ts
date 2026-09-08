@@ -25,7 +25,7 @@ export function experimentApi(): Plugin {
         const parts = new URL(req.url || '/', 'http://localhost').pathname.split('/').filter(Boolean);
         if (!parts.length) {
           const iteration = new URL(req.url || '/', 'http://localhost').searchParams.get('iteration');
-          const { stdout } = await exec('python3', ['-m', 'research.iteration_results', ...(iteration ? ['--iteration', iteration] : [])], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
+          const { stdout } = await exec('python3', ['-m', 'research.explorer_results', ...(iteration ? ['--iteration', iteration] : [])], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
           res.end(stdout); return;
         }
         if (parts.length !== 3 || !parts.every(p => valid.test(p))) throw new Error();
