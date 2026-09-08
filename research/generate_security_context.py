@@ -1,4 +1,4 @@
-"""Repository/task-only context acquisition v2 with stable inspected-evidence IDs.
+"""Repository/task-only context acquisition v3 with stable inspected-evidence IDs.
 
 Recommendations are explicitly prospective. References select returned excerpts;
 the harness supplies their exact source locations, without asking the model to
@@ -45,6 +45,8 @@ Use basis=observed for repository facts, task for requirements directly from the
 Observed facts and existing-risk claims require inspected evidence IDs. Recommendations can have empty evidence_ids if
 explicitly based on the task or reasoning; never claim those safeguards already exist. Keep them even when no existing
 implementation can be cited. Separate recommendation, change_risk, existing_risk, security_property and unknown items.
+An explicitly unknown item may have no evidence IDs, including when searches returned no matches. Such an item remains
+uncited and unverified; a search miss does not establish that something is absent from the repository.
 An API's presence does not prove a vulnerability. Do not claim you ran tests or established exploitability.
 Give precise, nonduplicated context useful for the requested change. Avoid generic slogans or padding. Preserve uncertainty.
 '''
@@ -58,7 +60,7 @@ def prepare(repo: Path, task: str, strategy: str, output: Path, max_turns=16):
     prompt = PROTOCOL + '\nSTRATEGY\n' + STRATEGIES[strategy][1] + '\nTASK\n' + task.strip()
     prompt += f'\nBUDGET\n{max_turns} total model turns, including finish.\nREPOSITORY FILE INDEX\n' + json.dumps(snap['files'], ensure_ascii=False)
     prompt += '\nOMITTED FILES\n' + json.dumps(snap['omitted'], ensure_ascii=False)
-    record = {'schemaVersion': 2, 'protocol': 'repository-security-context-v2-evidence-ids', 'id': identifier,
+    record = {'schemaVersion': 3, 'protocol': 'repository-security-context-v3-explicit-unknowns', 'id': identifier,
         'status': 'prepared', 'startedAt': timestamp(), 'repository': repo.name, 'task': task.strip(), 'strategy': strategy,
         'model': MODEL, 'settings': SETTINGS, 'maxTurns': max_turns, 'snapshotFingerprint': snap['fingerprint'],
         'initialPrompt': prompt, 'turns': [], 'output': None, 'citationChecks': None, 'settingsVerified': None,
@@ -83,10 +85,10 @@ def validate_output(action: dict, evidence: dict):
         for key in ('evidence_ids', 'cwes'):
             if not isinstance(item.get(key), list) or not all(isinstance(x, str) for x in item[key]): raise ValueError(f'Invalid {key}')
         if any(identifier not in evidence for identifier in item['evidence_ids']): raise ValueError(f"Unknown evidence ID in {item['id']}; retain the claim and correct only the reference or its explicit basis")
-        if item['kind'] in ('security_property', 'existing_risk') and item['basis'] != 'observed': raise ValueError('Properties and existing risks require observed basis')
-        if item['basis'] == 'observed' and not item['evidence_ids']: raise ValueError('Observed claims need inspected references; prospective recommendations may be reasoned or task-based')
+        if item['kind'] in ('security_property', 'existing_risk') and item['basis'] != 'observed': raise ValueError(f"Item {item['id']}: properties and existing risks require observed basis; label proposals as recommendations instead")
+        if item['basis'] == 'observed' and not item['evidence_ids'] and item['kind'] != 'unknown': raise ValueError(f"Observed claims need inspected references (item {item['id']}); prospective recommendations may be reasoned or task-based")
         refs = [{**evidence[key], 'inspected': True, 'sourceMatch': True} for key in dict.fromkeys(item['evidence_ids'])]
-        resolved.append({**item, 'evidence': refs, 'citationStatus': 'matched' if refs else 'explicitly_prospective'})
+        resolved.append({**item, 'evidence': refs, 'citationStatus': 'matched' if refs else ('uncited_unknown' if item['kind'] == 'unknown' else 'explicitly_prospective')})
     citations = sum(len(i['evidence']) for i in resolved)
     checks = {'matched': citations, 'total': citations, 'uncitedItems': sum(not i['evidence'] for i in resolved),
         'itemsByKind': {kind: sum(i['kind'] == kind for i in resolved) for kind in sorted(KINDS)},
@@ -101,7 +103,8 @@ def prompt_insert(record):
         lines += ['', f"[{item['kind']}; {item['basis']}; {item['topic']}] {item['statement']}", 'Task relevance: ' + item['task_relevance']]
         for ref in item['evidence']:
             lines.append(f"Inspected source {ref['evidence_id']}: {ref['path']}:{ref['start_line']}-{ref['end_line']}")
-        if not item['evidence']: lines.append('Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.')
+        if not item['evidence']:
+            lines.append('Uncited unknown; the absence of a finding does not establish absence from the repository.' if item['kind'] == 'unknown' else 'Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.')
         lines.append('Suggested verification: ' + item['suggested_check'])
     lines += ['', 'Uncertainty and limits:', *['- ' + value for value in output['limitations']], '--- END REPOSITORY-DERIVED SECURITY CONTEXT ---', '']
     return '\n'.join(lines)
