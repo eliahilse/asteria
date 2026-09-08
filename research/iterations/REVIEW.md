@@ -6,10 +6,10 @@ functionality. It is an **exploratory single-task study**. Later strategies were
 developed from earlier findings; each subsequent schedule was frozen before its
 code collection and completed with unfavorable outcomes retained.
 
-Start with the [latest completed I06 findings](i06-operational-guards/findings.md),
-[workbook](i06-operational-guards/qualified-results.xlsx) and
-[per-check figure](i06-operational-guards/figures-qualified/per-check-security-effects.pdf).
-I07 is collecting a fresh acquisition replication. I08 is the declared follow-up
+Start with the [latest completed I07 findings](i07-operational-replication/findings.md),
+[workbook](i07-operational-replication/qualified-results.xlsx) and
+[two-round comparison](i07-operational-replication/replication-analysis.md).
+I07 completes a fresh acquisition replication. I08 is the declared follow-up
 that repeats evaluation of fixed artifacts, without new model samples.
 
 ## What the context is
@@ -50,6 +50,7 @@ budget, so their totals are not pooled as a treatment-effect estimate.
 | [I04](i04-matrix-replication/findings.md) | 80 | 6 | 3 | 150 | 33 | 69 | 0 |
 | [I05](i05-budget-sensitivity/findings.md) | 80 | 0 | 5 | 184 | 28 | 75 | 1 |
 | [I06](i06-operational-guards/findings.md) | 80 | 2 | 5 | 190 | 24 | 76 | 4 |
+| [I07](i07-operational-replication/findings.md) | 80 | 2 | 5 | 203 | 27 | 74 | 0 |
 
 I03 covers Generation S+F+B and Reuse B; I04–I06 also cover Generation S and Reuse
 S+B. These four cells were selected by the preserved original 2 × 8 matrix replay.
@@ -94,8 +95,11 @@ context versus 2/20 controls, with full functionality 19/20 versus 20/20. But al
 five Reuse S+B operational large-record outcomes are unresolved, negative-score
 policy failures persist, and retention policy regresses in that cell. The evidence
 supports a specific fixture improvement, not uniform security improvement or a
-claim that all passing artifacts are secure. I07 will test whether that tendency
-survives fresh context acquisition; I08 will check local evaluator repeatability.
+claim that all passing artifacts are secure. I07 repeats lower total counts in
+every combination, but operations achieve only 13 oversized-line passes, six
+heap-exhaustion failures and one unmeasured result; full functionality is 18/20
+versus 19/20 controls. There are no qualified joint passes in I07. The perfect
+resource result did not fully replicate. I08 will check local evaluator repeatability.
 
 ## Recovery and review
 
