@@ -5,7 +5,7 @@ import { reportWorkbook } from './report-workbook';
 import type { MatrixData } from './experiment-types';
 
 it('recreates the report sheets with numeric values, context columns, and blank untested cells', async () => {
-  const data: MatrixData = JSON.parse(await readFile('public/data/matrix.json', 'utf8'));
+  const data: MatrixData = JSON.parse(await readFile('../research/iterations/i07-operational-replication/qualified-results.json', 'utf8'));
   const loaded = new ExcelJS.Workbook();
   await loaded.xlsx.load(await reportWorkbook(data).xlsx.writeBuffer());
   expect(loaded.worksheets.map(s => s.name)).toEqual(['Overview', 'Compile Rate', 'Pass Rate', 'Reuse vs Generation', 'Compile Failure Analysis',

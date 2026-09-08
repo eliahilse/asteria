@@ -36,9 +36,9 @@ export function Experiment() {
   const rows = combinationRows(data);
   const unit = data.studies.some(s => s.plan.observationUnit === 'trajectory') ? 'trajectories' : 'attempts';
   const budget = Math.max(...data.studies.map(s => s.plan.maxSubmissions ?? 1));
-  const download = async (kind: 'json' | 'xlsx') => { setBusy(true); try { const { exportExperiment } = await import('./experiment-export'); await exportExperiment(data, kind); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
+  const download = async (kind: 'json' | 'xlsx' | 'report') => { setBusy(true); try { const { exportExperiment } = await import('./experiment-export'); await exportExperiment(data, kind); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
   return <section aria-label="Context combinations">
-    <div className="combination-tools"><p className="note">{rows.length} combinations · Quality percentages use all N {unit}.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
+    <div className="combination-tools"><p className="note">{rows.length} combinations · Quality percentages use all N {unit}.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('report')}>Export report XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
     {!data.local && rows.every(r => !r.values.attempts) && <p className="note">Public plans only. No observations in this snapshot.</p>}
     {error && <p role="alert">{error}</p>}
     {data.studies.filter(s => s.plan.evaluationNote).map(s => <p className="note" key={s.plan.id}>{s.plan.evaluationNote}</p>)}
