@@ -4,6 +4,7 @@ import { textChunks } from './export';
 import { matrixComparisons } from './experiment-analysis';
 import { combinationRows, statColumns } from './combination-stats';
 import { wilson } from './analysis';
+import { reportWorkbook } from './report-workbook';
 type Row = Record<string, string | number | boolean | null | undefined>;
 export function experimentWorkbook(data: MatrixData) {
   const wb = new ExcelJS.Workbook(), overflow: Row[] = [];
@@ -37,8 +38,8 @@ export function experimentWorkbook(data: MatrixData) {
   sheet('Check observations', data.studies.flatMap(s => s.runs.flatMap(r => r.checks.map(c => ({ study: s.plan.id, run_id: r.runId, condition: r.condition, ...c })))), ['study', 'run_id', 'suite', 'name', 'status', 'detail']);
   sheet('Long text', [...overflow], ['ref', 'part', 'text']); return wb;
 }
-export async function exportExperiment(data: MatrixData, format: 'json' | 'xlsx') {
-  const body = format === 'json' ? JSON.stringify(data, null, 2) : new Uint8Array(await experimentWorkbook(data).xlsx.writeBuffer());
+export async function exportExperiment(data: MatrixData, format: 'json' | 'xlsx' | 'report') {
+  const body = format === 'json' ? JSON.stringify(data, null, 2) : new Uint8Array(await (format === 'report' ? reportWorkbook(data) : experimentWorkbook(data)).xlsx.writeBuffer());
   const url = URL.createObjectURL(new Blob([body], { type: format === 'json' ? 'application/json' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
-  const a = document.createElement('a'); a.href = url; a.download = `highscore-matrix.${format}`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const a = document.createElement('a'); a.href = url; a.download = format === 'report' ? 'experiment_results_report.xlsx' : `highscore-matrix.${format}`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
