@@ -69,9 +69,9 @@ jobs:
           assert report['jointSuccess'] is False
           print('Reference reproduced: 16/16 functional, 5/11 security; no new model attempt.')
           PY
-      - name: Calibrate evaluation with isolated JVM homes
+      - name: Calibrate isolated JVM homes and integrated security classpath
         run: |
-          xvfb-run -a python3 -m research.evaluate_isolated --response experiments/vamos_security_pilot/results/raw_responses/gpt-5.4-mini_none__generation_s__r1.txt --output "$RUNNER_TEMP/isolated-calibration"
+          xvfb-run -a python3 -m research.evaluate_integrated --response experiments/vamos_security_pilot/results/raw_responses/gpt-5.4-mini_none__generation_s__r1.txt --output "$RUNNER_TEMP/isolated-calibration"
           python3 - <<'PY'
           import json, os
           from pathlib import Path
@@ -79,6 +79,8 @@ jobs:
           assert report['functionalSuccess'] is True, report['checks']
           assert len(report['checks']) == 16
           assert sum(c['status'] == 'pass' for c in report['security']['checks']) == 5
+          assert report['security']['linkage']['compiledClasses']
+          assert report['security']['linkage']['probeCompilation']['exitCode'] == 0
           homes = [jvm['home'] for jvm in report['isolatedJvms']]
           assert homes and len(homes) == len(set(homes))
           assert all(not Path(home).exists() for home in homes)
