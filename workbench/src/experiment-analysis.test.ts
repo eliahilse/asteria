@@ -14,6 +14,8 @@ test('security comparisons use fresh matching controls and preserve missing deno
     { id: 'new-treatment', checks: [{ ...check, fail: 1, not_run: 0, executed: 2, passRate: 0.5 }] },
     { id: 'unrelated-control', checks: [{ ...check, passRate: 0 }] },
   ] }, runs: [] } as unknown as MatrixStudy;
+  for (const c of study.plan.conditions) Object.assign(c, { strategy: 'Reuse', paperPromptId: 3, contextTypes: ['S'], baseContext: 'S' });
+  for (const r of study.summary.conditions) Object.assign(r, { attempts: 2, pending: 0, compiled: 1, fullFunctional: 0, unverifiedSettings: 0, transportErrors: 0 });
   const [comparison] = matrixComparisons(study);
   expect(comparison.control).toBe('new-control');
   expect(comparison.testedDeltaPp).toBe(-50);

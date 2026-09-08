@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import type { MatrixData } from './experiment';
 import { textChunks } from './export';
 import { matrixComparisons } from './experiment-analysis';
+import { combinationRows, statColumns } from './combination-stats';
 type Row = Record<string, string | number | boolean | null | undefined>;
 export function experimentWorkbook(data: MatrixData) {
   const wb = new ExcelJS.Workbook(), overflow: Row[] = [];
@@ -11,6 +12,8 @@ export function experimentWorkbook(data: MatrixData) {
     rows.forEach((row, i) => { const safe: Row = {}; for (const [k, v] of Object.entries(row)) { if (typeof v === 'string' && v.length > 30000) { const ref = `${name}:${i + 2}:${k}`; textChunks(v).forEach((text, part) => overflow.push({ ref, part: part + 1, text })); safe[k] = `Long text: ${ref}`; } else safe[k] = v ?? null; } s.addRow(safe); });
     s.getRow(1).font = { bold: true }; return s;
   };
+  sheet('Combinations', combinationRows(data).map(r => ({ study: r.study, cohort: r.phase, method: r.method, paper_context: r.paper.join('+') || 'None', security_strategy: r.security,
+    ...Object.fromEntries(statColumns.map(c => [`${c.group} · ${c.label}`, r.values[c.key]])) })));
   sheet('Studies', data.studies.map(s => ({ id: s.plan.id, phase: s.plan.phase, manifest_sha256: s.plan.fingerprint, model: s.plan.model, requested_reasoning: s.plan.reasoning, complete: s.summary.complete, selected: s.summary.selected.join(', '), deviations: s.plan.deviations.join('\n') })));
   sheet('Matrix', data.studies.flatMap(s => s.plan.conditions.map(c => { const r = s.summary.conditions.find(r => r.id === c.id)!; return { study: s.plan.id, condition: c.id, method: c.strategy, paper_context: c.baseContext, security_context: c.securityStrategy, paper_prompt_id: c.paperPromptId, attempts: r.attempts, planned: r.planned, pending: r.pending, compilations: r.compiled, full_functional: r.fullFunctional, full_functional_rate: r.attempts ? r.fullFunctional / r.attempts : null, functional_checks_passed: r.functionalChecksPassed, functional_checks_all_attempts: 16 * r.attempts, settings_unverified: r.unverifiedSettings, transport_errors: r.transportErrors, context_acquisition_id: c.contextAcquisitionId, prompt_characters: c.promptCharacters, prompt_bytes: c.promptBytes, prompt_sha256: c.promptSha256 }; })));
   sheet('Selection', data.studies.flatMap(s => Object.entries(s.summary.ranking ?? {}).flatMap(([method, conditions]) => conditions.map((condition, i) => ({ study: s.plan.id, method, rank: i + 1, condition, selected: s.summary.selected.includes(condition) })))), ['study', 'method', 'rank', 'condition', 'selected']);
