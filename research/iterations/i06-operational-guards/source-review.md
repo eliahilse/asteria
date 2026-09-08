@@ -54,3 +54,22 @@ Even where that file-level property holds, the caller's success indication needs
 its own contract and test. The original functional suite and ten issue contracts
 do not cover every generated recommendation. Full marks on those checks cannot
 establish complete implementation of the acquired security context.
+
+## A lifecycle guard that suppresses later runs
+
+The failed Reuse B operational trajectory, repetition 3, adds a
+`highscoreRecorded` boolean to `ApoMarioLevel`. Its three occurrences are the field
+declaration, an early-return condition and an assignment to true; there is no
+reset to false. The [exact excerpts and occurrence list](source-review/run-lifecycle.json)
+retain source and report hashes. After one recording on a level instance, this
+guard suppresses further records on that instance. The autonomous report contains
+the 54,321-point run but misses the other requested runs, consistent with that
+state-lifetime error.
+
+The shared operational context asks for one record per eligible run and a per-run
+marker. The generated code instead gives its marker the level object's lifetime.
+This is a concrete implementation defect in a suggested safeguard, not evidence
+that duplicate protection itself should be removed. Three failed assertions here
+depend on missing records; they do not demonstrate three independent defects.
+This post-collection explanation does not isolate the causal effect of the
+context or alter the frozen feedback or test counts.

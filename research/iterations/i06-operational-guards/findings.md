@@ -89,8 +89,8 @@ comparison with an announced three-attempt budget.
 The four final functional failures are autonomous gameplay assertions, not failed
 compilation or a bootstrap exception. Generation S requirements repetition 2
 records no completed runs. Reuse B operations repetition 3, Reuse B requirements
-repetition 5 and Generation S+F+B requirements repetition 5 retain the later run
-but fail the earlier-run and combined-board assertions. The
+repetition 5 and Generation S+F+B requirements repetition 5 contain the 54,321-point
+run but fail assertions requiring the other runs and combined board. The
 [functional diagnostics](functional-diagnostics.csv) preserve the exact process
 output and report hashes; every failure stays in the denominator.
 

@@ -1,0 +1,39 @@
+{
+  "runId": "i06-operational-guards__reuse_b__operations__r3",
+  "originalSource": ".local/iterations/i06-operational-guards/runs/i06-operational-guards__reuse_b__operations__r3/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/level/ApoMarioLevel.java",
+  "sourceSha256": "cbb9645281a9b1b8e8fd712f5e23f612e81362f1c59cd7f666c09930c6b983ef",
+  "report": ".local/iterations/i06-operational-guards/runs/i06-operational-guards__reuse_b__operations__r3/submission-5/evaluation/report.json",
+  "reportSha256": "e336d7c222e58fb605016b41e62bd4041ffe8e5bff9247a34bf5dac51dbb66ad",
+  "selection": "Post-collection diagnosis of the failed Reuse B operational trajectory; no code or outcomes changed.",
+  "allIdentifierOccurrences": [
+    {
+      "line": 125,
+      "text": "\tprivate boolean highscoreRecorded;"
+    },
+    {
+      "line": 1162,
+      "text": "\t\tif (this.highscoreRecorded || this.bReplay || !(this.component instanceof ApoMarioPanel)) return;"
+    },
+    {
+      "line": 1165,
+      "text": "\t\tthis.highscoreRecorded = true;"
+    }
+  ],
+  "excerpts": [
+    {
+      "startLine": 120,
+      "endLine": 129,
+      "text": "\tprivate String levelString;\n\t\n\tprivate int levelStartTime;\n\t\n\tprivate boolean bIcarus;\n\tprivate boolean highscoreRecorded;\n\tprivate ApoMarioPlayer icarus;\n\tprivate float icarusLastY;\n\tprivate float icarusLastVecY;\n\tprivate final ApoAnimation fireAnimation; "
+    },
+    {
+      "startLine": 1158,
+      "endLine": 1168,
+      "text": "\t\treturn this.players;\n\t}\n\n\tpublic void recordRunEnd() {\n\t\tif (this.highscoreRecorded || this.bReplay || !(this.component instanceof ApoMarioPanel)) return;\n\t\tApoMarioPanel panel = (ApoMarioPanel)this.component;\n\t\tif (panel.isBEditor()) return;\n\t\tthis.highscoreRecorded = true;\n\t\tpanel.recordRunEnd(this);\n\t}\n"
+    },
+    {
+      "startLine": 1218,
+      "endLine": 1227,
+      "text": "\t\t\t\t}\n\t\t\t} else {\n\t\t\t\tif (bWin) {\n\t\t\t\t\tplayerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);\n\t\t\t\t}\n\t\t\t}\n\t\t\tthis.recordRunEnd();\n\t\t\tif (game.isBEditor()) {\n\t\t\t\tgame.setEditor();\n\t\t\t} else {"
+    }
+  ]
+}
