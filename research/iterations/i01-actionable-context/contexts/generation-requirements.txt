@@ -1,0 +1,106 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Apply this task-specific context while implementing the feature. Observations and recommendations are model-generated; preserve stated uncertainty.
+
+Revised task-relevant security context with corrected source citations for highscore implementation
+
+[security_property: authoritative score source] ApoMarioPlayer stores score in an int points field, exposes getPoints(), and the level mutates player scores during terminal scoring. Run-end recording should read the actual player score after terminal scoring completes rather than recompute it from UI state.
+Task relevance: Prevents stale or mismatched values when recordRunEnd integrates with level completion and loss paths.
+Source: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:166-176
+	/**
+	 * gibt die Punkte des Spielers zurück
+	 * @return gibt die Punkte des Spielers zurück
+	 */
+	public int getPoints() {
+		return this.points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1190-1197
+			if (!this.isOnePlayer()) {
+				if (bWin) {
+					if ((playerOne.getX() > playerTwo.getX()) && (playerOne.isBVisible())) {
+						playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+						playerTwo.setPoints(playerTwo.getPoints() + (int)(addTimeDifficultyWidthPoints * percentTwo));
+					} else if ((playerOne.getX() < playerTwo.getX()) && (playerTwo.isBVisible())) {
+						playerTwo.setPoints(playerTwo.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+						playerOne.setPoints(playerOne.getPoints() + (int)(addTimeDifficultyWidthPoints * percentOne));
+Suggested verification: Trace all clear and loss terminal paths and invoke recordRunEnd once after the final score mutation; test that a repeated terminal update cannot create duplicate records.
+
+[security_property: player identity input] The existing player identity exposed by the player object is teamName. It has a public setter/getter, and setAi(null) clears it, so the value can be caller-controlled or null. The inspected code does not establish validation or a length bound.
+Task relevance: Highscore persistence and rendering consume this value; null handling, control-character filtering, length limits, and safe display belong at the highscore input/UI boundary.
+Source: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:116-125
+	public String getTeamName() {
+		return this.teamName;
+	}
+	
+	public String getAuthor() {
+		return this.author;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
+Source: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:190-198
+		this.ai = ai;
+		if (this.ai != null) {
+			this.teamName = this.ai.getTeamName();
+			this.author = this.ai.getAuthor();
+			this.pathAI = path;
+			this.ai.load(this.pathAI);
+		} else {
+			this.teamName = null;
+			this.author = null;
+Suggested verification: At storeRun, define a finite maximum name length, reject or normalize null/blank names, and remove line separators/control characters before writing or displaying names. Ensure menu rendering treats names only as text.
+
+[security_property: multi-player terminal scoring] Terminal scoring has separate one-player/multi-player and winner/tie branches, and may award points to both players based on finish position and other values. The inspected evidence does not establish which player(s) are eligible for the highscore or whether AI/replay runs should be recorded.
+Task relevance: recordRunEnd must not silently choose the wrong player or record synthetic runs contrary to the feature's intended player identity.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1190-1204
+			if (!this.isOnePlayer()) {
+				if (bWin) {
+					if ((playerOne.getX() > playerTwo.getX()) && (playerOne.isBVisible())) {
+						playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+						playerTwo.setPoints(playerTwo.getPoints() + (int)(addTimeDifficultyWidthPoints * percentTwo));
+					} else if ((playerOne.getX() < playerTwo.getX()) && (playerTwo.isBVisible())) {
+						playerTwo.setPoints(playerTwo.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+						playerOne.setPoints(playerOne.getPoints() + (int)(addTimeDifficultyWidthPoints * percentOne));
+					} else if (playerOne.getX() == playerTwo.getX()) {
+						if (playerOne.getPoints() > playerTwo.getPoints()) {
+							playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+							playerTwo.setPoints(playerTwo.getPoints() + (int)(addTimeDifficultyWidthPoints * percentTwo));
+						} else if (playerOne.getPoints() < playerTwo.getPoints()) {
+							playerTwo.setPoints(playerTwo.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+							playerOne.setPoints(playerOne.getPoints() + (int)(addTimeDifficultyWidthPoints * percentOne));
+Suggested verification: Specify eligibility and player selection before integrating; exclude AI/replay/simulation unless required, and test one-player, two-player, tie, clear, and loss cases.
+
+[unknown: survival-time source and units] ApoMarioLevel exposes getStartTime() and getTime(), but the inspected excerpts do not establish whether these represent elapsed milliseconds, a configured limit, or another unit. The requested survivalTime contract is milliseconds, so the correct elapsed-time source remains unknown.
+Task relevance: Using the wrong field or unit can produce incorrect mm:ss display and invalid persisted values.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:393-399
+	public int getStartTime() {
+		return this.levelStartTime;
+	}
+	
+	public int getTime() {
+		return this.time;
+	}
+Suggested verification: Inspect all writes/reads of levelStartTime and time plus the update loop; establish a monotonic elapsed-millisecond value, reject negative values, and capture it once at terminal transition. Format only at display time as mm:ss, retaining milliseconds in storage.
+
+[change_risk: untrusted highscore file] The required constructor accepts a Path to a file, while no highscore persistence implementation was observed. The store may be absent, malformed, oversized, inaccessible, or concurrently modified; loading it as trusted input could cause excessive resource use, exceptions, or corrupted associations.
+Task relevance: Persistence across runs makes file loading and rewriting a security boundary.
+Suggested verification: At ApoMarioHighscore load/persist boundaries, use an explicit non-executable format and charset, bounded entry count/name/total size, strict integer and millisecond range checks, graceful malformed-record handling, and atomic temporary-file replacement. Ensure integration supplies an application-owned path rather than a player-controlled path.
+
+[change_risk: sorting and API mutability] The required API exposes separate lists for names, scores, and survival times. Keeping parallel mutable lists or sorting only scores could detach names and times from their scores; returning internal mutable lists could also let callers corrupt ordering and associations.
+Task relevance: Descending score order must preserve each complete run record across insertion, reload, and menu display.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1199-1204
+						if (playerOne.getPoints() > playerTwo.getPoints()) {
+							playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+							playerTwo.setPoints(playerTwo.getPoints() + (int)(addTimeDifficultyWidthPoints * percentTwo));
+						} else if (playerOne.getPoints() < playerTwo.getPoints()) {
+							playerTwo.setPoints(playerTwo.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+							playerOne.setPoints(playerOne.getPoints() + (int)(addTimeDifficultyWidthPoints * percentOne));
+Suggested verification: Use one internal immutable record per run, sort records by descending score with a defined tie policy, and return defensive or unmodifiable snapshots from all three getters.
+
+Uncertainty and limits:
+- Only the corrected Java excerpts supplied in this turn and earlier inspected excerpts were used; uninspected callers, build configuration, and binary contents remain unavailable.
+- No tests or runtime behavior were executed, and no vulnerability was proven.
+- The exact terminal callback, intended player eligibility, persistence format, and application-owned store location remain to be established from additional repository evidence.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

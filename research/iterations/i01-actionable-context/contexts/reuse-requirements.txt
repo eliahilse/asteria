@@ -1,0 +1,58 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Apply this task-specific context while implementing the feature. Observations and recommendations are model-generated; preserve stated uncertainty.
+
+Corrected security context with source-matching citations for donor sorting and the ApoMario scoring transition.
+
+[security_property: donor highscore sorting and pagination] ApoIcarus builds a display list from aligned points, times, and names, inserts higher-point entries before lower-point entries, appends the remaining entries, and uses MAX_X to control the visible page.
+Task relevance: This donor behavior is reusable for ApoMario's dedicated highscore view, provided the target preserves record alignment and adds bounded local persistence.
+Source: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:106-115
+private void sortList(boolean bFirst) {
+		this.curPos = 0;
+		this.help = new ArrayList<ApoJumpStateHighscoreHelp>();
+		if (this.highscore.getPoints().size() > 0) {
+			this.help.add(new ApoJumpStateHighscoreHelp(this.highscore.getPoints().get(0), this.highscore.getTime().get(0), this.highscore.getNames().get(0)));
+			for (int i = 1; i < this.highscore.getPoints().size(); i++) {
+				boolean bBreak = false;
+				for (int j = 0; j < this.help.size(); j++) {
+					if (this.help.get(j).getPoints() < this.highscore.getPoints().get(i)) {
+Source: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:114-130
+					if (this.help.get(j).getPoints() < this.highscore.getPoints().get(i)) {
+						this.help.add(j, new ApoJumpStateHighscoreHelp(this.highscore.getPoints().get(i), this.highscore.getTime().get(i), this.highscore.getNames().get(i)));
+						bBreak = true;
+						break;
+					}
+				}
+				if (!bBreak) {
+					this.help.add(new ApoJumpStateHighscoreHelp(this.highscore.getPoints().get(i), this.highscore.getTime().get(i), this.highscore.getNames().get(i)));					
+				}
+			}
+		}
+		if (bFirst) {
+			if (this.help.size() > ApoJumpStateHighscore.MAX_X) {
+				this.getGame().getButtons()[11].setBVisible(false);
+				this.getGame().getButtons()[12].setBVisible(true);
+			} else {
+Suggested verification: Verify equal-score ordering is defined, the three fields stay aligned, and pagination cannot access entries beyond the bounded display range.
+
+[unknown: exact completion/loss integration point] The inspected target code confirms that setAnalysis(boolean) applies final single-player win scoring and then transitions to editor or analysis, but it does not establish that this is the only ordinary-run completion/loss caller. Duplicate callbacks and replay/editor/simulation paths remain unknown.
+Task relevance: recordRunEnd should be attached at the authoritative end-of-run boundary, after final scoring, with a one-shot guard and exclusions for non-player runs as appropriate.
+Source: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1222-1233
+			} else {
+				if (bWin) {
+					playerOne.setPoints(playerOne.getPoints() + this.getFinish().getPoints() + addTimeDifficultyWidthPoints);
+				}
+			}
+			if (game.isBEditor()) {
+				game.setEditor();
+			} else {
+				game.setAnalysis();
+			}
+		}
+	}
+Suggested verification: Trace all callers of setAnalysis, setBWin, restart, and new-level transitions; verify one record for each clear/loss and none for restart, replay, editor, or simulation unless intended.
+
+Uncertainty and limits:
+- Only the latest inspected excerpts were used for the corrected citations.
+- No implementation or tests were run, and no vulnerability was proven.
+- The canonical player-name source and stable highscore store location remain unknown.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

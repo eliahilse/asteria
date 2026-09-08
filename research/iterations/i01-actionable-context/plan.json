@@ -1,0 +1,594 @@
+{
+  "acquisitions": [
+    {
+      "id": "context-c472efe99f9448289686ba5d43a18b6a",
+      "method": "Generation",
+      "strategy": "requirements"
+    },
+    {
+      "id": "context-120c34c63d524dcfa85ea9a39f7ca2ae",
+      "method": "Generation",
+      "strategy": "boundaries"
+    },
+    {
+      "id": "context-770a9c7999e4460b843959824dfdfe38",
+      "method": "Reuse",
+      "strategy": "requirements"
+    },
+    {
+      "id": "context-3b7d1e160dd84b9a8f5e1cf62ab0a183",
+      "method": "Reuse",
+      "strategy": "boundaries"
+    }
+  ],
+  "analysis": {
+    "comparison": "Fresh control within the same method/paper-context, with identical delivery and feedback budget.",
+    "firstSubmission": "Report first-submission success separately; repairs never replace it.",
+    "limits": "Exploratory development informed by previous failures; no security-test feedback, test code or fixture thresholds sent to either model. One acquired context per method/strategy is shared within this iteration. Menu edits are required but runtime menu rendering is not covered by the original 16 checks.",
+    "primary": "Full functional success within three submissions / all trajectories; failed security checks and evaluation coverage per trajectory.",
+    "stopping": "Complete the fixed schedule, including all failures. No outcome-based early stopping or hidden retries."
+  },
+  "conditions": [
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Structural.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Structural.json",
+          "renderedSha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27",
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Functional.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Functional.json",
+          "renderedSha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7",
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "S+F+B",
+      "contextAcquisitionId": null,
+      "contextTypes": [
+        "S",
+        "F",
+        "B"
+      ],
+      "id": "generation_sfb__none",
+      "paperPromptId": 15,
+      "parentCondition": "generation_sfb",
+      "promptBytes": 660074,
+      "promptCharacters": 660042,
+      "promptFile": "prompts/88b6dea902c946ef780d2cd647111449f4544458ffdbbb3fc023fd74a06934cb.txt",
+      "promptSha256": "88b6dea902c946ef780d2cd647111449f4544458ffdbbb3fc023fd74a06934cb",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "none",
+      "sourceGame": "-",
+      "stage": "baseline",
+      "strategy": "Generation",
+      "targetGame": "ApoMario"
+    },
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Structural.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Structural.json",
+          "renderedSha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27",
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Functional.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Functional.json",
+          "renderedSha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7",
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "S+F+B",
+      "contextAcquisitionId": "context-c472efe99f9448289686ba5d43a18b6a",
+      "contextTypes": [
+        "S",
+        "F",
+        "B"
+      ],
+      "id": "generation_sfb__requirements",
+      "paperPromptId": 15,
+      "parentCondition": "generation_sfb",
+      "promptBytes": 668790,
+      "promptCharacters": 668756,
+      "promptFile": "prompts/5b3943ba39033ec3204893de0bf32ccb136a9e8673baf69de606c89df85c020f.txt",
+      "promptSha256": "5b3943ba39033ec3204893de0bf32ccb136a9e8673baf69de606c89df85c020f",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "requirements",
+      "sourceGame": "-",
+      "stage": "baseline",
+      "strategy": "Generation",
+      "targetGame": "ApoMario"
+    },
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Structural.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Structural.json",
+          "renderedSha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27",
+          "sha256": "f6e584151201cd85f5d1bdfa9b2ef9c9a10550c2e7e9ccd4ba7c6bb911f68a27"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Functional.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Functional.json",
+          "renderedSha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7",
+          "sha256": "2c2c9c0df424c62af419ffb5ed654e6b5b3455d17a54a84d480d897e001a90f7"
+        },
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "S+F+B",
+      "contextAcquisitionId": "context-120c34c63d524dcfa85ea9a39f7ca2ae",
+      "contextTypes": [
+        "S",
+        "F",
+        "B"
+      ],
+      "id": "generation_sfb__boundaries",
+      "paperPromptId": 15,
+      "parentCondition": "generation_sfb",
+      "promptBytes": 666589,
+      "promptCharacters": 666555,
+      "promptFile": "prompts/4f9efc84a218d8ead75dbc8fbc6e6725ebd8af056e3b9afb3dfd83fd76d275d1.txt",
+      "promptSha256": "4f9efc84a218d8ead75dbc8fbc6e6725ebd8af056e3b9afb3dfd83fd76d275d1",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "boundaries",
+      "sourceGame": "-",
+      "stage": "baseline",
+      "strategy": "Generation",
+      "targetGame": "ApoMario"
+    },
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoHighscore.java",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+          "renderedSha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoJumpStateHighscore.java",
+          "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHighscore.java",
+          "renderedSha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3",
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "B",
+      "contextAcquisitionId": null,
+      "contextTypes": [
+        "B"
+      ],
+      "id": "reuse_b__none",
+      "paperPromptId": 3,
+      "parentCondition": "reuse_b",
+      "promptBytes": 331099,
+      "promptCharacters": 331067,
+      "promptFile": "prompts/2bd6fb250106b8fc7edbab20736412528f215fa7416f8b47154b55da9365fe82.txt",
+      "promptSha256": "2bd6fb250106b8fc7edbab20736412528f215fa7416f8b47154b55da9365fe82",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "none",
+      "sourceGame": "ApoIcarus",
+      "stage": "baseline",
+      "strategy": "Reuse",
+      "targetGame": "ApoMario"
+    },
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoHighscore.java",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+          "renderedSha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoJumpStateHighscore.java",
+          "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHighscore.java",
+          "renderedSha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3",
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "B",
+      "contextAcquisitionId": "context-770a9c7999e4460b843959824dfdfe38",
+      "contextTypes": [
+        "B"
+      ],
+      "id": "reuse_b__requirements",
+      "paperPromptId": 3,
+      "parentCondition": "reuse_b",
+      "promptBytes": 334727,
+      "promptCharacters": 334695,
+      "promptFile": "prompts/795b2a1a5156ada4ccb603be802b9ede4969e24ca7efd3a4eb2769c069072d70.txt",
+      "promptSha256": "795b2a1a5156ada4ccb603be802b9ede4969e24ca7efd3a4eb2769c069072d70",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "requirements",
+      "sourceGame": "ApoIcarus",
+      "stage": "baseline",
+      "strategy": "Reuse",
+      "targetGame": "ApoMario"
+    },
+    {
+      "attachments": [
+        {
+          "kind": "context",
+          "member": null,
+          "name": "ApoMario_Behavioral.json",
+          "path": "vamos-artifact/Contexts/ApoMario_Behavioral.json",
+          "renderedSha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3",
+          "sha256": "598161efce461015f02549fa8f149b685171e41939758c9bc5971900ff978de3"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoHighscore.java",
+          "path": "apogames/Java/ApoIcarus/org/apogames/help/ApoHighscore.java",
+          "renderedSha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111",
+          "sha256": "4474753b075e3fff659a8d63ac29366995fbb98afbc892c9632c1a9ed4f00111"
+        },
+        {
+          "kind": "reuse source",
+          "member": null,
+          "name": "ApoJumpStateHighscore.java",
+          "path": "apogames/Java/ApoIcarus/apoJump/game/ApoJumpStateHighscore.java",
+          "renderedSha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3",
+          "sha256": "9c6ac4ede8bc6dcfc22b4e54cc053a106179e50aaaa6034b9c73888ce8a5e7e3"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/level/ApoMarioLevel.java",
+          "name": "ApoMarioLevel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "a77ac10f701a52b99be8c83dca7690dbc36a7e0e41eee9827552d0aa3ea8f9c7",
+          "sha256": "bf12564a6eac9c9c71e47b5e9a952aace98b709aabb944f88a0c0a8fbbb41552"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/panels/ApoMarioMenu.java",
+          "name": "ApoMarioMenu.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "683f249e76904d5a16bc6b9505dd2258aad8b9424168c253cf4457e74371d3ff",
+          "sha256": "d75e4aef5b8feec6abad70a40d0346f252578d6ea6688083ca8ece8303bb9ffb"
+        },
+        {
+          "kind": "target source",
+          "member": "apoMario/game/ApoMarioPanel.java",
+          "name": "ApoMarioPanel.java",
+          "path": "apogames/Java/ApoMario/ApoMario.jar",
+          "renderedSha256": "6532a179fab8faf87684d1136759e4cd88af76c08752088fb70d24b341f77cf1",
+          "sha256": "429a0881c15c8683fdb2a05a6fc7c2e31fa496c79925d9fda007529e11cbe3c1"
+        }
+      ],
+      "baseContext": "B",
+      "contextAcquisitionId": "context-3b7d1e160dd84b9a8f5e1cf62ab0a183",
+      "contextTypes": [
+        "B"
+      ],
+      "id": "reuse_b__boundaries",
+      "paperPromptId": 3,
+      "parentCondition": "reuse_b",
+      "promptBytes": 332585,
+      "promptCharacters": 332553,
+      "promptFile": "prompts/8beb652501622ec2953372738349c9d52d0f663ffce0414f4cd51113f40d4f4c.txt",
+      "promptSha256": "8beb652501622ec2953372738349c9d52d0f663ffce0414f4cd51113f40d4f4c",
+      "promptTokens": null,
+      "repetitions": 3,
+      "securityStrategy": "boundaries",
+      "sourceGame": "ApoIcarus",
+      "stage": "baseline",
+      "strategy": "Reuse",
+      "targetGame": "ApoMario"
+    }
+  ],
+  "createdAt": "2026-09-08T01:17:41.799148+00:00",
+  "fingerprint": "de9ea7fb39c44bca0a9d4ff1c54def5a3cecbd77fb9f94c34263fc14053a0d20",
+  "id": "i01-actionable-context",
+  "maxSubmissions": 3,
+  "model": "gpt-5.6-luna",
+  "phase": "security_followup",
+  "protocol": "structured-delivery-functional-feedback-v1",
+  "schedule": [
+    {
+      "condition": "generation_sfb__none",
+      "repetition": 1,
+      "runId": "i01-actionable-context__generation_sfb__none__r1"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "repetition": 1,
+      "runId": "i01-actionable-context__reuse_b__boundaries__r1"
+    },
+    {
+      "condition": "reuse_b__none",
+      "repetition": 1,
+      "runId": "i01-actionable-context__reuse_b__none__r1"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "repetition": 1,
+      "runId": "i01-actionable-context__reuse_b__requirements__r1"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "repetition": 1,
+      "runId": "i01-actionable-context__generation_sfb__requirements__r1"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "repetition": 1,
+      "runId": "i01-actionable-context__generation_sfb__boundaries__r1"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "repetition": 2,
+      "runId": "i01-actionable-context__generation_sfb__requirements__r2"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "repetition": 2,
+      "runId": "i01-actionable-context__reuse_b__requirements__r2"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "repetition": 2,
+      "runId": "i01-actionable-context__generation_sfb__boundaries__r2"
+    },
+    {
+      "condition": "reuse_b__none",
+      "repetition": 2,
+      "runId": "i01-actionable-context__reuse_b__none__r2"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "repetition": 2,
+      "runId": "i01-actionable-context__generation_sfb__none__r2"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "repetition": 2,
+      "runId": "i01-actionable-context__reuse_b__boundaries__r2"
+    },
+    {
+      "condition": "reuse_b__none",
+      "repetition": 3,
+      "runId": "i01-actionable-context__reuse_b__none__r3"
+    },
+    {
+      "condition": "generation_sfb__boundaries",
+      "repetition": 3,
+      "runId": "i01-actionable-context__generation_sfb__boundaries__r3"
+    },
+    {
+      "condition": "reuse_b__requirements",
+      "repetition": 3,
+      "runId": "i01-actionable-context__reuse_b__requirements__r3"
+    },
+    {
+      "condition": "generation_sfb__none",
+      "repetition": 3,
+      "runId": "i01-actionable-context__generation_sfb__none__r3"
+    },
+    {
+      "condition": "generation_sfb__requirements",
+      "repetition": 3,
+      "runId": "i01-actionable-context__generation_sfb__requirements__r3"
+    },
+    {
+      "condition": "reuse_b__boundaries",
+      "repetition": 3,
+      "runId": "i01-actionable-context__reuse_b__boundaries__r3"
+    }
+  ],
+  "settings": {
+    "max_output_tokens": 65536,
+    "reasoning_effort": "medium",
+    "temperature": null
+  },
+  "sourceHashes": {
+    ".local/context-generation/context-120c34c63d524dcfa85ea9a39f7ca2ae/record.json": "d1020e22fb219548a065c173de8312fc2a674743efc99a4fcf3c10004481a912",
+    ".local/context-generation/context-120c34c63d524dcfa85ea9a39f7ca2ae/snapshot.json": "a13d251c722dfd7be4f95a38092c64f8ba46eeaf53e3f3311248f3b677bef341",
+    ".local/context-generation/context-3b7d1e160dd84b9a8f5e1cf62ab0a183/record.json": "19d844469a7fcf6b114f1d25c5b3ae979d3ba52efc8ce92fe6ce906486b4b35e",
+    ".local/context-generation/context-3b7d1e160dd84b9a8f5e1cf62ab0a183/snapshot.json": "c0226b04fbb69857c49fe89ba902f7c91d5aa0e19c49545a696c28bddabf8956",
+    ".local/context-generation/context-770a9c7999e4460b843959824dfdfe38/record.json": "80797712e02526726ced06588f88d26459b8b31a5c40551838a054645ad5f3db",
+    ".local/context-generation/context-770a9c7999e4460b843959824dfdfe38/snapshot.json": "c0226b04fbb69857c49fe89ba902f7c91d5aa0e19c49545a696c28bddabf8956",
+    ".local/context-generation/context-c472efe99f9448289686ba5d43a18b6a/record.json": "a2553ba6a60e7203b673ba5b4ef73b879639a5b7b2740f46b4cb1b44fe649af3",
+    ".local/context-generation/context-c472efe99f9448289686ba5d43a18b6a/snapshot.json": "a13d251c722dfd7be4f95a38092c64f8ba46eeaf53e3f3311248f3b677bef341",
+    ".local/iterations/i01-actionable-context/contexts/generation-boundaries.txt": "c23346173fae1c52dcf51a60470741bfede417fc47059098a73ab24ec4ae5c25",
+    ".local/iterations/i01-actionable-context/contexts/generation-requirements.txt": "ec4eadca6db730023816bc2649f5bb22511c780bb6f4c0d95145e7377c169c7d",
+    ".local/iterations/i01-actionable-context/contexts/reuse-boundaries.txt": "6d9cdd0037bd11aa793b7664271f2611cb3088e48d33bae17dca1d0c58b37a05",
+    ".local/iterations/i01-actionable-context/contexts/reuse-requirements.txt": "252889d8c3390749593bd007146af8015a1a78565b60786c42c99b9aa114fe30",
+    "research/evaluate_response.py": "c455452de335c57c69154bfd90a8b6243359e0ef9e9d319699cce2b2e5140f2b",
+    "research/evaluate_security.py": "dd09594b46ab74f8ca96bd7d82d6bc535209972fcfa714ede787378d2d39bcf3",
+    "research/feature_delivery.py": "d6bac38cc9e76081c540e9f241ff4057acd24e775b9c976d60dc06c3c3f556da",
+    "research/iteration_contexts.py": "b6ebea89547dd73bde1d926ab8dd1dd6c80e918e6a73de1ca95056c11fe63b54",
+    "research/iteration_runner.py": "aaa3a0e40b2b8049982a09946efcb41f2af7ab4c8cc6c53784d6df0f71df852b",
+    "research/model_adapter.py": "a585b7833224f822dee6578642b57c0fd8554f137e95ecefa955417e0aa09087",
+    "research/studies/highscore-paper-luna-v2/manifest.json": "d5d398e205b8357d9b9851f660fc4d57464bbc64934f206afd7ea8f08542263a",
+    "research/studies/highscore-paper-luna-v2/prompts/5c361fba1da06275681d905115f0eef544270e781d4ca17b8b2761ef0daa79d0.txt": "5c361fba1da06275681d905115f0eef544270e781d4ca17b8b2761ef0daa79d0",
+    "research/studies/highscore-paper-luna-v2/prompts/e1777c91707f86300b3c794b52362bce34b1e289f8fbd119e01a3b33bb19b7dc.txt": "e1777c91707f86300b3c794b52362bce34b1e289f8fbd119e01a3b33bb19b7dc"
+  },
+  "system": "Implement and integrate the requested Highscore feature in the existing game.\nReturn changes by calling submit_feature_changes. Do not write tests or alter the test harness.\nThe target is Java 8. Every member called on existing code must exist with a compatible signature.\nEvery filename must be a Java basename such as ApoMarioLevel.java, never a package path.\nDeliver complete new Java files through new_files. To change an existing class, use edits:\nold_text must occur exactly once in that file and new_text replaces it. Source uses LF newlines.\nEdits are applied in listed order; preserve every unrelated member of existing game classes.\nIf a delivery error is returned, none of that submission's edits or new files were applied.\nInclude actual edits to the supplied game classes to connect the feature to the live lifecycle\nand menu. A standalone Highscore class does not complete this task. Recording must happen\nwhen the live game ends a run, using its real score, player name and elapsed survival time.\nTime units: storeRun's survivalTime and getSurvivalTimes() use milliseconds, matching\nApoMarioLevel.getPassedTime(). Preserve that value when recording and persisting a run;\nconvert milliseconds to mm:ss only when rendering the highscore board.\nDo not assume that the evaluator will add missing integration for you.\nThe harness reconstructs COMPLETE modified files from your exact edits before compilation.\nYou may receive compilation and functional-test feedback for up to three submissions. Each\nsubmission edits the current accumulated source. All submissions and feedback are retained.\nSecurity context may be appended to the task. Security-test feedback is never supplied.\n\nUse the existing game framework and rendering/input conventions. Implement menu navigation as well as recording.\nInclude actual edits to ALL THREE existing target files: ApoMarioLevel.java, ApoMarioPanel.java, ApoMarioMenu.java.\nThe menu must call or render the highscore view; an unused new view/getter is insufficient.\nComplete modified files are reconstructed by the harness. Deliver edits via the tool, not code fences or prose.\n",
+  "systemSha256": "5b26fe388232a92765e1e9d9654c82c74a425463af3b1d2b3bbeb4adfdfbd884"
+}
