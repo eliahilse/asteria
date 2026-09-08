@@ -17,21 +17,31 @@ from research.run_experiment import timestamp
 ARCHIVES = ROOT / 'research/results'
 BACKUPS = ROOT.parent / 'asteria-research-backups'
 SCOPES = ('experiments', 'calibration', 'context-generation', 'delivery-calibration', 'reports', 'studies', 'iterations')
+PART_BYTES = 32 * 1024 * 1024
 SECRET_PATTERNS = [rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
                    rb'(?i)(?:SharedAccessKey|AccountKey|api[_-]?key|access[_-]?token|client[_-]?secret)\s*[=:]\s*["\x27]?[A-Za-z0-9+/_.-]{24,}',
                    rb'\b(?:ghp_|github_pat_)[A-Za-z0-9_]{25,}']
 
 
+def parts(manifest):
+    return manifest.get('archiveParts', [{'name': 'evidence.tar.gz', 'sha256': manifest.get('archiveSha256')}])
+
+
 def verify(directory: Path) -> dict:
     manifest = json.loads((directory / 'manifest.json').read_text())
-    archive = directory / 'evidence.tar.gz'
-    if digest(archive.read_bytes()) != manifest['archiveSha256']: raise ValueError('Archive hash mismatch')
     seen = set()
-    with tarfile.open(archive, 'r:gz') as bundle:
-        for entry in bundle:
-            if not entry.isfile() or entry.name not in manifest['files'] or entry.name in seen: raise ValueError('Unexpected archive member')
-            if digest(bundle.extractfile(entry).read()) != manifest['files'][entry.name]['sha256']: raise ValueError('Member hash mismatch')
-            seen.add(entry.name)
+    names = set()
+    for part in parts(manifest):
+        if not re.fullmatch(r'evidence(?:-[0-9]{3,})?\.tar\.gz', part['name']) or part['name'] in names: raise ValueError('Invalid archive part')
+        names.add(part['name']); archive = directory / part['name']
+        if digest(archive.read_bytes()) != part['sha256']: raise ValueError('Archive hash mismatch')
+        with tarfile.open(archive, 'r:gz') as bundle:
+            for entry in bundle:
+                if not entry.isfile() or entry.name not in manifest['files'] or entry.name in seen: raise ValueError('Unexpected archive member')
+                record = manifest['files'][entry.name]
+                if record.get('archive', part['name']) != part['name']: raise ValueError('Member in wrong archive part')
+                if entry.size != record['bytes'] or digest(bundle.extractfile(entry).read()) != record['sha256']: raise ValueError('Member hash mismatch')
+                seen.add(entry.name)
     if seen != set(manifest['files']): raise ValueError('Archive is incomplete')
     return manifest
 
@@ -58,15 +68,27 @@ def snapshot(identifier: str, scopes=SCOPES) -> dict:
         if p.is_file(): files[f'.local/archive-review/{identifier}/{p.relative_to(review)}'] = p
     manifest = {'id': identifier, 'createdAt': timestamp(), 'repositoryCommit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                 'scopes': list(scopes), 'files': {}, 'exclusions': ['provider-traces', 'adapter/configuration', '.git', '__pycache__']}
-    with (directory / 'evidence.tar.gz').open('xb') as output, gzip.GzipFile(filename='', mode='wb', fileobj=output, mtime=0) as compressed, tarfile.open(fileobj=compressed, mode='w') as bundle:
-        for name, p in sorted(files.items()):
-            raw = p.read_bytes()
-            if p.name.startswith('.env') or p.suffix in ('.pem', '.key', '.p12', '.pfx') or any(re.search(pattern, raw) for pattern in SECRET_PATTERNS):
-                raise ValueError(f'Potential private configuration in evidence: {name}')
-            info = tarfile.TarInfo(name); info.size = len(raw); info.mode = 0o600
-            bundle.addfile(info, io.BytesIO(raw))
-            manifest['files'][name] = {'sha256': digest(raw), 'bytes': len(raw)}
-    manifest['archiveSha256'] = digest((directory / 'evidence.tar.gz').read_bytes())
+    # Bound each Git object while keeping each snapshot independently restorable.
+    groups, group, size = [], [], 0
+    for name, p in sorted(files.items()):
+        item_size = p.stat().st_size
+        if item_size > PART_BYTES: raise ValueError(f'Evidence file exceeds archive part limit: {name}')
+        if group and size + item_size > PART_BYTES:
+            groups.append(group); group, size = [], 0
+        group.append((name, p)); size += item_size
+    if group: groups.append(group)
+    manifest['archiveParts'] = []
+    for number, group in enumerate(groups, 1):
+        part_name = f'evidence-{number:03d}.tar.gz'; archive = directory / part_name
+        with archive.open('xb') as output, gzip.GzipFile(filename='', mode='wb', fileobj=output, mtime=0) as compressed, tarfile.open(fileobj=compressed, mode='w') as bundle:
+            for name, p in group:
+                raw = p.read_bytes()
+                if p.name.startswith('.env') or p.suffix in ('.pem', '.key', '.p12', '.pfx') or any(re.search(pattern, raw) for pattern in SECRET_PATTERNS):
+                    raise ValueError(f'Potential private configuration in evidence: {name}')
+                info = tarfile.TarInfo(name); info.size = len(raw); info.mode = 0o600
+                bundle.addfile(info, io.BytesIO(raw))
+                manifest['files'][name] = {'sha256': digest(raw), 'bytes': len(raw), 'archive': part_name}
+        manifest['archiveParts'].append({'name': part_name, 'sha256': digest(archive.read_bytes()), 'bytes': archive.stat().st_size})
     (directory / 'manifest.json').write_bytes(canonical(manifest))
     verify(directory)
     external = BACKUPS / identifier
@@ -81,18 +103,19 @@ def snapshot(identifier: str, scopes=SCOPES) -> dict:
 def restore(directory: Path, destination: Path):
     manifest = verify(directory)
     destination = destination.resolve()
-    with tarfile.open(directory / 'evidence.tar.gz', 'r:gz') as bundle:
-        # Validate all destinations before writing any file. Never overwrite different evidence.
-        for entry in bundle:
-            target = (destination / entry.name).resolve()
-            if not target.is_relative_to(destination) or not entry.name.startswith('.local/'): raise ValueError('Unsafe destination')
-            if target.exists() and (not target.is_file() or digest(target.read_bytes()) != manifest['files'][entry.name]['sha256']):
-                raise ValueError(f'Different file already exists: {entry.name}; restore to a new directory')
-        for entry in bundle.getmembers():
-            target = destination / entry.name
-            if not target.exists():
-                target.parent.mkdir(parents=True, exist_ok=True)
-                with target.open('xb') as handle: handle.write(bundle.extractfile(entry).read())
+    # Validate every destination across ALL parts before writing anything.
+    for name, record in manifest['files'].items():
+        target = (destination / name).resolve()
+        if not target.is_relative_to(destination) or not name.startswith('.local/'): raise ValueError('Unsafe destination')
+        if target.exists() and (not target.is_file() or digest(target.read_bytes()) != record['sha256']):
+            raise ValueError(f'Different file already exists: {name}; restore to a new directory')
+    for part in parts(manifest):
+        with tarfile.open(directory / part['name'], 'r:gz') as bundle:
+            for entry in bundle:
+                target = destination / entry.name
+                if not target.exists():
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with target.open('xb') as handle: handle.write(bundle.extractfile(entry).read())
     print(f'Restored {len(manifest["files"])} verified files to {destination}', flush=True)
 
 
