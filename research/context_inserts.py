@@ -30,7 +30,8 @@ def index(public=False, iteration=None):
             text = (directory / 'contexts' / f"{item['method'].lower()}-{item['strategy']}.txt").read_text()
             # The exact task is already frozen into each corresponding prompt.
             from research.security_followup import acquisition_task
-            task = acquisition_task(item['method']) + '\nTime API contract: survivalTime values are milliseconds; display them as mm:ss.'
+            task = item.get('task') or acquisition_task(item['method']) + '\nTime API contract: survivalTime values are milliseconds; display them as mm:ss.'
+            if item.get('promptInsertSha256') and digest(text.encode()) != item['promptInsertSha256']: raise ValueError('Frozen public context insert differs')
         else:
             record = json.loads((ROOT / '.local/context-generation' / item['id'] / 'record.json').read_text())
             if not record.get('output'): continue
