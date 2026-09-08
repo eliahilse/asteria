@@ -54,6 +54,11 @@ The newer outside `i04-qualified-review/` folder contains 80 directly readable
 review files: I03/I04 raw and qualified summaries, XLSX, figures, audit reports,
 exact context inserts and I05's frozen plan. Its manifest verifies every copy.
 
+The split `i05-prepared` snapshot was restored at clean checkout `660a4ec`.
+Both qualified explorer datasets and scientific analyses reproduced exactly:
+40 + 80 trajectories and 216 + 432 per-test rows, with no model or Java rerun.
+See [qualified restore proof](i05-prepared/restore-proof.json).
+
 Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
 because it is unfavorable. Development iterations and subsequent fresh replication
