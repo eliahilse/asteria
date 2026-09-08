@@ -1,6 +1,6 @@
 # Evaluate a model response
 
-I03 uses `research.evaluate_integrated`, protocol
+I03 and subsequent code-generation rounds use `research.evaluate_integrated`, protocol
 `highscore-response-v3-integrated-security`. It retains the original test
 contracts while giving every generated-code JVM a fresh home/temp directory and
 linking security probes against the exact successful whole-game compilation.
@@ -18,6 +18,41 @@ replay and I01. `evaluate_isolated` is the intermediate v2 wrapper used to measu
 the home-directory effect separately. [I01 remeasurement](iterations/i01-home-isolated/README.md)
 retains both sides of that same-code comparison. Do not combine evaluator versions
 within a condition or overwrite earlier reports.
+
+## Qualifying the large-record measurement
+
+The legacy text amplifier can repeat a file header as if it were a record. A
+loader may then accept only the first record, yielding an unsupported pass for
+the claimed valid-million-record fixture. The separate
+`research.amplification_audit` tests the same encoding with two records against
+the saved compiled artifact. Exactly two seeded records must survive reload.
+The counted-text calibration demonstrates the legacy false pass; the safe
+control demonstrates the necessary precondition.
+
+```sh
+python3 -m research.amplification_audit --iteration ITERATION_ID
+python3 -m research.qualification --iteration ITERATION_ID
+python3 -m research.scientific_summary --iteration ITERATION_ID --qualified
+```
+
+Use the producing checkout and restored raw evidence for that iteration. An
+existing audit is retained, not silently replaced. Qualification verifies its
+source and report hashes and changes unsupported large-record passes or failures
+to unknown in a separate dataset. Original reports remain intact. A matched
+two-record precondition is necessary, not proof that all amplified encodings or
+record counts are valid. Raw OOM diagnostics remain evidence about the actual
+bytes tested, even if the valid-record interpretation is unsupported.
+
+The explorer and its exports prefer these qualified observations when available.
+Their qualification metadata identifies the audit, producing code and each
+changed observation. Unknown checks reduce measurement coverage; they cannot
+establish a pass or disappear from the planned denominator.
+
+[I08](iterations/i08-evaluator-repeatability/README.md) separately predeclares
+repeated evaluation of unchanged I06/I07 artifacts. These repeats measure local
+repeatability and never count as additional code-generation samples.
+
+## Original v1 evaluation commands
 
 After receiving a completed adapter observation:
 
