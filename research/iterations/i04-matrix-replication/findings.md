@@ -66,6 +66,17 @@ hidden by a single total. The [per-test CSV](qualified-per-test.csv),
 
 ## What replicated
 
+The [category analysis](qualified-categories.md) also counts each trajectory only
+once per category when any check in that category fails. This exposes a limit of
+the favorable total: every Generation boundary trajectory still has an input-policy
+failure and a resource-stress failure in I04. Fewer individual failures does not
+mean fewer affected artifacts in those categories. Generation requirements likewise
+remain affected by input-policy failures in 5/5 trajectories in both cells because
+negative-score rejection fails. Reuse requirements have no observed input-policy
+failures, with two unmeasured artifacts in S+B. This category analysis was introduced
+after I04 and is explicitly exploratory; it does not replace the original per-check
+outcomes or introduce a combined category-weighted score.
+
 Generation S+F+B and Reuse B repeat I03 with newly acquired inserts and fresh code;
 Generation S and Reuse S+B extend the selected matrix. Requirements and boundaries
 reduce aggregate failure counts in both repeated cells in both rounds after
