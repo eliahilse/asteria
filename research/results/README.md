@@ -19,6 +19,7 @@ Provider connection settings, credentials, and raw service traces stay excluded.
 | [i04-complete](i04-complete/manifest.json) | All 80 trajectories and 150 submissions, plus I03/I04 format audits; 24,113 files | [Findings and measurement update](../iterations/i04-matrix-replication/findings.md) |
 | [i05-prepared](i05-prepared/manifest.json) | All earlier evidence, qualified reports/figures/workbooks, and frozen I05; 25,536 files in 18 parts, both copies verified | [Qualified I04 findings](../iterations/i04-matrix-replication/findings.md), [I05 protocol](../iterations/i05-budget-sensitivity/README.md) |
 | [i05-complete](i05-complete/manifest.json) | All 80 trajectories and 184 submissions, the 80-artifact format audit, earlier evidence and prepared I06 acquisition records; 43,469 files in 26 parts, both copies verified | [Qualified findings](../iterations/i05-budget-sensitivity/findings.md), [workbook](../iterations/i05-budget-sensitivity/qualified-results.xlsx) |
+| [i06-prepared](i06-prepared/manifest.json) | Two completed operation-context acquisitions, the frozen 80-trajectory comparison and all earlier evidence; 43,506 files in 26 parts, both copies verified | [Protocol](../iterations/i06-operational-guards/README.md), [frozen plan](../iterations/i06-operational-guards/plan.json) |
 
 New snapshots use several `evidence-NNN.tar.gz` parts to keep each Git object
 small. Every part is hashed; verification and restore cover the complete set.
@@ -69,6 +70,9 @@ finished trajectories. Active outputs were excluded until sealed.
 A fresh checkout can open the latest committed table and context inserts without
 restoring `.local`. Restoration is needed to inspect the complete raw exchanges,
 rerun analysis from them, or access the archived compiled artifacts.
+This was checked in an actual browser at clean checkout `97068d7`: all 16 I05
+combinations and six exact context inserts loaded without a runtime directory or
+archive restore. See [browser proof](i05-complete/cacheless-browser-proof.json).
 
 Each new iteration uses its own directory. Previous evidence is archived and
 committed before starting another setup; no outcome is overwritten or dropped
