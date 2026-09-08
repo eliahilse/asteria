@@ -3,7 +3,7 @@ import type { MatrixData } from './experiment-types';
 import { combinationRows, statColumns, type SecurityIssues, type StatColumn } from './combination-stats';
 export type * from './experiment-types';
 
-const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries' };
+const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards' };
 const format = (value: number | null, column: StatColumn) => value === null ? '—' : column.format === 'count' ? String(value) : value.toFixed(1);
 function IssueCount({ issues: s }: { issues: SecurityIssues }) {
   const bounds = s.deltaBounds;

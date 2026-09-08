@@ -9,7 +9,7 @@ import re
 from research.import_evidence import ROOT, canonical, digest
 from research.security_followup import security_block
 
-LABELS = {'overview': 'Overview', 'task': 'Task-focused', 'flows': 'Data-flow', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries'}
+LABELS = {'overview': 'Overview', 'task': 'Task-focused', 'flows': 'Data-flow', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards'}
 
 
 def index(public=False, iteration=None):

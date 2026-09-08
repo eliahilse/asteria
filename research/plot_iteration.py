@@ -18,7 +18,7 @@ import numpy as np
 from research.import_evidence import ROOT, canonical, digest
 from research.scientific_summary import ISSUES
 
-LABELS = {'none': 'None', 'overview': 'Overview', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries'}
+LABELS = {'none': 'None', 'overview': 'Overview', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards'}
 CHECK_LABELS = ['Negative score', 'Negative time', 'Null name', 'Blank name', 'Excessive name', 'Retained entries',
                 'Malformed store', 'Oversized line', 'Deserialization hook', 'Large record set']
 
@@ -31,6 +31,7 @@ def render(identifier, qualified=False):
                          'svg.hashsalt': identifier, 'pdf.fonttype': 42, 'ps.fonttype': 42})
     parents = list(dict.fromkeys(c['parent'] for c in data['comparisons']))
     by_condition = {c['condition']: c for c in data['conditions']}
+    strategies = list(dict.fromkeys(c['securityStrategy'] for c in data['conditions']))
     sizes = sorted({c['n'] for c in data['conditions']})
     n_label = str(sizes[0]) if len(sizes) == 1 else '/'.join(map(str, sizes))
     budget = json.loads((directory / 'plan.json').read_text())['maxSubmissions']
@@ -48,7 +49,7 @@ def render(identifier, qualified=False):
 
     fig, axes = plt.subplots(len(parents), 2, figsize=(11.5, 3 * len(parents) + 1.2), squeeze=False)
     for index, parent in enumerate(parents):
-        rows = [by_condition[parent + '__' + strategy] for strategy in LABELS]
+        rows = [by_condition[parent + '__' + strategy] for strategy in strategies]
         labels = [LABELS[c['securityStrategy']] for c in rows]
         for side in (0, 1):
             ax = axes[index, side]; ax.set_yticks(range(len(rows)), labels); ax.invert_yaxis(); ax.grid(axis='x', color='.90', linewidth=.7); ax.set_axisbelow(True)
@@ -76,14 +77,15 @@ def render(identifier, qualified=False):
     fig, axes = plt.subplots(rows, columns, figsize=(12, 4.8 * rows + 2), squeeze=False)
     cmap = plt.get_cmap('RdBu_r').copy(); cmap.set_bad('#e8e8e8')
     for column, parent in enumerate(parents):
-        comparisons = [next(c for c in data['comparisons'] if c['parent'] == parent and c['securityStrategy'] == strategy) for strategy in list(LABELS)[1:]]
+        treatments = [strategy for strategy in strategies if strategy != 'none']
+        comparisons = [next(c for c in data['comparisons'] if c['parent'] == parent and c['securityStrategy'] == strategy) for strategy in treatments]
         values = np.array([[np.nan if c['tests'][row]['failureRateDelta'] is None else 100 * c['tests'][row]['failureRateDelta'] for c in comparisons] for row in range(len(ISSUES))])
         ax = axes.flat[column]; shown = ax.imshow(values, cmap=cmap, vmin=-100, vmax=100, aspect='auto')
         ax.set_title(parent_label(parent), fontsize=11)
-        ax.set_xticks(range(3), ['Overview', 'Requirements', 'Boundaries'])
+        ax.set_xticks(range(len(treatments)), [LABELS.get(strategy, strategy).replace('Operational guards', 'Operational\nguards').replace('Trust boundaries', 'Boundaries') for strategy in treatments])
         ax.set_yticks(range(len(ISSUES)), CHECK_LABELS if column % columns == 0 else [])
         for row in range(len(ISSUES)):
-            for x in range(3):
+            for x in range(len(treatments)):
                 value = values[row, x]
                 ax.text(x, row, '?' if np.isnan(value) else f'{value:+.0f}' if value != 0 else '0', ha='center', va='center', color='white' if not np.isnan(value) and abs(value) >= 70 else '#222222', fontsize=10)
         ax.tick_params(length=0)
