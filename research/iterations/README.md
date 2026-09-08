@@ -13,7 +13,8 @@ attested by the provider. All returned model identities are checked against Luna
 | I03 | 40 fresh trajectories: two paper-context cells × four security perspectives × five repetitions; corrected evaluation and six fresh context acquisitions. | [Findings](i03-security-perspectives/findings.md), [per-test analysis](i03-security-perspectives/analysis.md), [workbook](i03-security-perspectives/results.xlsx) |
 | I04 | 80 fresh trajectories across all four originally selected paper-context cells, with the same four security arms and six new acquisitions. | [Findings](i04-matrix-replication/findings.md), [qualified per-test analysis](i04-matrix-replication/qualified-analysis.md), [workbook](i04-matrix-replication/qualified-results.xlsx) |
 | I03/I04 measurement qualification | Audit exact compiled artifacts for valid-record amplification; retain original outcomes, mark unsupported observations unknown separately. | [I03 qualified analysis](i03-security-perspectives/qualified-analysis.md), [I04 qualified analysis](i04-matrix-replication/qualified-analysis.md) |
-| I05 | 80 fresh trajectories with up to five submissions, holding I04 context inserts fixed; all four paper cells and security arms retained. | [Prospective budget-sensitivity plan](i05-budget-sensitivity/README.md) |
+| I05 | 80 fresh trajectories with up to five submissions, holding I04 context inserts fixed; 75 full-functional results, with tradeoffs retained. | [Findings](i05-budget-sensitivity/findings.md), [qualified analysis](i05-budget-sensitivity/qualified-analysis.md), [workbook](i05-budget-sensitivity/qualified-results.xlsx) |
+| I06 | New operation-level context representation, declared during I05; resource outcomes emphasized, all earlier evidence retained. | [Prospective protocol](i06-operational-guards/README.md) |
 
 Do not pool single responses with multi-submission trajectories or count the
 same saved code's remeasurement as a new model sample. Context acquisition itself

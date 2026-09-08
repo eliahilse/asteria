@@ -6,11 +6,12 @@ shows the exact generated prompt inserts. See the [iteration index](research/ite
 [preserved evidence and restore instructions](research/results/README.md), and
 [local setup](workbench/README.md).
 
-Latest completed evidence: [I04 findings](research/iterations/i04-matrix-replication/findings.md),
-[qualified per-test results](research/iterations/i04-matrix-replication/qualified-analysis.md)
-and [XLSX](research/iterations/i04-matrix-replication/qualified-results.xlsx).
-The local table is at `http://127.0.0.1:5173/?iteration=i04-matrix-replication`.
-I05 tests a larger repair budget with all I04 context inserts held fixed.
+Latest completed evidence: [I05 findings](research/iterations/i05-budget-sensitivity/findings.md),
+[qualified per-test results](research/iterations/i05-budget-sensitivity/qualified-analysis.md)
+and [XLSX](research/iterations/i05-budget-sensitivity/qualified-results.xlsx).
+The local table is at `http://127.0.0.1:5173/?iteration=i05-budget-sensitivity`.
+I05 tests a larger repair budget with all I04 context inserts held fixed; I06 adds
+explicit operational guards to newly acquired context.
 
 ```sh
 cd workbench
