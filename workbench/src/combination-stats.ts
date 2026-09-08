@@ -2,7 +2,7 @@ import type { MatrixData, MatrixStudy, MatrixCondition } from './experiment-type
 
 type Summary = MatrixStudy['summary']['conditions'][number];
 export type StatColumn = { key: string; label: string; description: string; format: 'count' | 'percent' };
-export type SecurityIssues = { detected: number | null; evaluated: number; expected: number; delta: number | null; hasControl: boolean };
+export type SecurityIssues = { detected: number | null; evaluated: number; expected: number; delta: number | null; deltaBounds: [number, number] | null; hasControl: boolean };
 export type CombinationRow = { study: string; condition: string; phase: string; method: string; paper: string[]; security: string; values: Record<string, number | null>; issues: SecurityIssues };
 const issueTests = ['rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName', 'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet'];
 const pct = (p: number, n: number) => n ? 100 * p / n : null;
@@ -24,8 +24,14 @@ export function securityIssues(summary: Summary, control?: Summary): SecurityIss
   // Compare counts only at equal exposure for EVERY check, not merely equal totals.
   const comparable = control && detected !== null && summary.attempts === control.attempts && !summary.pending && !control.pending &&
     checks.every((c, i) => c && base[i] && c.executed === base[i]!.executed);
+  const expected = issueTests.length * summary.attempts;
+  const bounded = control && detected !== null && summary.attempts === control.attempts && !summary.pending && !control.pending && checks.every(Boolean) && base.every(Boolean);
+  const baseDetected = base.reduce((n, c) => n + (c?.fail ?? 0), 0), baseEvaluated = base.reduce((n, c) => n + (c?.executed ?? 0), 0);
+  // Extremes over every possible assignment of unresolved checks in both arms.
+  // This is a missingness bound on counts, not a statistical confidence interval.
+  const deltaBounds: [number, number] | null = bounded ? [detected - baseDetected - (expected - baseEvaluated), detected + expected - evaluated - baseDetected] : null;
   return { detected, evaluated, expected: issueTests.length * summary.attempts, hasControl: !!control,
-    delta: comparable ? detected! - base.reduce((n, c) => n + c!.fail, 0) : null };
+    delta: comparable ? detected! - baseDetected : null, deltaBounds };
 }
 
 function row(study: MatrixStudy, condition: MatrixCondition): CombinationRow {

@@ -18,9 +18,20 @@ test('fewer evaluated issue checks cannot be reported as fewer security issues',
   Object.assign(a, { fail: 5, pass: 0 });
   Object.assign(b, { fail: 4, pass: 0, executed: 4 });
   expect(securityIssues(treatment, control)).toMatchObject({ detected: 4, evaluated: 49, expected: 50, delta: null });
+  expect(securityIssues(treatment, control).deltaBounds).toEqual([-1, 0]);
   // Even equal aggregate exposure is insufficient when the tested checks differ.
   Object.assign(control.checks.find(c => c.name === 'rejectsNegativeTime')!, { executed: 4, pass: 4 });
   expect(securityIssues(treatment, control).delta).toBeNull();
+  expect(securityIssues(treatment, control).deltaBounds).toEqual([-2, 0]);
+});
+
+test('missingness bounds distinguish a robust decrease from an unevaluated treatment', () => {
+  const { summary: control } = fixture(), treatment = structuredClone(control);
+  for (const check of control.checks.filter(c => c.suite === 'security_v1' && c.name !== 'validRecordRoundTrip')) Object.assign(check, { fail: 5, pass: 0 });
+  Object.assign(treatment.checks.find(c => c.name === 'largePersistedRecordSet')!, { pass: 4, executed: 4 });
+  expect(securityIssues(treatment, control).deltaBounds).toEqual([-50, -49]);
+  for (const check of treatment.checks) Object.assign(check, { pass: 0, fail: 0, executed: 0 });
+  expect(securityIssues(treatment, control).deltaBounds).toBeNull();
 });
 
 test('count changes require equal attempts and no pending requests, and replay has no treatment arrow', () => {

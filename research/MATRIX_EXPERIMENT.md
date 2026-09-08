@@ -102,14 +102,16 @@ attempts. It excludes the positive valid-record round trip. It counts repeated
 failed contracts, not distinct vulnerabilities or CVEs; each check covers only
 its fixture.
 
-The arrow is the difference in failed-check counts from the matching fresh
-follow-up control. It is shown only when attempt counts match, neither condition
-has pending attempts, and every issue check has the same evaluated count in both
-conditions. Equal total evaluation counts alone are insufficient. Otherwise the
-change is unavailable (`Δ —`), so missing checks cannot appear as an improvement.
-A difference with partial but matching coverage describes only observed checks.
-Replay and control rows have no treatment difference. This is a descriptive count
-comparison, not a significance test or an estimate of the total vulnerabilities.
+The current arrow compares failed-check counts with the matching fresh control
+at equal N and with no pending observations. If checks are unresolved, it displays
+the range over every possible assignment of missing outcomes in both arms. For
+example, 3 failures out of 46 evaluated checks at N=5 versus a control's 35/50
+gives 28–32 fewer failures, even if all four unresolved treatment checks fail.
+A range spanning zero has no directional arrow (`Δ —`). These are conservative
+missingness bounds, not confidence intervals, a significance test, or an estimate
+of total vulnerabilities. Replay/control rows have no treatment difference.
+The export also retains the observed count difference when each check has equal
+coverage; this partial-coverage statistic is distinct from the bounds.
 
 XLSX retains numeric counts, coverage and differences separately, with the
 per-test pass, fail, not-run, unknown, compile-error and environment-error counts
