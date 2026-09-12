@@ -1,8 +1,18 @@
 # Paper
 
-Write in [`main.tex`](main.tex). The initial document produces one blank A4 page,
-with no title, headings, or sample text. Remove the two placeholder commands
-marked in the document when you start writing.
+The first page contains a title, a short abstract, and a plain-language TL;DR.
+Keep content in separate components and assemble them in `main.tex`:
+
+- [`main.tex`](main.tex): document class, title, and section order.
+- [`preamble.tex`](preamble.tex): packages and shared formatting.
+- [`sections/abstract.tex`](sections/abstract.tex): research question, results, and limits.
+- [`sections/tldr.tex`](sections/tldr.tex): brief takeaway.
+- [`references.bib`](references.bib): bibliography entries.
+
+Add further sections as `sections/<name>.tex` and include them with
+`\input{sections/<name>}` in `main.tex`. The current summary draws on the
+[research readout](../research/iterations/REVIEW.md) and the
+[I06/I07 comparison](../research/iterations/i07-operational-replication/replication-analysis.md).
 
 The preamble includes typography, math, figures, tables, links, and numeric
 citations. Add sources to [`references.bib`](references.bib) and uncomment the
