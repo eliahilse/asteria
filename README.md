@@ -1,7 +1,7 @@
 # Asteria — bachelor-thesis workspace
 
-The [paper workspace](paper/README.md) contains the LaTeX manuscript. Build its
-PDF with `make -C paper`; the document starts blank.
+The [paper workspace](paper/README.md) contains the LaTeX manuscript, starting with
+a short abstract and TL;DR. Build its PDF with `make -C paper`.
 
 The [Highscore explorer](https://eliahilse.github.io/asteria/) compares code quality
 and detected security-issue checks for each context combination. Its context tab
