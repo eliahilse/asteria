@@ -301,6 +301,20 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertEqual(delivery.validate(directory / 'manifest.json')['fingerprint'], first['fingerprint'])
             self.assertFalse((directory / 'runs').exists())
 
+    def test_prepare_rejects_request_ids_longer_than_the_provider_limit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); repo = synthetic_repository(root)
+            parent = root / 'parent'; parent.mkdir()
+            plan = {'id': 'fixture-parent', 'maxSubmissions': 5}; plan['fingerprint'] = digest(canonical(plan))
+            (parent / 'manifest.json').write_bytes(canonical(plan)); (parent / 'generation-input.json').write_bytes(canonical({'sources': {}, 'games': ['ApoMario']}))
+            calibration = root / 'calibration.json'; calibration.write_bytes(canonical({'protocol': agentic.EVALUATION_PROTOCOL, 'functionalSuccess': True, 'inputHashes': {}}))
+            insert = root / 'generation-static.txt'; insert.write_text(INSERT)
+            with patch.object(agentic, 'repository_input', return_value=repo), patch.object(agentic, 'CALIBRATION', calibration):
+                with self.assertRaisesRegex(ValueError, 'Request identifiers would reach 66'):
+                    agentic.prepare('i16-compact-confirmation', ['generation_s'], ['single_shot:static'], 5, {'generation_s': insert}, parent, directory=root / 'long')
+                short = agentic.prepare('i16b-gen-compact', ['generation_s'], ['single_shot:static'], 5, {'generation_s': insert}, parent, directory=root / 'short')
+                self.assertTrue(all(len(f"{r['runId']}-t{short['maxTurns']}") <= agentic.REQUEST_ID_LIMIT for r in short['schedule']))
+
     def test_load_sidecar_accepts_objects_classes_and_factories(self):
         module = types.ModuleType('fixture_sidecar_module')
         module.instance, module.klass, module.factory, module.broken = FakeSidecar(), FakeSidecar, (lambda: FakeSidecar()), object()

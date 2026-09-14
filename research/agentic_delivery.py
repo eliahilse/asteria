@@ -37,6 +37,7 @@ MODES = ('single_shot', 'agentic')
 SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once', 'rewind')
 GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
 ACTIONS = ('search', 'read', 'submit_feature_changes')
+REQUEST_ID_LIMIT = 64  # the private adapter forwards request ids as the provider's `user` field, capped at 64 characters
 DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS]  # judge arms are requested explicitly
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
 CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'
@@ -167,6 +168,8 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
                 'repository': method, 'snapshotFingerprint': repository['snapshotFingerprint'],
                 'repositoryIndexFile': repository['indexFile'], 'repositoryIndexSha256': repository['indexSha256']})
     schedule, rng = [], random.Random(identifier)
+    longest = max(len(f"{identifier}__{c['id']}__r{repetitions}-{suffix}") for c in conditions for suffix in (f's{max_submissions}', f't{max_turns}', f'j{max_submissions}'))
+    if longest > REQUEST_ID_LIMIT: raise ValueError(f'Request identifiers would reach {longest} characters; the provider accepts at most {REQUEST_ID_LIMIT}. Use a shorter iteration id.')
     for repetition in range(1, repetitions + 1):
         block = [{'runId': f'{identifier}__{c["id"]}__r{repetition}', 'condition': c['id'], 'repetition': repetition} for c in conditions]
         rng.shuffle(block); schedule.extend(block)

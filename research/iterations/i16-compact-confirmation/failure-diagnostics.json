@@ -1,0 +1,1082 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__single_shot__none",
+      "input_rejection_policy": 23,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 8,
+      "other_fixture_failure": 1,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 0,
+      "issueChecksUnresolved": 50,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 4,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 2,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    }
+  ],
+  "failures": [
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r1/submission-5/evaluation/report.json",
+      "reportSha256": "40828ac7a136bf767d8522abf9ff0ade61082b7f82c34739a99c8dbce61add10",
+      "responseSha256": "3a84e97dc25e091be6a5d6010355159e873aaab727c965873dd071a94fcd389b",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4dcf4fc97dd9f3e5ac3bd3898850246492935a852ee9e27c31c8906364ca4f18",
+      "responseSha256": "6cf54480b75164f8a57eb726db7f5a3d70896d8c084bb010a5b2e6b8552f6ce7",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "3156a5b95a9636e157fccdcf9100ad912655ae3415f1c1b3cfd6e91d9e78edb9",
+      "responseSha256": "23f945f1e63f6ef6c006477475e15cfcca8714bd0d9fa06cee0404e145e53069",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r2/submission-2/evaluation/report.json",
+      "reportSha256": "ec64213518d58a55c5dd77634dc74fbe4aae070bbfb7d53ed70a1436ae1ccdfe",
+      "responseSha256": "d9cd22b3ce87ed33d24ad709c38dd703445951bbe5cea0241ba2c2b18fc0f702",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "2fcc2aa1509b4c869041b438ce8b2b66aa1db448771bd2a8086e5385fa213ade",
+      "responseSha256": "2795c3181677cce45371e3e3d7b7cb0d0666c612238dd7a1ae055c44f82d834f",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "84fd77c318a54d8baf6a3943f8a00530cfa40d0eb6f0fd33126ae867c5304c97",
+      "responseSha256": "2e3f787e9263825f3cabd06e599dc2d62a7bf532605238b821d8bd44e1873d8c",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "333d879081d3f765e4b0f76380f690c8d57af2c8e801cf95a38e095d3f4f2cf9",
+      "responseSha256": "d09b2c9cbefa622e38e0b4ea5c0776ab27c4445b08485c10d3cf1dcbcb1bec6e",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "333d879081d3f765e4b0f76380f690c8d57af2c8e801cf95a38e095d3f4f2cf9",
+      "responseSha256": "d09b2c9cbefa622e38e0b4ea5c0776ab27c4445b08485c10d3cf1dcbcb1bec6e",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "333d879081d3f765e4b0f76380f690c8d57af2c8e801cf95a38e095d3f4f2cf9",
+      "responseSha256": "d09b2c9cbefa622e38e0b4ea5c0776ab27c4445b08485c10d3cf1dcbcb1bec6e",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "333d879081d3f765e4b0f76380f690c8d57af2c8e801cf95a38e095d3f4f2cf9",
+      "responseSha256": "d09b2c9cbefa622e38e0b4ea5c0776ab27c4445b08485c10d3cf1dcbcb1bec6e",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "333d879081d3f765e4b0f76380f690c8d57af2c8e801cf95a38e095d3f4f2cf9",
+      "responseSha256": "d09b2c9cbefa622e38e0b4ea5c0776ab27c4445b08485c10d3cf1dcbcb1bec6e",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "d71bb061e639f4afd09c423f9d8a08e39595df8a9cfb700357214bab371d8814",
+      "responseSha256": "74e54cb3f433b25d58a00c702df253374e78a24f9d2f9d652c8bafbe41ce8603",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "d71bb061e639f4afd09c423f9d8a08e39595df8a9cfb700357214bab371d8814",
+      "responseSha256": "74e54cb3f433b25d58a00c702df253374e78a24f9d2f9d652c8bafbe41ce8603",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "d71bb061e639f4afd09c423f9d8a08e39595df8a9cfb700357214bab371d8814",
+      "responseSha256": "74e54cb3f433b25d58a00c702df253374e78a24f9d2f9d652c8bafbe41ce8603",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "d71bb061e639f4afd09c423f9d8a08e39595df8a9cfb700357214bab371d8814",
+      "responseSha256": "74e54cb3f433b25d58a00c702df253374e78a24f9d2f9d652c8bafbe41ce8603",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "d71bb061e639f4afd09c423f9d8a08e39595df8a9cfb700357214bab371d8814",
+      "responseSha256": "74e54cb3f433b25d58a00c702df253374e78a24f9d2f9d652c8bafbe41ce8603",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f504dc08845dd3c52adc542ee406c660650787ff46aef0a25a01e4e79bd0c1b9",
+      "responseSha256": "ed7d7de2baee54f855c887a787dea11b6c4ef985fca5ce5e571662c4f47f5d39",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__single_shot__none",
+      "detail": "IndexOutOfBoundsException: Index 0 out of bounds for length 0",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "malformedStoreDoesNotCrash"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "4aaea4adb19d1266c1be3c39666898afa67166d53e6931a2f9a0ea4668f70df0",
+      "responseSha256": "e8a56302e11df939e188eb413c8305057b5a4f6a33927bb1a47c3ab7e16258d8",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "db4ccf906b0816a216ac5ab8e48d2dd50fff9a36e8bb17700866e24bb755d551",
+      "responseSha256": "5fbfc25c3b3176a4de5556d3f76be347f0e4f09dba849ec17398869a797e4528",
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/report.json",
+      "reportSha256": "8313813ccdda13cc5786abe68ab256b3196b72337a344a6c2600284b0cc1ef7a",
+      "responseSha256": "93275de48bd8f74c5c5ae072df79f90168e9e8f8354b11681582eaef538df525",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/report.json",
+      "reportSha256": "8313813ccdda13cc5786abe68ab256b3196b72337a344a6c2600284b0cc1ef7a",
+      "responseSha256": "93275de48bd8f74c5c5ae072df79f90168e9e8f8354b11681582eaef538df525",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/report.json",
+      "reportSha256": "8313813ccdda13cc5786abe68ab256b3196b72337a344a6c2600284b0cc1ef7a",
+      "responseSha256": "93275de48bd8f74c5c5ae072df79f90168e9e8f8354b11681582eaef538df525",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/report.json",
+      "reportSha256": "8313813ccdda13cc5786abe68ab256b3196b72337a344a6c2600284b0cc1ef7a",
+      "responseSha256": "93275de48bd8f74c5c5ae072df79f90168e9e8f8354b11681582eaef538df525",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/report.json",
+      "reportSha256": "8313813ccdda13cc5786abe68ab256b3196b72337a344a6c2600284b0cc1ef7a",
+      "responseSha256": "93275de48bd8f74c5c5ae072df79f90168e9e8f8354b11681582eaef538df525",
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "test": "rejectsExcessiveName"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i16-compact-confirmation",
+  "manifestFingerprint": "9f8515bbf3dcc6d40b3fc6b27c2013343bc7ed4f78eb73e0df5c8ac080e81662",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 78,
+          "text": "        if (runs.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 117,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return null;"
+        },
+        {
+          "line": 128,
+          "text": "                if (!MAGIC.equals(in.readLine())) return;"
+        },
+        {
+          "line": 129,
+          "text": "                String countLine = in.readLine(); int count = Integer.parseInt(countLine);"
+        },
+        {
+          "line": 130,
+          "text": "                if (count < 0 || count > MAX_RECORDS) return;"
+        },
+        {
+          "line": 132,
+          "text": "                    String n = in.readLine(); String s = in.readLine(); String t = in.readLine();"
+        },
+        {
+          "line": 139,
+          "text": "                if (in.readLine() != null) return;"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r1",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r1/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d931ae59f1e9bfa1e1a06d7a7e2c56908d8dea0611a55175119e6d95f077cdb9"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 47,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 106,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r1",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "20f19a61a6c8e6edfab9d6bf2412ad74070b7416bac9f00e9300db0d62443b70"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 34,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r1",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "263fbdb33fe2911f2bc5c2a87fc081778aa39028fd71ab5831fd065a665e50bb"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 47,
+          "text": "            if (!MAGIC.equals(reader.readLine())) return;"
+        },
+        {
+          "line": 49,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 50,
+          "text": "                if (loaded.size() >= MAX_RECORDS || line.length() > 160) return;"
+        },
+        {
+          "line": 70,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) return null;"
+        },
+        {
+          "line": 82,
+          "text": "        if (entries.size() > MAX_RECORDS) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r2",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "eb5fce3d15a7dcbb87035188e9bf380d896d3dd25298fc6ef1082a578366a394"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 136,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r2",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3fec02f5b81d11cbf0f85434f611ea32032022c9b9d3442e6fb4a530bb44c35a"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 38,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 114,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r2",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fce24cf3b62da74d476eefa32c72b8946bcb8dcb08278de1dc557749d1810bfc"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 44,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 93,
+          "text": "            int count = Math.min(MAX_ENTRIES, Math.max(0, in.readInt()));"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r3",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "38ccbb14920948de6c78746802c2f61b19a658c20ecba3f0e8a8531c8d9ac858"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 43,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r3",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3b70c1f8efea89dbfdcd536704966f13dfda1c861e1784e6ed1100eb043d4a4a"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 36,
+          "text": "        if(name.length()==0||name.length()>MAX_NAME)return false;"
+        },
+        {
+          "line": 39,
+          "text": "        sort(); if(rows.size()>MAX_RECORDS)rows.remove(rows.size()-1);"
+        },
+        {
+          "line": 51,
+          "text": "    private void load(){rows.clear();try{if(store==null||!Files.exists(store)||Files.size(store)>1024*1024)return;DataInputStream in=new DataInputStream(Files.newInputStream(store));if(in.readInt()!=MAGIC||in.readInt()!=VERSION){in.close();return;}int count=in.readInt();if(count<0||count>MAX_RECORDS){in.close();return;}for(int i=0;i<count;i++){String n=in.readUTF();int s=in.readInt(),t=in.readInt();if(n.length()==0||n.length()>MAX_NAME||s<0||s>MAX_VALUE||t<0||t>MAX_VALUE){in.close();rows.clear();return;}rows.add(new Row(n,s,t));}in.close();sort();}catch(Exception e){rows.clear();}}"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r3",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "845a431fadc20a1bec90356b120c655407ccac77662f53eb5d178304df51a212"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 113,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 138,
+          "text": "        while (runs.size() > MAX_ENTRIES) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r4",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fefda295458728386b7f63f6058bb0e93684222b74b724f34a8c8b81590176b4"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 39,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 88,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 123,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_ENTRIES; i++) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r4",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "37901e728e6c85c77aeed44401d81d379463530ea467c1ed5e9dd5a57c69bf87"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME =  forty();"
+        },
+        {
+          "line": 47,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 51,
+          "text": "        if (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 106,
+          "text": "            int count = data.readInt(); if (count < 0 || count > MAX_RECORDS) { data.close(); return; }"
+        },
+        {
+          "line": 110,
+          "text": "                if (n.length() == 0 || n.length() > MAX_NAME || s < 0 || t < 0 || t > MAX_TIME) { data.close(); return; }"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r4",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r4/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "affdd287e54dfe5c23379e1ef9e7b6361e5caf97d089acb695c280ee66fa8186"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 97,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__generation_s__single_shot__none__r5",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__generation_s__single_shot__none__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a229c42ad057c7843d5822d9ed39e0be69618ec6a19af3bc801202a4d4dd47e2"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 39,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 85,
+          "text": "            if (version == VERSION && count >= 0 && count <= MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__none__r5",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__none__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "01ac8c11d15184d391933e0a783f3b275989215ccf616231e7afa95de308133e"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_BYTES = 64;"
+        },
+        {
+          "line": 96,
+          "text": "            int count = in.readInt(); if (count < 0 || count > MAX_RECORDS) { in.close(); return; }"
+        },
+        {
+          "line": 99,
+          "text": "                int len = in.readInt(); if (len <= 0 || len > MAX_NAME_BYTES) throw new IOException(\"name\");"
+        },
+        {
+          "line": 112,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME_BYTES) return null;"
+        },
+        {
+          "line": 114,
+          "text": "        if (s.getBytes(StandardCharsets.UTF_8).length > MAX_NAME_BYTES) return null;"
+        },
+        {
+          "line": 119,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size()-1);"
+        }
+      ],
+      "runId": "i16-compact-confirmation__reuse_sb__single_shot__static__r5",
+      "source": ".local/iterations/i16-compact-confirmation/runs/i16-compact-confirmation__reuse_sb__single_shot__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1650a1eca74ab5452f2ce7de02c80ac1116d3cb3666e28a858c453485685b63d"
+    }
+  ]
+}

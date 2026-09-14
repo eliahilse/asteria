@@ -239,6 +239,33 @@ Generation S & 2; 14/11/5 & 0; 3/3/24 \\
 \end{tabular}
 \end{table}
 
+\paragraph{Confirmation of the compact insert.}
+Under the single-shot protocol with five fresh trajectories per arm
+(Table~\ref{tab:i16}), the compact agent-acquired insert reduces failed issue
+checks in Reuse S+B from 29 to 2 of 50 (identification bound $-6.2$ to $-4.6$
+per trajectory; six checks decrease, none increases) and functional success
+from 5 to 3 of 5. The Generation S insert arm was not measured: all five
+requests were rejected by the provider because the run identifier exceeded
+its 64-character limit for the field the adapter uses; the five trajectories
+are retained as transport failures and the cell is re-collected under a shorter
+round name.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{I16: full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery. The Generation S insert arm is unresolved throughout (transport failures).}
+\label{tab:i16}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Cell & Single-shot, none & Single-shot, static \\
+\midrule
+Generation S & 5; 36/2/12 & 0; 0/50/0 \\
+Reuse S+B & 5; 29/4/17 & 3; 2/4/44 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Cost.}
 Catalogue arms reached full functionality on the first submission most often
 (4 and 3 of 5); requirements arms least often (1 of 5 each), with the most
