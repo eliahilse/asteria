@@ -32,12 +32,23 @@ def read_study(directory: Path):
         if not path.exists(): continue
         record = json.loads(path.read_text()); records[row['runId']] = record
         if record['manifestFingerprint'] != plan['fingerprint']: raise ValueError('Trajectory identity mismatch')
-        prompt = (directory / next(c for c in plan['conditions'] if c['id'] == row['condition'])['promptFile']).read_bytes().decode()
+        condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
+        prompt = (directory / condition['promptFile']).read_bytes().decode()
+        agentic = plan.get('protocol') == 'agentic-delivery-v1'
         expected_messages = [{'role': 'system', 'content': plan['system']}, {'role': 'user', 'content': prompt}]
         for submission in record['submissions']:
             if digest(canonical(submission['request'])) != submission['requestSha256']: raise ValueError('Request hash mismatch')
             if submission.get('response') and digest(canonical(submission['response'])) != submission['responseSha256']: raise ValueError('Response hash mismatch')
             request = submission['request']
+            if agentic:
+                # Agentic conversations interleave repository reads and sidecar injections; every turn is hashed in the
+                # record, so verify identity, settings, the system text and the frozen prompt prefix rather than replaying feedback.
+                system = plan['systemAgentic'] if condition.get('mode') == 'agentic' else plan['system']
+                if (request['settings'] != plan['settings'] or request['model'] != plan['model'] or not request['request_id'].startswith(row['runId'] + '-')
+                        or request['messages'][0] != {'role': 'system', 'content': system} or request['messages'][1]['role'] != 'user'
+                        or not request['messages'][1]['content'].startswith(prompt)):
+                    raise ValueError('Request differs from frozen task, model, settings or system text')
+                continue
             if normalized_feedback(request['messages']) != normalized_feedback(expected_messages) or request['settings'] != plan['settings'] or request['model'] != plan['model'] or request['request_id'] != f"{row['runId']}-s{submission['number']}":
                 raise ValueError('Request differs from frozen task, model, settings or retained feedback')
             if submission.get('response'): expected_messages.append({'role': 'assistant', 'content': submission['response']['output_text']})
@@ -88,12 +99,16 @@ def read_study(directory: Path):
             'unverifiedSettings': sum(records[r['runId']]['settingsVerified'] is False for r in selected),
             'transportErrors': sum(r['status'] in ('adapter_error', 'identity_mismatch', 'settings_mismatch', 'interrupted', 'incomplete_response') for r in selected), 'checks': checks})
     acquisitions = []
-    for item in plan['acquisitions']:
+    for item in plan.get('acquisitions', []):
         record = json.loads((ROOT / '.local/context-generation' / item['id'] / 'record.json').read_text())
         acquisitions.append({**item, 'snapshotFingerprint': record['snapshotFingerprint'], 'taskSha256': digest(record['task'].encode()),
             'status': record['status'], 'settingsVerified': record['settingsVerified'], 'items': len(record['output']['items']), 'citationChecks': record['citationChecks']})
-    display_plan = {**plan, 'label': plan['id'].split('-')[0].upper(), 'observationUnit': 'trajectory', 'reasoning': plan['settings']['reasoning_effort'],
-                    'axes': {'method': ['Generation', 'Reuse'], 'paperContext': list(dict.fromkeys(c['baseContext'] for c in plan['conditions'])), 'securityContext': list(dict.fromkeys(c['securityStrategy'] for c in plan['conditions']))},
+    display_conditions = plan['conditions']
+    if plan.get('protocol') == 'agentic-delivery-v1':
+        # Delivery arms are labelled by mode and sidecar; single-shot without sidecar is the reference arm of each cell.
+        display_conditions = [{**c, 'securityStrategy': 'none' if (c['mode'], c['sidecar']) == ('single_shot', 'none') else f"{c['mode']}+{c['sidecar']}"} for c in plan['conditions']]
+    display_plan = {**plan, 'conditions': display_conditions, 'label': plan['id'].split('-')[0].upper(), 'observationUnit': 'trajectory', 'reasoning': plan['settings']['reasoning_effort'],
+                    'axes': {'method': ['Generation', 'Reuse'], 'paperContext': list(dict.fromkeys(c['baseContext'] for c in plan['conditions'])), 'securityContext': list(dict.fromkeys(c['securityStrategy'] for c in display_conditions))},
                     'acquisitions': acquisitions, 'deviations': list(plan['analysis'].values())}
     note = ROOT / 'research/iterations' / plan['id'] / 'assessment.json'
     if note.exists(): display_plan['evaluationNote'] = json.loads(note.read_text())['message']
