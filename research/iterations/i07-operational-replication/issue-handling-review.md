@@ -129,7 +129,10 @@ line fixture.
 
 Categories are single-pass reviewer judgments by a language model with cited
 lines, not double-coded human annotations; the citations allow spot checks
-against the preserved sources. The taxonomy names mechanisms, not
+against the preserved sources. A stratified sheet of 20 rows with the cited
+lines inlined and an empty verdict column is at
+[`issue-handling-spotcheck.md`](issue-handling-spotcheck.md) (seed 7, two per
+check); its verdicts are not filled in yet. The taxonomy names mechanisms, not
 vulnerabilities. Whether normalization or rejection is the right policy for a
 game's highscore input is a design question; the contracts fixed rejection so
 that both rounds measure the same property. Pooling across paper-context cells
