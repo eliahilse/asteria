@@ -48,6 +48,7 @@ def document(extra_items=()):
             'items': [item('P1', 'security_property', 'observed', [anchor]),
                       item('R1', 'requirement', 'task', [], threat='tampering', cwe=['CWE-20'], enforcement_point=anchor, failure_behavior='return false', verification='call with -1'),
                       item('X1', 'existing_risk', 'observed', [{'symbol': None, 'file': 'ApoMario/src/missing.java', 'start_line': 1, 'end_line': 2}]),
+                      item('P2', 'security_property', 'observed', [{'symbol': 'apoMario.Wrong#store(int)', 'file': FILE, 'start_line': 4, 'end_line': 6}]),
                       *extra_items]}
 
 
@@ -102,8 +103,11 @@ echo '{"type":"turn.completed","usage":{"input_tokens":10,"output_tokens":5}}'
         result = context_agent.execute(record, directory, codex)
         self.assertEqual(result['status'], 'settings_unverified'); self.assertEqual(result['exitCode'], 0); self.assertEqual(result['commandsExecuted'], 1)
         self.assertEqual((directory / 'prompt-seen.txt').read_text(), record['initialPrompt'])
-        self.assertEqual([i['id'] for i in result['output']['items']], ['P1', 'R1'])
-        self.assertEqual(result['citationChecks']['droppedItems'][0]['id'], 'X1'); self.assertEqual(result['citationChecks']['matched'], 4); self.assertEqual(result['citationChecks']['total'], 5)
+        self.assertEqual([i['id'] for i in result['output']['items']], ['P1', 'R1', 'P2'])
+        self.assertEqual(result['citationChecks']['droppedItems'][0]['id'], 'X1'); self.assertEqual(result['citationChecks']['matched'], 5); self.assertEqual(result['citationChecks']['total'], 6)
+        corrected = result['output']['items'][2]['anchors'][0]; self.assertEqual(corrected['symbolCorrected']['symbolGiven'], 'apoMario.Wrong#store(int)'); self.assertEqual(corrected['symbols'], [])
+        self.assertEqual(result['citationChecks']['symbolCorrected'], 1); self.assertEqual(result['citationChecks']['validator'], 'anchor-validation-v2')
+        again = context_agent.revalidate(json.loads((directory / 'record.json').read_text()), directory); self.assertEqual(again['revalidations'][0]['matched'], 5); self.assertEqual(again['promptInsertSha256'], result['promptInsertSha256'])
         self.assertEqual(result['output']['items'][1]['enforcement_point']['symbols'], [SYMBOL])
         insert = result['promptInsert']
         self.assertIn('angle: dataflow', insert); self.assertIn(f'{FILE}:4-6 ({SYMBOL})', insert); self.assertIn('[R1; requirement; task; tampering; CWE-20]', insert)

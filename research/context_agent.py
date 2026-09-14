@@ -22,6 +22,7 @@ from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import timestamp, write_atomic
 
 PROTOCOL = 'repository-security-context-v7-agent'
+VALIDATOR = 'anchor-validation-v2'  # v2: wrong symbol with a verifiable file range keeps the range and records the correction
 ANGLES = ('dataflow', 'requirements', 'catalog')
 ASSETS = ROOT / 'research/security/agent'
 SCHEMA = ROOT / 'research/security/context-schema.json'
@@ -130,13 +131,20 @@ def validate_output(document: dict, workspace: Path, model: dict) -> tuple[dict,
     """Schema check, anchor resolution and evidence rules. Returns (validated document, citation checks)."""
     schema = json.loads(SCHEMA.read_text()); errors = check_schema(document, schema)
     if errors: raise ValueError('Schema violations: ' + '; '.join(errors[:12]))
-    total = matched = 0; rejected = []
+    total = matched = corrected = 0; rejected = []
 
     def resolve(anchors):
-        nonlocal total, matched; resolved = []
+        """Resolve each anchor; when the named symbol is wrong but the file range exists, keep the verified range and record the correction."""
+        nonlocal total, matched, corrected; resolved = []
         for anchor in anchors:
-            total += 1; result = code_model.validate_anchor(model, workspace, anchor)
-            if result['ok']: matched += 1; resolved.append({**anchor, 'resolvedFile': result['file'], 'resolvedStart': result['start'], 'resolvedEnd': result['end'], 'symbols': result['symbols'], 'textSha256': result['textSha256']})
+            total += 1; result = code_model.validate_anchor(model, workspace, anchor); note = None
+            if not result['ok'] and anchor.get('symbol') and anchor.get('file') and anchor.get('start_line') and anchor.get('end_line'):
+                retry = code_model.validate_anchor(model, workspace, {**anchor, 'symbol': None})
+                if retry['ok']: note = {'symbolGiven': anchor['symbol'], 'reason': result['reason']}; result = retry
+            if result['ok']:
+                matched += 1
+                if note: corrected += 1
+                resolved.append({**anchor, 'resolvedFile': result['file'], 'resolvedStart': result['start'], 'resolvedEnd': result['end'], 'symbols': result['symbols'], 'textSha256': result['textSha256'], **({'symbolCorrected': note} if note else {})})
             else: rejected.append({'anchor': anchor, 'reason': result['reason']})
         return resolved
 
@@ -158,7 +166,7 @@ def validate_output(document: dict, workspace: Path, model: dict) -> tuple[dict,
         validated['items'].append({**item, 'anchors': anchors, 'enforcement_point': enforcement, 'related': [r for r in item['related'] if r in ids]})
     kinds = {}
     for item in validated['items']: kinds[item['kind']] = kinds.get(item['kind'], 0) + 1
-    checks = {'total': total, 'matched': matched, 'rejectedAnchors': rejected, 'droppedItems': dropped, 'itemsByKind': kinds,
+    checks = {'validator': VALIDATOR, 'total': total, 'matched': matched, 'symbolCorrected': corrected, 'rejectedAnchors': rejected, 'droppedItems': dropped, 'itemsByKind': kinds,
               'uncitedItems': sum(1 for item in validated['items'] if not item['anchors']),
               'limitation': 'Anchors resolve to inspected source ranges; claim entailment, completeness and exploitability are not mechanically validated.'}
     return validated, checks
@@ -259,14 +267,31 @@ def execute(record: dict, directory: Path, codex: str = 'codex', timeout: int = 
     return record
 
 
+def revalidate(record: dict, directory: Path) -> dict:
+    """Recompute output, checks and insert from the frozen raw output with the current validator; the raw output and transcript stay unchanged."""
+    if not record.get('rawOutput'): raise ValueError('No raw output to revalidate')
+    workspace = directory / 'workspace'; model = json.loads((workspace / 'code-model.json').read_text())
+    previous = {'validator': (record.get('citationChecks') or {}).get('validator', 'anchor-validation-v1'), 'matched': (record.get('citationChecks') or {}).get('matched'),
+                'promptInsertSha256': record.get('promptInsertSha256'), 'at': timestamp()}
+    validated, checks = validate_output(record['rawOutput'], workspace, model)
+    record.update(output=validated, citationChecks=checks, promptInsert=prompt_insert(validated))
+    record['promptInsertSha256'] = digest(record['promptInsert'].encode()); record.setdefault('revalidations', []).append(previous)
+    if record['status'] == 'invalid_output': record['status'] = 'settings_unverified' if not record.get('modelReported') else 'completed'; record.pop('failure', None)
+    write_atomic(directory / 'record.json', record); return record
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__); sub = parser.add_subparsers(dest='action', required=True)
     p = sub.add_parser('prepare'); p.add_argument('--method', choices=list(GAMES), required=True); p.add_argument('--angle', choices=ANGLES, required=True)
     p.add_argument('--task', required=True); p.add_argument('--model', default=DEFAULT_MODEL); p.add_argument('--effort', default=DEFAULT_EFFORT)
     p.add_argument('--output', type=Path, default=OUTPUT); p.add_argument('--execute', action='store_true'); p.add_argument('--codex', default='codex')
     e = sub.add_parser('execute'); e.add_argument('--id', required=True); e.add_argument('--output', type=Path, default=OUTPUT); e.add_argument('--codex', default='codex'); e.add_argument('--timeout', type=int, default=3600)
+    v = sub.add_parser('revalidate'); v.add_argument('--id', required=True); v.add_argument('--output', type=Path, default=OUTPUT)
     args = parser.parse_args()
-    if args.action == 'prepare':
+    if args.action == 'revalidate':
+        directory = args.output / args.id; record = revalidate(json.loads((directory / 'record.json').read_text()), directory)
+        c = record['citationChecks']; print(json.dumps({'id': record['id'], 'status': record['status'], 'matched': c['matched'], 'total': c['total'], 'symbolCorrected': c['symbolCorrected'], 'items': len(record['output']['items'])}))
+    elif args.action == 'prepare':
         record, directory = prepare(args.method, args.angle, args.task, args.output, args.model, args.effort)
         print(json.dumps({'id': record['id'], 'workspaceFiles': len(record['workspace']['files']), 'symbols': record['workspace']['symbols']}), flush=True)
         if args.execute: record = execute(record, directory, args.codex); print(json.dumps({'id': record['id'], 'status': record['status'], 'items': len((record.get('output') or {}).get('items', []))}))
