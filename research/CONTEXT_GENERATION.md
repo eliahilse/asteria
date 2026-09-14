@@ -45,6 +45,13 @@ snapshot, complete exchanges and literal output insert. The new strategy is
 results remain under their original protocols. They have not been rerun with
 this instruction. Historical acquisition modules remain available for replay.
 
+## Agentic acquisition
+
+[`CONTEXT_AGENT.md`](CONTEXT_AGENT.md) describes the agent-based acquisition:
+an off-the-shelf coding agent inspects a read-only workspace with a derived
+code model under one of three angle instructions (data flow, requirements,
+catalog) and returns typed statements anchored to code symbols.
+
 ## Catalog-anchored acquisition
 
 `catalog_context.py`, protocol `repository-security-context-v6-cwe-catalog`,

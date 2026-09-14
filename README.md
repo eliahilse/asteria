@@ -35,6 +35,10 @@ instruction against fresh controls and the fixed requirements insert: 40/40 full
 functional, every generic arm below its control on failed checks, requirements
 still strongest.
 A second feature task, [level import](research/features/level-import/README.md), is prepared but not run.
+The next acquisition step is the [security context agent](research/CONTEXT_AGENT.md):
+an off-the-shelf coding agent inspects a read-only workspace with a derived
+[code model](research/CODE_MODEL.md) under one of three angles and returns
+statements anchored to code symbols; not yet run.
 
 ```sh
 cd workbench
