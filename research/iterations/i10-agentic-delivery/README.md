@@ -56,3 +56,16 @@ both information access and interaction length; the design does not isolate
 which of the two drives a difference. Two cells, N = 5 per arm, no significance
 claims. The adaptive sidecar's slices depend on the code model's name-based
 call resolution.
+
+## Collection notes, 2026-09-14
+
+Collection started after the two data-flow acquisitions were frozen (see
+`acquisitions.md`; static inserts of 31,141 and 30,756 characters). In the
+first adaptive trajectories the sidecar injected nothing after searches (no
+file is touched by a search), nothing after reads in most cases, and then 16–18
+of the 18–19 statements at the first submission, because the submitted edits
+touch the three target files where almost every statement is anchored. At
+file granularity the adaptive arm therefore delivers most of the static insert
+after the first attempt. Symbol-level slicing (anchoring on the edited method
+ranges instead of files) is the planned refinement for a later round; the
+frozen I10 code is not changed during collection.
