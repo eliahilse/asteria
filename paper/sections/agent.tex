@@ -113,7 +113,13 @@ settings: none, static (the full insert appended to the task) and adaptive (no
 upfront insert; after each read and before each submission the harness injects
 the graph slice for the code touched so far). The adaptive setting supplies
 security context in proportion to what the generator inspects; its cost is
-measured in injected statements and characters.
+measured in injected statements and characters. A fourth setting, the
+\emph{gatekeeper}, injects nothing: for each submission that edits an
+enforcement point it asks a one-turn judge (the same model, recorded) whether
+the edit clearly violates an anchored control, rejects the submission with the
+violated statements only on a positive verdict, and is otherwise silent.
+Consultations and interventions are counted; the judge sees the edit and the
+statements, never test outcomes.
 
 \paragraph{Provenance.}
 A record freezes the instruction, ontology and snapshot fingerprints, every
