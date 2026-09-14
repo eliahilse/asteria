@@ -112,6 +112,38 @@ class GraphSidecarTests(unittest.TestCase):
             self.assertEqual((event['intervene'], event['wouldIntervene'], event['verdictIntervene']), (False, expect_would, True)); self.assertEqual(record2['submissions'][0]['status'], 'evaluated')
         self.assertEqual(shadow.describe()['mode'], 'shadow-gate')
 
+    def test_coach_and_gate_once_policies(self):
+        level_file = 'ApoMario/src/apoMario/level/ApoMarioLevel.java'; symbol = 'apoMario.level.ApoMarioLevel'
+        doc = {'angle': 'dataflow', 'summary': 'S', 'limitations': [], 'assets': [], 'boundaries': [],
+               'items': [item('R1', 'requirement', 'task', [], enforcement_point=anchor(symbol, 1, 3, level_file)),
+                         item('C1', 'control', 'reasoned', [], ['R1'], enforcement_point=anchor(symbol, 1, 3, level_file), failure_behavior='reject')]}
+        model = {'symbols': [{'id': symbol, 'file': level_file, 'start': 1, 'end': 3, 'sinks': []}], 'edges': []}
+        (self.directory / 'generation-dataflow.graph.json').write_bytes(canonical(context_graph.build(doc, model)))
+        positive = {'intervene': True, 'statement_ids': ['C1'], 'quoted_lines': ['int preserved; int added;'], 'reason': 'violation'}
+
+        def run_kind(kind, sidecar, actions, reports):
+            script = iter([positive] * len(actions))
+            def fake(command, request, timeout):
+                return {'protocol_version': 1, 'request_id': request['request_id'], 'model': request['model'], 'settings': None, 'finish_reason': 'stop', 'output_text': json.dumps(next(script)), 'usage': {}, 'cost_usd': None}
+            with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=fake):
+                fixture = Fixture(Path(temporary))
+                for c in fixture.conditions:
+                    if c['sidecar'] == 'adaptive': c['sidecar'] = kind; c['id'] = c['id'].replace('adaptive', kind)
+                for row in fixture.plan['schedule']: row['condition'] = row['condition'].replace('adaptive', kind); row['runId'] = row['runId'].replace('adaptive', kind)
+                return fixture.run('agentic', kind, actions, reports, sidecar)
+        record, requests = run_kind('coach', graph_sidecar.GateSidecar(self.directory, command=['j'], policy='auto'), [act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **CORRECTION)], [report(False), report(True)])
+        self.assertEqual([s['status'] for s in record['submissions']], ['evaluated', 'evaluated'])
+        first = [e for e in record['sidecarEvents'] if e['stage'] == 'gate'][0]
+        self.assertEqual((first['wouldIntervene'], first['intervene'], first['advice'], first['injected']), (True, False, True, True))
+        self.assertIn('SECURITY CONTEXT FOR THIS SUBMISSION', requests[1]['messages'][-1]['content']); self.assertIn('"functionalSuccess": false', requests[1]['messages'][-1]['content'])
+        self.assertEqual(record['sidecarConfig']['policy'], 'auto')
+        record, requests = run_kind('gate_once', graph_sidecar.GateSidecar(self.directory, command=['j'], policy='auto'), [act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **CORRECTION)], [report(False), report(True)])
+        self.assertEqual([s['status'] for s in record['submissions']], ['rejected_by_sidecar', 'evaluated', 'evaluated'])
+        events = [e for e in record['sidecarEvents'] if e['stage'] == 'gate']
+        self.assertEqual([(e['intervene'], e['advice'], e['consulted']) for e in events], [(True, False, True), (False, True, True), (False, False, False)])  # the correction touches no enforcement point
+        self.assertIn('SUBMISSION REJECTED', requests[1]['messages'][-1]['content']); self.assertIn('SECURITY CONTEXT FOR THIS SUBMISSION', requests[2]['messages'][-1]['content'])
+        self.assertNotIn('SECURITY CONTEXT FOR THIS SUBMISSION', requests[2]['messages'][-1]['content'].split('SECURITY CONTEXT FOR THIS SUBMISSION', 1)[1])
+
 
 if __name__ == '__main__':
     unittest.main()

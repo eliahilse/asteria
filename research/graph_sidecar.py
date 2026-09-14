@@ -91,13 +91,20 @@ def judge_prompt(statements: str, changes: dict) -> str:
 class GateSidecar(GraphSidecar):
     """Judges each submission that touches an enforcement point; rejects only on a judged violation, otherwise silent."""
 
-    def __init__(self, directory: Path, angle: str = 'dataflow', kinds: tuple[str, ...] | None = COMPACT, command=None, timeout: int = 600, shadow: bool = False):
+    def __init__(self, directory: Path, angle: str = 'dataflow', kinds: tuple[str, ...] | None = COMPACT, command=None, timeout: int = 600, shadow: bool = False,
+                 policy: str = 'reject', max_interventions: int | None = None):
+        """policy 'reject': a positive verdict rejects the submission; 'coach': the verdict is attached to the functional feedback instead.
+        max_interventions caps rejections per trajectory; further positive verdicts are coached. shadow records verdicts and does neither."""
+        if policy not in ('reject', 'coach', 'auto'): raise ValueError('policy must be reject, coach or auto')
         super().__init__(directory, angle, granularity='symbol', hops=0, kinds=kinds, header=False)
-        self.command, self.timeout, self.shadow = command, timeout, shadow
+        self.command, self.timeout, self.shadow, self.policy, self.max_interventions = command, timeout, shadow, policy, max_interventions
+        self.interventions = 0
 
     def describe(self) -> dict:
-        return {**super().describe(), 'mode': 'shadow-gate' if self.shadow else 'gate', 'shadow': self.shadow, 'judgeSystemSha256': digest(JUDGE_SYSTEM.encode()),
-                'judgeTool': JUDGE_TOOL['function']['name'], 'judgeToolSha256': digest(canonical(JUDGE_TOOL)), 'editChars': EDIT_CHARS, 'fileChars': FILE_CHARS}
+        mode = 'shadow-gate' if self.shadow else ('coach' if self.policy == 'coach' else 'gate')
+        return {**super().describe(), 'mode': mode, 'shadow': self.shadow, 'policy': self.policy, 'maxInterventions': self.max_interventions,
+                'judgeSystemSha256': digest(JUDGE_SYSTEM.encode()), 'judgeTool': JUDGE_TOOL['function']['name'], 'judgeToolSha256': digest(canonical(JUDGE_TOOL)),
+                'editChars': EDIT_CHARS, 'fileChars': FILE_CHARS}
 
     def initial(self, condition): return None
 
@@ -124,13 +131,18 @@ class GateSidecar(GraphSidecar):
         submitted = '\n'.join([*(e.get('new_text') or '' for e in (changes.get('edits') or [])), *(n.get('content') or '' for n in (changes.get('new_files') or []))])
         quoted = [q for q in (verdict.get('quoted_lines') or []) if isinstance(q, str) and q.strip() and q.strip() in submitted]
         would = bool(verdict.get('intervene')) and bool(cited) and bool(quoted)
-        intervene = would and not self.shadow
-        text = None
-        if intervene:
-            text = '\n'.join(['--- SUBMISSION REJECTED BY THE SECURITY SIDECAR ---', 'Reason: ' + str(verdict.get('reason') or ''), 'Violating lines:', *['  ' + q for q in quoted],
-                               *context_graph.render_items(graph, cited), '--- END ---'])
+        policy, cap = self.policy, self.max_interventions
+        if policy == 'auto':  # the condition's sidecar kind selects the policy: gate rejects, gate_once rejects once, coach never rejects
+            policy = 'coach' if view.get('sidecar') == 'coach' else 'reject'; cap = 1 if view.get('sidecar') == 'gate_once' else cap
+        capped = cap is not None and self.interventions >= cap
+        intervene = would and not self.shadow and policy == 'reject' and not capped
+        if intervene: self.interventions += 1
+        body = ['Reason: ' + str(verdict.get('reason') or ''), 'Violating lines:', *['  ' + q for q in quoted], *context_graph.render_items(graph, cited)]
+        text = '\n'.join(['--- SUBMISSION REJECTED BY THE SECURITY SIDECAR ---', *body, '--- END ---']) if intervene else None
+        advice = '\n'.join(['--- SECURITY CONTEXT FOR THIS SUBMISSION ---', *body, '--- END ---']) if would and not intervene and not self.shadow else None
         return {'consulted': True, 'intervene': intervene, 'wouldIntervene': would, 'verdictIntervene': bool(verdict.get('intervene')), 'ids': cited if would else ids,
-                'citedIds': cited, 'quoted': quoted, 'unquoted': len((verdict.get('quoted_lines') or [])) - len(quoted), 'reason': str(verdict.get('reason') or ''), 'text': text, 'transcript': transcript}
+                'citedIds': cited, 'quoted': quoted, 'unquoted': len((verdict.get('quoted_lines') or [])) - len(quoted), 'reason': str(verdict.get('reason') or ''),
+                'text': text, 'advice': advice, 'capped': capped, 'transcript': transcript}
 
 
 def GATE():
@@ -141,3 +153,18 @@ def GATE():
 def SHADOW():
     """Default for I13: shadow gate over the I11 Generation data-flow graph; verdicts are recorded, never acted on."""
     return GateSidecar(ROOT / 'research/iterations/i13-shadow-gate/contexts', shadow=True)
+
+
+def COACH():
+    """I14: coach policy; the verdict is attached to the functional feedback, nothing is rejected."""
+    return GateSidecar(ROOT / 'research/iterations/i14-coach-gate/contexts', policy='coach')
+
+
+def GATE_ONCE():
+    """I14: at most one rejection per trajectory, then coach."""
+    return GateSidecar(ROOT / 'research/iterations/i14-coach-gate/contexts', policy='reject', max_interventions=1)
+
+
+def AUTO_GATE():
+    """I14: one sidecar object serving gate, gate_once and coach conditions by their kind."""
+    return GateSidecar(ROOT / 'research/iterations/i14-coach-gate/contexts', policy='auto')

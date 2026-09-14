@@ -34,9 +34,10 @@ from research.security_followup import acquisition_task, repository_input
 PROTOCOL = 'agentic-delivery-v1'
 EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive', 'gate')
+SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once')
+GATE_KINDS = ('gate', 'coach', 'gate_once')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
 ACTIONS = ('search', 'read', 'submit_feature_changes')
-DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar != 'gate']  # gate is requested explicitly
+DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS]  # judge arms are requested explicitly
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
 CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'
 ITERATIONS = ROOT / '.local/iterations'
@@ -216,7 +217,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
-    if kind in ('adaptive', 'gate') and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
+    if (kind == 'adaptive' or kind in GATE_KINDS) and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
     sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
     if command is None: command = command_from_env()
     directory = manifest.parent / 'runs' / run_id
@@ -292,9 +293,9 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 
     def gate(changes, before):
         """Ask the gate sidecar whether this submission clearly violates a control at an enforcement point it touches."""
-        if kind != 'gate' or sidecar is None or not callable(getattr(sidecar, 'judge', None)): return None
+        if kind not in GATE_KINDS or sidecar is None or not callable(getattr(sidecar, 'judge', None)): return None
         files_touched, ranges = change_ranges(changes, before)
-        view = {'method': condition.get('strategy'), 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'stage': 'before_evaluation',
+        view = {'method': condition.get('strategy'), 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'sidecar': kind, 'stage': 'before_evaluation',
                 'submission': submission_number, 'turn': turn_number, 'changes': changes, 'ranges': ranges, 'files': sorted(files_touched), 'runId': run_id,
                 'requestId': f'{run_id}-j{submission_number}', 'model': plan['model'], 'settings': plan['settings']}
         verdict = call_sidecar(sidecar.judge, view)
@@ -305,8 +306,11 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                  'injected': verdict['intervene'] and bool(text), 'ids': list(verdict.get('ids') or []), 'reason': verdict.get('reason'), 'touchedFiles': sorted(files_touched),
                  'transcript': verdict.get('transcript'), **{k: verdict[k] for k in ('wouldIntervene', 'verdictIntervene', 'citedIds', 'quoted', 'unquoted') if k in verdict}}
         if event['injected']: event.update(sha256=digest(text.encode()), characters=len(text))
+        advice = verdict.get('advice')
+        if advice is not None and not isinstance(advice, str): raise SidecarError('judge advice must be a string or None')
+        event['advice'] = bool(advice) and not verdict['intervene']
         record['sidecarEvents'].append(event)
-        return verdict if verdict['intervene'] else None
+        return verdict
 
     try:
         if kind == 'static' and sidecar is not None:
@@ -382,7 +386,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                 submission = {'number': submission_number, 'turn': turn_number, 'status': 'started', 'request': request, 'requestSha256': turn['requestSha256'], 'startedAt': turn['startedAt'],
                               'response': response, 'responseSha256': turn['responseSha256'], 'receivedAt': turn['receivedAt']}
                 record['submissions'].append(submission)
-            turn['status'] = 'submitted'; changes = None; pre_edit = dict(files)
+            turn['status'] = 'submitted'; changes = None; pre_edit = dict(files); advice = None
             try:
                 changes = json.loads(response['output_text']) if mode == 'single_shot' else {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
                 candidate = apply_changes(files, changes)
@@ -391,8 +395,9 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             except (ValueError, KeyError, TypeError) as error:
                 submission['status'] = 'invalid_changes'; feedback = {'deliveryError': str(error), 'applied': False}
             else:
-                verdict = gate(changes, pre_edit)
-                if verdict is not None:
+                verdict = gate(changes, pre_edit); advice = None
+                if verdict is not None and not verdict['intervene']: advice = verdict.get('advice') or None
+                if verdict is not None and verdict['intervene']:
                     submission['status'] = 'rejected_by_sidecar'
                     feedback = {'deliveryError': 'Submission rejected by the security sidecar: ' + str(verdict.get('reason') or ''), 'applied': False, 'securityContext': verdict.get('text')}
                 else:
@@ -418,6 +423,11 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
             content = json.dumps(feedback) + f'\n{max_submissions - submission_number} submissions remain. Correct the current source using exact edits.'
             if mode == 'agentic': content += f' {max_turns - turn_number} tool turns remain.'
+            if advice:
+                content += '\n\n' + advice
+                for event in reversed(record['sidecarEvents']):
+                    if event.get('stage') == 'gate' and event.get('submission') == submission_number:
+                        event.update(injected=True, sha256=digest(advice.encode()), characters=len(advice)); break
             messages.append({'role': 'user', 'content': content})
             pending = 'before_submit'
             write_atomic(path, record)
@@ -439,7 +449,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
     plan = validate(manifest)
-    if sidecar_spec is None and any(c['sidecar'] in ('adaptive', 'gate') for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
     with (manifest.parent / '.iteration.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -474,6 +484,8 @@ def summary(manifest_dir: Path) -> dict:
             'sidecarInjections': counts([sum(e['injected'] for e in r['sidecarEvents']) for r in records]),
             'gateConsultations': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('consulted')) for r in records]),
             'gateInterventions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('intervene')) for r in records]),
+            'gatePositiveVerdicts': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('wouldIntervene')) for r in records]),
+            'coachedSubmissions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('advice')) for r in records]),
             'trajectoriesWithInjection': ratio(sum(any(e['injected'] for e in r['sidecarEvents']) for r in records)),
             'statuses': statuses}
     return {'id': plan['id'], 'protocol': plan['protocol'], 'maxTurns': plan['maxTurns'], 'maxSubmissions': plan['maxSubmissions'],

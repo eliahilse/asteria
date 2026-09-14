@@ -29,14 +29,15 @@ def render(identifier, qualified=False):
     target = directory / ('figures-qualified' if qualified else 'figures'); target.mkdir(exist_ok=True)
     plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 10, 'axes.spines.top': False, 'axes.spines.right': False,
                          'svg.hashsalt': identifier, 'pdf.fonttype': 42, 'ps.fonttype': 42})
-    parents = list(dict.fromkeys(c['parent'] for c in data['comparisons']))
+    parents = list(dict.fromkeys(c['condition'].split('__', 1)[0] for c in data['conditions']))  # every cell, whether or not it has a fresh-control comparison
     by_condition = {c['condition']: c for c in data['conditions']}
     strategies = list(dict.fromkeys(c['securityStrategy'] for c in data['conditions']))
     sizes = sorted({c['n'] for c in data['conditions']})
     n_label = str(sizes[0]) if len(sizes) == 1 else '/'.join(map(str, sizes))
     budget = json.loads((directory / 'plan.json').read_text())['maxSubmissions']
     def parent_label(parent):
-        row = next(c for c in data['conditions'] if c['condition'].startswith(parent + '__') and c['securityStrategy'] == 'none')
+        rows = [c for c in data['conditions'] if c['condition'].startswith(parent + '__')]
+        row = next((c for c in rows if c['securityStrategy'] == 'none'), rows[0])
         return row['method'] + ' · ' + row['paperContext']
     generated = []
     def save(fig, name):
