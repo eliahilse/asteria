@@ -1,4 +1,5 @@
 """The paper's result tables must equal the saved qualified analyses."""
+import csv
 import json
 from pathlib import Path
 import re
@@ -38,6 +39,21 @@ class PaperTableTests(unittest.TestCase):
                     self.assertEqual((full, failed, unresolved, passed), expected, f'{label} {cell} {arm}')
                     self.assertEqual(failed + unresolved + passed, issues['plannedChecks'], f'{label} {cell} {arm}: denominator')
                     self.assertEqual(condition['n'], 5)
+
+    def test_acquisition_table_matches_saved_summary(self):
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        rows = {(r['method'], r['angle']): r for r in csv.DictReader((ROOT / 'research/iterations/i10-agentic-delivery/acquisitions.csv').open())}
+        angles = {'data flow': 'dataflow', 'requirements': 'requirements', 'catalogue': 'catalog'}
+        _, body = parse_table(source, 'tab:acq')
+        self.assertEqual(len(body), 6)
+        for method, values in body:
+            angle, commands, statements, anchors, corrected, characters = values
+            row = rows[(method, angles[angle])]
+            self.assertEqual(int(commands), int(row['commands']), (method, angle))
+            self.assertEqual(statements, f"{row['items']}/{row['rawItems']}", (method, angle))
+            self.assertEqual(anchors, f"{row['anchorsMatched']}/{row['anchorsTotal']}", (method, angle))
+            self.assertEqual(int(corrected), int(row['anchorsCorrected']), (method, angle))
+            self.assertEqual(int(characters), int(row['insertCharacters']), (method, angle))
 
 
 if __name__ == '__main__':

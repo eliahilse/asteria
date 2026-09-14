@@ -57,9 +57,25 @@ otherwise the record stays `settings_unverified`. Records live under
 `.local/context-generation/agent-<hex>/` with `workspace/`, `prompt.md`,
 `schema.json`, `transcript.jsonl`, `stderr.log`, `final.json` and `record.json`.
 
+## Validation and revalidation
+
+Anchor validation is versioned (`anchor-validation-v2`). When an agent names a
+symbol the code model does not know, or a range outside the named symbol, but
+the file range exists, the range is kept as verified evidence, the enclosing
+symbols are resolved by the harness, and the correction is recorded on the
+anchor (`symbolCorrected`) and counted in `citationChecks.symbolCorrected`.
+`python3 -m research.context_agent revalidate --id agent-<hex>` recomputes the
+validated output, checks and insert from the frozen raw output without a model
+call and appends the previous validator, match count and insert hash to
+`revalidations`.
+
 ## Status
 
-The harness and validation are implemented and tested with a fake agent
-binary. No real Codex run has been made yet, so the JSONL event names the
-parser expects (`thread.started`, `item.completed` with `command_execution` and
-`agent_message`, `turn.completed`) are assumptions to confirm on first use.
+Six acquisitions (three angles × two methods) ran on 2026-09-14 with
+`codex exec` and `gpt-5.6-luna`: 2.7–4.4 minutes and 26–60 shell commands
+each; 7–24 statements kept; anchors verified 34/34 to 79/79 after symbol
+correction, except Reuse data flow 72/78 and Reuse requirements 47/50. The
+JSONL events observed are `thread.started`, `turn.started`, `turn.completed`,
+`item.started` and `item.completed` with `command_execution` and
+`agent_message` items; Codex reports no served model identity, so records stay
+`settings_unverified`. Summary: `python3 -m research.agent_acquisitions`.

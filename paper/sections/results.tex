@@ -70,6 +70,36 @@ insert reduces only retention and resource failures and leaves every
 input-policy check at the control's level. In Reuse S+B it inspected 22 files
 and its insert reduces failures by 18.
 
+\paragraph{Agent acquisitions.}
+Six agent acquisitions (three angles, two methods) ran on the same model
+through an agent harness with a read-only sandbox (Table~\ref{tab:acq}). Every
+run finished within its command budget in under five minutes. The harness
+verified every kept anchor against the source; where the agent named a wrong
+symbol identifier for an existing file range, the range was kept and the
+correction counted. The requirements angle produced the most statements, the
+catalogue angle the fewest; the two data-flow acquisitions are the static
+inserts and sidecar graphs of the next round.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Agent acquisitions: shell commands, statements kept of produced, anchors verified of cited (symbol corrections), insert size.}
+\label{tab:acq}
+\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Method & Angle & Commands & Statements & Anchors & Corrected & Characters \\
+\midrule
+Generation & data flow & 60 & 19/19 & 70/70 & 19 & 24475 \\
+Generation & requirements & 26 & 24/25 & 79/79 & 10 & 26919 \\
+Generation & catalogue & 52 & 7/7 & 40/40 & 8 & 12666 \\
+Reuse & data flow & 50 & 18/18 & 72/78 & 9 & 23990 \\
+Reuse & requirements & 32 & 12/13 & 47/50 & 3 & 15840 \\
+Reuse & catalogue & 28 & 8/8 & 34/34 & 8 & 11726 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Cost.}
 Catalogue arms reached full functionality on the first submission most often
 (4 and 3 of 5); requirements arms least often (1 of 5 each), with the most
