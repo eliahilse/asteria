@@ -160,9 +160,13 @@ control with the gatekeeper. The judge was consulted 11 times and intervened
 11 times; of the gate arm's 15 submissions, 11 were rejected by the sidecar and
 4 by the harness as invalid edits, so no gate artifact was evaluated and all 30
 of its issue checks are unresolved. Its reasons name listed controls and also
-concerns outside them. As configured, the gate converts trajectories into
-budget exhaustion; the next step is a shadow mode that records verdicts without
-acting, to measure the judge against the evaluator before it may intervene.
+concerns outside them. In shadow mode (I13, six trajectories, verdicts recorded
+but never acted on) the judge would have intervened on all 6 judged first
+submissions, each of which failed 4 to 7 issue checks including at least one in
+a category the cited statements name; the arm reached 6 of 6 functional with
+37 failed checks of 60. The gate's failure is therefore not a wrong judge but
+rejection without convergence; the next pilots attach the verdict to the
+functional feedback instead of rejecting.
 
 \begin{table}[t]
 \centering
@@ -175,6 +179,21 @@ acting, to measure the judge against the evaluator before it may intervene.
 Cell & Agentic, none & Agentic, gate \\
 \midrule
 Generation S & 3; 15/1/14 & 0; 0/30/0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{I13 pilot, shadow gate: full functional (of 6) and issue checks failed / unresolved / passed (of 60).}
+\label{tab:i13}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Cell & Agentic, gate (shadow) \\
+\midrule
+Generation S & 6; 37/0/23 \\
 \bottomrule
 \end{tabular}
 \end{table}

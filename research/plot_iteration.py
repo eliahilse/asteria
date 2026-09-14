@@ -73,29 +73,30 @@ def render(identifier, qualified=False):
              f"{identifier}{' (qualified)' if qualified else ''}; N={n_label} trajectories per combination; at most {budget} submissions each. Fixed task and acquired contexts.", fontsize=9, va='bottom')
     save(fig, 'quality-and-security')
 
-    columns = min(2, len(parents)); rows = (len(parents) + columns - 1) // columns
-    fig, axes = plt.subplots(rows, columns, figsize=(12, 4.8 * rows + 2), squeeze=False)
-    cmap = plt.get_cmap('RdBu_r').copy(); cmap.set_bad('#e8e8e8')
-    for column, parent in enumerate(parents):
-        treatments = [strategy for strategy in strategies if strategy != 'none']
-        comparisons = [next(c for c in data['comparisons'] if c['parent'] == parent and c['securityStrategy'] == strategy) for strategy in treatments]
-        values = np.array([[np.nan if c['tests'][row]['failureRateDelta'] is None else 100 * c['tests'][row]['failureRateDelta'] for c in comparisons] for row in range(len(ISSUES))])
-        ax = axes.flat[column]; shown = ax.imshow(values, cmap=cmap, vmin=-100, vmax=100, aspect='auto')
-        ax.set_title(parent_label(parent), fontsize=11)
-        ax.set_xticks(range(len(treatments)), [LABELS.get(strategy, strategy).replace('Operational guards', 'Operational\nguards').replace('Trust boundaries', 'Boundaries') for strategy in treatments])
-        ax.set_yticks(range(len(ISSUES)), CHECK_LABELS if column % columns == 0 else [])
-        for row in range(len(ISSUES)):
-            for x in range(len(treatments)):
-                value = values[row, x]
-                ax.text(x, row, '?' if np.isnan(value) else f'{value:+.0f}' if value != 0 else '0', ha='center', va='center', color='white' if not np.isnan(value) and abs(value) >= 70 else '#222222', fontsize=10)
-        ax.tick_params(length=0)
-    for ax in list(axes.flat)[len(parents):]: ax.set_visible(False)
-    fig.subplots_adjust(left=.19, right=.96, top=.94, bottom=.26 if rows == 1 else .18, wspace=.1, hspace=.28)
-    color_axis = fig.add_axes([.28, .16 if rows == 1 else .12, .5, .02]); fig.colorbar(shown, cax=color_axis, orientation='horizontal', ticks=[-100, -50, 0, 50, 100]).set_label('Failure-rate difference from fresh control (percentage points)')
-    fig.text(.04, .025, 'Negative = fewer failed checks. ? = at least one unresolved observation in either arm; no directional estimate.\n'
-             f'Each check is measured across N={n_label} trajectories per arm. Checks within an artifact are correlated; no significance claim.\n'
-             'These contracts and finite fixtures do not enumerate all vulnerabilities.', fontsize=9, va='bottom')
-    save(fig, 'per-check-security-effects')
+    if data['comparisons']:  # a single-arm round has no fresh-control comparison to draw
+        columns = min(2, len(parents)); rows = (len(parents) + columns - 1) // columns
+        fig, axes = plt.subplots(rows, columns, figsize=(12, 4.8 * rows + 2), squeeze=False)
+        cmap = plt.get_cmap('RdBu_r').copy(); cmap.set_bad('#e8e8e8')
+        for column, parent in enumerate(parents):
+            treatments = [strategy for strategy in strategies if strategy != 'none']
+            comparisons = [next(c for c in data['comparisons'] if c['parent'] == parent and c['securityStrategy'] == strategy) for strategy in treatments]
+            values = np.array([[np.nan if c['tests'][row]['failureRateDelta'] is None else 100 * c['tests'][row]['failureRateDelta'] for c in comparisons] for row in range(len(ISSUES))])
+            ax = axes.flat[column]; shown = ax.imshow(values, cmap=cmap, vmin=-100, vmax=100, aspect='auto')
+            ax.set_title(parent_label(parent), fontsize=11)
+            ax.set_xticks(range(len(treatments)), [LABELS.get(strategy, strategy).replace('Operational guards', 'Operational\nguards').replace('Trust boundaries', 'Boundaries') for strategy in treatments])
+            ax.set_yticks(range(len(ISSUES)), CHECK_LABELS if column % columns == 0 else [])
+            for row in range(len(ISSUES)):
+                for x in range(len(treatments)):
+                    value = values[row, x]
+                    ax.text(x, row, '?' if np.isnan(value) else f'{value:+.0f}' if value != 0 else '0', ha='center', va='center', color='white' if not np.isnan(value) and abs(value) >= 70 else '#222222', fontsize=10)
+            ax.tick_params(length=0)
+        for ax in list(axes.flat)[len(parents):]: ax.set_visible(False)
+        fig.subplots_adjust(left=.19, right=.96, top=.94, bottom=.26 if rows == 1 else .18, wspace=.1, hspace=.28)
+        color_axis = fig.add_axes([.28, .16 if rows == 1 else .12, .5, .02]); fig.colorbar(shown, cax=color_axis, orientation='horizontal', ticks=[-100, -50, 0, 50, 100]).set_label('Failure-rate difference from fresh control (percentage points)')
+        fig.text(.04, .025, 'Negative = fewer failed checks. ? = at least one unresolved observation in either arm; no directional estimate.\n'
+                 f'Each check is measured across N={n_label} trajectories per arm. Checks within an artifact are correlated; no significance claim.\n'
+                 'These contracts and finite fixtures do not enumerate all vulnerabilities.', fontsize=9, va='bottom')
+        save(fig, 'per-check-security-effects')
     provenance = {'iteration': identifier, 'analysisSha256': digest(raw), 'rendererSha256': digest(Path(__file__).read_bytes()),
         'requirementsSha256': digest((ROOT / 'research/plot-requirements.txt').read_bytes()), 'python': platform.python_version(),
         'matplotlib': matplotlib.__version__, 'numpy': np.__version__, 'outputs': {p.name: digest(p.read_bytes()) for p in generated}}

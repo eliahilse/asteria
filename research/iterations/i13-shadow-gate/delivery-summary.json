@@ -1,0 +1,109 @@
+{
+  "id": "i13-shadow-gate",
+  "protocol": "agentic-delivery-v1",
+  "maxTurns": 24,
+  "maxSubmissions": 5,
+  "planned": 6,
+  "records": 6,
+  "conditions": {
+    "generation_s__agentic__gate": {
+      "mode": "agentic",
+      "sidecar": "gate",
+      "planned": 6,
+      "N": 6,
+      "fullWithinBudget": {
+        "count": 6,
+        "of": 6
+      },
+      "firstSubmissionFull": {
+        "count": 3,
+        "of": 6
+      },
+      "toolTurns": {
+        "total": 28,
+        "perTrajectory": [
+          10,
+          1,
+          7,
+          4,
+          5,
+          1
+        ]
+      },
+      "reads": {
+        "total": 6,
+        "perTrajectory": [
+          3,
+          0,
+          2,
+          0,
+          1,
+          0
+        ]
+      },
+      "searches": {
+        "total": 12,
+        "perTrajectory": [
+          4,
+          0,
+          3,
+          3,
+          2,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 10,
+        "perTrajectory": [
+          3,
+          1,
+          2,
+          1,
+          2,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "gateConsultations": {
+        "total": 6,
+        "perTrajectory": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "gateInterventions": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 6
+      },
+      "statuses": {
+        "completed": 6
+      }
+    }
+  },
+  "note": "Counts are k/N over available records. An incomplete schedule is incomplete, not an estimate."
+}

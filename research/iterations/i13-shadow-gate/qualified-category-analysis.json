@@ -1,0 +1,92 @@
+{
+  "analysisSha256": "16e3b25044addefde514e67f31a8f930e72d16fd88995dad7dfaf368b14e91d8",
+  "categories": [
+    {
+      "affected": 6,
+      "affectedRateLowerBound": 1.0,
+      "affectedRateUpperBound": 1.0,
+      "category": "Input policy",
+      "checksPerArtifact": 5,
+      "condition": "generation_s__agentic__gate",
+      "n": 6,
+      "parent": "generation_s",
+      "strategy": "agentic+gate",
+      "unaffected": 0,
+      "unresolved": 0,
+      "wilson95HighWhenComplete": 1.0,
+      "wilson95LowWhenComplete": 0.6096657120978346
+    },
+    {
+      "affected": 1,
+      "affectedRateLowerBound": 0.16666666666666666,
+      "affectedRateUpperBound": 0.16666666666666666,
+      "category": "Retention policy",
+      "checksPerArtifact": 1,
+      "condition": "generation_s__agentic__gate",
+      "n": 6,
+      "parent": "generation_s",
+      "strategy": "agentic+gate",
+      "unaffected": 5,
+      "unresolved": 0,
+      "wilson95HighWhenComplete": 0.5635028221864702,
+      "wilson95LowWhenComplete": 0.030053369748306635
+    },
+    {
+      "affected": 0,
+      "affectedRateLowerBound": 0.0,
+      "affectedRateUpperBound": 0.0,
+      "category": "Parser robustness",
+      "checksPerArtifact": 1,
+      "condition": "generation_s__agentic__gate",
+      "n": 6,
+      "parent": "generation_s",
+      "strategy": "agentic+gate",
+      "unaffected": 6,
+      "unresolved": 0,
+      "wilson95HighWhenComplete": 0.3903342879021653,
+      "wilson95LowWhenComplete": 2.7755575615628914e-17
+    },
+    {
+      "affected": 6,
+      "affectedRateLowerBound": 1.0,
+      "affectedRateUpperBound": 1.0,
+      "category": "Resource stress",
+      "checksPerArtifact": 2,
+      "condition": "generation_s__agentic__gate",
+      "n": 6,
+      "parent": "generation_s",
+      "strategy": "agentic+gate",
+      "unaffected": 0,
+      "unresolved": 0,
+      "wilson95HighWhenComplete": 1.0,
+      "wilson95LowWhenComplete": 0.6096657120978346
+    },
+    {
+      "affected": 0,
+      "affectedRateLowerBound": 0.0,
+      "affectedRateUpperBound": 0.0,
+      "category": "Deserialization dispatch",
+      "checksPerArtifact": 1,
+      "condition": "generation_s__agentic__gate",
+      "n": 6,
+      "parent": "generation_s",
+      "strategy": "agentic+gate",
+      "unaffected": 6,
+      "unresolved": 0,
+      "wilson95HighWhenComplete": 0.3903342879021653,
+      "wilson95LowWhenComplete": 2.7755575615628914e-17
+    }
+  ],
+  "iteration": "i13-shadow-gate",
+  "manifestFingerprint": "d346ca548ed2c7da6b9ef7c8375210fef1d65b4ab1f1bf2098693563fec38ea1",
+  "meaning": "An affected trajectory has at least one observed failed check in the category. Unaffected requires every category check to pass. Otherwise unresolved. A known failure establishes affected status even when other category checks are unknown. Categories use the same N trajectories; five input checks do not become five independent samples. Bounds cover unmeasured category status, not confidence. These are fixture/policy outcomes, not counts of unique vulnerabilities.",
+  "measurementQualification": {
+    "auditId": "i13-shadow-gate-amplification-audit",
+    "auditPlanFingerprint": "7106f8bd444598ccd67c67b329bd35893a773e10b8956e5faaacde45fed241f8",
+    "auditSha256": "0b733d533e66f33af99195be932b9a2e83edc5c3d2c786ad77336354bac2b2a3",
+    "changes": [],
+    "meaning": "Pass/fail large-record observations whose necessary two-record format precondition was not demonstrated become unknown. Original reports remain unchanged. Matching two records is a necessary precondition, not proof of correctness for every amplified encoding.",
+    "protocol": "large-record-precondition-qualification-v1",
+    "qualifierSha256": "4842eb287f9655d0feb29009acac7d82ec6e8bc80b545488ad298575b282e823"
+  }
+}
