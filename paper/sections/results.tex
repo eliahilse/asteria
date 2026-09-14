@@ -130,6 +130,30 @@ Reuse S+B & 5; 35/0/15 & 4; 4/4/42 & 5; 35/1/14 & 4; 10/4/36 & 4; 23/11/16 \\
 \end{tabular}
 \end{table}
 
+\paragraph{Pilot: compact insert and symbol-level sidecar.}
+Nine trajectories on Generation S (Table~\ref{tab:i11}) test the same graph
+rendered as requirement and control statements only (17,051 characters) and a
+sidecar that slices on the line ranges read or edited. The compact insert keeps
+the security effect at lower functional cost; the symbol-level sidecar changes
+when statements arrive, not how many, because a Highscore implementation edits
+the methods where they are anchored. Three trajectories per arm give direction
+only.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{I11 pilot: full functional (of 3) and issue checks failed / unresolved / passed (of 30).}
+\label{tab:i11}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Cell & Single-shot, none & Single-shot, static & Agentic, adaptive \\
+\midrule
+Generation S & 3; 23/1/6 & 2; 3/3/24 & 1; 1/2/27 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Cost.}
 Catalogue arms reached full functionality on the first submission most often
 (4 and 3 of 5); requirements arms least often (1 of 5 each), with the most
