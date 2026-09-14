@@ -23,6 +23,8 @@ recomputes both qualified summaries from raw evidence before comparing them.
 Each condition has N=5. Issue counts are failed/evaluated out of 50 planned
 contracts. The remaining observations are unresolved, not passes. Positive
 persistence is reported separately from the ten issue contracts.
+The [issue matrix](issue-matrix.md) reports every check as failed / unresolved / passed out of the fixed N = 5 (10 × N = 50 in total) with the reason for each unresolved cell.
+The [issue handling review](issue-handling-review.md) classifies the mechanism each final artifact uses for each check, with cited source lines, and the [issue catalog](issue-catalog.md) shows representative excerpts per strategy.
 
 | Cell | Control full | Operations full | Requirements full | Boundaries full | Control issues | Operations issues | Requirements issues | Boundaries issues |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
