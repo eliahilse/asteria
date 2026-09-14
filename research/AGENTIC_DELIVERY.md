@@ -171,3 +171,20 @@ only); `research/i10_sidecar.py` remains the file-level sidecar used in I10.
 Each record stores `sidecarSpec` (the `module:attribute` given on the command
 line), `sidecarConfig` (the sidecar's `describe()`, including graph hashes) and
 `touchedRanges`.
+
+## Gate sidecar (added for I12)
+
+Sidecar kind `gate`: no upfront insert and no passive injection. For every
+submission that applies cleanly, the harness computes the line ranges of its
+edits in the pre-edit source and calls `sidecar.judge(view)` with the changes,
+ranges, touched files and a request id `<runId>-j<n>`. `research.graph_sidecar.GateSidecar`
+selects the requirement and control statements anchored at symbols overlapping
+those ranges; with none it answers without a model call (`consulted: false`).
+Otherwise it asks a one-turn judge (same model and settings, strict
+`judge_submission` tool: intervene, statement_ids, reason) whether the
+submission clearly violates a listed control at its enforcement point. Only
+`intervene: true` with cited statement ids rejects the submission before
+compilation and evaluation, with the cited statements as feedback; the
+submission counts against the budget. Every gate event records consultation,
+verdict, ids, reason and the judge transcript with hashes. The judge sees the
+edits and the statements only, never test outcomes.

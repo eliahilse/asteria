@@ -8,9 +8,9 @@ from unittest.mock import patch
 
 from research import agentic_delivery as agentic
 from research import context_graph, graph_sidecar
-from research.import_evidence import canonical
+from research.import_evidence import canonical, digest
 from research.test_agentic_delivery import CORRECTION, Fixture, LEVEL_PATH, SCORE_PATH, act, report, valid_changes
-from research.test_context_graph import DOCUMENT, MODEL, FILE, STORE, LOAD, MENU
+from research.test_context_graph import DOCUMENT, MODEL, FILE, STORE, LOAD, MENU, anchor, item
 
 
 class GraphSidecarTests(unittest.TestCase):
@@ -61,6 +61,41 @@ class GraphSidecarTests(unittest.TestCase):
             before_submit = next(s for s in seen if s['stage'] == 'before_submit')
             self.assertEqual(before_submit['ranges'].get(LEVEL_PATH), [[2, 2]]); self.assertIn(LEVEL_PATH, before_submit['files'])
             self.assertEqual(record['touchedRanges'].get(LEVEL_PATH), [[2, 2]]); self.assertEqual(record['touchedRanges'].get(SCORE_PATH), [[2, 3]])
+
+    def test_gate_sidecar_rejects_only_judged_violations(self):
+        level_file = 'ApoMario/src/apoMario/level/ApoMarioLevel.java'; symbol = 'apoMario.level.ApoMarioLevel'
+        doc = {'angle': 'dataflow', 'summary': 'S', 'limitations': [], 'assets': [], 'boundaries': [],
+               'items': [item('R1', 'requirement', 'task', [], enforcement_point=anchor(symbol, 1, 3, level_file)),
+                         item('C1', 'control', 'reasoned', [], ['R1'], enforcement_point=anchor(symbol, 1, 3, level_file), failure_behavior='reject')]}
+        model = {'symbols': [{'id': symbol, 'file': level_file, 'start': 1, 'end': 3, 'sinks': []}], 'edges': []}
+        (self.directory / 'generation-dataflow.graph.json').write_bytes(canonical(context_graph.build(doc, model)))
+        sidecar = graph_sidecar.GateSidecar(self.directory, command=['fixture-judge'])
+        self.assertIsNone(sidecar.initial({'strategy': 'Generation'})); self.assertEqual(sidecar.update({'method': 'Generation'}, set()), (None, []))
+        self.assertEqual(sidecar.describe()['mode'], 'gate')
+        verdicts = iter([{'intervene': True, 'statement_ids': ['C1'], 'reason': 'stores without validation'}, {'intervene': False, 'statement_ids': [], 'reason': 'fine'}])
+        judge_requests = []
+
+        def fake_invoke(command, request, timeout):
+            judge_requests.append(request)
+            return {'protocol_version': 1, 'request_id': request['request_id'], 'model': request['model'], 'settings': None, 'finish_reason': 'stop', 'output_text': json.dumps(next(verdicts)), 'usage': {}, 'cost_usd': None}
+        with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=fake_invoke):
+            fixture = Fixture(Path(temporary))
+            for c in fixture.conditions:
+                if c['sidecar'] == 'adaptive': c['sidecar'] = 'gate'; c['id'] = c['id'].replace('adaptive', 'gate')
+            for row in fixture.plan['schedule']: row['condition'] = row['condition'].replace('adaptive', 'gate'); row['runId'] = row['runId'].replace('adaptive', 'gate')
+            record, requests = fixture.run('agentic', 'gate', [act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes())], [report(True)], sidecar)
+        self.assertEqual([s['status'] for s in record['submissions']], ['rejected_by_sidecar', 'evaluated']); self.assertTrue(record['functionalSuccess'])
+        gate_events = [e for e in record['sidecarEvents'] if e['stage'] == 'gate']
+        self.assertEqual([(e['consulted'], e['intervene'], e['ids']) for e in gate_events], [(True, True, ['item:C1']), (True, False, ['item:R1', 'item:C1'])])
+        self.assertIn('SUBMISSION REJECTED BY THE SECURITY SIDECAR', record['submissions'][0]['feedback']['securityContext'])
+        self.assertIn('stores without validation', record['submissions'][0]['feedback']['deliveryError'])
+        self.assertEqual(judge_requests[0]['request_id'], record['runId'] + '-j1'); self.assertEqual(judge_requests[0]['tools'][0]['function']['name'], 'judge_submission')
+        self.assertIn('--- edit ApoMarioLevel.java ---', judge_requests[0]['messages'][1]['content']); self.assertNotIn('functionalChecks', judge_requests[0]['messages'][1]['content'])
+        self.assertEqual(gate_events[0]['transcript']['requestSha256'], digest(canonical(judge_requests[0])))
+        # the rejected submission is counted, the agent saw the rejection feedback, and no evaluation happened for it
+        self.assertEqual(requests[1]['messages'][-1]['content'].count('rejected by the security sidecar'), 1)
+        self.assertNotIn('evaluationFile', record['submissions'][0])
+        self.assertEqual(record['sidecarConfig']['mode'], 'gate')
 
 
 if __name__ == '__main__':

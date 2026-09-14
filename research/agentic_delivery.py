@@ -34,9 +34,9 @@ from research.security_followup import acquisition_task, repository_input
 PROTOCOL = 'agentic-delivery-v1'
 EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive')
+SIDECARS = ('none', 'static', 'adaptive', 'gate')
 ACTIONS = ('search', 'read', 'submit_feature_changes')
-DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS]
+DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar != 'gate']  # gate is requested explicitly
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
 CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'
 ITERATIONS = ROOT / '.local/iterations'
@@ -216,7 +216,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
-    if kind == 'adaptive' and sidecar is None: raise ValueError('An adaptive condition needs a sidecar object')
+    if kind in ('adaptive', 'gate') and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
     sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
     if command is None: command = command_from_env()
     directory = manifest.parent / 'runs' / run_id
@@ -266,20 +266,47 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         record['status'] = turn['status'] = status
         if mode == 'single_shot': submission['status'] = status
 
-    def touch_changes(changes, before=None):
-        """Record the files an accepted or rejected submission touches and, for edits, the line range of each old text in the pre-edit source."""
-        if not isinstance(changes, dict): return
+    def change_ranges(changes, before=None):
+        """Files a submission touches and, for edits, the line range of each old text in the pre-edit source, keyed by snapshot path."""
+        files_touched, ranges = set(), {}
+        if not isinstance(changes, dict): return files_touched, ranges
         for key in ('edits', 'new_files'):
             for item in (changes.get(key) if isinstance(changes.get(key), list) else []):
                 name = item.get('filename') if isinstance(item, dict) else None
                 if not isinstance(name, str) or not name: continue
-                paths = by_name.get(name) or [name]; touched['files'].update(paths)
+                paths = by_name.get(name) or [name]; files_touched.update(paths)
                 old = item.get('old_text') if key == 'edits' else None; content = (before or {}).get(name)
                 if isinstance(old, str) and old and isinstance(content, str) and old in content:
                     index = content.index(old); start = content.count('\n', 0, index) + 1; end = start + old.count('\n')
                     for path in paths:
-                        spans = touched['ranges'].setdefault(path, [])
+                        spans = ranges.setdefault(path, [])
                         if [start, end] not in spans: spans.append([start, end])
+        return files_touched, ranges
+
+    def touch_changes(changes, before=None):
+        files_touched, ranges = change_ranges(changes, before); touched['files'].update(files_touched)
+        for path, spans in ranges.items():
+            known = touched['ranges'].setdefault(path, [])
+            for span in spans:
+                if span not in known: known.append(span)
+
+    def gate(changes, before):
+        """Ask the gate sidecar whether this submission clearly violates a control at an enforcement point it touches."""
+        if kind != 'gate' or sidecar is None or not callable(getattr(sidecar, 'judge', None)): return None
+        files_touched, ranges = change_ranges(changes, before)
+        view = {'method': condition.get('strategy'), 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'stage': 'before_evaluation',
+                'submission': submission_number, 'turn': turn_number, 'changes': changes, 'ranges': ranges, 'files': sorted(files_touched), 'runId': run_id,
+                'requestId': f'{run_id}-j{submission_number}', 'model': plan['model'], 'settings': plan['settings']}
+        verdict = call_sidecar(sidecar.judge, view)
+        if not isinstance(verdict, dict) or not isinstance(verdict.get('intervene'), bool): raise SidecarError('judge must return a dict with a boolean intervene')
+        text = verdict.get('text')
+        if text is not None and not isinstance(text, str): raise SidecarError('judge text must be a string or None')
+        event = {'turn': turn_number, 'stage': 'gate', 'submission': submission_number, 'consulted': bool(verdict.get('consulted')), 'intervene': verdict['intervene'],
+                 'injected': verdict['intervene'] and bool(text), 'ids': list(verdict.get('ids') or []), 'reason': verdict.get('reason'), 'touchedFiles': sorted(files_touched),
+                 'transcript': verdict.get('transcript')}
+        if event['injected']: event.update(sha256=digest(text.encode()), characters=len(text))
+        record['sidecarEvents'].append(event)
+        return verdict if verdict['intervene'] else None
 
     try:
         if kind == 'static' and sidecar is not None:
@@ -364,23 +391,28 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             except (ValueError, KeyError, TypeError) as error:
                 submission['status'] = 'invalid_changes'; feedback = {'deliveryError': str(error), 'applied': False}
             else:
-                files = candidate
-                changed = {name: content for name, content in files.items() if content != original.get(name)}
-                stage = directory / f'submission-{submission_number}'; stage.mkdir()
-                complete = '\n\n'.join(f'```java filename={name}\n{content}\n```' for name, content in changed.items())
-                (stage / 'complete-files.txt').write_text(complete)
-                submission.update(status='evaluating', deliveredFiles=list(changed), completeResponseSha256=digest(complete.encode()))
-                write_atomic(path, record)
-                report = evaluate_response(complete, stage / 'evaluation', {'iteration': plan['id'], 'runId': run_id, 'submission': submission_number})
-                submission.update(status='evaluated', compilation=report.get('mainCompilation'), functionalSuccess=report.get('functionalSuccess'),
-                                  evaluationFile=str((stage / 'evaluation/report.json').relative_to(directory)), evaluationCanonicalSha256=digest(canonical(report)))
-                record['finalEvaluation'] = submission['evaluationFile']
-                feedback = {'compilation': report.get('mainCompilation'), 'functionalSuccess': report.get('functionalSuccess'),
-                            'functionalChecks': [c for c in report['checks'] if c['suite'] in ('unit', 'invoked', 'autonomous')],
-                            'compilerErrors': [(p.get('stderr') or '')[-18000:] for p in report.get('processes', []) if p.get('exitCode') and 'javac' in Path(p['command'][0]).name]}
-                if report['status'] != 'evaluated': record['status'] = 'evaluation_error'; break
-                if report['functionalSuccess']:
-                    record.update(status='completed', functionalSuccess=True); break
+                verdict = gate(changes, pre_edit)
+                if verdict is not None:
+                    submission['status'] = 'rejected_by_sidecar'
+                    feedback = {'deliveryError': 'Submission rejected by the security sidecar: ' + str(verdict.get('reason') or ''), 'applied': False, 'securityContext': verdict.get('text')}
+                else:
+                    files = candidate
+                    changed = {name: content for name, content in files.items() if content != original.get(name)}
+                    stage = directory / f'submission-{submission_number}'; stage.mkdir()
+                    complete = '\n\n'.join(f'```java filename={name}\n{content}\n```' for name, content in changed.items())
+                    (stage / 'complete-files.txt').write_text(complete)
+                    submission.update(status='evaluating', deliveredFiles=list(changed), completeResponseSha256=digest(complete.encode()))
+                    write_atomic(path, record)
+                    report = evaluate_response(complete, stage / 'evaluation', {'iteration': plan['id'], 'runId': run_id, 'submission': submission_number})
+                    submission.update(status='evaluated', compilation=report.get('mainCompilation'), functionalSuccess=report.get('functionalSuccess'),
+                                      evaluationFile=str((stage / 'evaluation/report.json').relative_to(directory)), evaluationCanonicalSha256=digest(canonical(report)))
+                    record['finalEvaluation'] = submission['evaluationFile']
+                    feedback = {'compilation': report.get('mainCompilation'), 'functionalSuccess': report.get('functionalSuccess'),
+                                'functionalChecks': [c for c in report['checks'] if c['suite'] in ('unit', 'invoked', 'autonomous')],
+                                'compilerErrors': [(p.get('stderr') or '')[-18000:] for p in report.get('processes', []) if p.get('exitCode') and 'javac' in Path(p['command'][0]).name]}
+                    if report['status'] != 'evaluated': record['status'] = 'evaluation_error'; break
+                    if report['functionalSuccess']:
+                        record.update(status='completed', functionalSuccess=True); break
             submission['feedback'] = feedback
             touch_changes(changes, pre_edit)
             if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
@@ -407,7 +439,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
     plan = validate(manifest)
-    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' for c in plan['conditions']): raise ValueError('Adaptive conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(c['sidecar'] in ('adaptive', 'gate') for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
     with (manifest.parent / '.iteration.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -440,6 +472,8 @@ def summary(manifest_dir: Path) -> dict:
             'searches': counts([sum(t.get('action') == 'search' for t in r['turns']) for r in records]),
             'submissions': counts([len(r['submissions']) for r in records]),
             'sidecarInjections': counts([sum(e['injected'] for e in r['sidecarEvents']) for r in records]),
+            'gateConsultations': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('consulted')) for r in records]),
+            'gateInterventions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('intervene')) for r in records]),
             'trajectoriesWithInjection': ratio(sum(any(e['injected'] for e in r['sidecarEvents']) for r in records)),
             'statuses': statuses}
     return {'id': plan['id'], 'protocol': plan['protocol'], 'maxTurns': plan['maxTurns'], 'maxSubmissions': plan['maxSubmissions'],
