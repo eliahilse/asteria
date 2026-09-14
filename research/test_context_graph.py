@@ -19,7 +19,7 @@ def item(id, kind, basis='task', anchors=(), related=(), **kw):
 
 DOCUMENT = {'angle': 'dataflow', 'summary': 'S', 'limitations': ['L'],
             'assets': [{'name': 'records', 'property': 'integrity', 'anchors': [anchor(STORE, 10, 20)]}],
-            'boundaries': [{'name': 'store file', 'untrusted_input': 'bytes', 'source': 'disk', 'sink': 'load', 'anchors': [anchor(LOAD, 30, 50)]}],
+            'boundaries': [{'name': 'store file', 'untrusted_input': 'bytes', 'source': 'disk', 'sink': 'load', 'entry_point': True, 'anchors': [anchor(LOAD, 30, 50)]}],
             'items': [item('X1', 'existing_risk', 'observed', [anchor(LOAD, 31, 40)], threat='denial_of_service', cwe=['CWE-400']),
                       item('R1', 'requirement', 'task', [], ['X1'], enforcement_point=anchor(LOAD, 30, 50)),
                       item('C1', 'control', 'reasoned', [], ['R1'], enforcement_point=anchor(LOAD, 30, 50), failure_behavior='stop reading'),
@@ -40,7 +40,7 @@ class ContextGraphTests(unittest.TestCase):
         self.assertEqual(types['enforced_at'], 3); self.assertEqual(types['mitigates'], 1); self.assertEqual(types['satisfies'], 1); self.assertEqual(types['calls'], 1)
         self.assertEqual(graph['metrics']['controls'], 1); self.assertEqual(graph['metrics']['controlsWithEnforcementPoint'], 1)
         self.assertEqual(graph['metrics']['sinkSymbols'], 1); self.assertEqual(graph['metrics']['sinkSymbolsAnchored'], 1)
-        self.assertEqual(graph['metrics']['anchoredItems'], 4)
+        self.assertEqual(graph['metrics']['anchoredItems'], 4); self.assertEqual(graph['metrics']['entryPoints'], 1)
         self.assertEqual(graph['sha256'], context_graph.build(DOCUMENT, MODEL)['sha256'])
         self.assertEqual([n['kind'] for n in graph['nodes']][:3], ['asset', 'boundary', 'existing_risk'])
 
@@ -48,7 +48,7 @@ class ContextGraphTests(unittest.TestCase):
         text = context_graph.render(context_graph.build(DOCUMENT, MODEL))
         self.assertIn('--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---', text)
         self.assertIn(f'- records [integrity] @ {FILE}:10-20 ({STORE})', text)
-        self.assertIn('[X1; existing_risk; observed; denial_of_service; CWE-400] X1 statement', text)
+        self.assertIn('[X1; existing_risk; observed; denial_of_service; CWE-400] X1 statement', text); self.assertIn('- store file [entry point]: bytes from disk to load', text)
         self.assertIn(f'Enforcement point: {FILE}:30-50 ({LOAD})', text); self.assertIn('Failure behavior: stop reading', text)
         self.assertIn('Relations: satisfies R1', text); self.assertIn('Uncited unknown; absence was not established.', text)
         self.assertTrue(text.endswith('--- END REPOSITORY-DERIVED SECURITY CONTEXT ---\n'))

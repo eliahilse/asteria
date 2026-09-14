@@ -19,4 +19,4 @@ GROUND RULES
 {{ANGLE}}
 
 OUTPUT
-Your final message is exactly one JSON object valid against `schema.json`, with `"angle": "{{ANGLE_ID}}"`, and nothing else. Fill every field; use `null` or `[]` where nothing applies. Give items short ids (A1, B1, R1, C1, U1). Use `related` to link a control to its requirement and a requirement to its risk.
+Your final message is exactly one JSON object valid against `schema.json`, with `"angle": "{{ANGLE_ID}}"`, and nothing else. Fill every field; use `null` or `[]` where nothing applies. Give items short ids (O1, X1, R1, C1, V1, U1) by kind. Use `related` to link a control to its requirement and a requirement to its risk.

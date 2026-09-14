@@ -1,22 +1,60 @@
 {
  "$schema": "http://json-schema.org/draft-07/schema#",
- "title": "Repository security context",
+ "title": "Repository security context (schema v8)",
  "type": "object",
  "additionalProperties": false,
- "required": ["angle", "summary", "assets", "boundaries", "items", "limitations"],
+ "required": [
+  "angle",
+  "summary",
+  "assets",
+  "boundaries",
+  "items",
+  "limitations"
+ ],
  "properties": {
-  "angle": {"type": "string", "enum": ["dataflow", "requirements", "catalog"]},
-  "summary": {"type": "string"},
+  "angle": {
+   "type": "string",
+   "enum": [
+    "dataflow",
+    "requirements",
+    "catalog"
+   ]
+  },
+  "summary": {
+   "type": "string"
+  },
   "assets": {
    "type": "array",
    "items": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["name", "property", "anchors"],
+    "required": [
+     "name",
+     "property",
+     "anchors"
+    ],
     "properties": {
-     "name": {"type": "string"},
-     "property": {"type": "string", "enum": ["confidentiality", "integrity", "availability", "authenticity", "non_repudiation", "accountability", "resistance"]},
-     "anchors": {"type": "array", "items": {"$ref": "#/definitions/anchor"}}
+     "name": {
+      "type": "string"
+     },
+     "property": {
+      "type": "string",
+      "enum": [
+       "confidentiality",
+       "integrity",
+       "availability",
+       "authenticity",
+       "non_repudiation",
+       "accountability",
+       "resistance"
+      ]
+     },
+     "anchors": {
+      "type": "array",
+      "items": {
+       "$ref": "#/definitions/anchor"
+      }
+     }
     }
    }
   },
@@ -25,13 +63,37 @@
    "items": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["name", "untrusted_input", "source", "sink", "anchors"],
+    "required": [
+     "name",
+     "untrusted_input",
+     "source",
+     "sink",
+     "entry_point",
+     "anchors"
+    ],
     "properties": {
-     "name": {"type": "string"},
-     "untrusted_input": {"type": "string"},
-     "source": {"type": "string"},
-     "sink": {"type": "string"},
-     "anchors": {"type": "array", "items": {"$ref": "#/definitions/anchor"}}
+     "name": {
+      "type": "string"
+     },
+     "untrusted_input": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     },
+     "sink": {
+      "type": "string"
+     },
+     "anchors": {
+      "type": "array",
+      "items": {
+       "$ref": "#/definitions/anchor"
+      }
+     },
+     "entry_point": {
+      "type": "boolean",
+      "description": "true when untrusted data enters the system at this boundary (part of the attack surface)"
+     }
     }
    }
   },
@@ -40,39 +102,173 @@
    "items": {
     "type": "object",
     "additionalProperties": false,
-    "required": ["id", "kind", "basis", "statement", "task_relevance", "threat", "cwe", "capec", "asvs", "cert", "enforcement_point", "failure_behavior", "anchors", "verification", "related"],
+    "required": [
+     "id",
+     "kind",
+     "basis",
+     "statement",
+     "task_relevance",
+     "threat",
+     "cwe",
+     "capec",
+     "asvs",
+     "cert",
+     "enforcement_point",
+     "failure_behavior",
+     "anchors",
+     "verification",
+     "related"
+    ],
     "properties": {
-     "id": {"type": "string"},
-     "kind": {"type": "string", "enum": ["security_property", "existing_risk", "change_risk", "requirement", "control", "verification", "unknown"]},
-     "basis": {"type": "string", "enum": ["observed", "task", "reasoned"]},
-     "statement": {"type": "string"},
-     "task_relevance": {"type": "string"},
-     "threat": {"type": ["string", "null"], "enum": ["spoofing", "tampering", "repudiation", "information_disclosure", "denial_of_service", "elevation_of_privilege", null]},
-     "cwe": {"type": "array", "items": {"type": "string"}},
-     "capec": {"type": "array", "items": {"type": "string"}},
-     "asvs": {"type": "array", "items": {"type": "string"}},
-     "cert": {"type": "array", "items": {"type": "string"}},
-     "enforcement_point": {"anyOf": [{"$ref": "#/definitions/anchor"}, {"type": "null"}]},
-     "failure_behavior": {"type": ["string", "null"]},
-     "anchors": {"type": "array", "items": {"$ref": "#/definitions/anchor"}},
-     "verification": {"type": ["string", "null"]},
-     "related": {"type": "array", "items": {"type": "string"}}
+     "id": {
+      "type": "string"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "observation",
+       "existing_risk",
+       "change_risk",
+       "requirement",
+       "control",
+       "verification",
+       "unknown"
+      ]
+     },
+     "basis": {
+      "type": "string",
+      "enum": [
+       "observed",
+       "task",
+       "reasoned"
+      ]
+     },
+     "statement": {
+      "type": "string"
+     },
+     "task_relevance": {
+      "type": "string"
+     },
+     "threat": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "enum": [
+       "spoofing",
+       "tampering",
+       "repudiation",
+       "information_disclosure",
+       "denial_of_service",
+       "elevation_of_privilege",
+       null
+      ]
+     },
+     "cwe": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "capec": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "asvs": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "cert": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "enforcement_point": {
+      "anyOf": [
+       {
+        "$ref": "#/definitions/anchor"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "failure_behavior": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "anchors": {
+      "type": "array",
+      "items": {
+       "$ref": "#/definitions/anchor"
+      }
+     },
+     "verification": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "related": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
     }
    }
   },
-  "limitations": {"type": "array", "items": {"type": "string"}}
+  "limitations": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
  },
  "definitions": {
   "anchor": {
    "type": "object",
    "additionalProperties": false,
-   "required": ["symbol", "file", "start_line", "end_line"],
+   "required": [
+    "symbol",
+    "file",
+    "start_line",
+    "end_line"
+   ],
    "properties": {
-    "symbol": {"type": ["string", "null"]},
-    "file": {"type": ["string", "null"]},
-    "start_line": {"type": ["integer", "null"]},
-    "end_line": {"type": ["integer", "null"]}
+    "symbol": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "file": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "start_line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    },
+    "end_line": {
+     "type": [
+      "integer",
+      "null"
+     ]
+    }
    }
   }
- }
+ },
+ "$comment": "v8: item kind observation replaces security_property (an observed fact about the code); boundaries carry entry_point (attack surface)."
 }

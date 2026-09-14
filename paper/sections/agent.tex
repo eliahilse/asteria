@@ -57,15 +57,42 @@ their starting point (flows, assets, catalogue); the constraints on statement
 content are identical.
 
 \paragraph{Output.}
-Each statement carries a kind (property, existing risk, change risk,
-requirement, control, unknown), a basis (observed, task, reasoned), catalogue
-identifiers, and references to inspected excerpts. The harness, not the model,
-resolves references to exact file and line ranges of the snapshot; an
-unresolvable reference invalidates the statement. Observed properties and
-existing risks require references; security requirements and security controls
-may be prospective and are labelled so. The validated document is rendered
-verbatim as an insert and appended after the unchanged task; control arms
-receive no insert.
+Each statement carries a kind, a basis (observed, task, reasoned), catalogue
+identifiers, and references to inspected excerpts. Table~\ref{tab:terms}
+maps the vocabulary of Section~\ref{sec:terminology} to the schema and to the
+graph of the next paragraph. The harness, not the model, resolves references
+to exact file and line ranges of the snapshot; a reference to an unknown symbol
+with a verifiable file range is kept as the range and the correction counted;
+an unresolvable reference invalidates the statement. Observations and existing
+risks require references; requirements and controls may be prospective and are
+labelled so. The validated document is rendered verbatim as a prompt insert and
+appended after the unchanged task; control conditions receive no insert.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Terminology, schema and graph. Records before schema v8 label observations \emph{security\_property}.}
+\label{tab:terms}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}lll@{}}
+\toprule
+Term (Section~\ref{sec:terminology}) & Schema element & Graph \\
+\midrule
+Asset, security property & \texttt{assets[].name}, \texttt{.property} & asset node, \emph{located\_at} symbol \\
+Trust boundary, entry point & \texttt{boundaries[]}, \texttt{.entry\_point} & boundary node, \emph{crosses} symbol \\
+Attack surface & boundaries with \texttt{entry\_point} & entry-point boundary nodes \\
+Threat & \texttt{items[].threat} (STRIDE) & node attribute \\
+Attack pattern, weakness type & \texttt{items[].capec}, \texttt{.cwe} & node attributes \\
+Observed fact & kind \texttt{observation}, basis observed & node, \emph{anchored\_at} symbol \\
+Existing or change risk & kinds \texttt{existing\_risk}, \texttt{change\_risk} & node, \emph{weakens} observation \\
+Security requirement & kind \texttt{requirement} & node, \emph{mitigates} risk \\
+Control, enforcement point, failure behaviour & kind \texttt{control}, \texttt{.enforcement\_point}, \texttt{.failure\_behavior} & node, \emph{satisfies} requirement, \emph{enforced\_at} symbol \\
+Verification & kind \texttt{verification}, \texttt{.verification} & node, \emph{verifies} \\
+Unknown & kind \texttt{unknown} & node without anchors \\
+Code element & anchor symbol, file, line range & symbol and file nodes, \emph{calls} edges \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \paragraph{Context graph.}
 The validated document is stored as a typed graph: assets, trust boundaries and

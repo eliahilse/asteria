@@ -44,11 +44,11 @@ def document(extra_items=()):
                                                    'anchors': anchors, 'verification': None, 'related': [], **kw}
     return {'angle': 'dataflow', 'summary': 'Scores are stored by Score.store.', 'limitations': ['Only one class inspected.'],
             'assets': [{'name': 'score records', 'property': 'integrity', 'anchors': [anchor]}],
-            'boundaries': [{'name': 'store input', 'untrusted_input': 'points', 'source': 'caller', 'sink': 'store', 'anchors': [anchor]}],
-            'items': [item('P1', 'security_property', 'observed', [anchor]),
+            'boundaries': [{'name': 'store input', 'untrusted_input': 'points', 'source': 'caller', 'sink': 'store', 'entry_point': True, 'anchors': [anchor]}],
+            'items': [item('P1', 'observation', 'observed', [anchor]),
                       item('R1', 'requirement', 'task', [], threat='tampering', cwe=['CWE-20'], enforcement_point=anchor, failure_behavior='return false', verification='call with -1'),
                       item('X1', 'existing_risk', 'observed', [{'symbol': None, 'file': 'ApoMario/src/missing.java', 'start_line': 1, 'end_line': 2}]),
-                      item('P2', 'security_property', 'observed', [{'symbol': 'apoMario.Wrong#store(int)', 'file': FILE, 'start_line': 4, 'end_line': 6}]),
+                      item('P2', 'security_property', 'observed', [{'symbol': 'apoMario.Wrong#store(int)', 'file': FILE, 'start_line': 4, 'end_line': 6}]),  # legacy v7 label, renamed on validation
                       *extra_items]}
 
 
@@ -106,7 +106,8 @@ echo '{"type":"turn.completed","usage":{"input_tokens":10,"output_tokens":5}}'
         self.assertEqual([i['id'] for i in result['output']['items']], ['P1', 'R1', 'P2'])
         self.assertEqual(result['citationChecks']['droppedItems'][0]['id'], 'X1'); self.assertEqual(result['citationChecks']['matched'], 5); self.assertEqual(result['citationChecks']['total'], 6)
         corrected = result['output']['items'][2]['anchors'][0]; self.assertEqual(corrected['symbolCorrected']['symbolGiven'], 'apoMario.Wrong#store(int)'); self.assertEqual(corrected['symbols'], [])
-        self.assertEqual(result['citationChecks']['symbolCorrected'], 1); self.assertEqual(result['citationChecks']['validator'], 'anchor-validation-v2')
+        self.assertEqual(result['citationChecks']['symbolCorrected'], 1); self.assertEqual(result['citationChecks']['validator'], 'anchor-validation-v3')
+        self.assertEqual(result['citationChecks']['legacyKindsRenamed'], 1); self.assertEqual(result['output']['items'][2]['kind'], 'observation'); self.assertIn('[entry point]', result['promptInsert'])
         again = context_agent.revalidate(json.loads((directory / 'record.json').read_text()), directory); self.assertEqual(again['revalidations'][0]['matched'], 5); self.assertEqual(again['promptInsertSha256'], result['promptInsertSha256'])
         self.assertEqual(result['output']['items'][1]['enforcement_point']['symbols'], [SYMBOL])
         insert = result['promptInsert']
@@ -132,7 +133,8 @@ echo '{"type":"turn.completed","usage":{"input_tokens":10,"output_tokens":5}}'
 
     def test_schema_checker_subset(self):
         schema = json.loads(context_agent.SCHEMA.read_text())
-        self.assertEqual(context_agent.check_schema(document(), schema), [])
+        strict = document(); strict['items'][3]['kind'] = 'observation'
+        self.assertEqual(context_agent.check_schema(strict, schema), [])
         broken = document(); broken['items'][0]['threat'] = 'weird'; broken['extra'] = 1; del broken['items'][1]['cwe']
         errors = context_agent.check_schema(broken, schema)
         self.assertTrue(any('threat' in e for e in errors)); self.assertTrue(any('unexpected field' in e for e in errors)); self.assertTrue(any('cwe: missing' in e for e in errors))

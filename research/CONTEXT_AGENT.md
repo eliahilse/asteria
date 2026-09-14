@@ -79,3 +79,14 @@ JSONL events observed are `thread.started`, `turn.started`, `turn.completed`,
 `item.started` and `item.completed` with `command_execution` and
 `agent_message` items; Codex reports no served model identity, so records stay
 `settings_unverified`. Summary: `python3 -m research.agent_acquisitions`.
+
+## Schema v8
+
+`context-schema.json` v8 renames the item kind `security_property` to
+`observation` (an observed fact about the code that bears on a security
+property; the term *security property* itself names an asset attribute) and adds
+`entry_point` to trust boundaries, so the attack surface is the set of
+boundaries with `entry_point: true`. Records acquired under v7 validate under
+v8 through `revalidate`: legacy kinds are renamed (counted in
+`citationChecks.legacyKindsRenamed`) and their boundaries carry
+`entry_point: null`.

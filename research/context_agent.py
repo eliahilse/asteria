@@ -21,8 +21,10 @@ from research import code_model
 from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import timestamp, write_atomic
 
-PROTOCOL = 'repository-security-context-v7-agent'
-VALIDATOR = 'anchor-validation-v2'  # v2: wrong symbol with a verifiable file range keeps the range and records the correction
+PROTOCOL = 'repository-security-context-v8-agent'
+PROTOCOLS = ('repository-security-context-v7-agent', PROTOCOL)  # v7 records validate under the v8 schema after kind normalization
+LEGACY_KINDS = {'security_property': 'observation'}
+VALIDATOR = 'anchor-validation-v3'  # v2: wrong symbol with a verifiable file range keeps the range; v3: legacy kind security_property renamed to observation
 ANGLES = ('dataflow', 'requirements', 'catalog')
 ASSETS = ROOT / 'research/security/agent'
 SCHEMA = ROOT / 'research/security/context-schema.json'
@@ -129,7 +131,15 @@ def check_schema(instance, schema, definitions=None, path='$') -> list[str]:
 
 def validate_output(document: dict, workspace: Path, model: dict) -> tuple[dict, dict]:
     """Schema check, anchor resolution and evidence rules. Returns (validated document, citation checks)."""
-    schema = json.loads(SCHEMA.read_text()); errors = check_schema(document, schema)
+    document = json.loads(json.dumps(document)); renamed = 0
+    for item in document.get('items', []) if isinstance(document.get('items'), list) else []:
+        if isinstance(item, dict) and item.get('kind') in LEGACY_KINDS: item['kind'] = LEGACY_KINDS[item['kind']]; renamed += 1
+    for boundary in document.get('boundaries', []) if isinstance(document.get('boundaries'), list) else []:
+        if isinstance(boundary, dict) and 'entry_point' not in boundary: boundary['entry_point'] = None  # legacy v7 boundaries: unknown
+    schema = json.loads(SCHEMA.read_text())
+    if renamed or any(b.get('entry_point') is None for b in document.get('boundaries', [])):
+        schema = json.loads(json.dumps(schema)); schema['properties']['boundaries']['items']['properties']['entry_point']['type'] = ['boolean', 'null']
+    errors = check_schema(document, schema)
     if errors: raise ValueError('Schema violations: ' + '; '.join(errors[:12]))
     total = matched = corrected = 0; rejected = []
 
@@ -161,12 +171,12 @@ def validate_output(document: dict, workspace: Path, model: dict) -> tuple[dict,
             resolved = resolve([item['enforcement_point']]); enforcement = resolved[0] if resolved else None
         if item['basis'] == 'observed' and not anchors:
             dropped.append({'id': item['id'], 'kind': item['kind'], 'reason': 'observed basis without a resolvable anchor'}); continue
-        if item['kind'] in ('security_property', 'existing_risk') and item['basis'] != 'observed':
-            dropped.append({'id': item['id'], 'kind': item['kind'], 'reason': 'properties and existing risks require observed basis'}); continue
+        if item['kind'] in ('observation', 'existing_risk') and item['basis'] != 'observed':
+            dropped.append({'id': item['id'], 'kind': item['kind'], 'reason': 'observations and existing risks require observed basis'}); continue
         validated['items'].append({**item, 'anchors': anchors, 'enforcement_point': enforcement, 'related': [r for r in item['related'] if r in ids]})
     kinds = {}
     for item in validated['items']: kinds[item['kind']] = kinds.get(item['kind'], 0) + 1
-    checks = {'validator': VALIDATOR, 'total': total, 'matched': matched, 'symbolCorrected': corrected, 'rejectedAnchors': rejected, 'droppedItems': dropped, 'itemsByKind': kinds,
+    checks = {'validator': VALIDATOR, 'total': total, 'matched': matched, 'symbolCorrected': corrected, 'legacyKindsRenamed': renamed, 'rejectedAnchors': rejected, 'droppedItems': dropped, 'itemsByKind': kinds,
               'uncitedItems': sum(1 for item in validated['items'] if not item['anchors']),
               'limitation': 'Anchors resolve to inspected source ranges; claim entailment, completeness and exploitability are not mechanically validated.'}
     return validated, checks
@@ -182,7 +192,7 @@ def prompt_insert(validated: dict) -> str:
     if validated['assets']:
         lines += ['', 'Assets:'] + [f"- {a['name']} [{a['property']}]" + (' @ ' + '; '.join(location(x) for x in a['anchors']) if a['anchors'] else '') for a in validated['assets']]
     if validated['boundaries']:
-        lines += ['', 'Trust boundaries:'] + [f"- {b['name']}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(location(x) for x in b['anchors']) if b['anchors'] else '') for b in validated['boundaries']]
+        lines += ['', 'Trust boundaries:'] + [f"- {b['name']}{' [entry point]' if b.get('entry_point') else ''}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(location(x) for x in b['anchors']) if b['anchors'] else '') for b in validated['boundaries']]
     for item in validated['items']:
         tags = [item['id'], item['kind'], item['basis']] + ([item['threat']] if item['threat'] else []) + item['cwe'] + item['capec'] + item['asvs'] + item['cert']
         lines += ['', f"[{'; '.join(tags)}] {item['statement']}", 'Task relevance: ' + item['task_relevance']]
@@ -212,7 +222,7 @@ def summarize_events(events: list[dict]) -> list[dict]:
 
 
 def execute(record: dict, directory: Path, codex: str = 'codex', timeout: int = 3600) -> dict:
-    if record['protocol'] != PROTOCOL or record['status'] != 'prepared': raise ValueError('Expected a prepared agent acquisition')
+    if record['protocol'] not in PROTOCOLS or record['status'] != 'prepared': raise ValueError('Expected a prepared agent acquisition')
     prompt = (directory / 'prompt.md').read_text()
     if digest(prompt.encode()) != record['initialPromptSha256'] or prompt != record['initialPrompt']: raise ValueError('Frozen acquisition prompt changed')
     for path, sha in record['generatorHashes'].items():

@@ -14,12 +14,13 @@ from pathlib import Path
 
 from research.import_evidence import canonical, digest
 
-ITEM_KINDS = ('security_property', 'existing_risk', 'change_risk', 'requirement', 'control', 'verification', 'unknown')
+ITEM_KINDS = ('observation', 'security_property', 'existing_risk', 'change_risk', 'requirement', 'control', 'verification', 'unknown')  # security_property: legacy label of observation (schema v7)
 RISKS = ('existing_risk', 'change_risk')
 RELATION = {('control', 'requirement'): 'satisfies', ('requirement', 'existing_risk'): 'mitigates', ('requirement', 'change_risk'): 'mitigates',
             ('verification', 'requirement'): 'verifies', ('verification', 'control'): 'verifies', ('existing_risk', 'security_property'): 'weakens',
-            ('change_risk', 'security_property'): 'weakens', ('control', 'existing_risk'): 'mitigates', ('control', 'change_risk'): 'mitigates'}
-ORDER = ('asset', 'boundary', 'security_property', 'existing_risk', 'change_risk', 'requirement', 'control', 'verification', 'unknown')
+            ('change_risk', 'security_property'): 'weakens', ('existing_risk', 'observation'): 'weakens', ('change_risk', 'observation'): 'weakens',
+            ('control', 'existing_risk'): 'mitigates', ('control', 'change_risk'): 'mitigates'}
+ORDER = ('asset', 'boundary', 'observation', 'security_property', 'existing_risk', 'change_risk', 'requirement', 'control', 'verification', 'unknown')
 
 
 def _anchor_edges(source: str, anchors: list[dict], edge_type: str, nodes: dict, edges: list):
@@ -42,7 +43,7 @@ def build(document: dict, model: dict | None = None) -> dict:
         _anchor_edges(node_id, asset.get('anchors', []), 'located_at', nodes, edges)
     for index, boundary in enumerate(document.get('boundaries', []), 1):
         node_id = f'boundary:B{index}'
-        nodes[node_id] = {'id': node_id, 'kind': 'boundary', 'label': boundary['name'], 'untrusted_input': boundary['untrusted_input'], 'source': boundary['source'], 'sink': boundary['sink']}
+        nodes[node_id] = {'id': node_id, 'kind': 'boundary', 'label': boundary['name'], 'untrusted_input': boundary['untrusted_input'], 'source': boundary['source'], 'sink': boundary['sink'], 'entry_point': boundary.get('entry_point')}
         _anchor_edges(node_id, boundary.get('anchors', []), 'crosses', nodes, edges)
     items = {item['id']: item for item in document.get('items', [])}
     for item in items.values():
@@ -81,6 +82,7 @@ def metrics(graph: dict, model: dict | None = None) -> dict:
     enforced = {e['from'] for e in graph['edges'] if e['type'] == 'enforced_at'}
     linked = {e['from'] for e in graph['edges'] if e['type'] in ('satisfies', 'mitigates')} | {e['to'] for e in graph['edges'] if e['type'] in ('satisfies', 'mitigates')}
     result = {'nodesByKind': by_kind, 'edgesByType': by_type, 'items': len(items), 'anchoredItems': sum(1 for n in items if n['id'] in anchored),
+              'entryPoints': sum(1 for n in graph['nodes'] if n['kind'] == 'boundary' and n.get('entry_point') is True),
               'controls': len(controls), 'controlsWithEnforcementPoint': sum(1 for n in controls if n['id'] in enforced),
               'itemsLinkedToRequirementOrRisk': sum(1 for n in items if n['id'] in linked and n['kind'] in ('control', 'requirement'))}
     if model:
@@ -123,7 +125,7 @@ def render(graph: dict, kinds: tuple[str, ...] | None = None, header: bool = Tru
     lines = [f"--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: {graph.get('angle')}) ---", graph.get('summary') or '']
     assets = [n for n in graph['nodes'] if n['kind'] == 'asset']; boundaries = [n for n in graph['nodes'] if n['kind'] == 'boundary']
     if assets and header: lines += ['', 'Assets:'] + [f"- {a['label']} [{a['property']}]" + (' @ ' + '; '.join(_location(e) for e in out.get(a['id'], [])) if out.get(a['id']) else '') for a in assets]
-    if boundaries and header: lines += ['', 'Trust boundaries:'] + [f"- {b['label']}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(_location(e) for e in out.get(b['id'], [])) if out.get(b['id']) else '') for b in boundaries]
+    if boundaries and header: lines += ['', 'Trust boundaries:'] + [f"- {b['label']}{' [entry point]' if b.get('entry_point') else ''}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(_location(e) for e in out.get(b['id'], [])) if out.get(b['id']) else '') for b in boundaries]
     lines += render_items(graph, kinds=kinds)
     lines += ['', 'Uncertainty and limits:', *['- ' + value for value in graph.get('limitations', [])], '--- END REPOSITORY-DERIVED SECURITY CONTEXT ---', '']
     return '\n'.join(lines)
