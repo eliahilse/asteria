@@ -1,0 +1,78 @@
+\section{Security context agent}
+\label{sec:agent}
+
+\paragraph{Problem.}
+Earlier rounds supplied the acquisition step with researcher-written security
+perspectives (requirements, trust boundaries, operational guards). Such
+instructions encode knowledge of the task and its likely flaws; a practitioner
+who can write them can also write the guards. The agent described here removes
+that input. It receives a repository and a one-line feature description and
+assembles $\mathrm{SC}(R,\Delta)$ itself, using only the vocabulary of
+Section~\ref{sec:terminology} and published catalogues.
+
+\paragraph{Inputs and constraints.}
+The agent receives (i) a read-only snapshot of the target repository and, for
+reuse tasks, of the donor repository; (ii) the feature description as given to
+the code generator, for example ``Implement a Highscore feature in ApoMario'';
+(iii) the ontology of Section~\ref{sec:terminology} as an output schema with
+its catalogue vocabulary (CWE, CAPEC, ASVS). It receives no declared check,
+fixture, threshold, earlier context, generated code, audit or test outcome. It
+executes no repository code. Its tool budget, model and sampling settings are
+fixed and recorded.
+
+\paragraph{Procedure.}
+The agent runs an inspection loop with search and read tools over the snapshot,
+in the manner of agent--computer interfaces for software
+engineering~\citep{yang2024}, and finishes with one typed document. Its
+instruction prescribes the order of analysis but no content:
+\begin{enumerate}\setlength\itemsep{0pt}
+\item \emph{Grounding}: locate code the change will touch or imitate, including
+  existing analogues in the donor.
+\item \emph{Assets and boundaries}: identify data sources, sinks, persistence
+  and channels; mark each trust boundary the change crosses.
+\item \emph{Threats}: enumerate threats per boundary under the fixed threat
+  model, using STRIDE and CAPEC patterns.
+\item \emph{Weaknesses}: map each threat to weakness types (CWE) and judge
+  reachability from the identified entry points.
+\item \emph{Requirements and controls}: derive constraints on the feature's
+  operations, name the enforcement point of each, and propose a control with
+  its failure behaviour.
+\item \emph{Verification and unknowns}: state how each requirement can be
+  checked, and record what inspection could not establish.
+\end{enumerate}
+
+\paragraph{Output.}
+Each statement carries a kind (property, existing risk, change risk,
+requirement, control, unknown), a basis (observed, task, reasoned), catalogue
+identifiers, and references to inspected excerpts. The harness, not the model,
+resolves references to exact file and line ranges of the snapshot; an
+unresolvable reference invalidates the statement. Observed properties and
+existing risks require references; requirements and controls may be
+prospective and are labelled so. The validated document is rendered verbatim as
+a prompt insert and appended after the unchanged task; control conditions
+receive no insert.
+
+\paragraph{Provenance.}
+A record freezes the instruction, ontology and snapshot fingerprints, every
+tool call and model turn, the validated output, its rendered insert and their
+hashes before any code generation starts. Failed or degenerate acquisitions are
+kept and used; none is regenerated. In round I09 one catalogue-instructed
+acquisition inspected nothing because its tool calls used the wrong path
+syntax; its insert was used unchanged and reported as such.
+
+\paragraph{Ablations.}
+Two arms bracket the agent: a \emph{task-only} arm whose instruction is a single
+sentence without ontology or catalogue, and a \emph{catalogue} arm that adds
+the published CWE Top~25 list~\citep{cwetop25} without procedure. The
+researcher-written perspectives of earlier rounds serve as within-round
+bridges. Differences between arms confound instruction, generated content and
+insert length; the design does not isolate wording.
+
+\paragraph{Relation to prior work.}
+Benchmarks of code-model security prompt with isolated
+scenarios~\citep{pearce2022,siddiq2022,hajipour2024}, harden the model
+itself~\citep{he2023}, or vary generic prompt wording~\citep{tony2025}. User
+studies report that assistance without security cues degrades
+security~\citep{perry2023}. The agent instead derives repository-specific
+context from evidence before generation, in a corpus where flaws propagate by
+clone-and-own reuse~\citep{krueger2018,dubinsky2013}.
