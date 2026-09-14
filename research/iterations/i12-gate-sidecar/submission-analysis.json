@@ -1,0 +1,327 @@
+{
+  "analysisSha256": "c2b84c3212687c937d4eec8e390d12fef61d445e0f8050a529dd77a529c7563f",
+  "curves": [
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 0,
+      "full": 3,
+      "n": 3,
+      "newlySuccessful": 3,
+      "rate": 1.0,
+      "submissionAllowance": 1,
+      "wilson95High": 1.0,
+      "wilson95Low": 0.4385029682449546
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 0,
+      "full": 3,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 1.0,
+      "submissionAllowance": 2,
+      "wilson95High": 1.0,
+      "wilson95Low": 0.4385029682449546
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 0,
+      "full": 3,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 1.0,
+      "submissionAllowance": 3,
+      "wilson95High": 1.0,
+      "wilson95Low": 0.4385029682449546
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 0,
+      "full": 3,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 1.0,
+      "submissionAllowance": 4,
+      "wilson95High": 1.0,
+      "wilson95Low": 0.4385029682449546
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 0,
+      "full": 3,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 1.0,
+      "submissionAllowance": 5,
+      "wilson95High": 1.0,
+      "wilson95Low": 0.4385029682449546
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 1,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 1,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "cumulativeCalls": 6,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 2,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 2,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "cumulativeCalls": 9,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 3,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 3,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "cumulativeCalls": 12,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 4,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 4,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "cumulativeCalls": 15,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 4,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 5,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    }
+  ],
+  "deliveryErrors": [
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "ApoMarioHighscore.java exists; edit it instead",
+      "requestSha256": "899bb9d453023d08aaecdb8be13a9c37d134ae050384160ab4a674678e2924fd",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "invalid_changes",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The submission clearly violates multiple controls at the edited enforcement points. recordRunEnd records the first player without checking human/replay/editor/simulation mode, does not guard duplicate finalization, and uses score/time/name sources without the required validation (R2/C1). storeRun accepts null and arbitrary names (substituting a default), unbounded/negative scores, and arbitrary survival times (clamping rather than rejecting), and persists/sorts without rejecting invalid input (R3/C2). Loading parses an unbounded file into entries, lacks version/byte/record/name/control-character/range/alignment validation, and can retain partially loaded data on malformed input (R5/C3). The highscore rendering bypasses the required dedicated menu enforcement design, renders internal entries directly rather than validated getter data, has no safe inconsistent-data handling, and formats time with the default locale and no validated bounds; it also allows unbounded persisted names to reach the UI (R8/C6).",
+      "requestSha256": "42f8f2912e2acba149aaace77a18a59159159503a52034e271888bc90f27264e",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "rejected_by_sidecar",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Changes must be arrays",
+      "requestSha256": "8b4e647b9a7295e8403579c2ba23287037ad4b220a461bbc6a5d0f2ff9ab8eda",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "invalid_changes",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "ApoMarioHighscore.java is not a supplied or newly created file",
+      "requestSha256": "3c61f989441e6f9555fb1795c899c0a6cc16fe4f198d02115e7b908b0df0d2db",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "invalid_changes",
+      "submission": 4
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The submission has clear enforcement-point violations. At run finalization it records player.getPoints() and level.getPassedTime() without demonstrating the required post-adjustment/final elapsed sources, always selects players.get(0) rather than the selected human player, and marks highscoreRecorded before knowing recording succeeded; it also does not explicitly ensure the finalization path covers both win and loss correctly. The highscore implementation validates and bounds storeRun inputs and uses aligned tuples, but persistence is not atomic and load() returns on malformed input after potentially only building a temporary list (so no partial exposure), while the render implementation formats milliseconds as mm:ss and exposes validated getter data, yet it can render inconsistent getter data rather than the required safe empty-state behavior and does not provide the required dedicated panel availability via menu transitions (only an H toggle).",
+      "requestSha256": "36638e973890e822a7660198dfcae94b40e055cc413903e26a4c4fed53cd4a8b",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "rejected_by_sidecar",
+      "submission": 5
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The submission clearly violates run-end and highscore controls: recordRunEnd records the first player without checking human/replay/editor/simulation mode or duplicate finalization, and storeRun accepts unbounded/negative scores and times, null/control/delimiter-containing names (and silently substitutes or alters invalid names), with no record-count limit. Loading is unbounded and partially accepts malformed records without a version, byte/record/name/range, or whole-file alignment validation. Rendering iterates based only on name count and directly indexes the other lists, so inconsistent data can throw; it does not ensure validated bounded names or locale-independent mm:ss formatting.",
+      "requestSha256": "27b8e2248ac5d18a65ad4db2c6674331e0c7c94ada00335ec5d528fb0f45df43",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "rejected_by_sidecar",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "ApoMarioLevel.java: old_text matches 0 times; provide one unique exact anchor",
+      "requestSha256": "8647b14955b18ac09ab681e48c18e194ea3d125fc7b6d5dc60d0cc89ebd22532",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "invalid_changes",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: recordRunEnd does not verify that the elapsed-time source is available before calling getPassedTime(); if randomLevel (or its time source) is unavailable, getPassedTime() can throw instead of skipping recording and leaving the highscore unchanged as required. The run-end path also performs no defensive handling around that source.",
+      "requestSha256": "a40c505688f1f253c2cda34d10c77349d0deddfe5b55016312ad83ba43d8cc70",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "rejected_by_sidecar",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The highscore loader checks Files.size(store) and then calls Files.readAllBytes(store), so the actual read is not bounded to MAX_BYTES (a file can grow or be replaced between the check and read). This can allocate/read an oversized untrusted store and violates the required bounded Path reader behavior.",
+      "requestSha256": "f865b4d5c9b3a5afd232ee170bc21039f85e373e11048390d42a84dc52ed83f9",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "rejected_by_sidecar",
+      "submission": 4
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: recordRunEnd only sets runRecorded after storeRun returns true. If a valid finalization is rejected by the bounded board (for example, a low score when the board is full), subsequent duplicate setAnalysis/finalization calls invoke storeRun again, violating the required duplicate-finalization guard and the zero-call-on-duplicate behavior.",
+      "requestSha256": "ee7749f94db193b78dda733f850d5f0cac1b833b8a11bbe43cb330d3a46f0f53",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "rejected_by_sidecar",
+      "submission": 5
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The submission clearly violates multiple controls at the edited enforcement points. Run finalization records the first player without rejecting replay/editor/simulation modes, without guarding duplicate finalization, and without reliably ensuring post-adjustment human-run semantics (R2/C1). storeRun substitutes null/blank names, clamps negative survival times, accepts unbounded/negative scores and unsafe names, and mutates before persistence failure handling, violating validation and atomic bounded insertion (R3/C2). Loading accepts malformed/partial records, has no byte/record/name/range/alignment/version bounds, and exposes data after unsafe parsing (R5/C3). The highscore renderer iterates internal entries rather than validated getter-aligned data and formats time using the default locale; it also lacks safe inconsistent-data handling (R8/C6).",
+      "requestSha256": "6343c66fcc01723a7d6cfb0c6861058bf87a9fdcc5dd85d0fbef748f72d9f4ae",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "rejected_by_sidecar",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The run-end implementation directly calls recordRunEnd without any duplicate-finalization guard, so repeated finalization calls can record multiple runs. recordRunEnd also unconditionally selects players().get(0) and only checks visibility; it does not derive the selected human player or reject non-human player modes as required. Thus the authoritative run-end controls are clearly violated.",
+      "requestSha256": "7456a93457e4aca6245491e596e896d610a76e4b496a19132317444c201e1c65",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "rejected_by_sidecar",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The highscore loader only catches IOException and SecurityException. Malformed persisted records can cause Base64.getDecoder().decode(...) to throw IllegalArgumentException or Integer.parseInt(...) to throw NumberFormatException, escaping ApoMarioPanel initialization instead of rejecting the whole file and falling back safely. This clearly violates the required malformed-file failure behavior at the loading enforcement point.",
+      "requestSha256": "597c47148ad93cb65a42ac0545520d436373842f8369b37a5791a947c877dc54",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "rejected_by_sidecar",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: The submission clearly violates multiple controls at their edited enforcement points. Run-end recording is placed before the existing transition but does not clearly ensure post-finalization score adjustments, and it selects a visible human player by getAi()/team name without establishing the required selected human player/name and elapsed-time availability; it also relies on a duplicate flag that is only set after successful persistence and can be reset by makeLevel without proving the required finalization semantics (R2, C1). The highscore loader accepts structurally malformed files: it skips blank records, does not reject trailing/extra blank lines, does not enforce exact file/record structure or total encoded field/name byte limits robustly, and can accept arbitrary UTF-8 replacement decoding; persistence uses a non-atomic move and does not establish a last-known-valid fallback (R5, C3). The render method exposes getter-derived lists separately and only uses a minimum length, but does not render a safe fallback for inconsistent lists and directly renders names without an explicit bounded/plain-text validation at the sink; it also truncates to 12 despite the stated validated getter display requirement (R8, C6). storeRun validates basic ranges and aligned tuple storage, but name validation omits record delimiters explicitly and MAX_TIME is milliseconds while the required survival-time contract is not established; the persistence format/loader validation gaps mean the required bounded, atomically sorted store invariant is not fully met (R3, C2).",
+      "requestSha256": "a897be561ddf512dde34992893faac32e0682fd36a29ce80baa061698e8971b4",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "rejected_by_sidecar",
+      "submission": 4
+    },
+    {
+      "condition": "generation_s__agentic__gate",
+      "detail": "Submission rejected by the security sidecar: At the run-finalization enforcement point, the submission invokes recordRunEnd before the existing game.setAnalysis transition, but it does not ensure the call occurs after all final point adjustments in this method's finalization path, and the duplicate guard is not atomically protected: recordRunEnd checks highscoreRecorded and only sets it after storeRun succeeds. A repeated/concurrent finalization can therefore invoke storeRun more than once. The submission also relies on external prechecks and does not itself clearly establish the required finalization ordering/guard at the authoritative operation.",
+      "requestSha256": "3f0ffada3dcee05e0946a9adca4b9a59869c5e4c3cb7f3717e8c71c22048bc46",
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "rejected_by_sidecar",
+      "submission": 5
+    }
+  ],
+  "iteration": "i12-gate-sidecar",
+  "manifestFingerprint": "33c2e8e79beab722a6e540b144d9fae59185f0ce816773af7f66637957299570",
+  "meaning": "Cumulative full functional success within the actual announced allowance, using every scheduled trajectory. Earlier budgets are descriptive slices of the same conversations, not independent samples or counterfactual protocols. Security outcomes are reported separately on final artifacts.",
+  "sourceHashes": {
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__gate__r1/record.json": "cf4c1d0c62a6f7172d5809fce21bc3e60d4fcf111a02232a09cf9f7e7df40317",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__gate__r2/record.json": "536bbece7148455344dee806ccf722296db62a0d38799e7e2ac99f9d142d8af5",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__gate__r3/record.json": "77bc8b992ff5b6c9ee1b30f15cc085b898fd5a841765a6f25c09b7d4a4e96c3a",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r1/record.json": "701c1ee9aba2c978d392d467fb2d7c7a4e70474cedd6efae086ac3f7560f518a",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r1/submission-1/evaluation/report.json": "c5ddeeb240196f48468cda4e9e5d89787e0a3394d25e3b139b1d095fb414b7bf",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r2/record.json": "5825b2380e9788ff282da7db817770d15d1e269afc77f001c0ed0a261be649e8",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r2/submission-1/evaluation/report.json": "f7f47ba6b8118eaf87483429f7f987d8cc828d120e36ddccfede16979cbaca8b",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r3/record.json": "94d2f44eae012c476f7da1486827e299937157dc218f8e50901e5a42adc004cd",
+    ".local/iterations/i12-gate-sidecar/runs/i12-gate-sidecar__generation_s__agentic__none__r3/submission-1/evaluation/report.json": "cd27b678f6f8897abf34e8085e4997e8bc111e4e19863b61096cb4a589afa922"
+  },
+  "trajectories": [
+    {
+      "calls": 1,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 0,
+      "firstFullSubmission": 1,
+      "invalidEdits": 0,
+      "runId": "i12-gate-sidecar__generation_s__agentic__none__r1",
+      "status": "completed"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__gate",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 3,
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r1",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 1,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 0,
+      "firstFullSubmission": 1,
+      "invalidEdits": 0,
+      "runId": "i12-gate-sidecar__generation_s__agentic__none__r2",
+      "status": "completed"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__gate",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 1,
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r2",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__gate",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 0,
+      "runId": "i12-gate-sidecar__generation_s__agentic__gate__r3",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 1,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 0,
+      "firstFullSubmission": 1,
+      "invalidEdits": 0,
+      "runId": "i12-gate-sidecar__generation_s__agentic__none__r3",
+      "status": "completed"
+    }
+  ]
+}

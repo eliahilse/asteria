@@ -57,6 +57,18 @@ class AgenticReaderTests(unittest.TestCase):
             record_path.write_text(json.dumps(record))
             with self.assertRaisesRegex(ValueError, 'frozen task'): read_study(root)
 
+    def test_agentic_none_is_the_reference_when_no_single_shot_arm_exists(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); fixture = Fixture(root); plan = fixture.plan
+            plan['conditions'] = [c for c in plan['conditions'] if c['mode'] == 'agentic']; plan['schedule'] = [r for r in plan['schedule'] if '__agentic__' in r['condition']]
+            plan['analysis'] = {'primary': 'fixture'}
+            for condition in plan['conditions']: condition['baseContext'] = 'S'; condition['repetitions'] = 1
+            plan.pop('fingerprint'); plan['fingerprint'] = digest(canonical(plan)); (root / 'manifest.json').write_bytes(canonical(plan))
+            study = read_study(root)
+            labels = {c['id']: c['securityStrategy'] for c in study['plan']['conditions']}
+            self.assertEqual(labels['generation_s__agentic__none'], 'none'); self.assertEqual(labels['generation_s__agentic__static'], 'agentic+static')
+            self.assertEqual(study['plan']['axes']['securityContext'][0], 'none')
+
 
 if __name__ == '__main__':
     unittest.main()

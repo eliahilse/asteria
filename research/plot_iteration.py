@@ -58,7 +58,7 @@ def render(identifier, qualified=False):
         security.set_title('Issue-check counts', loc='left', fontsize=11)
         for y, row in enumerate(rows):
             rate = 100 * row['withinBudgetFullRate']; lo, hi = row['withinBudgetFullWilson95']
-            quality.errorbar(rate, y, xerr=[[rate - 100 * lo], [100 * hi - rate]], fmt='o', color='#333333', capsize=3, markersize=5)
+            quality.errorbar(rate, y, xerr=[[max(0.0, rate - 100 * lo)], [max(0.0, 100 * hi - rate)]], fmt='o', color='#333333', capsize=3, markersize=5)
             quality.scatter(100 * row['firstFullRate'], y + .15, marker='x', color='#999999', s=25)
             lo, hi = row['failureCountIdentificationBoundsPerTrajectory']
             security.plot([lo, hi], [y, y], color='#71559b', linewidth=3)

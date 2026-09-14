@@ -9,8 +9,8 @@ from research.import_evidence import ROOT
 
 CELLS = {'Generation S': 'generation_s', 'Generation S+F+B': 'generation_sfb', 'Reuse B': 'reuse_b', 'Reuse S+B': 'reuse_sb'}
 ARMS = {'None': 'none', 'Operations': 'operations', 'Requirements': 'requirements', 'Boundaries': 'boundaries', 'Task only': 'task_only', 'Catalogue': 'catalog',
-        'Single-shot, none': 'single_shot__none', 'Single-shot, static': 'single_shot__static', 'Agentic, none': 'agentic__none', 'Agentic, static': 'agentic__static', 'Agentic, adaptive': 'agentic__adaptive'}
-TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition', 'tab:i10': 'i10-agentic-delivery', 'tab:i11': 'i11-symbol-sidecar'}
+        'Single-shot, none': 'single_shot__none', 'Single-shot, static': 'single_shot__static', 'Agentic, none': 'agentic__none', 'Agentic, static': 'agentic__static', 'Agentic, adaptive': 'agentic__adaptive', 'Agentic, gate': 'agentic__gate'}
+TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition', 'tab:i10': 'i10-agentic-delivery', 'tab:i11': 'i11-symbol-sidecar', 'tab:i12': 'i12-gate-sidecar'}
 
 
 def parse_table(source: str, label: str) -> tuple[list[str], list[tuple[str, list[str]]]]:

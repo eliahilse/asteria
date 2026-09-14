@@ -105,8 +105,14 @@ def read_study(directory: Path):
             'status': record['status'], 'settingsVerified': record['settingsVerified'], 'items': len(record['output']['items']), 'citationChecks': record['citationChecks']})
     display_conditions = plan['conditions']
     if plan.get('protocol') == 'agentic-delivery-v1':
-        # Delivery arms are labelled by mode and sidecar; single-shot without sidecar is the reference arm of each cell.
-        display_conditions = [{**c, 'securityStrategy': 'none' if (c['mode'], c['sidecar']) == ('single_shot', 'none') else f"{c['mode']}+{c['sidecar']}"} for c in plan['conditions']]
+        # Delivery arms are labelled by mode and sidecar. The reference arm of each cell is single-shot without sidecar
+        # when the plan has one, otherwise agentic without sidecar; it is labelled 'none' so comparisons find their control.
+        reference = {}
+        for c in plan['conditions']:
+            if c['sidecar'] != 'none': continue
+            current = reference.get(c['parentCondition'])
+            if current is None or (c['mode'] == 'single_shot' and current['mode'] != 'single_shot'): reference[c['parentCondition']] = c
+        display_conditions = [{**c, 'securityStrategy': 'none' if reference.get(c['parentCondition']) is c else f"{c['mode']}+{c['sidecar']}"} for c in plan['conditions']]
     display_plan = {**plan, 'conditions': display_conditions, 'label': plan['id'].split('-')[0].upper(), 'observationUnit': 'trajectory', 'reasoning': plan['settings']['reasoning_effort'],
                     'axes': {'method': ['Generation', 'Reuse'], 'paperContext': list(dict.fromkeys(c['baseContext'] for c in plan['conditions'])), 'securityContext': list(dict.fromkeys(c['securityStrategy'] for c in display_conditions))},
                     'acquisitions': acquisitions, 'deviations': list(plan['analysis'].values())}
