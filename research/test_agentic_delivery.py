@@ -200,7 +200,7 @@ class AgenticDeliveryTests(unittest.TestCase):
             fixture = Fixture(Path(temporary))
             record, requests = fixture.run('single_shot', 'static', [valid_changes()], [report(True)], FakeSidecar(insert='a different insert'))
             self.assertEqual((record['status'], requests, record['turns']), ('sidecar_error', [], [])); self.assertIn('differs', record['errorDetail'])
-            with self.assertRaisesRegex(ValueError, 'needs a sidecar'): fixture.run('agentic', 'adaptive', [], [], None)
+            with self.assertRaisesRegex(ValueError, 'sidecar object'): fixture.run('agentic', 'adaptive', [], [], None)
 
     def test_turn_budget_stops_the_loop(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -41,3 +41,14 @@ are recorded in every record through the sidecar's `describe()`.
 Three trajectories per arm. The judge is the same model as the generator; a
 wrong intervention costs a submission and is reported as such. One cell, one
 graph.
+
+## Collection notes, 2026-09-15
+
+After the first two trajectories had started, the harness file
+`research/agentic_delivery.py` was edited (an error-message wording change) and
+committed. The frozen manifest hashes that file, so the next four trajectory
+processes refused to start ("Frozen input changed") before any model call and
+left no run directory. The file was restored to the frozen bytes, the unit test
+was adapted to the frozen wording, and the four trajectories were then
+collected; the two started trajectories were unaffected. No observation was
+lost or repeated.
