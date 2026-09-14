@@ -1,0 +1,727 @@
+{
+  "id": "i10-agentic-delivery",
+  "protocol": "agentic-delivery-v1",
+  "maxTurns": 24,
+  "maxSubmissions": 5,
+  "planned": 50,
+  "records": 50,
+  "conditions": {
+    "generation_s__single_shot__none": {
+      "mode": "single_shot",
+      "sidecar": "none",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 5,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 3,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 7,
+        "perTrajectory": [
+          2,
+          1,
+          1,
+          2,
+          1
+        ]
+      },
+      "reads": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 7,
+        "perTrajectory": [
+          2,
+          1,
+          1,
+          2,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 5
+      }
+    },
+    "generation_s__single_shot__static": {
+      "mode": "single_shot",
+      "sidecar": "static",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 2,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 23,
+        "perTrajectory": [
+          5,
+          5,
+          5,
+          4,
+          4
+        ]
+      },
+      "reads": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 23,
+        "perTrajectory": [
+          5,
+          5,
+          5,
+          4,
+          4
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "budget_exhausted": 3,
+        "completed": 2
+      }
+    },
+    "generation_s__agentic__none": {
+      "mode": "agentic",
+      "sidecar": "none",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 5,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 40,
+        "perTrajectory": [
+          5,
+          9,
+          10,
+          9,
+          7
+        ]
+      },
+      "reads": {
+        "total": 3,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          2,
+          1
+        ]
+      },
+      "searches": {
+        "total": 21,
+        "perTrajectory": [
+          3,
+          6,
+          6,
+          3,
+          3
+        ]
+      },
+      "submissions": {
+        "total": 16,
+        "perTrajectory": [
+          2,
+          3,
+          4,
+          4,
+          3
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 5
+      }
+    },
+    "generation_s__agentic__static": {
+      "mode": "agentic",
+      "sidecar": "static",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 1,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 38,
+        "perTrajectory": [
+          5,
+          13,
+          10,
+          5,
+          5
+        ]
+      },
+      "reads": {
+        "total": 2,
+        "perTrajectory": [
+          0,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 12,
+        "perTrajectory": [
+          0,
+          7,
+          5,
+          0,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 24,
+        "perTrajectory": [
+          5,
+          5,
+          4,
+          5,
+          5
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "budget_exhausted": 4,
+        "completed": 1
+      }
+    },
+    "generation_s__agentic__adaptive": {
+      "mode": "agentic",
+      "sidecar": "adaptive",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 3,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 45,
+        "perTrajectory": [
+          5,
+          7,
+          14,
+          10,
+          9
+        ]
+      },
+      "reads": {
+        "total": 9,
+        "perTrajectory": [
+          0,
+          1,
+          5,
+          2,
+          1
+        ]
+      },
+      "searches": {
+        "total": 15,
+        "perTrajectory": [
+          2,
+          2,
+          4,
+          4,
+          3
+        ]
+      },
+      "submissions": {
+        "total": 21,
+        "perTrajectory": [
+          3,
+          4,
+          5,
+          4,
+          5
+        ]
+      },
+      "sidecarInjections": {
+        "total": 10,
+        "perTrajectory": [
+          1,
+          2,
+          2,
+          2,
+          3
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 5,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 3,
+        "budget_exhausted": 2
+      }
+    },
+    "reuse_sb__single_shot__none": {
+      "mode": "single_shot",
+      "sidecar": "none",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 5,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 4,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 6,
+        "perTrajectory": [
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "reads": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 6,
+        "perTrajectory": [
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 5
+      }
+    },
+    "reuse_sb__single_shot__static": {
+      "mode": "single_shot",
+      "sidecar": "static",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 4,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 2,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 13,
+        "perTrajectory": [
+          1,
+          5,
+          2,
+          4,
+          1
+        ]
+      },
+      "reads": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 13,
+        "perTrajectory": [
+          1,
+          5,
+          2,
+          4,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 4,
+        "budget_exhausted": 1
+      }
+    },
+    "reuse_sb__agentic__none": {
+      "mode": "agentic",
+      "sidecar": "none",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 5,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 2,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 36,
+        "perTrajectory": [
+          5,
+          4,
+          9,
+          8,
+          10
+        ]
+      },
+      "reads": {
+        "total": 5,
+        "perTrajectory": [
+          1,
+          1,
+          0,
+          1,
+          2
+        ]
+      },
+      "searches": {
+        "total": 20,
+        "perTrajectory": [
+          3,
+          2,
+          6,
+          5,
+          4
+        ]
+      },
+      "submissions": {
+        "total": 11,
+        "perTrajectory": [
+          1,
+          1,
+          3,
+          2,
+          4
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "completed": 5
+      }
+    },
+    "reuse_sb__agentic__static": {
+      "mode": "agentic",
+      "sidecar": "static",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 4,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 1,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 43,
+        "perTrajectory": [
+          12,
+          6,
+          12,
+          8,
+          5
+        ]
+      },
+      "reads": {
+        "total": 6,
+        "perTrajectory": [
+          1,
+          1,
+          2,
+          1,
+          1
+        ]
+      },
+      "searches": {
+        "total": 20,
+        "perTrajectory": [
+          6,
+          2,
+          6,
+          3,
+          3
+        ]
+      },
+      "submissions": {
+        "total": 17,
+        "perTrajectory": [
+          5,
+          3,
+          4,
+          4,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 5
+      },
+      "statuses": {
+        "budget_exhausted": 1,
+        "completed": 4
+      }
+    },
+    "reuse_sb__agentic__adaptive": {
+      "mode": "agentic",
+      "sidecar": "adaptive",
+      "planned": 5,
+      "N": 5,
+      "fullWithinBudget": {
+        "count": 4,
+        "of": 5
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 5
+      },
+      "toolTurns": {
+        "total": 38,
+        "perTrajectory": [
+          8,
+          6,
+          7,
+          9,
+          8
+        ]
+      },
+      "reads": {
+        "total": 3,
+        "perTrajectory": [
+          0,
+          0,
+          2,
+          1,
+          0
+        ]
+      },
+      "searches": {
+        "total": 16,
+        "perTrajectory": [
+          3,
+          3,
+          3,
+          4,
+          3
+        ]
+      },
+      "submissions": {
+        "total": 19,
+        "perTrajectory": [
+          5,
+          3,
+          2,
+          4,
+          5
+        ]
+      },
+      "sidecarInjections": {
+        "total": 5,
+        "perTrajectory": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 5,
+        "of": 5
+      },
+      "statuses": {
+        "budget_exhausted": 1,
+        "completed": 4
+      }
+    }
+  },
+  "note": "Counts are k/N over available records. An incomplete schedule is incomplete, not an estimate."
+}

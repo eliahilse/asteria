@@ -36,7 +36,7 @@ def render(identifier, qualified=False):
     n_label = str(sizes[0]) if len(sizes) == 1 else '/'.join(map(str, sizes))
     budget = json.loads((directory / 'plan.json').read_text())['maxSubmissions']
     def parent_label(parent):
-        row = by_condition[parent + '__none']
+        row = next(c for c in data['conditions'] if c['condition'].startswith(parent + '__') and c['securityStrategy'] == 'none')
         return row['method'] + ' · ' + row['paperContext']
     generated = []
     def save(fig, name):
@@ -49,8 +49,8 @@ def render(identifier, qualified=False):
 
     fig, axes = plt.subplots(len(parents), 2, figsize=(11.5, 3 * len(parents) + 1.2), squeeze=False)
     for index, parent in enumerate(parents):
-        rows = [by_condition[parent + '__' + strategy] for strategy in strategies]
-        labels = [LABELS[c['securityStrategy']] for c in rows]
+        rows = [next(c for c in data['conditions'] if c['condition'].startswith(parent + '__') and c['securityStrategy'] == strategy) for strategy in strategies if any(c['condition'].startswith(parent + '__') and c['securityStrategy'] == strategy for c in data['conditions'])]
+        labels = [LABELS.get(c['securityStrategy'], c['securityStrategy']) for c in rows]
         for side in (0, 1):
             ax = axes[index, side]; ax.set_yticks(range(len(rows)), labels); ax.invert_yaxis(); ax.grid(axis='x', color='.90', linewidth=.7); ax.set_axisbelow(True)
         quality, security = axes[index]

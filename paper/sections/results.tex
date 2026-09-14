@@ -100,6 +100,36 @@ Reuse & catalogue & 28 & 8/8 & 34/34 & 8 & 11726 \\
 \end{tabular}
 \end{table}
 
+\paragraph{Delivery modes and sidecar.}
+Table~\ref{tab:i10} reports I10: the agent-acquired data-flow graph of each
+method, rendered as a static insert of about 31,000 characters, against no
+context and against an adaptive sidecar that injects graph slices for the code
+touched so far. Repository access alone leaves the counts unchanged (agentic,
+none: 32 and 35 failed checks, 5 of 5 functional in both cells) at three to
+five times the tool turns. The static graph insert gives the fewest failed
+checks of any round (3 to 10 of 50) and, in Generation S, the fewest functional
+trajectories (1 and 2 of 5). The file-level adaptive sidecar injected 16 to 19
+of the 18 to 19 statements at the first submission, since edits touch the three
+target files where the statements are anchored; its counts lie between the
+static and none arms. Symbol-level slicing and a shortened insert are the next
+pilots.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{I10: full functional (of 5) and issue checks failed / unresolved / passed (of 50); arms are mode and sidecar.}
+\label{tab:i10}
+\begin{tabular}{@{}llllll@{}}
+\toprule
+Cell & Single-shot, none & Single-shot, static & Agentic, none & Agentic, static & Agentic, adaptive \\
+\midrule
+Generation S & 5; 33/4/13 & 2; 5/5/40 & 5; 32/1/17 & 1; 3/5/42 & 3; 8/4/38 \\
+Reuse S+B & 5; 35/0/15 & 4; 4/4/42 & 5; 35/1/14 & 4; 10/4/36 & 4; 23/11/16 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Cost.}
 Catalogue arms reached full functionality on the first submission most often
 (4 and 3 of 5); requirements arms least often (1 of 5 each), with the most
