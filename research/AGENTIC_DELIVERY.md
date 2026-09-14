@@ -73,7 +73,7 @@ sidecar. A real one is expected from `research.context_graph`.
   `prepare(context_inserts=…)`.
 - `update(touched, shown_ids) -> (str | None, list[str])` for `adaptive`
   conditions. `touched` is
-  `{'files': set, 'symbols': set, 'queries': list, 'stage': 'after_read' | 'before_submit'}`:
+  `{'files': set, 'symbols': set, 'queries': list, 'stage': 'after_read' | 'before_submit', 'condition': condition id, 'cell': parent cell, 'method': 'Generation' | 'Reuse'}`:
   `files` are snapshot paths that were read plus the snapshot paths matching any
   filename named in a submission (applied or rejected; new files stay as
   basenames), `symbols` is reserved and currently always empty, `queries` are all

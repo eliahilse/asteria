@@ -243,7 +243,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 
     def consult(stage: str) -> str | None:
         if kind != 'adaptive' or not (touched['files'] or touched['symbols'] or touched['queries']): return None
-        view = {'files': set(touched['files']), 'symbols': set(touched['symbols']), 'queries': list(touched['queries']), 'stage': stage}
+        view = {'files': set(touched['files']), 'symbols': set(touched['symbols']), 'queries': list(touched['queries']), 'stage': stage,
+                'condition': condition['id'], 'cell': condition.get('parentCondition'), 'method': condition.get('strategy')}
         outcome = call_sidecar(sidecar.update, view, set(shown))
         if not isinstance(outcome, tuple) or len(outcome) != 2: raise SidecarError('update must return (text, ids)')
         text, ids = outcome
