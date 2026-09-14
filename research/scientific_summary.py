@@ -73,7 +73,8 @@ def summarize(study):
                 'passRateAmongEvaluated': check['pass'] / check['executed'] if check['executed'] else None,
                 'passWilson95AmongEvaluated': wilson(check['pass'], check['executed']), 'passRateAllTrajectories': check['pass'] / n})
         if condition['securityStrategy'] == 'none': continue
-        control = next(c for c in study['plan']['conditions'] if c['parentCondition'] == condition['parentCondition'] and c['securityStrategy'] == 'none')
+        control = next((c for c in study['plan']['conditions'] if c['parentCondition'] == condition['parentCondition'] and c['securityStrategy'] == 'none'), None)
+        if control is None: continue  # no reference arm in this cell; comparisons are reported only where a fresh control exists
         base = by_id[control['id']]; bn = base['attempts']; base_issues = issue_totals(base)
         tests = []
         for name in ISSUES:

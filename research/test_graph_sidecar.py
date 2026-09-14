@@ -72,7 +72,7 @@ class GraphSidecarTests(unittest.TestCase):
         sidecar = graph_sidecar.GateSidecar(self.directory, command=['fixture-judge'])
         self.assertIsNone(sidecar.initial({'strategy': 'Generation'})); self.assertEqual(sidecar.update({'method': 'Generation'}, set()), (None, []))
         self.assertEqual(sidecar.describe()['mode'], 'gate')
-        verdicts = iter([{'intervene': True, 'statement_ids': ['C1'], 'reason': 'stores without validation'}, {'intervene': False, 'statement_ids': [], 'reason': 'fine'}])
+        verdicts = iter([{'intervene': True, 'statement_ids': ['C1'], 'quoted_lines': ['int preserved; int added;'], 'reason': 'stores without validation'}, {'intervene': False, 'statement_ids': [], 'quoted_lines': [], 'reason': 'fine'}])
         judge_requests = []
 
         def fake_invoke(command, request, timeout):
@@ -95,7 +95,22 @@ class GraphSidecarTests(unittest.TestCase):
         # the rejected submission is counted, the agent saw the rejection feedback, and no evaluation happened for it
         self.assertEqual(requests[1]['messages'][-1]['content'].count('rejected by the security sidecar'), 1)
         self.assertNotIn('evaluationFile', record['submissions'][0])
-        self.assertEqual(record['sidecarConfig']['mode'], 'gate')
+        self.assertEqual(record['sidecarConfig']['mode'], 'gate'); self.assertEqual(gate_events[0]['quoted'], ['int preserved; int added;']); self.assertTrue(gate_events[0]['wouldIntervene'])
+        # a verdict without a verbatim quote does not intervene; shadow mode records the would-be verdict and never rejects
+        unquoted = iter([{'intervene': True, 'statement_ids': ['C1'], 'quoted_lines': ['not in the submission'], 'reason': 'x'}])
+        shadow = graph_sidecar.GateSidecar(self.directory, command=['fixture-judge'], shadow=True); quoted = iter([{'intervene': True, 'statement_ids': ['C1'], 'quoted_lines': ['int preserved; int added;'], 'reason': 'y'}])
+        for sidecar_case, script, expect_would in ((graph_sidecar.GateSidecar(self.directory, command=['fixture-judge']), unquoted, False), (shadow, quoted, True)):
+            def fake(command, request, timeout, script=script):
+                return {'protocol_version': 1, 'request_id': request['request_id'], 'model': request['model'], 'settings': None, 'finish_reason': 'stop', 'output_text': json.dumps(next(script)), 'usage': {}, 'cost_usd': None}
+            with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=fake):
+                fixture = Fixture(Path(temporary))
+                for c in fixture.conditions:
+                    if c['sidecar'] == 'adaptive': c['sidecar'] = 'gate'; c['id'] = c['id'].replace('adaptive', 'gate')
+                for row in fixture.plan['schedule']: row['condition'] = row['condition'].replace('adaptive', 'gate'); row['runId'] = row['runId'].replace('adaptive', 'gate')
+                record2, _ = fixture.run('agentic', 'gate', [act('submit_feature_changes', **valid_changes())], [report(True)], sidecar_case)
+            event = [e for e in record2['sidecarEvents'] if e['stage'] == 'gate'][0]
+            self.assertEqual((event['intervene'], event['wouldIntervene'], event['verdictIntervene']), (False, expect_would, True)); self.assertEqual(record2['submissions'][0]['status'], 'evaluated')
+        self.assertEqual(shadow.describe()['mode'], 'shadow-gate')
 
 
 if __name__ == '__main__':

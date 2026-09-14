@@ -303,7 +303,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         if text is not None and not isinstance(text, str): raise SidecarError('judge text must be a string or None')
         event = {'turn': turn_number, 'stage': 'gate', 'submission': submission_number, 'consulted': bool(verdict.get('consulted')), 'intervene': verdict['intervene'],
                  'injected': verdict['intervene'] and bool(text), 'ids': list(verdict.get('ids') or []), 'reason': verdict.get('reason'), 'touchedFiles': sorted(files_touched),
-                 'transcript': verdict.get('transcript')}
+                 'transcript': verdict.get('transcript'), **{k: verdict[k] for k in ('wouldIntervene', 'verdictIntervene', 'citedIds', 'quoted', 'unquoted') if k in verdict}}
         if event['injected']: event.update(sha256=digest(text.encode()), characters=len(text))
         record['sidecarEvents'].append(event)
         return verdict if verdict['intervene'] else None

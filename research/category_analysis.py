@@ -33,7 +33,8 @@ def summarize(study):
                 'affectedRateLowerBound': affected / n, 'affectedRateUpperBound': (affected + unresolved) / n,
                 'wilson95LowWhenComplete': interval[0] if interval else None, 'wilson95HighWhenComplete': interval[1] if interval else None})
     for row in rows:
-        control = next(c for c in rows if c['parent'] == row['parent'] and c['strategy'] == 'none' and c['category'] == row['category'])
+        control = next((c for c in rows if c['parent'] == row['parent'] and c['strategy'] == 'none' and c['category'] == row['category']), None)
+        if control is None: continue
         if row['strategy'] == 'none': continue
         row['deltaLowerBound'] = row['affectedRateLowerBound'] - control['affectedRateUpperBound']
         row['deltaUpperBound'] = row['affectedRateUpperBound'] - control['affectedRateLowerBound']
