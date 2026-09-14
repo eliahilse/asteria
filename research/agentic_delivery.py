@@ -216,7 +216,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
-    if kind in ('adaptive', 'gate') and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
+    if kind in ('adaptive', 'gate') and sidecar is None: raise ValueError('An adaptive or gate condition needs a sidecar object')
     sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
     if command is None: command = command_from_env()
     directory = manifest.parent / 'runs' / run_id
