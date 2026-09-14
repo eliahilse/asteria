@@ -171,7 +171,7 @@ class GraphSidecarTests(unittest.TestCase):
         self.assertEqual([m['role'] for m in fourth], ['system', 'user', 'user']); self.assertIn('A previous attempt at this change violated the controls below and was discarded.', fourth[2]['content'])
         self.assertNotIn('evidence_id', json.dumps(fourth))  # the read and search results are gone from the conversation
         gate_events = [e for e in record['sidecarEvents'] if e['stage'] == 'gate']
-        self.assertEqual((gate_events[0]['rewound'], gate_events[0]['rewind']), (True, 2)); self.assertEqual((gate_events[1]['advice'], gate_events[1]['capped']), (True, True))  # second positive verdict is coached
+        self.assertEqual((gate_events[0]['rewound'], gate_events[0]['rewind']), (True, 2)); self.assertEqual((gate_events[1]['advice'], gate_events[1]['intervene'], gate_events[1].get('rewind')), (True, False, None))  # second positive verdict is coached
         self.assertEqual(sidecar.describe()['rewindTurns'], 2)
         self.assertEqual(record['touchedFiles'], sorted(record['touchedFiles']))  # restored touched state, then the second submission's files
 
