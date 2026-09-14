@@ -1,0 +1,290 @@
+{
+  "id": "i14-coach-gate",
+  "protocol": "agentic-delivery-v1",
+  "maxTurns": 24,
+  "maxSubmissions": 5,
+  "planned": 9,
+  "records": 9,
+  "conditions": {
+    "generation_s__agentic__none": {
+      "mode": "agentic",
+      "sidecar": "none",
+      "planned": 3,
+      "N": 3,
+      "fullWithinBudget": {
+        "count": 3,
+        "of": 3
+      },
+      "firstSubmissionFull": {
+        "count": 2,
+        "of": 3
+      },
+      "toolTurns": {
+        "total": 13,
+        "perTrajectory": [
+          4,
+          8,
+          1
+        ]
+      },
+      "reads": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          2,
+          0
+        ]
+      },
+      "searches": {
+        "total": 6,
+        "perTrajectory": [
+          2,
+          4,
+          0
+        ]
+      },
+      "submissions": {
+        "total": 4,
+        "perTrajectory": [
+          1,
+          2,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gateConsultations": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gateInterventions": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gatePositiveVerdicts": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "coachedSubmissions": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 0,
+        "of": 3
+      },
+      "statuses": {
+        "completed": 3
+      }
+    },
+    "generation_s__agentic__coach": {
+      "mode": "agentic",
+      "sidecar": "coach",
+      "planned": 3,
+      "N": 3,
+      "fullWithinBudget": {
+        "count": 3,
+        "of": 3
+      },
+      "firstSubmissionFull": {
+        "count": 1,
+        "of": 3
+      },
+      "toolTurns": {
+        "total": 14,
+        "perTrajectory": [
+          6,
+          5,
+          3
+        ]
+      },
+      "reads": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "searches": {
+        "total": 7,
+        "perTrajectory": [
+          3,
+          2,
+          2
+        ]
+      },
+      "submissions": {
+        "total": 7,
+        "perTrajectory": [
+          3,
+          3,
+          1
+        ]
+      },
+      "sidecarInjections": {
+        "total": 2,
+        "perTrajectory": [
+          1,
+          1,
+          0
+        ]
+      },
+      "gateConsultations": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          1,
+          1
+        ]
+      },
+      "gateInterventions": {
+        "total": 0,
+        "perTrajectory": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gatePositiveVerdicts": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          1,
+          1
+        ]
+      },
+      "coachedSubmissions": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          1,
+          1
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 2,
+        "of": 3
+      },
+      "statuses": {
+        "completed": 3
+      }
+    },
+    "generation_s__agentic__gate_once": {
+      "mode": "agentic",
+      "sidecar": "gate_once",
+      "planned": 3,
+      "N": 3,
+      "fullWithinBudget": {
+        "count": 0,
+        "of": 3
+      },
+      "firstSubmissionFull": {
+        "count": 0,
+        "of": 3
+      },
+      "toolTurns": {
+        "total": 22,
+        "perTrajectory": [
+          7,
+          8,
+          7
+        ]
+      },
+      "reads": {
+        "total": 2,
+        "perTrajectory": [
+          1,
+          1,
+          0
+        ]
+      },
+      "searches": {
+        "total": 5,
+        "perTrajectory": [
+          1,
+          2,
+          2
+        ]
+      },
+      "submissions": {
+        "total": 15,
+        "perTrajectory": [
+          5,
+          5,
+          5
+        ]
+      },
+      "sidecarInjections": {
+        "total": 5,
+        "perTrajectory": [
+          1,
+          2,
+          2
+        ]
+      },
+      "gateConsultations": {
+        "total": 7,
+        "perTrajectory": [
+          2,
+          2,
+          3
+        ]
+      },
+      "gateInterventions": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          1,
+          1
+        ]
+      },
+      "gatePositiveVerdicts": {
+        "total": 6,
+        "perTrajectory": [
+          2,
+          2,
+          2
+        ]
+      },
+      "coachedSubmissions": {
+        "total": 3,
+        "perTrajectory": [
+          1,
+          1,
+          1
+        ]
+      },
+      "trajectoriesWithInjection": {
+        "count": 3,
+        "of": 3
+      },
+      "statuses": {
+        "budget_exhausted": 3
+      }
+    }
+  },
+  "note": "Counts are k/N over available records. An incomplete schedule is incomplete, not an estimate."
+}

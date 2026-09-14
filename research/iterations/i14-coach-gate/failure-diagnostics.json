@@ -1,0 +1,651 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__agentic__none",
+      "input_rejection_policy": 12,
+      "issueChecksEvaluated": 29,
+      "issueChecksUnresolved": 1,
+      "n": 3,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "generation_s__agentic__coach",
+      "input_rejection_policy": 9,
+      "issueChecksEvaluated": 30,
+      "issueChecksUnresolved": 0,
+      "n": 3,
+      "observed_heap_exhaustion": 6,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 1,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "generation_s__agentic__gate_once",
+      "input_rejection_policy": 3,
+      "issueChecksEvaluated": 30,
+      "issueChecksUnresolved": 0,
+      "n": 3,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "2c896b6d0d6ced0060c7b181ab34384b68161dd1f1b99cf72b582d8baf0f9f64",
+      "responseSha256": "95122af85148b6f6e9b64a51e69937df96dcbe6cc336c84b2fd03b942d0b2ee5",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e22c94665772138468a6c66e1b8c098684647158bc6b6698640ff8712a14ec82",
+      "responseSha256": "6771aed62f838639c7e372f4de3b039cb401c6acd7037573177243d1d0059fc9",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__gate_once",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r1/submission-5/evaluation/report.json",
+      "reportSha256": "0d34c7c12ff74d0a071f08e79cc8e9a5295830a7b3e594952b431e45a769583e",
+      "responseSha256": "4648bc32aca76f7662d12b647d40a4f190c58fb4940a78383b986f8c499b91c1",
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r2/submission-3/evaluation/report.json",
+      "reportSha256": "b0ec9d4532d7a48ce54978f4c236b7b81677db122da94923bca27a4f5abc8f01",
+      "responseSha256": "9be7d8f6a6be4d1a73c01f73e39b9159b7cbe37d949bb767909a8c3194f170ed",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r2/submission-3/evaluation/report.json",
+      "reportSha256": "b0ec9d4532d7a48ce54978f4c236b7b81677db122da94923bca27a4f5abc8f01",
+      "responseSha256": "9be7d8f6a6be4d1a73c01f73e39b9159b7cbe37d949bb767909a8c3194f170ed",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r2/submission-3/evaluation/report.json",
+      "reportSha256": "b0ec9d4532d7a48ce54978f4c236b7b81677db122da94923bca27a4f5abc8f01",
+      "responseSha256": "9be7d8f6a6be4d1a73c01f73e39b9159b7cbe37d949bb767909a8c3194f170ed",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__gate_once",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r2/submission-5/evaluation/report.json",
+      "reportSha256": "d7be36bb0e7856b561e2311390b51e866f4413ae090683d2b3275d9dd0e0cbc8",
+      "responseSha256": "c19c35190d3bdb878f3dc8f812e8be82d68ea047384593bb7899c110988640c7",
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a05bc707563c3fafa04343501c886bd00bff9c17706654b27290713abb6c0c97",
+      "responseSha256": "be00d2b7c73e38ec9d199c027e7ea78d24cf202d73e1720249baeb25b76f6e74",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__gate_once",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r3/submission-5/evaluation/report.json",
+      "reportSha256": "742a90d5f3d2d62a3a67b564e086b2e1e55eb735f2309e3d8cb9d231154c2082",
+      "responseSha256": "9396add69a9c3f65b3aee42791e82421c53ed41b638d7c8a6187d20b541eb84f",
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__coach",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__coach",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/report.json",
+      "reportSha256": "fa6faa6c5e4e47bb916aaf52d432aa635243f1efaedac55f0d73d4e2785f7b42",
+      "responseSha256": "dde3e2f38f9638a5768bd6ca3a57e203175fa4d2f697c137872555a64ad4d569",
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "6c70142aef57483dc8267c2542620cbb5c4dd8adaa8fbb4972bf9d9730b5e5c2",
+      "responseSha256": "e22e30112b6b6165ede89bbd2b0f251e523e4faefda30108a9093ca42ce87e86",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "6c70142aef57483dc8267c2542620cbb5c4dd8adaa8fbb4972bf9d9730b5e5c2",
+      "responseSha256": "e22e30112b6b6165ede89bbd2b0f251e523e4faefda30108a9093ca42ce87e86",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "6c70142aef57483dc8267c2542620cbb5c4dd8adaa8fbb4972bf9d9730b5e5c2",
+      "responseSha256": "e22e30112b6b6165ede89bbd2b0f251e523e4faefda30108a9093ca42ce87e86",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "6c70142aef57483dc8267c2542620cbb5c4dd8adaa8fbb4972bf9d9730b5e5c2",
+      "responseSha256": "e22e30112b6b6165ede89bbd2b0f251e523e4faefda30108a9093ca42ce87e86",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "6c70142aef57483dc8267c2542620cbb5c4dd8adaa8fbb4972bf9d9730b5e5c2",
+      "responseSha256": "e22e30112b6b6165ede89bbd2b0f251e523e4faefda30108a9093ca42ce87e86",
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "test": "largePersistedRecordSet"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i14-coach-gate",
+  "manifestFingerprint": "647d90845423b6faf05b8eef1e25b79d3f2b8ce239af52325c8f9bad4ea7e840",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 49,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 125,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 137,
+          "text": "            while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__none__r1",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b79a1f0ddd71bfa5885d57bb0302fc18de051d8865f0775498c6f466b283815d"
+    },
+    {
+      "condition": "generation_s__agentic__coach",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 47,
+          "text": "        if (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 94,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r1",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "138909468cbc3ba69e7ebd5a270de5a5e805d5a74a471b8abb0e1e8a92fa42fa"
+    },
+    {
+      "condition": "generation_s__agentic__gate_once",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100, MAX_NAME = 64, MAX_SCORE = 1000000000;"
+        },
+        {
+          "line": 35,
+          "text": "        if(next.size()>MAX_RECORDS) next=new ArrayList<Entry>(next.subList(0,MAX_RECORDS));"
+        },
+        {
+          "line": 50,
+          "text": "    private boolean valid(int s,int t,String n){if(s<0||s>MAX_SCORE||t<0||t>MAX_TIME||n==null||n.length()==0||n.length()>MAX_NAME)return false;for(int i=0;i<n.length();i++){char c=n.charAt(i);if(c<32||c==127||c=='\\t'||c=='\\r'||c=='\\n'||c=='|')return false;}return true;}"
+        },
+        {
+          "line": 51,
+          "text": "    private boolean write(List<Entry> data){if(store==null||data.size()>MAX_RECORDS)return false;try{Path p=store.getParent();if(p!=null)Files.createDirectories(p);Path tmp=store.resolveSibling(store.getFileName().toString()+\".tmp\");BufferedWriter w=Files.newBufferedWriter(tmp,StandardCharsets.UTF_8);try{w.write(VERSION);w.newLine();for(Entry e:data){w.write(e.score+\"|\"+e.time+\"|\"+e.name);w.newLine();}}finally{w.close();}if(Files.size(tmp)>MAX_BYTES){Files.deleteIfExists(tmp);return false;}try{Files.move(tmp,store,java.nio.file.StandardCopyOption.REPLACE_EXISTING,java.nio.file.StandardCopyOption.ATOMIC_MOVE);}catch(java.nio.file.AtomicMoveNotSupportedException x){Files.move(tmp,store,java.nio.file.StandardCopyOption.REPLACE_EXISTING);}return true;}catch(IOException x){return false;}}"
+        },
+        {
+          "line": 52,
+          "text": "    private void load(){if(store==null||!Files.exists(store))return;try{if(Files.size(store)>MAX_BYTES)return;BufferedReader r=Files.newBufferedReader(store,StandardCharsets.UTF_8);List<Entry> a=new ArrayList<Entry>();try{if(!VERSION.equals(r.readLine()))return;String l;while((l=r.readLine())!=null){if(a.size()>=MAX_RECORDS||l.length()>MAX_NAME+40)return;String[] p=l.split(\"\\\\|\",-1);if(p.length!=3)return;int s=Integer.parseInt(p[0]),t=Integer.parseInt(p[1]);if(!valid(s,t,p[2]))return;a.add(new Entry(s,t,p[2]));}}finally{r.close();}sort(a);entries=a;}catch(IOException x){}catch(NumberFormatException x){}}"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r1",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r1/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "cf03cf9e236433d2e68c6bd0fa5c75883f1bad6bff1c8f2d26736ebdbc039282"
+    },
+    {
+      "condition": "generation_s__agentic__coach",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 42,
+          "text": "        if (playerName == null || playerName.length() == 0 || playerName.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 53,
+          "text": "        while (next.size() > MAX_ENTRIES) next.remove(next.size() - 1);"
+        },
+        {
+          "line": 104,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 110,
+          "text": "            while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r2",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d4e3020c944a1a7034fcf5b3d5b6f3881cabc91b1d1567a5fce06ac00df2b8a6"
+    },
+    {
+      "condition": "generation_s__agentic__gate_once",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 48;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final long MAX_STORE_BYTES = 65536L;"
+        },
+        {
+          "line": 44,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 112,
+          "text": "            if (Files.size(store) > MAX_STORE_BYTES) return;"
+        },
+        {
+          "line": 116,
+          "text": "                String line = in.readLine();"
+        },
+        {
+          "line": 119,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 120,
+          "text": "                    if (++count > MAX_ENTRIES || line.length() > 128) return;"
+        },
+        {
+          "line": 138,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) return false;"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r2",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r2/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "74a88a04c5848c2df6f160b684975a592089f0eeeccd3741fb4c091eed537e42"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 102,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__none__r2",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ff96c54b584ae0439438399ac53b2ac493cf83f5305a10c4c9606b66ae14e138"
+    },
+    {
+      "condition": "generation_s__agentic__gate_once",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 49,
+          "text": "        while (next.size() > MAX_RECORDS) next.remove(next.size() - 1);"
+        },
+        {
+          "line": 106,
+          "text": "            if (!Files.exists(store) || Files.size(store) > MAX_FILE_BYTES) return;"
+        },
+        {
+          "line": 107,
+          "text": "            byte[] bytes = Files.readAllBytes(store);"
+        },
+        {
+          "line": 111,
+          "text": "            if (lines.length < 1 || !VERSION.equals(lines[0]) || lines.length > MAX_RECORDS + 2) return;"
+        },
+        {
+          "line": 128,
+          "text": "        if (score < 0 || score > MAX_SCORE || time < 0 || time > MAX_TIME || name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) return false;"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__gate_once__r3",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__gate_once__r3/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7ffb0a1601adcafeed7c2975f6c89b568f06e60d83c23a694bd83d017f9ad4bf"
+    },
+    {
+      "condition": "generation_s__agentic__coach",
+      "excerpts": [
+        {
+          "line": 114,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__coach__r3",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__coach__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5e8c345de4252b8678b7f1b7af460edd8f90092f6c050cfc961e229faba64c10"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 98,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i14-coach-gate__generation_s__agentic__none__r3",
+      "source": ".local/iterations/i14-coach-gate/runs/i14-coach-gate__generation_s__agentic__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ca62ecbdd65cb24049a330b8e734e5df1b955dce344a93445666f5d84ac69bbd"
+    }
+  ]
+}
