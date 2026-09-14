@@ -159,3 +159,15 @@ trajectories with at least one injection (k/N) and a status histogram.
 Harness and tests only (`research/test_agentic_delivery.py`, fake adapter,
 fake evaluator, fake sidecar, synthetic snapshot). No manifest has been frozen
 under `.local/iterations` and no model request has been sent with this protocol.
+
+## Line ranges and sidecar provenance (added after I10)
+
+The `touched` view also carries `ranges`: for every read, the excerpt's line
+range, and for every edit in a submission, the line range of its old text
+located in the pre-edit source, keyed by snapshot path. `research/graph_sidecar.py`
+uses them for symbol-level slicing (statements anchored at symbols overlapping
+those ranges, no call hops by default, requirement and control statements
+only); `research/i10_sidecar.py` remains the file-level sidecar used in I10.
+Each record stores `sidecarSpec` (the `module:attribute` given on the command
+line), `sidecarConfig` (the sidecar's `describe()`, including graph hashes) and
+`touchedRanges`.
