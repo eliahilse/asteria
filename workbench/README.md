@@ -16,18 +16,22 @@ inspect the test definitions, extracted contexts or frozen prompts.
 combination × security strategy. All combinations are visible without selectors;
 security strategies are marked in purple.
 
-The table keeps N and the existing quality metrics: compilation, unit checks,
-invoked integration, live integration, and full functional success. Percentages
-use all attempts. A single **Security issues** column shows failed issue checks /
-evaluated issue checks across the condition's attempts, followed by the change
-from its matching fresh control. For example, `27/47 (↓5)` means 27 failed checks
-out of 47 evaluated, five fewer than the control. These are repeated check
-failures, not unique vulnerabilities. The valid-record round trip is excluded
-because it is a positive functional check, not an issue detector.
+The table keeps N and the headline quality metrics: compilation, unit checks,
+live integration, and full functional success. Percentages use all attempts. The
+four invoked-integration checks still count toward full functionality and remain
+in the exports, but are not shown as a separate column. A single **Security
+issues** column shows failed and unresolved issue checks against the fixed
+planned denominator (10 issue checks × N), followed by the change from its
+matching fresh control. For example, `27 failed · 3 unresolved / 50 (↓5)` means
+27 failed checks and three unresolved checks out of 50 planned, with the
+remaining 20 passed and five fewer failures than the control. Unresolved checks
+are not passes. These are repeated check failures, not unique vulnerabilities.
+The valid-record round trip is excluded because it is a positive functional
+check, not an issue detector.
 
 Count differences require equal attempt counts, no pending attempts, and equal
 evaluated counts for every issue check. Otherwise the cell shows `Δ —`; a missing
-test must not look like an improvement. Hover for unresolved counts. Replay and
+test must not look like an improvement. Hover for the passed count. Replay and
 control rows have no treatment difference, and absent observations remain blank.
 
 Local attempts are read automatically from `.local/experiments/<study-id>`.

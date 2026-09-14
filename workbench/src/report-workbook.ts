@@ -1,16 +1,27 @@
 import ExcelJS from 'exceljs';
 import type { MatrixData } from './experiment-types';
-import { combinationRows } from './combination-stats';
+import { combinationRows, issueTests, positiveTest } from './combination-stats';
 import { allRunPassRate, compileRate, compiledEntries, fullRate, functionalCounts, functionalSuites,
   mostCommonFailure, paperContexts, ratio, reportGroups, suiteOutcome,
   type FunctionalSuite, type ReportEntry, type ReportGroup } from './report-data';
 
 type Value = string | number | null;
+/** Optional inputs that are not part of the observation dataset. */
+export type ReportOptions = { cweMapping?: Record<string, string[]> };
 const blue = 'FF1F4E79', purple = 'FF6B4585';
 const border: ExcelJS.Border = { style: 'thin', color: { argb: 'FFD9D9D9' } };
 const identities = ['Study', 'Task', 'Method', 'Security strategy'];
 const identity = (g: ReportGroup): Value[] => [g.study.plan.id, g.task, g.method, g.security];
 const tierNames = { unit: 'Unit', invoked: 'Invoked (coupling)', autonomous: 'Autonomous (wiring)' };
+// Headline tiers: the four invoked-integration checks count toward Full (all 16) and stay in the
+// per-test and raw sheets, but are no longer summarised as a separate tier.
+const headlineTiers = { unit: tierNames.unit, autonomous: tierNames.autonomous };
+const unresolvedReasons = {
+  not_run: 'check not executed',
+  unknown: 'precondition not established by the qualification audit (for largePersistedRecordSet: the large-record precondition), so the outcome is unknown',
+  compile_error: 'final artifact failed the security-suite compilation',
+  infrastructure_error: 'harness failure',
+} as const;
 const contextEntries = (g: ReportGroup, context: string) => g.entries.filter(e => e.context === context);
 const difference = (a: number | null, b: number | null) => a === null || b === null ? null : a - b;
 
@@ -70,8 +81,8 @@ function catalog(group: ReportGroup) {
   return [...new Map(group.study.summary.conditions.flatMap(c => c.checks.filter(t => Object.hasOwn(functionalSuites, t.suite))).map(t => [t.id, t])).values()];
 }
 
-/** The supplied report's eleven-sheet layout, populated only from current observations. */
-export function reportWorkbook(data: MatrixData) {
+/** The supplied report's eleven-sheet layout plus security sheets, populated only from current observations. */
+export function reportWorkbook(data: MatrixData, options: ReportOptions = {}) {
   const wb = new ExcelJS.Workbook();
   wb.creator = 'Asteria research export';
   const groups = reportGroups(data);
@@ -97,7 +108,7 @@ export function reportWorkbook(data: MatrixData) {
     row += 2;
     title(overview, row++, 'Test Pass Rate by Test Type');
     row = reportTable(overview, ['Test Type', 'Pass Rate', 'Passed', 'Evaluated', 'Unresolved'],
-      Object.entries(tierNames).map(([suite, name]) => {
+      Object.entries(headlineTiers).map(([suite, name]) => {
         const c = functionalCounts(entries, suite as FunctionalSuite);
         return [name, c.rate, c.passed, c.evaluated, c.unresolved];
       }), [2], row) + 2;
@@ -146,7 +157,7 @@ export function reportWorkbook(data: MatrixData) {
 
   const tiers = wb.addWorksheet('Tier Breakdown');
   row = 1;
-  for (const [suite, name] of Object.entries(tierNames)) {
+  for (const [suite, name] of Object.entries(headlineTiers)) {
     title(tiers, row++, name);
     row = pivot(tiers, groups, entries => functionalCounts(entries, suite as FunctionalSuite).rate, row) + 2;
   }
@@ -186,11 +197,71 @@ export function reportWorkbook(data: MatrixData) {
         suiteOutcome(e, 'invoked'), suiteOutcome(e, 'autonomous'), e.study, e.security, e.run.runId, e.run.submissions ?? null,
         e.run.functionalSuccess === null ? null : e.run.functionalSuccess ? 'Yes' : 'No', e.run.mainCompilation === 'pass' ? all.unresolved : null];
     })), [18]);
-  addSecurityAndProvenance(wb, data);
+  addSecurityAndProvenance(wb, data, options);
   return wb;
 }
 
-function addSecurityAndProvenance(wb: ExcelJS.Workbook, data: MatrixData) {
+/**
+ * Every issue check against its fixed denominator: N per check and 10 × N for the total, split into
+ * failed / unresolved / passed. Unresolved outcomes are not passes; a second table names their reason.
+ */
+function addIssueMatrix(wb: ExcelJS.Workbook, data: MatrixData, cweMapping: Record<string, string[]>) {
+  const sheet = wb.addWorksheet('Issue Matrix');
+  type Summary = MatrixData['studies'][number]['summary']['conditions'][number];
+  const find = (summary: Summary, name: string) => summary.checks.find(c => c.suite === 'security_v1' && c.name === name);
+  const cells = (summary: Summary, name: string): Value[] => {
+    const check = find(summary, name);
+    return check && summary.attempts ? [check.fail, summary.attempts - check.executed, check.pass] : [null, null, null];
+  };
+  const cwe = (name: string) => (cweMapping[name] ?? []).join(', ');
+  const meaning = (check: NonNullable<ReturnType<typeof find>>, n: number) => (Object.keys(unresolvedReasons) as (keyof typeof unresolvedReasons)[])
+    .filter(reason => check[reason] > 0).map(reason => `${reason} (${check[reason]}): ${unresolvedReasons[reason]}`).join('; ')
+    + `. Unresolved outcomes are not passes; they remain in the fixed denominator N = ${n}.`;
+  let row = 1;
+  for (const study of data.studies) {
+    const id = study.plan.id;
+    const conditions = study.plan.conditions.map(c => ({ id: c.id, summary: study.summary.conditions.find(s => s.id === c.id)! }));
+    const headers = ['Study', 'Test', 'CWE', ...conditions.flatMap(c => [`${c.id} failed`, `${c.id} unresolved`, `${c.id} passed`])];
+    const total = (summary: Summary): Value[] => {
+      const parts = issueTests.map(name => cells(summary, name));
+      return parts.some(p => p[0] === null) ? [null, null, null] : [0, 1, 2].map(i => parts.reduce((sum, p) => sum + Number(p[i]), 0));
+    };
+    const rows: Value[][] = [
+      [id, 'N per check', '', ...conditions.flatMap(c => Array<Value>(3).fill(c.summary.attempts || null))],
+      ...issueTests.map(name => [id, name, cwe(name), ...conditions.flatMap(c => cells(c.summary, name))]),
+      [id, 'Total (10 issue checks)', '', ...conditions.flatMap(c => total(c.summary))],
+      Array<Value>(headers.length).fill(null),
+      [id, `${positiveTest} (positive persistence check, not an issue)`, cwe(positiveTest), ...conditions.flatMap(c => cells(c.summary, positiveTest))],
+    ];
+    const start = row;
+    row = reportTable(sheet, headers, rows, [], start);
+    sheet.getRow(start).height = 48;
+    conditions.forEach((c, i) => { for (let k = 0; k < 3; k++) sheet.getCell(start, 4 + 3 * i + k).note =
+      `${c.id}: N = ${c.summary.attempts} per check; 10×N = ${10 * c.summary.attempts} for the total row. failed + unresolved + passed = N; unresolved outcomes are not passes.`; });
+    const totalRow = start + issueTests.length + 2, separator = totalRow + 1, positive = totalRow + 2;
+    headers.forEach((_, j) => {
+      sheet.getCell(totalRow, j + 1).font = { name: 'Arial', size: 10, bold: true };
+      sheet.getCell(separator, j + 1).border = {};
+      sheet.getCell(separator, j + 1).fill = { type: 'pattern', pattern: 'none' };
+      sheet.getCell(positive, j + 1).font = { name: 'Arial', size: 10, italic: true };
+      sheet.getCell(positive, j + 1).border = { top: { style: 'medium', color: { argb: 'FF7F7F7F' } }, bottom: border, left: border, right: border };
+    });
+    sheet.getRow(separator).height = 8;
+    row += 2;
+    title(sheet, row++, `Unresolved reasons (${id})`);
+    const reasons: Value[][] = conditions.flatMap(c => [...issueTests, positiveTest].flatMap(name => {
+      const check = find(c.summary, name), unresolved = check ? c.summary.attempts - check.executed : 0;
+      return check && unresolved > 0 ? [[id, c.id, name, unresolved, check.not_run, check.unknown, check.compile_error, check.infrastructure_error, meaning(check, c.summary.attempts)]] : [];
+    }));
+    row = reportTable(sheet, ['Study', 'Condition', 'Test', 'Unresolved', 'not_run', 'unknown', 'compile_error', 'infrastructure_error', 'Meaning'], reasons, [], row) + 2;
+  }
+  sheet.views = [{ state: 'frozen', xSplit: 3, ySplit: 1 }];
+  sheet.autoFilter = undefined as unknown as ExcelJS.Worksheet['autoFilter'];
+  sheet.getColumn(3).width = 30;
+  sheet.getColumn(9).width = 60;
+}
+
+function addSecurityAndProvenance(wb: ExcelJS.Workbook, data: MatrixData, options: ReportOptions) {
   reportTable(wb.addWorksheet('Security Issues'), ['Study', 'Task', 'Method', 'Security strategy', 'Paper context', 'Condition', 'N',
     'Issue failures', 'Evaluated issue checks', 'Unresolved issue checks', 'Expected issue checks', 'Delta (equal coverage)',
     'Delta lower bound', 'Delta upper bound'], combinationRows(data).map(r => [r.study, 'Highscore', r.method, r.security,
@@ -209,6 +280,7 @@ function addSecurityAndProvenance(wb: ExcelJS.Workbook, data: MatrixData) {
   }
   reportTable(wb.addWorksheet('Security Checks'), ['Study', 'Task', 'Method', 'Security strategy', 'Paper context', 'Condition', 'Test',
     'Counts as issue check', 'N', 'Passed', 'Failed', 'Evaluated', 'Unresolved', 'Fail rate', 'Not run', 'Unknown', 'Compile error', 'Infrastructure error'], securityRows, [14], 1, [14]);
+  addIssueMatrix(wb, data, options.cweMapping ?? {});
 
   const definitions: Value[][] = [
     ['All', 'Report layout', 'Based on experiment_results_report.xlsx. Each study, method and security strategy is kept separate. Only recorded Highscore observations are exported.'],
@@ -216,12 +288,13 @@ function addSecurityAndProvenance(wb: ExcelJS.Workbook, data: MatrixData) {
     ['All', 'Compile rate', 'Successful whole-game compilations / all recorded runs. A missing compilation is not counted as a compiler diagnostic failure.'],
     ['All', 'Pass rate', 'Passed / evaluated functional checks on compiled runs, pooled from counts. Only pass and fail are evaluated. Unknown and unexecuted checks are excluded, with coverage recorded.'],
     ['All', 'All-run pass rate', 'Passed functional checks / (16 × all recorded runs). This differs from the measured-check rate and preserves the cost of incomplete delivery.'],
-    ['All', 'Test tiers', '7 unit, 4 invoked integration (coupling), and 5 autonomous integration (wiring) checks. Full functionality requires all 16.'],
+    ['All', 'Test tiers', '7 unit, 4 invoked integration (coupling), and 5 autonomous integration (wiring) checks. Full functionality requires all 16. The four invoked-integration checks count toward full functionality but are not reported as a separate tier; they remain in the Per-Test Breakdown, Test Failure Analysis and Raw Data sheets.'],
     ['All', 'Empty cells', 'No applicable observations or unavailable metadata. Empty rates are not zero; unresolved outcomes do not establish passes.'],
     ['All', 'Missing metadata', 'Delivered-file counts, compiler diagnostic counts and compiler error classifications are not included in the compact dataset. Blank fields and Unclassified preserve this limitation.'],
     ['All', 'Context effect', 'Descriptive present/absent comparisons within each study, method and security strategy. Selected contexts may be unbalanced; these differences are not isolated causal effects.'],
     ['All', 'Reuse vs Generation', 'Available context combinations can differ between methods. Overall method rates are descriptive, not matched estimates of a reuse effect.'],
     ['All', 'Security issues', 'Failed observations of ten fixed issue contracts, not distinct vulnerabilities or CVEs. The positive validRecordRoundTrip check is excluded.'],
+    ['All', 'Issue matrix', 'Every issue check is reported against its fixed denominator: N per check and 10 × N for the total, split into failed / unresolved / passed. Unresolved = not run + unknown + compile error + infrastructure error; unresolved outcomes are not passes. The Unresolved reasons table names the reason for every unresolved cell. CWE cells are blank unless a mapping (research/security/cwe-mapping.json) is supplied at export time.'],
     ['All', 'Security differences', 'Treatment minus its fresh control at equal N. Bounds allow every unresolved check to pass or fail; they are not confidence intervals. The equal-coverage delta is blank when per-check coverage differs.'],
     ['All', 'Measurement qualification', 'The exported snapshot determines qualification. Unsupported large-record outcomes remain unknown where qualified data is supplied; original reports are retained separately.'],
     ['All', 'Repetitions', 'Code repetitions may share one acquired context. Repair submissions and checks within an artifact are not independent context samples.'],

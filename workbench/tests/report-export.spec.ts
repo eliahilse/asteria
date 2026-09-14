@@ -19,6 +19,11 @@ test('downloads the report layout separately from the detailed XLSX', async ({ p
   expect(workbook.getWorksheet('Raw Data')!.rowCount).toBe(81);
   expect(workbook.getWorksheet('Security Issues')!.rowCount).toBe(17);
   expect(workbook.getWorksheet('Security Checks')!.rowCount).toBe(177);
+  const names = workbook.worksheets.map(s => s.name);
+  expect(names).toHaveLength(15);
+  expect(names.slice(-3)).toEqual(['Security Checks', 'Issue Matrix', 'Provenance']);
+  expect(workbook.getWorksheet('Issue Matrix')!.rowCount).toBe(54);
+  expect(workbook.getWorksheet('Issue Matrix')!.getRow(13).getCell(2).value).toBe('Total (10 issue checks)');
   expect(workbook.getWorksheet('Provenance')).toBeDefined();
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);

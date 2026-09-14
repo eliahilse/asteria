@@ -3,15 +3,16 @@ import type { MatrixData } from './experiment-types';
 import { combinationRows, statColumns, type SecurityIssues, type StatColumn } from './combination-stats';
 export type * from './experiment-types';
 
-const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only' };
+const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only', catalog: 'CWE catalog' };
 const format = (value: number | null, column: StatColumn) => value === null ? '—' : column.format === 'count' ? String(value) : value.toFixed(1);
 function IssueCount({ issues: s }: { issues: SecurityIssues }) {
   const bounds = s.deltaBounds;
   const trend = !bounds ? 'Δ —' : bounds[1] < 0 ? `↓${-bounds[1]}${bounds[0] === bounds[1] ? '' : `–${-bounds[0]}`}` : bounds[0] > 0 ? `↑${bounds[0]}${bounds[0] === bounds[1] ? '' : `–${bounds[1]}`}` : bounds[0] === 0 && bounds[1] === 0 ? '→0' : 'Δ —';
-  const explanation = `${s.detected ?? 0} failed issue checks; ${s.evaluated} evaluated; ${s.expected - s.evaluated} unresolved. ` +
+  // Fixed denominator: every condition plans 10 issue checks × N; failed + unresolved + passed = expected.
+  const explanation = `${s.detected ?? 0} failed issue checks; ${s.unresolved} unresolved (not passes); ${s.evaluated - (s.detected ?? 0)} passed; ${s.expected} planned (10 × N). ` +
     (s.hasControl ? !bounds ? 'Change unavailable: unequal N, pending observations or missing check catalog.' : `Failure-count difference from the fresh control lies between ${bounds[0]} and ${bounds[1]} for every possible assignment of unmeasured checks. This is not a confidence interval. A range containing zero has no directional arrow.` : 'No treatment comparison for replay or control rows.');
   return <td className="numeric security-issues" data-stat="securityIssues" title={explanation}>
-    {s.detected === null ? '—' : <>{s.detected}/{s.evaluated}{s.hasControl && <span className={bounds && bounds[1] < 0 ? 'pass' : bounds && bounds[0] > 0 ? 'fail' : ''}> ({trend})</span>}</>}
+    {!s.expected ? '—' : <>{s.detected ?? 0} failed · {s.unresolved} unresolved / {s.expected}{s.hasControl && <span className={bounds && bounds[1] < 0 ? 'pass' : bounds && bounds[0] > 0 ? 'fail' : ''}> ({trend})</span>}</>}
   </td>;
 }
 async function json(url: string) { const r = await fetch(url); if (!r.ok || !r.headers.get('content-type')?.includes('application/json')) throw new Error('Experiment data unavailable'); const d = await r.json(); if (d.error) throw new Error(d.error); return d; }
@@ -49,6 +50,6 @@ export function Experiment() {
       <td>{r.phase}</td><td>{r.method}</td><td>{r.paper.length ? r.paper.map(p => <span key={p} className="paper-context">{p}</span>) : 'None'}</td><td>{r.security === 'none' ? 'None' : <span className={`security-context security-${r.security}`}>{securityNames[r.security] ?? r.security}</span>}</td>
       {statColumns.map(c => <td key={c.key} data-stat={c.key} className="numeric">{format(r.values[c.key], c)}</td>)}<IssueCount issues={r.issues} />
     </tr>)}</tbody></table></div>
-    <p className="note">Security issues = failed / evaluated checks across N {unit}, not unique vulnerabilities. Arrow ranges allow every unmeasured check to pass or fail; they are not confidence intervals. Δ — = no clear direction or comparison unavailable. Per-test detail remains in the export.</p>
+    <p className="note">Security issues = failed · unresolved / planned issue checks (10 checks × N {unit}), not unique vulnerabilities; the remainder passed, and unresolved checks are not passes. Arrow ranges allow every unmeasured check to pass or fail; they are not confidence intervals. Δ — = no clear direction or comparison unavailable. Per-test detail remains in the export.</p>
   </section>;
 }

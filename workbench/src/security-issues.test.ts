@@ -17,7 +17,7 @@ test('fewer evaluated issue checks cannot be reported as fewer security issues',
   const a = control.checks.find(c => c.name === 'rejectsNullName')!, b = treatment.checks.find(c => c.name === a.name)!;
   Object.assign(a, { fail: 5, pass: 0 });
   Object.assign(b, { fail: 4, pass: 0, executed: 4 });
-  expect(securityIssues(treatment, control)).toMatchObject({ detected: 4, evaluated: 49, expected: 50, delta: null });
+  expect(securityIssues(treatment, control)).toMatchObject({ detected: 4, evaluated: 49, unresolved: 1, expected: 50, delta: null });
   expect(securityIssues(treatment, control).deltaBounds).toEqual([-1, 0]);
   // Even equal aggregate exposure is insufficient when the tested checks differ.
   Object.assign(control.checks.find(c => c.name === 'rejectsNegativeTime')!, { executed: 4, pass: 4 });

@@ -69,9 +69,11 @@ def render(data: dict, created: str) -> str:
         overview = []
         for c in plan['conditions']:
             r = rows[c['id']]
-            suites = [rate(sum(t['pass'] for t in r['checks'] if t['suite'] == suite), count * r['attempts']) for suite, count in [('unit', 7), ('invoked', 4), ('autonomous', 5), ('security_v1', 11)]]
+            # The four invoked-integration checks count toward full functionality and remain in the
+            # per-test tables below; they are not a separate headline column.
+            suites = [rate(sum(t['pass'] for t in r['checks'] if t['suite'] == suite), count * r['attempts']) for suite, count in [('unit', 7), ('autonomous', 5), ('security_v1', 11)]]
             overview.append([c['id'], rate(r['compiled'], r['attempts']), rate(r['fullFunctional'], r['attempts']), interval(r['fullFunctional'], r['attempts']), *suites])
-        lines += [table(['Condition', 'Game compiled', 'Fully functional', '95% Wilson interval', 'Unit passes / 7n', 'Invoked passes / 4n', 'Autonomous passes / 5n', 'Security passes / 11n'], overview), '']
+        lines += [table(['Condition', 'Game compiled', 'Fully functional', '95% Wilson interval', 'Unit passes / 7n', 'Autonomous passes / 5n', 'Security passes / 11n'], overview), '']
         if plan['phase'] == 'screening':
             lines += ['### Functional selection', '', 'Rule: ' + '; '.join(plan['selection']['order']) + '.', '']
             if summary['complete']:
