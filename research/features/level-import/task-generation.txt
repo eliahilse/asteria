@@ -1,0 +1,20 @@
+Target repository: ApoMario.
+
+Feature: Level import is a mechanism that lets the player add external levels to the game.
+The player imports a level file produced by ApoMario's level editor (a ".mar" file) from anywhere on disk; the running game itself validates the file, copies it into the game's levels directory (the "levels" folder next to the game, which already holds the shipped levels) and rejects files that are not well-formed levels, that are too large, that are symbolic links, that would be stored outside the levels directory, or whose name is already taken (existing levels are never overwritten).
+The imported level becomes selectable alongside the shipped levels in a dedicated panel/view in the game's menu, listed by file name, and starting a selected level plays it in the live game. Replays that name a level resolve that name inside the levels directory only.
+
+Task: Develop the mentioned feature and integrate it into ApoMario.
+
+Implementation Requirements: For testing purposes, we will assume that the target game includes the following public members (among others): apoMario.level.ApoMarioLevelImport:
+  - ApoMarioLevelImport(java.nio.file.Path levelsDirectory) (levelsDirectory is a directory; it is created when missing. The live game passes the "levels" directory under System.getProperty("user.dir"), the directory that ApoMarioComponent's editor file chooser and ApoMarioPanel.loadReplay already use)
+  - boolean importLevel(java.nio.file.Path source) // validates source as a well-formed level (defined below) and copies it into the levels directory under its own file name; returns false and stores nothing when the source is not a well-formed level, is larger than 1 MiB, is a symbolic link, has a file name that is not a plain ".mar" file name, or when an entry with that name already exists
+  - java.util.List<String> getLevelNames() // the file names (for example "hole.mar") of all regular ".mar" files in the levels directory, shipped and imported alike, in ascending order; subdirectories, symbolic links and other files are not listed
+  - java.nio.file.Path resolveLevel(String name) // the path of the listed level with this name inside the levels directory, or null when the name is not listed, contains a path separator or "..", is absolute, or does not denote a regular file directly inside the directory
+  - boolean loadLevel(String name, apoMario.level.ApoMarioLevel level) // loads the listed level into the given live level object through the game's own ".mar" reader (apoMario.game.panels.ApoMarioEditorIO) and returns false without throwing when the name cannot be resolved or the file is not well-formed
+apoMario.game.ApoMarioPanel (existing class; members added):
+  - public ApoMarioLevelImport getLevelImport() // the live importer used by the running game
+  - public boolean importLevel(java.nio.file.Path source) // imports through the live importer and refreshes the menu's level list; same result as ApoMarioLevelImport.importLevel
+  - public boolean playLevel(String name) // loads the listed level into the live level and starts a game on it (the non-dialog counterpart of loadEditorLevel followed by setGame(false)); returns false and leaves the current game unchanged when the level cannot be loaded
+A well-formed level is a file that ApoMarioEditorIO.readLevel(java.io.DataInputStream) consumes completely: two big-endian ints width and height with 100 <= width <= 1500 (ApoMarioConstants.MIN_WIDTH and MAX_WIDTH) and height == 15 (the level height fixed by ApoMarioLevel.makeLevel), then exactly width * height tile records using the tile-type codes 0-9 of ApoMarioConstants with the payloads ApoMarioEditorIO reads, then an enemy count of at most width * height followed by that many enemy records (type codes 0, 1 or 2 with the payloads ApoMarioEditorIO reads), and no bytes after the last record. Validation must walk the stream without allocating memory proportional to the declared dimensions, and importLevel, getLevelNames and resolveLevel must work without a running game, a display or loaded images.
+Your changes ARE NOT limited to these classes and members.
