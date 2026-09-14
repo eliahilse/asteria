@@ -310,7 +310,7 @@ class AgenticDeliveryTests(unittest.TestCase):
             calibration = root / 'calibration.json'; calibration.write_bytes(canonical({'protocol': agentic.EVALUATION_PROTOCOL, 'functionalSuccess': True, 'inputHashes': {}}))
             insert = root / 'generation-static.txt'; insert.write_text(INSERT)
             with patch.object(agentic, 'repository_input', return_value=repo), patch.object(agentic, 'CALIBRATION', calibration):
-                with self.assertRaisesRegex(ValueError, 'Request identifiers would reach 66'):
+                with self.assertRaisesRegex(ValueError, 'Request identifiers would reach 67'):
                     agentic.prepare('i16-compact-confirmation', ['generation_s'], ['single_shot:static'], 5, {'generation_s': insert}, parent, directory=root / 'long')
                 short = agentic.prepare('i16b-gen-compact', ['generation_s'], ['single_shot:static'], 5, {'generation_s': insert}, parent, directory=root / 'short')
                 self.assertTrue(all(len(f"{r['runId']}-t{short['maxTurns']}") <= agentic.REQUEST_ID_LIMIT for r in short['schedule']))
