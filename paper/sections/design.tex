@@ -3,35 +3,36 @@
 
 \paragraph{Corpus and task.}
 Apo-Games is a family of cloned Java and Android games maintained by
-clone-and-own~\citep{krueger2018}; the same files, and the same flaws, recur
-across variants. The target is ApoMario. The task is a Highscore feature with a
+clone-and-own~\citep{krueger2018}; files and flaws recur
+across variants. The target, ApoMario, receives a Highscore feature with a
 fixed public API (a store constructor, \texttt{storeRun}, three list accessors,
-persistence, and run-end recording in the game). \emph{Generation} sees the
-target only; \emph{Reuse} also sees ApoIcarus, which already has a highscore,
-and is told to reuse it. Structural (S), functional (F) and behavioural (B)
-context files from the base study define four cells: Generation S, Generation
-S+F+B, Reuse B, Reuse S+B.
+persistence, and run-end recording in the game). In \emph{Generation}, the
+generator sees only the target; in \emph{Reuse}, it also sees ApoIcarus and is
+instructed to reuse its existing Highscore feature. Structural (S), functional
+(F) and behavioural (B) context files from the base study define four cells:
+Generation S, Generation S+F+B, Reuse B, Reuse S+B.
 
 \paragraph{Model and delivery.}
-One model serves acquisition and generation. Each trajectory is one
-conversation: the model delivers new classes and exact edits to three target
+One model serves as agent and generator. Each trajectory is one
+conversation: the generator delivers new classes and exact edits to three target
 files through a tool call, receives compiler diagnostics and the outcomes of 16
 functional checks (7 unit, 4 invoked, 5 autonomous), and may resubmit up to
-five times. Security outcomes are never fed back. Served model identity is
-checked per response; sampling settings are requested but unattested.
+five times. Security feedback is never returned to the generator. Served
+model identity is checked per response; sampling settings are requested but
+unattested.
 
 \paragraph{Security evaluator.}
-Eleven declared properties run per artifact in isolated JVMs (64~MiB heap,
+Eleven checks run per artifact in isolated JVMs (64~MiB heap,
 15~s): a positive persistence round trip and ten issue checks
-(Table~\ref{tab:mapping}). A safe and a deliberately weak control implementation
-must produce the expected outcomes before any measurement. Large-record
-outcomes are qualified by a two-record precondition audit; unsupported
-encodings become \emph{unknown}, never passes.
+(Table~\ref{tab:mapping}). A safe and a deliberately weak security control
+implementation must produce the expected outcomes before measurement. A
+two-record precondition audit qualifies large-record outcomes; unsupported
+encodings are \emph{unknown}, never passes.
 
 \paragraph{Rounds.}
 Table~\ref{tab:rounds} lists the completed rounds. Each round was frozen
-before its code collection and completed regardless of direction. Within a
-round, the five trajectories of an arm share one acquired insert; they are not
+before code collection and completed regardless of direction. Within a
+round, the five trajectories of an arm share one insert; they are not
 independent context samples.
 
 \begin{table}[t]
@@ -56,11 +57,11 @@ I09 & 2 & none, requirements, task-only, catalogue & 4 & 5 & 40 \\
 \end{table}
 
 \paragraph{Reporting.}
-Every rate is reported as a count over its denominator. Denominators are
-fixed: $N$ trajectories per condition, $N$ per check, $10N$ for the ten issue
-checks; unresolved outcomes (non-compiling artifact, unknown, not run) stay in
-the denominator as their own count. Percentages appear only with $N \ge 20$.
-Wilson intervals are given for the primary endpoint only. Context-versus-control
-differences are reported as identification bounds over every assignment of
+Rates are counts over fixed denominators: $N$ trajectories per cell and arm,
+$N$ per issue check, $10N$ for the ten issue checks. Unresolved outcomes
+(non-compiling artifact, unknown, not run) remain in the denominator as a
+separate count. Percentages appear only with $N \ge 20$.
+Wilson intervals cover only the primary endpoint. Differences between context
+arms and controls are identification bounds over every assignment of
 unresolved outcomes; they are not confidence intervals, and no significance
 claim is made.

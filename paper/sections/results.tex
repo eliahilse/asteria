@@ -2,7 +2,7 @@
 \label{sec:results}
 
 \paragraph{Counts.}
-Tables~\ref{tab:i07} and~\ref{tab:i09} give, per condition ($N=5$), the
+Tables~\ref{tab:i07} and~\ref{tab:i09} show, per cell and arm ($N=5$), the
 trajectories that reached full functionality within five submissions and the
 ten issue checks as failed / unresolved / passed out of 50.
 
@@ -41,36 +41,38 @@ Reuse S+B & 5; 31/2/17 & 5; 1/3/46 & 5; 16/1/33 & 5; 13/2/35 \\
 \end{table}
 
 \paragraph{Direction.}
-All 12 context arms of I07 and all 6 of I09 have fewer failed checks than
+All 12 context arms of I07 and all 6 of I09 have fewer failed issue checks than
 their fresh control under every assignment of unresolved outcomes. The
-researcher-written requirements insert is the strongest arm in every cell. Full
-functionality is not systematically traded: I07 loses one trajectory in three
-arms and gains one in one; I09 reaches 40 of 40.
+researcher-written requirements arm has the fewest failed issue checks in
+every cell. Full functionality is not systematically traded: I07 loses one
+trajectory in three arms and gains one in one; I09 reaches 40 of 40.
 
 \paragraph{Mechanisms.}
-A review of all 79 delivered I07 artifacts, one classification per artifact and
-check with cited lines, explains the counts. Control artifacts never reject
-input; they clamp negative times, substitute a default name and store the
-record, which fails the contract. Negative scores are accepted by every arm
-except Reuse requirements, whose insert says ``reject negative scores''; the
-Generation requirements insert says ``define bounds for score'' and all ten
-artifacts accept them. Every artifact guards malformed stores and none uses
-Java object serialization, so two checks never discriminate. Oversized-line
-passes come from a file-size cap before reading or a length-prefixed binary
-format; length checks after \texttt{readLine} do not prevent the allocation.
-Retention bounds exist in all requirements and boundaries artifacts; four
-operations artifacts bound at 1{,}000 instead of 100.
+A review of all 79 delivered I07 artifacts, one classification per artifact
+and issue check with cited lines, explains the counts. Control artifacts
+normalise instead of reject: they clamp negative times, substitute a default
+name and store the record, which fails the contract. Insert wording maps to
+code: every arm accepts negative scores except Reuse requirements, whose insert
+says ``reject negative scores''; the Generation requirements insert says
+``define bounds for score'' and all ten artifacts accept them. Every artifact
+guards malformed stores and none uses Java object serialization, so two issue
+checks never discriminate. Oversized-line passes come from a file-size cap
+before reading or a length-prefixed binary format; length checks after
+\texttt{readLine} do not prevent the allocation. All requirements and
+boundaries artifacts bound retention; four operations artifacts bound at
+1{,}000 instead of 100.
 
 \paragraph{Generic instructions.}
-A one-sentence instruction without any security perspective retains most of
-the effect (23 and 15 fewer failures than control over five trajectories). The
-catalogue instruction inspected nothing in Generation and reduced only
-retention and resource failures, leaving every input-policy check at the
-control's level; in Reuse it inspected 22 files and reduced failures by 18.
+The one-sentence task-only instruction, with no security perspective, retains
+most of the effect (23 and 15 fewer failed issue checks than control over five
+trajectories). In Generation S the catalogue acquisition inspected nothing; its
+insert reduces only retention and resource failures and leaves every
+input-policy check at the control's level. In Reuse S+B it inspected 22 files
+and its insert reduces failures by 18.
 
 \paragraph{Cost.}
-Catalogue arms reach full functionality on the first submission most often
-(4 and 3 of 5); requirements arms least often (1 of 5 each) and use the most
+Catalogue arms reached full functionality on the first submission most often
+(4 and 3 of 5); requirements arms least often (1 of 5 each), with the most
 calls. Two-thirds of I07 trajectories needed more than one submission.
 
 \paragraph{Limits.}

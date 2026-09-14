@@ -1,13 +1,17 @@
-% Evidence: research/iterations/REVIEW.md and
-% research/iterations/i07-operational-replication/replication-analysis.md.
+% Evidence: sections/results.tex, sections/design.tex, sections/agent.tex.
 \begin{abstract}
-We study whether automatically acquired repository security context improves
-code produced by a large language model for a Java highscore feature, using
-generation and code reuse. Across two rounds of 80 trajectories each, all tested
-security-context strategies show fewer total failed security checks than matched
-controls, including under conservative treatment of unresolved outcomes. However,
-functional repair remains costly, and improvements in handling large inputs vary
-across context acquisitions. These exploratory results support targeted
-improvements on the tested task; they do not establish that the implementations
-are secure or that the findings generalize across repositories.
+Security context, typed statements on assets, trust boundaries, weakness
+types, requirements and controls of a change, is appended to the prompt of a
+generator implementing a Java Highscore feature by generation and reuse, with
+functional feedback only. It is acquired from the repository under
+researcher-written security perspectives or by an agent given only a
+snapshot, a one-line feature description and a fixed vocabulary. In rounds
+I07 and I09 every context arm has fewer failed issue checks than its control
+under every assignment of unresolved outcomes, without systematic functional
+loss. Review of the I07 artifacts maps insert wording to code: control
+artifacts normalise invalid input rather than reject it; negative scores are
+rejected only under the insert saying ``reject negative scores''. A
+one-sentence task-only instruction retains most of the reduction. Limits: one
+task, one repository pair, five trajectories per arm sharing one insert,
+descriptive counts, unresolved large-record checks, single-pass review.
 \end{abstract}

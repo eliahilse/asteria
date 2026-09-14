@@ -1,64 +1,65 @@
 \section{Terminology}
 \label{sec:terminology}
 
-We use established vocabulary and add one term, \emph{security context}.
+The vocabulary extends established terms with \emph{security context}.
 
 \paragraph{Properties and assets.}
 A \emph{security property} is an attribute of an asset that the system must
 preserve: confidentiality, integrity and availability~\citep{avizienis2004},
 refined by ISO/IEC~25010 into confidentiality, integrity, non-repudiation,
 accountability, authenticity and resistance~\citep{iso25010}. An \emph{asset} is
-data or functionality whose properties matter; for a persisted highscore board
-the assets are the record store and the displayed ranking.
+data or functionality whose security properties matter; for a persisted
+Highscore board the assets are the record store and the displayed ranking.
 
 \paragraph{Threats and attack surface.}
 A \emph{threat} is a potential violation of a security property; an
 \emph{attack} is an intentional attempt to realise it~\citep{rfc4949}.
-\emph{Attack patterns} are catalogued by CAPEC~\citep{capec}; STRIDE is the
-enumeration heuristic we use per system element~\citep{shostack2014}. A
+CAPEC catalogues \emph{attack patterns}~\citep{capec}; STRIDE guides threat
+enumeration per system element~\citep{shostack2014}. A
 \emph{trust boundary} separates components with different levels of
 trust~\citep{shostack2014}; the set of entry points, exit points and channels
 through which untrusted data reaches the system is its \emph{attack
 surface}~\citep{manadhata2011}. A \emph{threat model} fixes which actors and
-channels are in scope; ours is a desktop game whose untrusted inputs are local
-files and content from a shared level server.
+channels are in scope; here it is a desktop game whose untrusted inputs are
+local files and content from a shared level server.
 
 \paragraph{Weaknesses and vulnerabilities.}
-A \emph{weakness} is a type of flaw that can lead to a violation of a property;
-a \emph{vulnerability} is an exploitable occurrence of a weakness in a specific
-system~\citep{cwe,cve}. CWE names weakness types~\citep{cwe}; the Seven
-Pernicious Kingdoms give a coarser taxonomy~\citep{tsipenyuk2005}. In the
-fault--error--failure chain, a weakness is a fault and an exploited
-vulnerability is a security failure~\citep{avizienis2004}. Our executable
-checks detect weaknesses; they do not establish vulnerabilities.
+A \emph{weakness} is a type of flaw that can lead to a violation of a security
+property; a \emph{vulnerability} is an exploitable occurrence of a weakness in
+a specific system~\citep{cwe,cve}. CWE names weakness types~\citep{cwe}; the
+Seven Pernicious Kingdoms give a coarser taxonomy~\citep{tsipenyuk2005}. In
+the fault--error--failure chain, a weakness is a fault and an exploited
+vulnerability is a security failure~\citep{avizienis2004}. The executable
+issue checks detect weaknesses; they do not establish vulnerabilities.
 
 \paragraph{Requirements, controls, verification.}
 A \emph{security requirement} is a constraint on a functional requirement that
 protects an asset against a threat~\citep{haley2008,firesmith2003}; misuse
 cases are one elicitation technique~\citep{sindre2005}. A \emph{security
-control} is a safeguard that satisfies a requirement~\citep{nist80053}; at code
-level, controls follow design principles~\citep{saltzer1975} and secure coding
-rules~\citep{long2011}. Its \emph{enforcement point} is the operation at which
-the control must hold. \emph{Verification} checks that a control satisfies its
-requirement; ASVS provides verification requirements per security
+control} is a safeguard that satisfies a security requirement~\citep{nist80053}.
+At code level, security controls follow design principles~\citep{saltzer1975}
+and secure coding rules~\citep{long2011}. Its \emph{enforcement point} is the
+operation at which the security control must hold. \emph{Verification} checks
+that a security control satisfies its security requirement; ASVS provides
+verification requirements per security
 area~\citep{asvs5}, and secure development frameworks place them in the
 lifecycle~\citep{nist800218}.
 
 \paragraph{Security context.}
 For a repository $R$ and a change $\Delta$, the \emph{security context}
-$\mathrm{SC}(R,\Delta)$ is the set of typed statements supplied to the code
+$\mathrm{SC}(R,\Delta)$ is the set of typed statements supplied to the
 generator before generation, each grounded in inspected source or explicitly
 marked as prospective: the assets and entry points $\Delta$ touches, the trust
 boundaries it crosses, the applicable weakness types (CWE), the derived
-security requirements with enforcement points, proposed controls, verification
-hints, and unknowns. Security context is distinct from \emph{security feedback},
-the outcome of tests on generated code, which we never return to the generator.
-It is also distinct from generic secure coding instructions in the
-prompt~\citep{tony2025}, which contain no repository evidence.
+security requirements with enforcement points, proposed security controls,
+verification hints, and unknowns. Security context is distinct from
+\emph{security feedback}, the outcome of tests on generated code, which is
+never returned to the generator, and from generic secure coding instructions
+in the prompt~\citep{tony2025}, which contain no repository evidence.
 
 \paragraph{Mapping to this study.}
 Table~\ref{tab:mapping} places the evaluation categories in this vocabulary.
-Each declared check probes one weakness type through a fixed fixture; the
+Each issue check probes one weakness type through a fixed fixture; the
 categories together cover the input, retention, parsing, resource and
 deserialization behaviour of one feature and are not a vulnerability
 inventory.
