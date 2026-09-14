@@ -217,6 +217,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
     if kind == 'adaptive' and sidecar is None: raise ValueError('An adaptive condition needs a sidecar object')
+    sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
     if command is None: command = command_from_env()
     directory = manifest.parent / 'runs' / run_id
     directory.mkdir(parents=True, exist_ok=False)
@@ -232,11 +233,12 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     messages = [{'role': 'system', 'content': plan['systemAgentic'] if mode == 'agentic' else plan['system']}, {'role': 'user', 'content': prompt}]
     record = {**row, 'status': 'started', 'startedAt': timestamp(), 'manifestFingerprint': plan['fingerprint'], 'protocol': PROTOCOL, 'mode': mode, 'sidecar': kind,
               'maxTurns': max_turns, 'maxSubmissions': max_submissions, 'sourceOrigins': origins, 'snapshotFingerprint': snap['fingerprint'],
-              'turns': [], 'submissions': [], 'sidecarEvents': [], 'filesRead': [], 'searches': [], 'functionalSuccess': False, 'settingsVerified': None, 'budgetLimit': None}
+              'turns': [], 'submissions': [], 'sidecarEvents': [], 'filesRead': [], 'searches': [], 'functionalSuccess': False, 'settingsVerified': None, 'budgetLimit': None,
+              'sidecarSpec': getattr(sidecar, 'spec', None), 'sidecarConfig': sidecar_config}
     path = directory / 'record.json'; write_atomic(path, record)
     by_name = {}
     for source in snap['files']: by_name.setdefault(source['path'].rsplit('/', 1)[-1], []).append(source['path'])
-    touched = {'files': set(), 'symbols': set(), 'queries': []}
+    touched = {'files': set(), 'symbols': set(), 'queries': [], 'ranges': {}}
     shown, evidence = set(), {}
     turn_number = submission_number = 0
     turn = submission = {}
@@ -244,6 +246,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     def consult(stage: str) -> str | None:
         if kind != 'adaptive' or not (touched['files'] or touched['symbols'] or touched['queries']): return None
         view = {'files': set(touched['files']), 'symbols': set(touched['symbols']), 'queries': list(touched['queries']), 'stage': stage,
+                'ranges': {path: [list(span) for span in spans] for path, spans in touched['ranges'].items()},
                 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'method': condition.get('strategy')}
         outcome = call_sidecar(sidecar.update, view, set(shown))
         if not isinstance(outcome, tuple) or len(outcome) != 2: raise SidecarError('update must return (text, ids)')
@@ -263,11 +266,20 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         record['status'] = turn['status'] = status
         if mode == 'single_shot': submission['status'] = status
 
-    def touch_changes(changes):
+    def touch_changes(changes, before=None):
+        """Record the files an accepted or rejected submission touches and, for edits, the line range of each old text in the pre-edit source."""
         if not isinstance(changes, dict): return
-        for item in [i for key in ('edits', 'new_files') if isinstance(changes.get(key), list) for i in changes[key]]:
-            name = item.get('filename') if isinstance(item, dict) else None
-            if isinstance(name, str) and name: touched['files'].update(by_name.get(name) or [name])
+        for key in ('edits', 'new_files'):
+            for item in (changes.get(key) if isinstance(changes.get(key), list) else []):
+                name = item.get('filename') if isinstance(item, dict) else None
+                if not isinstance(name, str) or not name: continue
+                paths = by_name.get(name) or [name]; touched['files'].update(paths)
+                old = item.get('old_text') if key == 'edits' else None; content = (before or {}).get(name)
+                if isinstance(old, str) and old and isinstance(content, str) and old in content:
+                    index = content.index(old); start = content.count('\n', 0, index) + 1; end = start + old.count('\n')
+                    for path in paths:
+                        spans = touched['ranges'].setdefault(path, [])
+                        if [start, end] not in spans: spans.append([start, end])
 
     try:
         if kind == 'static' and sidecar is not None:
@@ -323,6 +335,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                             shown_excerpts.append({**excerpt, 'evidence_id': key, 'text': '\n'.join(f'{excerpt["start_line"] + n}: {line}' for n, line in enumerate(excerpt['text'].splitlines()))})
                             if action == 'read':
                                 touched['files'].add(excerpt['path'])
+                                spans = touched['ranges'].setdefault(excerpt['path'], [])
+                                if [excerpt['start_line'], excerpt['end_line']] not in spans: spans.append([excerpt['start_line'], excerpt['end_line']])
                                 record['filesRead'].append({'turn': turn_number, 'path': excerpt['path'], 'start_line': excerpt['start_line'], 'end_line': excerpt['end_line'], 'evidence_id': key})
                         result['excerpts'] = shown_excerpts
                         if action == 'search':
@@ -341,7 +355,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                 submission = {'number': submission_number, 'turn': turn_number, 'status': 'started', 'request': request, 'requestSha256': turn['requestSha256'], 'startedAt': turn['startedAt'],
                               'response': response, 'responseSha256': turn['responseSha256'], 'receivedAt': turn['receivedAt']}
                 record['submissions'].append(submission)
-            turn['status'] = 'submitted'; changes = None
+            turn['status'] = 'submitted'; changes = None; pre_edit = dict(files)
             try:
                 changes = json.loads(response['output_text']) if mode == 'single_shot' else {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
                 candidate = apply_changes(files, changes)
@@ -368,7 +382,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                 if report['functionalSuccess']:
                     record.update(status='completed', functionalSuccess=True); break
             submission['feedback'] = feedback
-            touch_changes(changes)
+            touch_changes(changes, pre_edit)
             if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
             content = json.dumps(feedback) + f'\n{max_submissions - submission_number} submissions remain. Correct the current source using exact edits.'
             if mode == 'agentic': content += f' {max_turns - turn_number} tool turns remain.'
@@ -383,7 +397,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     except BaseException:
         record['status'] = 'evaluation_error' if submission.get('status') == 'evaluating' else 'interrupted'; raise
     finally:
-        record.update(finishedAt=timestamp(), touchedFiles=sorted(touched['files']), evidenceIndex=evidence,
+        record.update(finishedAt=timestamp(), touchedFiles=sorted(touched['files']), touchedRanges=touched['ranges'], evidenceIndex=evidence,
                       toolTurns=turn_number, sidecarInjections=sum(e['injected'] for e in record['sidecarEvents']))
         write_atomic(path, record)
     print(f'{run_id}: {record["status"]}; turns={turn_number}; submissions={submission_number}; functional={record["functionalSuccess"]}', flush=True)
@@ -457,7 +471,10 @@ if __name__ == '__main__':
         print(f"{plan['id']}: {len(plan['conditions'])} conditions; {len(plan['schedule'])} trajectories; {plan['fingerprint']}")
     elif not args.manifest: parser.error('--manifest is required')
     elif args.summary: print(json.dumps(summary(args.manifest.parent), indent=2))
-    elif args.execute and args.run_id: trajectory(args.manifest, args.run_id, load_sidecar(args.sidecar))
+    elif args.execute and args.run_id:
+        loaded = load_sidecar(args.sidecar)
+        if loaded is not None: setattr(loaded, 'spec', args.sidecar)
+        trajectory(args.manifest, args.run_id, loaded)
     elif args.execute: run(args.manifest, args.workers, args.sidecar)
     else:
         plan = validate(args.manifest)

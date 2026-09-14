@@ -96,12 +96,12 @@ def _location(edge: dict) -> str:
     return f'{place} ({symbol})' if symbol and place else (symbol or place)
 
 
-def render_items(graph: dict, ids: list[str] | None = None) -> list[str]:
+def render_items(graph: dict, ids: list[str] | None = None, kinds: tuple[str, ...] | None = None) -> list[str]:
     nodes = {n['id']: n for n in graph['nodes']}; out = {}
     for edge in graph['edges']: out.setdefault(edge['from'], []).append(edge)
     lines = []
     for node in graph['nodes']:
-        if node['kind'] not in ITEM_KINDS or (ids is not None and node['id'] not in ids): continue
+        if node['kind'] not in ITEM_KINDS or (ids is not None and node['id'] not in ids) or (kinds is not None and node['kind'] not in kinds): continue
         tags = [node['id'].split(':', 1)[1], node['kind'], node['basis']] + ([node['threat']] if node.get('threat') else []) + node['cwe'] + node['capec'] + node['asvs'] + node['cert']
         lines += ['', f"[{'; '.join(tags)}] {node['label']}", 'Task relevance: ' + (node.get('task_relevance') or '')]
         for edge in out.get(node['id'], []):
@@ -116,21 +116,21 @@ def render_items(graph: dict, ids: list[str] | None = None) -> list[str]:
     return lines
 
 
-def render(graph: dict) -> str:
-    """Static insert in graph order: assets, boundaries, then items by kind."""
+def render(graph: dict, kinds: tuple[str, ...] | None = None, header: bool = True) -> str:
+    """Static insert in graph order: assets, boundaries, then items by kind. `kinds` restricts the items (compact insert); `header=False` drops assets and boundaries."""
     nodes = {n['id']: n for n in graph['nodes']}; out = {}
     for edge in graph['edges']: out.setdefault(edge['from'], []).append(edge)
     lines = [f"--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: {graph.get('angle')}) ---", graph.get('summary') or '']
     assets = [n for n in graph['nodes'] if n['kind'] == 'asset']; boundaries = [n for n in graph['nodes'] if n['kind'] == 'boundary']
-    if assets: lines += ['', 'Assets:'] + [f"- {a['label']} [{a['property']}]" + (' @ ' + '; '.join(_location(e) for e in out.get(a['id'], [])) if out.get(a['id']) else '') for a in assets]
-    if boundaries: lines += ['', 'Trust boundaries:'] + [f"- {b['label']}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(_location(e) for e in out.get(b['id'], [])) if out.get(b['id']) else '') for b in boundaries]
-    lines += render_items(graph)
+    if assets and header: lines += ['', 'Assets:'] + [f"- {a['label']} [{a['property']}]" + (' @ ' + '; '.join(_location(e) for e in out.get(a['id'], [])) if out.get(a['id']) else '') for a in assets]
+    if boundaries and header: lines += ['', 'Trust boundaries:'] + [f"- {b['label']}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(_location(e) for e in out.get(b['id'], [])) if out.get(b['id']) else '') for b in boundaries]
+    lines += render_items(graph, kinds=kinds)
     lines += ['', 'Uncertainty and limits:', *['- ' + value for value in graph.get('limitations', [])], '--- END REPOSITORY-DERIVED SECURITY CONTEXT ---', '']
     return '\n'.join(lines)
 
 
-def slice_for(graph: dict, touched_files: set[str], touched_symbols: set[str], shown: set[str], hops: int = 1) -> tuple[str | None, list[str]]:
-    """Statements anchored at touched code or within `hops` call edges of it, excluding ids already shown."""
+def slice_for(graph: dict, touched_files: set[str], touched_symbols: set[str], shown: set[str], hops: int = 1, kinds: tuple[str, ...] | None = None) -> tuple[str | None, list[str]]:
+    """Statements anchored at touched code or within `hops` call edges of it, excluding ids already shown; `kinds` restricts the statement kinds."""
     nodes = {n['id']: n for n in graph['nodes']}
     relevant = {n['id'] for n in graph['nodes'] if n['kind'] == 'symbol' and (n['label'] in touched_symbols or (n.get('file') in touched_files))}
     relevant |= {n['id'] for n in graph['nodes'] if n['kind'] == 'file' and n['label'] in touched_files}
@@ -147,11 +147,21 @@ def slice_for(graph: dict, touched_files: set[str], touched_symbols: set[str], s
         if edge['type'] in RELATION.values():
             if edge['from'] in ids and edge['to'] not in shown and edge['to'] not in ids: ids.append(edge['to'])
             if edge['to'] in ids and edge['from'] not in shown and edge['from'] not in ids: ids.append(edge['from'])
-    ids = [i for i in ids if nodes[i]['kind'] in ITEM_KINDS]
+    ids = [i for i in ids if nodes[i]['kind'] in ITEM_KINDS and (kinds is None or nodes[i]['kind'] in kinds)]
     if not ids: return None, []
     ordered = [n['id'] for n in graph['nodes'] if n['id'] in ids]
     text = '\n'.join(['--- SECURITY CONTEXT FOR THE CODE YOU ARE TOUCHING ---', *render_items(graph, ordered), '--- END ---'])
     return text, ordered
+
+
+def symbols_in_ranges(graph: dict, ranges: dict[str, list[tuple[int, int]]], normalize=lambda p: p) -> set[str]:
+    """Graph symbol labels whose file and line range overlap any of the given (start, end) ranges per normalized file path."""
+    found = set()
+    for node in graph['nodes']:
+        if node['kind'] != 'symbol' or not node.get('file') or node.get('start') is None: continue
+        for start, end in ranges.get(normalize(node['file']), []):
+            if start <= node['end'] and end >= node['start']: found.add(node['label']); break
+    return found
 
 
 class Sidecar:
