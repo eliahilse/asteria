@@ -23,6 +23,18 @@ but the earlier perfect operational resource result did not fully replicate.
 [I08](research/iterations/i08-evaluator-repeatability/findings.md) repeated 32 fixed
 artifacts twice: no measurement changes or source/class mismatches; unsupported
 checks remain unresolved.
+The I07 [issue matrix](research/iterations/i07-operational-replication/issue-matrix.md)
+reports every check as failed / unresolved / passed out of a fixed N, and the
+[issue handling review](research/iterations/i07-operational-replication/issue-handling-review.md)
+explains the mechanism each artifact used for each check, with cited lines and a
+[catalog of excerpts](research/iterations/i07-operational-replication/issue-catalog.md).
+Checks are described in CWE terms in [`research/security/CWE_MAPPING.md`](research/security/CWE_MAPPING.md).
+[I09](research/iterations/i09-generic-acquisition/findings.md) compares a task-only
+instruction and a [CWE Top 25 catalog](research/security/cwe-top25-2025.json)
+instruction against fresh controls and the fixed requirements insert: 40/40 full
+functional, every generic arm below its control on failed checks, requirements
+still strongest.
+A second feature task, [level import](research/features/level-import/README.md), is prepared but not run.
 
 ```sh
 cd workbench

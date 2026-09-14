@@ -1,0 +1,74 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Security context for implementing ApoMario highscore using ApoIcarus patterns. Reuse the donor's parallel score/time/name collections and menu rendering concept, but replace its network-backed persistence with bounded, robust local file storage and integrate recording exactly once at run termination. ApoMario's actual score is held on player objects, while the level exposes remaining time; survival time must be derived according to the task's millisecond contract rather than copied blindly from the donor.
+
+[change_risk; task; playerName input and display] playerName is externally influenced game input and is later rendered in a menu panel; validate length, null/blank handling, and permitted characters, and render it as text without treating it as markup or a format string.
+Task relevance: The feature stores and displays a player's name; malformed names could corrupt the store or affect UI rendering.
+Inspected source E0012: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:1-237
+Suggested verification: Test null, blank, very long, control-character, delimiter, and markup-like names; verify display remains plain text and persistence remains parseable.
+
+[change_risk; task; local persistence format] The Path supplied to ApoMarioHighscore is a file boundary. Use a deterministic, versioned record format with strict field validation, bounded record count/field sizes, safe handling of missing or malformed files, and atomic replacement when writing.
+Task relevance: The board must persist across runs, and corrupted or attacker-modified local data must not cause crashes, misaligned parallel lists, or uncontrolled resource use.
+Inspected source E0011: ApoIcarus/org/apogames/help/ApoHighscore.java:1-151
+Inspected source E0021: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:109-109
+Inspected source E0022: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:110-110
+Inspected source E0023: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:111-111
+Inspected source E0024: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:114-114
+Inspected source E0025: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:115-115
+Inspected source E0026: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:121-121
+Suggested verification: Exercise nonexistent, truncated, extra-record, invalid-integer, negative-time, oversized-name, and oversized-file inputs; verify bounded memory use and no partial-write state.
+
+[change_risk; task; sorting and record integrity] Names, scores, and survival times must remain one record during descending-score sorting; avoid independently sorting the three lists or accepting mismatched lengths.
+Task relevance: The donor uses parallel lists and inserts composite display records while sorting; the target API exposes three lists, so consistency must be preserved.
+Inspected source E0012: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:1-237
+Inspected source E0021: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:109-109
+Inspected source E0022: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:110-110
+Inspected source E0023: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:111-111
+Inspected source E0024: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:114-114
+Inspected source E0025: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:115-115
+Inspected source E0026: ApoIcarus/apoJump/game/ApoJumpStateHighscore.java:121-121
+Suggested verification: Store ties and mixed values, reload, and assert equal list lengths and identical index correspondence; assert scores are descending.
+
+[change_risk; task; run-end capture and duplicate recording] Record only a completed run/level end event and capture the final score before reset/restart; make the operation idempotent for repeated UI callbacks. The score should come from the actual player state, not a recomputed or stale HUD value.
+Task relevance: The task explicitly requires clearing a level/losing to record the real score, name, and elapsed time.
+Inspected source E0047: ApoMario/ApoMario.jar!/apoMario/analysis/ApoMarioAnalysis.java:304-304
+Inspected source E0048: ApoMario/ApoMario.jar!/apoMario/analysis/ApoMarioAnalysis.java:308-308
+Inspected source E0049: ApoMario/ApoMario.jar!/apoMario/analysis/ApoMarioAnalysis.java:312-312
+Inspected source E0057: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:170-170
+Inspected source E0117: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:329-329
+Inspected source E0130: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:397-397
+Inspected source E0149: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1172-1172
+Inspected source E0150: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Inspected source E0167: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1267-1267
+Inspected source E0168: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1268-1268
+Suggested verification: Test win, loss, timeout, retry, back/menu, and repeated end callbacks; verify exactly one record per run and final score/time are retained.
+
+[security_property; observed; score source and time units] ApoMarioPlayer exposes the score, and ApoMarioLevel maintains a millisecond time value that is decremented by delta; the existing HUD formats level time through ApoHelp. The new API must preserve millisecond survivalTime values and format only at presentation as mm:ss.
+Task relevance: Prevents unit confusion and prevents recording a countdown or formatted string where elapsed milliseconds are required.
+Inspected source E0057: ApoMario/ApoMario.jar!/apoMario/entity/ApoMarioPlayer.java:170-170
+Inspected source E0117: ApoMario/ApoMario.jar!/apoMario/game/panels/ApoMarioGame.java:329-329
+Inspected source E0119: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:84-84
+Inspected source E0122: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:308-308
+Inspected source E0126: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:358-358
+Inspected source E0130: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:397-397
+Inspected source E0149: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1172-1172
+Inspected source E0150: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1173-1173
+Inspected source E0166: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1266-1266
+Inspected source E0167: ApoMario/ApoMario.jar!/apoMario/level/ApoMarioLevel.java:1267-1267
+Suggested verification: Use known delta sequences and boundary values (0, 59999, 60000, larger than an hour); assert stored integers are milliseconds and display is zero-padded mm:ss.
+
+[existing_risk; observed; donor network submission] The donor ApoHighscore submits points, time, and name to a remote URL using URLConnection and URL-encoded user input, and loads newline-delimited records from a remote endpoint. This is not an appropriate persistence mechanism for the requested local Path API and should not be copied into ApoMario.
+Task relevance: Prioritize reuse of data/model and UI ideas, but avoid introducing network disclosure, remote trust, or availability dependencies into a local highscore feature.
+Inspected source E0011: ApoIcarus/org/apogames/help/ApoHighscore.java:1-151
+Suggested verification: Confirm ApoMarioHighscore performs no network I/O; inspect tests with offline execution and a temporary Path.
+
+[recommendation; task; authorization and trust model] This is a local single-game scoreboard with no authenticated users or remote resource access evident in the requested API; authorization weaknesses from the catalog are not presently applicable. Treat the local store as tamperable game data rather than security authority.
+Task relevance: Avoid adding unnecessary identity or authorization assumptions while ensuring malformed local records cannot compromise the process.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Document that scores are local/untrusted and do not gate privileges or access to protected resources.
+
+Uncertainty and limits:
+- The indexed target is an embedded Java archive; only indexed source excerpts were available, and no target highscore class currently appears in the repository index.
+- The exact player-name source and the precise win/loss transition callbacks were not located in the inspected excerpts; integration must trace those paths in the available target source or decompiled build.
+- The task defines survivalTime as elapsed milliseconds, while the observed ApoMarioLevel time is a decreasing remaining-time field; the correct elapsed-time formula depends on the run lifecycle and any random-level timing semantics.
+- No implementation or tests were changed.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

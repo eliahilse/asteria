@@ -1,0 +1,165 @@
+{
+ "event": "host_memory_kill",
+ "recordedAt": "2026-09-14T18:38:01.328727+00:00",
+ "description": "The three-worker trajectory runner process was stopped by the host because the system was running low on memory while three trajectories were in their evaluation step. The interrupted run directories were moved to runs-interrupted/ unchanged and are not counted as observations; the same run IDs were collected again with fresh conversations using two workers.",
+ "interrupted": [
+  {
+   "runId": "i09-generic-acquisition__generation_s__task_only__r4",
+   "startedAt": "2026-09-14T18:35:52.748215+00:00",
+   "submissions": [
+    [
+     1,
+     "invalid_changes"
+    ],
+    [
+     2,
+     "evaluated"
+    ],
+    [
+     3,
+     "evaluating"
+    ]
+   ]
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__catalog__r4",
+   "startedAt": "2026-09-14T18:36:18.815638+00:00",
+   "submissions": [
+    [
+     1,
+     "evaluated"
+    ],
+    [
+     2,
+     "evaluating"
+    ]
+   ]
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__none__r4",
+   "startedAt": "2026-09-14T18:36:53.587651+00:00",
+   "submissions": [
+    [
+     1,
+     "evaluating"
+    ]
+   ]
+  }
+ ],
+ "adapterFailuresAfterKill": [
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__catalog__r4",
+   "startedAt": "2026-09-14T18:38:01.987086+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "The re-collection with two workers started while the host was still under memory pressure; the adapter subprocess exited without an outcome although the provider trace shows a complete response was received. Directory preserved with suffix -adapter; the run ID was collected again, one trajectory at a time."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__none__r4",
+   "startedAt": "2026-09-14T18:38:03.444296+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "The re-collection with two workers started while the host was still under memory pressure; the adapter subprocess exited without an outcome although the provider trace shows a complete response was received. Directory preserved with suffix -adapter; the run ID was collected again, one trajectory at a time."
+  }
+ ],
+ "resumption": "Remaining trajectories were collected one at a time in the foreground with a single worker.",
+ "stoppedByOperator": [
+  {
+   "runId": "i09-generic-acquisition__generation_s__catalog__r4",
+   "startedAt": "2026-09-14T18:38:03.463345+00:00",
+   "status": "started",
+   "submissions": [
+    [
+     1,
+     "evaluating"
+    ]
+   ],
+   "note": "Stopped when the operator terminated the second runner after its first two trajectories failed at the adapter; preserved with suffix -stopped and collected again."
+  },
+  {
+   "runId": "i09-generic-acquisition__generation_s__task_only__r4",
+   "startedAt": "2026-09-14T18:38:01.992363+00:00",
+   "status": "adapter_error",
+   "submissions": [
+    [
+     1,
+     "adapter_error"
+    ]
+   ],
+   "note": "Stopped when the operator terminated the second runner after its first two trajectories failed at the adapter; preserved with suffix -stopped and collected again."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__requirements__r4",
+   "startedAt": "2026-09-14T18:38:04.232860+00:00",
+   "status": "started",
+   "submissions": [
+    [
+     1,
+     "invalid_changes"
+    ],
+    [
+     2,
+     "started"
+    ]
+   ],
+   "note": "Stopped when the operator terminated the second runner after its first two trajectories failed at the adapter; preserved with suffix -stopped and collected again."
+  }
+ ],
+ "adapterFailuresResume": [
+  {
+   "runId": "i09-generic-acquisition__generation_s__catalog__r4",
+   "startedAt": "2026-09-14T18:41:18.802970+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  },
+  {
+   "runId": "i09-generic-acquisition__generation_s__task_only__r4",
+   "startedAt": "2026-09-14T18:41:14.279956+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__catalog__r4",
+   "startedAt": "2026-09-14T18:41:15.687473+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__none__r4",
+   "startedAt": "2026-09-14T18:41:17.243518+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__requirements__r4",
+   "startedAt": "2026-09-14T18:41:20.441208+00:00",
+   "status": "adapter_error",
+   "errorCategory": "adapter_exit_outcome_unknown",
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  },
+  {
+   "runId": "i09-generic-acquisition__reuse_sb__task_only__r4",
+   "startedAt": "2026-09-14T18:41:22.053717+00:00",
+   "status": "started",
+   "errorCategory": null,
+   "note": "Single-worker resume: the adapter subprocess exited non-zero although the provider trace shows a complete response; preserved with suffix -adapter2 and collected again after the adapter was verified with a direct health-check request."
+  }
+ ],
+ "rootCause": "After the host memory kill, every re-collected trajectory failed with adapter_exit_outcome_unknown because the private adapter creates one provider-trace directory per request ID and refuses an existing one; re-collected run IDs reuse the request IDs of their interrupted attempts. A direct health-check request through the adapter succeeded. The stale trace directories of the pending run IDs were moved to .local/provider-traces-superseded/ (suffix -attemptN) before the final resume. Request identifiers are therefore reused for re-collected trajectories; the provider assigned new session identifiers each time.",
+ "supersededTraces": [
+  "i09-generic-acquisition__generation_s__task_only__r4-s1-attempt1",
+  "i09-generic-acquisition__generation_s__task_only__r4-s2-attempt1",
+  "i09-generic-acquisition__generation_s__task_only__r4-s3-attempt1",
+  "i09-generic-acquisition__reuse_sb__catalog__r4-s1-attempt1",
+  "i09-generic-acquisition__reuse_sb__catalog__r4-s2-attempt1",
+  "i09-generic-acquisition__reuse_sb__none__r4-s1-attempt1",
+  "i09-generic-acquisition__generation_s__catalog__r4-s1-attempt1",
+  "i09-generic-acquisition__reuse_sb__requirements__r4-s1-attempt1",
+  "i09-generic-acquisition__reuse_sb__requirements__r4-s2-attempt1",
+  "i09-generic-acquisition__reuse_sb__task_only__r4-s1-attempt1"
+ ]
+}

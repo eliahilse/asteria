@@ -1,0 +1,43 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT ---
+Repository inspection was not completed: search returned no matches and read rejected the indexed paths as outside the source snapshot. The following is task-derived security guidance only; no repository behavior is asserted.
+
+[recommendation; task; untrusted player name in highscore display] Treat player names as untrusted display data: constrain length and permitted characters at input/storage boundaries and render through the GUI text API as literal text, without interpreting markup or control sequences.
+Task relevance: The feature persists and displays player names across runs; malformed names could affect UI rendering or cause resource issues.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Test markup-like text, control characters, very long strings, separators, Unicode edge cases, and null/blank values; verify literal rendering, bounded layout, and safe persistence.
+
+[recommendation; task; highscore persistence file] Treat persisted records as untrusted input. Validate file size, record count, field types, score/time ranges, name length and encoding, malformed rows, and partial writes. Prefer an application-controlled store location and avoid using an attacker-controlled path for unrelated file access.
+Task relevance: The required constructor accepts a filesystem Path and the board persists across runs, so local file tampering, corruption, and resource exhaustion are applicable.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Exercise nonexistent, empty, truncated, oversized, malformed, symlinked, and externally modified stores; verify bounded loading, safe failure, atomic or recoverable writes, and access limited to the intended store.
+
+[recommendation; task; score and survival-time integrity] Record the finished run's actual score, player name, and elapsed time from the level object. Keep survival time in milliseconds in the API and convert only for presentation to mm:ss; sort records by numeric score descending while keeping each name, score, and duration aligned.
+Task relevance: The task explicitly requires actual run values, millisecond semantics, mm:ss display, and descending score order.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Test zero, negative, maximum, and malformed values; durations across minute boundaries and large values; duplicate scores; and verify stored milliseconds remain unchanged while display formatting is mm:ss.
+
+[recommendation; task; run-end integration and duplicate recording] Integrate recording exactly once for each terminal outcome—level clear and player loss—after final score and elapsed time are settled and before run state is discarded. Exclude menu transitions, retries, pauses, replays, and simulations unless they represent a real completed run.
+Task relevance: The feature must cover both clearing and losing and capture terminal values accurately.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Test clear, death, restart, retry, pause/resume, repeated update callbacks, and replay/simulation paths; assert one record per real run with terminal values.
+
+[recommendation; task; resource limits] Define and enforce bounds on retained entries, name length, input file size, and parsing work. Handle persistence I/O failures without crashing the game or leaving inconsistent in-memory records.
+Task relevance: The feature is repeatedly writable and loads data from a file, so unbounded records or malformed input can exhaust resources.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Stress repeated storeRun calls and oversized/corrupt files; verify a defined maximum, deterministic truncation policy, bounded memory and parsing work, and graceful I/O failure handling.
+
+[recommendation; task; public getter collections] Return defensive or unmodifiable views from the three required getters and preserve alignment of names, scores, and survival times after insertion, sorting, and loading.
+Task relevance: The required public getters expose highscore state; callers must not be able to corrupt records or separate fields belonging to one run.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Attempt to mutate returned lists, test equal-score ordering, and load malformed rows to verify internal state remains protected and fields stay aligned.
+
+[recommendation; task; local data exposure] Avoid logging persisted names, scores, times, or full filesystem paths unnecessarily, and use appropriate local file permissions where the platform permits.
+Task relevance: Cross-run persistence stores player-identifying names and performance data that may be readable by other local users or processes.
+Basis: prospective task requirement or reasoning; not a claim about implemented safeguards.
+Suggested verification: Inspect file location, permissions, logs, exception messages, and diagnostics for unintended disclosure.
+
+Uncertainty and limits:
+- No repository evidence IDs were obtained because the available indexed paths were rejected by the source-snapshot tools.
+- Existing level getters, player-name handling, terminal callbacks, UI rendering behavior, file-format conventions, and filesystem utility behavior remain unknown.
+- Other catalog weaknesses were omitted because the task and available repository evidence did not establish SQL, OS/code command execution, uploads, CSRF/authentication/authorization, SSRF, or native memory-buffer mechanisms as applicable.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
