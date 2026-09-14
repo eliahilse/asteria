@@ -18,7 +18,7 @@ import numpy as np
 from research.import_evidence import ROOT, canonical, digest
 from research.scientific_summary import ISSUES
 
-LABELS = {'none': 'None', 'overview': 'Overview', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards'}
+LABELS = {'none': 'None', 'overview': 'Overview', 'requirements': 'Requirements', 'boundaries': 'Trust boundaries', 'operations': 'Operational guards', 'task_only': 'Task only', 'catalog': 'CWE catalog'}
 CHECK_LABELS = ['Negative score', 'Negative time', 'Null name', 'Blank name', 'Excessive name', 'Retained entries',
                 'Malformed store', 'Oversized line', 'Deserialization hook', 'Large record set']
 

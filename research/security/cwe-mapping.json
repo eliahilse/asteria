@@ -1,0 +1,148 @@
+{
+ "meaning": "Closest CWE categories for each declared Highscore security check. The checks are executable requirement and robustness contracts on one feature; a failed check is not a confirmed vulnerability, and CWE ids label the category of weakness the check probes, not a finding.",
+ "source": "research/security/PROTOCOL.md; CWE names and descriptions from the MITRE CWE API, retrieved 2026-09-14.",
+ "categories": {
+  "input_policy": [
+   "CWE-20"
+  ],
+  "retention_policy": [
+   "CWE-770"
+  ],
+  "parser_robustness": [
+   "CWE-755"
+  ],
+  "resource_stress": [
+   "CWE-400"
+  ],
+  "deserialization_dispatch": [
+   "CWE-502"
+  ]
+ },
+ "checks": {
+  "validRecordRoundTrip": {
+   "category": "positive_control",
+   "cwes": [],
+   "note": "Positive persistence control; not an issue check."
+  },
+  "rejectsNegativeScore": {
+   "category": "input_policy",
+   "cwes": [
+    "CWE-20",
+    "CWE-1284"
+   ],
+   "note": "Numeric range requirement on an input quantity."
+  },
+  "rejectsNegativeTime": {
+   "category": "input_policy",
+   "cwes": [
+    "CWE-20",
+    "CWE-1284"
+   ],
+   "note": "Numeric range requirement on an input quantity."
+  },
+  "rejectsNullName": {
+   "category": "input_policy",
+   "cwes": [
+    "CWE-20",
+    "CWE-476"
+   ],
+   "note": "Missing-value requirement; an unchecked null is a CWE-476 exposure in later use."
+  },
+  "rejectsBlankName": {
+   "category": "input_policy",
+   "cwes": [
+    "CWE-20"
+   ],
+   "note": "Content requirement on a string input."
+  },
+  "rejectsExcessiveName": {
+   "category": "input_policy",
+   "cwes": [
+    "CWE-20",
+    "CWE-1284"
+   ],
+   "note": "Length (quantity) requirement on a string input."
+  },
+  "boundsRetainedEntries": {
+   "category": "retention_policy",
+   "cwes": [
+    "CWE-770"
+   ],
+   "note": "Bounded number of retained records."
+  },
+  "malformedStoreDoesNotCrash": {
+   "category": "parser_robustness",
+   "cwes": [
+    "CWE-755",
+    "CWE-20"
+   ],
+   "note": "One malformed-input fixture; exception must not escape the constructor."
+  },
+  "oversizedPhysicalLine": {
+   "category": "resource_stress",
+   "cwes": [
+    "CWE-400",
+    "CWE-770",
+    "CWE-789"
+   ],
+   "note": "Finite resource fixture; observed OutOfMemoryError is direct evidence for this fixture only."
+  },
+  "nativeDeserializationCanary": {
+   "category": "deserialization_dispatch",
+   "cwes": [
+    "CWE-502"
+   ],
+   "note": "Dispatch evidence under an instrumented classpath, not a production gadget chain."
+  },
+  "largePersistedRecordSet": {
+   "category": "resource_stress",
+   "cwes": [
+    "CWE-400",
+    "CWE-770"
+   ],
+   "note": "Format-specific resource/retention fixture; precondition-qualified."
+  }
+ },
+ "definitions": {
+  "CWE-20": {
+   "name": "Improper Input Validation",
+   "description": "The product receives input or data, but it does not validate or incorrectly validates that the input has the properties that are required to process the data safely and correctly.",
+   "inTop25_2025": true
+  },
+  "CWE-1284": {
+   "name": "Improper Validation of Specified Quantity in Input",
+   "description": "The product receives input that is expected to specify a quantity (such as size or length), but it does not validate or incorrectly validates that the quantity has the required properties.",
+   "inTop25_2025": false
+  },
+  "CWE-770": {
+   "name": "Allocation of Resources Without Limits or Throttling",
+   "description": "The product allocates a reusable resource or group of resources on behalf of an actor without imposing any intended restrictions on the size or number of resources that can be allocated.",
+   "inTop25_2025": true
+  },
+  "CWE-400": {
+   "name": "Uncontrolled Resource Consumption",
+   "description": "The product does not properly control the allocation and maintenance of a limited resource.",
+   "inTop25_2025": false
+  },
+  "CWE-755": {
+   "name": "Improper Handling of Exceptional Conditions",
+   "description": "The product does not handle or incorrectly handles an exceptional condition.",
+   "inTop25_2025": false
+  },
+  "CWE-789": {
+   "name": "Memory Allocation with Excessive Size Value",
+   "description": "The product allocates memory based on an untrusted, large size value, but it does not ensure that the size is within expected limits, allowing arbitrary amounts of memory to be allocated.",
+   "inTop25_2025": false
+  },
+  "CWE-502": {
+   "name": "Deserialization of Untrusted Data",
+   "description": "The product deserializes untrusted data without sufficiently ensuring that the resulting data will be valid.",
+   "inTop25_2025": true
+  },
+  "CWE-476": {
+   "name": "NULL Pointer Dereference",
+   "description": "The product dereferences a pointer that it expects to be valid but is NULL.",
+   "inTop25_2025": true
+  }
+ }
+}

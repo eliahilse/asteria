@@ -45,6 +45,29 @@ snapshot, complete exchanges and literal output insert. The new strategy is
 results remain under their original protocols. They have not been rerun with
 this instruction. Historical acquisition modules remain available for replay.
 
+## Catalog-anchored acquisition
+
+`catalog_context.py`, protocol `repository-security-context-v6-cwe-catalog`,
+strategy `catalog` ("CWE catalog" in the explorer), keeps the task-only sentence
+and appends the complete [2025 CWE Top 25](security/cwe-top25-2025.json):
+identifier, name and MITRE description for each entry, with the note to cite an
+entry only where the repository and task make it applicable. The catalog is a
+published list, not a selection matching the declared checks; its SHA-256 is
+frozen in every record and a changed catalog is rejected before any model call.
+Tools, schema, evidence rules, budget and settings are those of the task-only
+protocol. [`security/CWE_MAPPING.md`](security/CWE_MAPPING.md) describes the
+declared checks in the same vocabulary.
+
+Prepare without a model call, or add `--execute`:
+
+```sh
+python3 -m research.catalog_context --repo apogames/Java/ApoMario \
+  --task 'Implement a Highscore feature in ApoMario.'
+```
+
+[I09](iterations/i09-generic-acquisition/README.md) compares task-only and
+catalog inserts with fresh controls and the fixed requirements insert.
+
 ## Historical perspective strategies
 
 I03 uses `generate_security_context.py`, protocol
