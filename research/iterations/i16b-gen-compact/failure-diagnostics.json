@@ -1,0 +1,706 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__single_shot__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 8,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "input_rejection_policy": 3,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r1/submission-5/evaluation/report.json",
+      "reportSha256": "53be9b9a2cc3a7891e0f0a3b7c01c0f76b8b51ae7bb701c3c5902b173ca7981f",
+      "responseSha256": "800c1682988a52e2987b78425321daf572e6e5c80f951b30d91d64d63847abaa",
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "d60b4abc01d253ac0bd9caf0a34a8e8292b8cb292d3eba1790fff8f99fae8019",
+      "responseSha256": "c469e1befe245729f4a718e17c85534f5d4d7f11cd6b67f6be32ca96c0d32e89",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "e82934749a138ba16ad04c11c84d265766af875e89362ba03a5b2c723850abc5",
+      "responseSha256": "f537fc92838f03514d3dacfd561a803922efa60390cce4545fe85a1d477b053d",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r2/submission-4/evaluation/report.json",
+      "reportSha256": "5cdfe8417d8d2b90bc16615fa420eb351163d68ce002a474b5f9f2c6e0243522",
+      "responseSha256": "4a3adbc4c680507fb896fce593c7932dcb74bc7af43e2611960685e3bf86685c",
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "965fb3739c89cc6c850ad2ba9ba4d7f8a961caaa7279c23dccdfc67edab9c914",
+      "responseSha256": "241107bcd07c55df35a8de117b0da1676bd4622dacbfc2f60ffe23f61da5d08b",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/report.json",
+      "reportSha256": "8ce493b073b24aa962a43680811fa7620cf37c34635a879f7eabedf6b12c77d5",
+      "responseSha256": "67bb4d10719ae679d1d0d46a821301716d73df4237a7e9f2460ad41a4ae945e4",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r5/submission-1/evaluation/report.json",
+      "reportSha256": "2aad54bb75c55a4d744066884713b012ca66b7511fedf72f3d043430ee6fb63c",
+      "responseSha256": "c36e551e982ced903aaa824ae8d7a9c3bdbf3f4aeefb2a4e4f8ef940e618896a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "69b472949ac3e2e152e8c9375594e2eeb2b1600779fc24d47a72fe666f55c0f2",
+      "responseSha256": "58283452a7edfeb92adeef9cf025db646cefb1e2e57986bd7d05028e2baa638a",
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "test": "largePersistedRecordSet"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i16b-gen-compact",
+  "manifestFingerprint": "75c4dd56376dab8d9afcd5bcecb8f498f78e052e9700f0f35118fc8d366ce957",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 63,
+          "text": "        if (runs.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 147,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) return false;"
+        },
+        {
+          "line": 171,
+          "text": "            if (Files.size(absolute) > MAX_FILE_SIZE) return;"
+        },
+        {
+          "line": 174,
+          "text": "                if (!HEADER.equals(reader.readLine())) return;"
+        },
+        {
+          "line": 176,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 177,
+          "text": "                    if (loaded.size() >= MAX_RECORDS || line.length() > 512) return;"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r1",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r1/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fc3f74df5ac057f0f0085f0986afa2207c7e7f59be986e8a39e0b231ecc79f4a"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 129,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r1",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "35471c71a0e7c5e01bd18b35ae9354642af1d94d57a47c4473d80b8ebaf35974"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 90,
+          "text": "            for (String line : Files.readAllLines(store, UTF8)) {"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r2",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b88fe460cecef110f98e30bf1470e233be2e0ea2a091bbc92efd43fb2f5d7d96"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME = 64;"
+        },
+        {
+          "line": 49,
+          "text": "        if (score < 0 || score > MAX_SCORE || time < 0 || time > MAX_TIME || name == null || name.length() == 0 || name.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 67,
+          "text": "            if (Files.size(store) > 1024 * 1024) return;"
+        },
+        {
+          "line": 69,
+          "text": "            String line = r.readLine();"
+        },
+        {
+          "line": 71,
+          "text": "            while ((line = r.readLine()) != null) {"
+        },
+        {
+          "line": 72,
+          "text": "                if (line.length() > MAX_NAME * 2 + 80 || read.size() >= MAX_RECORDS) { r.close(); return; }"
+        },
+        {
+          "line": 88,
+          "text": "        if (runs.size() >= MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r2",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r2/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "bcfc6bd931a64d4518288eef2389c9acaf9d94b0347ae900fcfca5e0c0293ce0"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME = 64;"
+        },
+        {
+          "line": 49,
+          "text": "        while (next.size() > MAX_RECORDS) next.remove(next.size() - 1);"
+        },
+        {
+          "line": 104,
+          "text": "        if (n.length() == 0 || n.length() > MAX_NAME || n.indexOf('\\t') >= 0 || n.indexOf('\\n') >= 0 || n.indexOf('\\r') >= 0) return false;"
+        },
+        {
+          "line": 113,
+          "text": "            if (Files.size(store) > 128 * 1024) return;"
+        },
+        {
+          "line": 116,
+          "text": "                String line = in.readLine();"
+        },
+        {
+          "line": 118,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 119,
+          "text": "                    if (loaded.size() >= MAX_RECORDS || line.length() > MAX_NAME + 40) return;"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r3",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c8b7611b6a935b6247a290a2a53d150309758ef5a99bdf816a482aada7216abc"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 124,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r3",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f3862dba0b85f25a4130473f13f4a54f4d2e4453800cf060a0379e72e009a3fc"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 104,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        },
+        {
+          "line": 122,
+          "text": "        while (entries.size() > MAX_ENTRIES) entries.remove(entries.size() - 1);"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r4",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "4557a72027eb67ad5a9ba442a24e548be0c4878f3ad04c38fcb3599ad506e9d6"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 64;"
+        },
+        {
+          "line": 112,
+          "text": "        if (n.length() == 0 || n.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 121,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        },
+        {
+          "line": 127,
+          "text": "            if (Files.size(store) > 1024 * 1024) return;"
+        },
+        {
+          "line": 130,
+          "text": "                String header = in.readLine();"
+        },
+        {
+          "line": 133,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 134,
+          "text": "                    if (loaded.size() >= MAX_RECORDS) return;"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r4",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r4/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ec484012427e70036fa078622f34f7a5554dc90c2fb76f3d6b26e972c48e8865"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME = 80;"
+        },
+        {
+          "line": 107,
+          "text": "            if (Files.size(store) > 1024 * 1024) return;"
+        },
+        {
+          "line": 110,
+          "text": "                String line = r.readLine(); if (!HEADER.equals(line)) return;"
+        },
+        {
+          "line": 111,
+          "text": "                while ((line = r.readLine()) != null) {"
+        },
+        {
+          "line": 112,
+          "text": "                    if (line.length() > MAX_NAME + 32 || loaded.size() >= MAX_RECORDS) return;"
+        },
+        {
+          "line": 124,
+          "text": "        if (n == null || n.length() == 0 || n.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 130,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__static__r5",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__static__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c5a380343dd22cb3d7950ee34d709bc757f829aa2197c39c788c1aa7825b862e"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 115,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i16b-gen-compact__generation_s__single_shot__none__r5",
+      "source": ".local/iterations/i16b-gen-compact/runs/i16b-gen-compact__generation_s__single_shot__none__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "56a4f0765a409d846678ef88aa55cd854b4f459ec7b50f3754071dc3d1c70ab3"
+    }
+  ]
+}
