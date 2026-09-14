@@ -1,0 +1,341 @@
+{
+  "analysisSha256": "c2b84c3212687c937d4eec8e390d12fef61d445e0f8050a529dd77a529c7563f",
+  "curves": [
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 2,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 1,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 6,
+      "cumulativeFailedCompilations": 1,
+      "cumulativeInvalidEdits": 3,
+      "full": 1,
+      "n": 3,
+      "newlySuccessful": 1,
+      "rate": 0.3333333333333333,
+      "submissionAllowance": 2,
+      "wilson95High": 0.7923403991979522,
+      "wilson95Low": 0.06149194472039621
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 8,
+      "cumulativeFailedCompilations": 1,
+      "cumulativeInvalidEdits": 4,
+      "full": 2,
+      "n": 3,
+      "newlySuccessful": 1,
+      "rate": 0.6666666666666666,
+      "submissionAllowance": 3,
+      "wilson95High": 0.9385080552796037,
+      "wilson95Low": 0.2076596008020477
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 9,
+      "cumulativeFailedCompilations": 1,
+      "cumulativeInvalidEdits": 5,
+      "full": 2,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.6666666666666666,
+      "submissionAllowance": 4,
+      "wilson95High": 0.9385080552796037,
+      "wilson95Low": 0.2076596008020477
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "cumulativeCalls": 10,
+      "cumulativeFailedCompilations": 1,
+      "cumulativeInvalidEdits": 6,
+      "full": 2,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.6666666666666666,
+      "submissionAllowance": 5,
+      "wilson95High": 0.9385080552796037,
+      "wilson95Low": 0.2076596008020477
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "cumulativeCalls": 3,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 1,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 1,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "cumulativeCalls": 6,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 2,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 2,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "cumulativeCalls": 9,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 5,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 3,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "cumulativeCalls": 12,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 5,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 4,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "cumulativeCalls": 15,
+      "cumulativeFailedCompilations": 0,
+      "cumulativeInvalidEdits": 7,
+      "full": 0,
+      "n": 3,
+      "newlySuccessful": 0,
+      "rate": 0.0,
+      "submissionAllowance": 5,
+      "wilson95High": 0.5614970317550454,
+      "wilson95Low": 5.551115123125783e-17
+    }
+  ],
+  "deliveryErrors": [
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "ApoMarioHighscore.java exists; edit it instead",
+      "requestSha256": "83824b4d72af99a57215df05202e7f1eab6da29b7048851d933be6ee9bbb039d",
+      "runId": "i15-rewind__generation_s__agentic__none__r1",
+      "status": "invalid_changes",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Submission rewound by the security sidecar: The run-end hook records the first player without verifying that the player is human, excluding replay/editor/simulation modes, or preventing duplicate finalization; it also substitutes a default name and does not guard unavailable highscore state. storeRun only rejects blank/control-delimiter names, clamps negative survival time, and has no bounds on score, time, name length, or record count, while mutating the list before persistence. Loading reads an unbounded file/record count and uses storeRun without rejecting malformed whole files or enforcing a versioned format and alignment. The highscore renderer indexes times and points based only on names.size(), with no consistency fallback, and uses default-locale String.format rather than explicitly locale-independent formatting.",
+      "requestSha256": "992ee3e7fea53ca333d2a6a2f1e694fd9e7080134132997f5f7bdcc7aa9f3e50",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r1",
+      "status": "rewound_by_sidecar",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Changes must be arrays",
+      "requestSha256": "09ee0ccac0a4714d2a868c125baecbaf76cbcfe5f2ef2395c87966a4f4543e60",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r1",
+      "status": "invalid_changes",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "ApoMarioHighscore.java exists; edit it instead",
+      "requestSha256": "a85ac39c96139696025d2b74694cdf9891c3b36859cdc8cfb6ad2a52db0a32f1",
+      "runId": "i15-rewind__generation_s__agentic__none__r2",
+      "status": "invalid_changes",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "Changes must be arrays",
+      "requestSha256": "46c27c3247a877fe129f68bc0d96aa669f956f31e8668856a515d7f8b57d8c7b",
+      "runId": "i15-rewind__generation_s__agentic__none__r2",
+      "status": "invalid_changes",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "Changes must be arrays",
+      "requestSha256": "0c55aa3f7b1bdf4d40b540df85a76167dde04c8eed72a4d857ea434c50a1751a",
+      "runId": "i15-rewind__generation_s__agentic__none__r2",
+      "status": "invalid_changes",
+      "submission": 4
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "ApoMarioHighscore.java is not a supplied or newly created file",
+      "requestSha256": "a9f1aa79c43fb2e26b897d34dcbf97d977c391023d9046692ab5643f73de40ce",
+      "runId": "i15-rewind__generation_s__agentic__none__r2",
+      "status": "invalid_changes",
+      "submission": 5
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Submission rewound by the security sidecar: The run-end call is guarded only against replay, not editor or simulation modes, and has no visible duplicate-finalization guard. storeRun accepts unbounded scores, times, and names, clamps negative time instead of rejecting it, and replaces only tabs/newlines; it does not enforce the required bounded non-negative validation or atomic failure behavior. load() reads an unbounded number of lines and unbounded field lengths, accepts arbitrary numeric ranges, and exposes the resulting entries without whole-file structural validation. The menu delegates to a renderer that iterates internal entries rather than validated getter data, and its time formatting is locale-dependent.",
+      "requestSha256": "b9b1bb65e56c58697b502dcd3be5e8b5de923caef297af4474105ef480b3c460",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r2",
+      "status": "rewound_by_sidecar",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Missing required game integration edits: ApoMarioMenu.java, ApoMarioPanel.java",
+      "requestSha256": "aaec15fa7bd69707e1d422be4d8c296e422a9b8ec1fe3a34368c2bfc557ee551",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r2",
+      "status": "invalid_changes",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "ApoMarioMenu.java: old_text matches 0 times; provide one unique exact anchor",
+      "requestSha256": "6251d8651e329fcc05eb8c1f7ced5cc18b6e46472686a76273ee607a48d0d91c",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r2",
+      "status": "invalid_changes",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Changes must be arrays",
+      "requestSha256": "34b237fdc63dffd29fad2155360dcd58167b9a72cf54c953fdab12b7e1f3e949",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r2",
+      "status": "invalid_changes",
+      "submission": 5
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "detail": "Changes must be arrays",
+      "requestSha256": "f5dd3dc60bc35e3ec9eaa0fb9e348665d46201632949dd6dbbe32da9b7843b68",
+      "runId": "i15-rewind__generation_s__agentic__none__r3",
+      "status": "invalid_changes",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "ApoMarioHighscore.java exists; edit it instead",
+      "requestSha256": "68944d19c55f314dc087cdafcaab60b2ef8306e46bfb58a94c0ea71a1f3cbf12",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r3",
+      "status": "invalid_changes",
+      "submission": 1
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Submission rewound by the security sidecar: The submission adds unconditional run recording before the editor/analysis transition, with no replay/editor/simulation or duplicate-finalization guard and no validation of the selected human player or post-finalization sources (R2/C1). storeRun defaults null/empty names, clamps survival time, accepts unbounded/negative scores and invalid names, mutates entries before validation/persistence, and does not provide an atomic failure path (R3/C2). load reads the file without byte/record/name bounds, versioning, strict field/alignment validation, or temporary bounded parsing, and may expose partially accepted records before a later parse failure (R5/C3). The dedicated renderer iterates the internal entries rather than validated getter data, lacks consistency/fallback handling and bounded-name validation, and uses locale-dependent String.format instead of locale-independent formatting (R8/C6).",
+      "requestSha256": "0538af27925f9ccb39dfc67262385fb3708ed8fc82709f02c82c6c4ec45d59d1",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r3",
+      "status": "rewound_by_sidecar",
+      "submission": 2
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Missing required game integration edits: ApoMarioMenu.java",
+      "requestSha256": "675687449493538d68aac53bf24419887e3462a05551dd6c98ac07e8df267308",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r3",
+      "status": "invalid_changes",
+      "submission": 3
+    },
+    {
+      "condition": "generation_s__agentic__rewind",
+      "detail": "Changes must be arrays",
+      "requestSha256": "117d318ccaca1accd5a85e2729dfbc826dbde12f4574af6926d3bbcf437eb3cc",
+      "runId": "i15-rewind__generation_s__agentic__rewind__r3",
+      "status": "invalid_changes",
+      "submission": 5
+    }
+  ],
+  "iteration": "i15-rewind",
+  "manifestFingerprint": "2257fe0606e161e9a524ee6234f74ff77e2370ecf71a58b956bddb807dab2a96",
+  "meaning": "Cumulative full functional success within the actual announced allowance, using every scheduled trajectory. Earlier budgets are descriptive slices of the same conversations, not independent samples or counterfactual protocols. Security outcomes are reported separately on final artifacts.",
+  "sourceHashes": {
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r1/record.json": "5712b6e6b2ae0a31cd62662fef74ee9c55f9547cc089fcbaa71aacc083fb90be",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r1/submission-2/evaluation/report.json": "ee05caafabc5cf3797f9df6a62891be4d397efddeb4f0cba80844ab1c542ca6d",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r2/record.json": "a23115cc66445cb4bc56aae2680a1f68080b8d7e69b5b04160675b3fcf208051",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r2/submission-2/evaluation/report.json": "d66b12108cb7683cebe5788423045fc650305cf2a92489d563f84c71979cb83d",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r3/record.json": "2ee0dbc76679dd48b6795063243fdc64511329a8d49f74432893f5cbced58fd6",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r3/submission-1/evaluation/report.json": "62ea1fc984d9e8e3b6bb930d05f789e289ed83caa4a3e3267a546a86d0804afb",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__none__r3/submission-3/evaluation/report.json": "348a797e531a9a3c6c86967661dfbceda53f1d080ebf37fece0d58881d6d1a8c",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r1/record.json": "084499a2676b24e75aaa81c7a525dfa8650a96e042eee1004ed02defecd21b4c",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r1/submission-2/evaluation/report.json": "85c92c56244a0ca858e311108a9fa664108f03c223839d029e06da2db32ffb68",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r1/submission-4/evaluation/report.json": "79a4fc1e38d6131832a254fb46c88ca616fbf4a2a5d07d04be21bd36f673bb83",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r1/submission-5/evaluation/report.json": "0de7b898cb550ecfc79344e35c059fb93d861a4f03976603028f724fe3e682e1",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r2/record.json": "f0dfe1666e9b510eccc55238be7c3851072c89724d1cba02924d4f587725aea8",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r2/submission-4/evaluation/report.json": "f32da9357f7d6102df5cc7419d1e540c2570f7578ea9259595c9bf89d50fa6a8",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r3/record.json": "255e4fc49552875c8a3efc68c7a0b07f44335bf8fa42a0311eeab311a148bedd",
+    ".local/iterations/i15-rewind/runs/i15-rewind__generation_s__agentic__rewind__r3/submission-4/evaluation/report.json": "2c45b75971c5df792307565c249ec38bb4dbe4ead99d10cb01977708448705ca"
+  },
+  "trajectories": [
+    {
+      "calls": 2,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 0,
+      "firstFullSubmission": 2,
+      "invalidEdits": 1,
+      "runId": "i15-rewind__generation_s__agentic__none__r1",
+      "status": "completed"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__rewind",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 1,
+      "runId": "i15-rewind__generation_s__agentic__rewind__r1",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 1,
+      "firstFullSubmission": null,
+      "invalidEdits": 4,
+      "runId": "i15-rewind__generation_s__agentic__none__r2",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__rewind",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 3,
+      "runId": "i15-rewind__generation_s__agentic__rewind__r2",
+      "status": "budget_exhausted"
+    },
+    {
+      "calls": 3,
+      "condition": "generation_s__agentic__none",
+      "failedCompilations": 0,
+      "firstFullSubmission": 3,
+      "invalidEdits": 1,
+      "runId": "i15-rewind__generation_s__agentic__none__r3",
+      "status": "completed"
+    },
+    {
+      "calls": 5,
+      "condition": "generation_s__agentic__rewind",
+      "failedCompilations": 0,
+      "firstFullSubmission": null,
+      "invalidEdits": 3,
+      "runId": "i15-rewind__generation_s__agentic__rewind__r3",
+      "status": "budget_exhausted"
+    }
+  ]
+}
