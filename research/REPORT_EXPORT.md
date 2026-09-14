@@ -4,7 +4,13 @@ The Experiment tab has two Excel downloads:
 
 - **Export XLSX**: the existing detailed data export, beginning with Combinations.
 - **Export report XLSX**: the layout of the supplied `experiment_results_report.xlsx`,
-  with percentages, context columns, frozen headings and separate analysis sheets.
+  with counts-first rate cells, context columns, frozen headings and separate
+  analysis sheets.
+
+Both follow the reporting standard in [`docs/REPORTING.md`](../docs/REPORTING.md):
+every rate is shown as `k/N`, a percentage accompanies the counts only when they
+rest on at least 20 trajectories, unresolved outcomes stay visible, and every
+table states its observation unit.
 
 Both export the currently loaded observations. The report creates new workbook
 content; it does not copy the example's Gemini results or depend on a file in the
@@ -52,13 +58,24 @@ a separate headline tier, and the explorer's Combinations export has no
 
 ## Reading the numbers
 
-Compilation rates use all recorded attempts or trajectories. The report's test
-pass rates use **passed / evaluated checks on compiled runs**, with only pass and
+Every rate in the report is a `k/N` text cell followed by a numeric
+`<label> (fraction)` column. The fraction is stored unrounded and carries the
+`0.0%` number format only when the count rests on at least 20 trajectories;
+checks on one artifact are correlated and do not count as independent
+observations, so a cell such as `78/80` evaluated checks on five trajectories
+stays a plain number. Measured pass counts append `; u unresolved` whenever
+unresolved checks exist. The Overview summary rows read, for example,
+`Overall compile 78/80 0.975`.
+
+Compilation counts use all recorded attempts or trajectories. The report's test
+pass counts use **passed / evaluated checks on compiled runs**, with only pass and
 fail considered evaluated. This conditional rate differs from the explorer's
-quality percentages, which use all N. The Context Effect sheet also includes
-passed checks / (16 × N). Overall rates pool counts rather than averaging context
+quality cells, which use all N (7 × N unit checks, 5 × N live checks). The
+Context Effect sheet also includes passed checks / (16 × N); its delta columns
+are fraction differences, not counts, because the present and absent arms have
+different n. Overall cells pool counts rather than averaging context
 percentages. Per-test cell notes preserve numerator, denominator and unresolved
-coverage; stored percentage values are unrounded numeric fractions.
+coverage, and the unit statement sits on that sheet's `k/N` header cells.
 
 Unknown and unexecuted checks cannot establish a pass. Security count differences
 use matching fresh controls; bounds allow every assignment of unresolved checks
@@ -81,7 +98,10 @@ uses the unchanged [qualified I07 data](iterations/i07-operational-replication/q
 It contains 80 raw trajectory rows, 16 security-combination rows, 176 security
 test-summary rows including the positive check, and a 15-sheet layout with the
 Issue Matrix sheet (53 rows: the fixed-denominator matrix and 35 unresolved
-reasons). The original results and prior qualified workbook are preserved.
+reasons). The [I09 report](iterations/i09-generic-acquisition/experiment_results_report.xlsx)
+is exported the same way from the [qualified I09 data](iterations/i09-generic-acquisition/qualified-results.json).
+Both are counts-first exports; the original results and prior qualified
+workbooks are preserved.
 
 From `workbench/` with Node 24, export a saved dataset without a browser, local
 server, model calls or Java evaluation:
@@ -94,5 +114,6 @@ node scripts/export-report.mjs \
 
 `node scripts/export-detailed.mjs INPUT.json OUTPUT.xlsx` writes the detailed
 **Export XLSX** workbook the same way. Both commands refuse to overwrite an existing output. It uses the same workbook
-builder as the browser download. The saved example's byte hashes and counts are
-recorded beside it in `experiment_results_report.manifest.json`.
+builder as the browser download. Each saved example's byte hashes, source
+hashes and expected row counts are recorded beside it in
+`experiment_results_report.manifest.json`.

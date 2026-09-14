@@ -17,7 +17,11 @@ test('every combination is visible without selectors and empty rates export as b
   const wb = new ExcelJS.Workbook(); await wb.xlsx.readFile((await (await download).path())!);
   const sheet = wb.getWorksheet('Combinations')!, columns = sheet.getRow(1).values as string[];
   expect(sheet.rowCount).toBe(17);
-  expect(sheet.getRow(2).getCell(columns.indexOf('Compile %')).value).toBeNull();
+  // Counts first (docs/REPORTING.md): numerator, denominator and fraction columns; nothing observed exports as 0/0 with a blank fraction.
+  expect(sheet.getRow(2).getCell(columns.indexOf('compiled_numerator')).value).toBe(0);
+  expect(sheet.getRow(2).getCell(columns.indexOf('compiled_denominator')).value).toBe(0);
+  expect(sheet.getRow(2).getCell(columns.indexOf('compiled_fraction')).value).toBeNull();
+  expect(columns).not.toContain('Compile %');
   expect(sheet.getRow(2).getCell(columns.indexOf('security_issues_detected')).value).toBeNull();
   expect(wb.getWorksheet('Test rates')!.rowCount).toBe(433);
   expect(wb.getWorksheet('Attempts')!.rowCount).toBe(1);
@@ -53,7 +57,11 @@ test('quality metrics and one security issue column fit on desktop, with coverag
   await expect(page.locator('select')).toHaveCount(0);
   const row = page.locator('[data-condition="generation_sfb__task"]');
   await expect(row.locator('.security-context')).toHaveText('Task-focused');
-  await expect(row.locator('[data-stat="unit"]')).toHaveText('100.0');
+  await expect(row.locator('[data-stat="compiled"]')).toHaveText('5/5');
+  await expect(row.locator('[data-stat="unit"]')).toHaveText('35/35');
+  await expect(row.locator('[data-stat="unit"]')).toHaveAttribute('title', /^35\/35 = 100\.0%\. .*Not printed as a percentage: N = 5 attempts is below 20/);
+  await expect(row.locator('[data-stat="full"]')).toHaveText('0/5');
+  await expect(page.locator('.combination-table thead th').nth(5)).toHaveText('Compiled');
   await expect(row.locator('[data-stat="securityIssues"]')).toHaveText('2 failed · 0 unresolved / 50 (↓3)');
   await expect(page.locator('[data-condition="generation_sfb__overview"] [data-stat="securityIssues"]')).toHaveText('7 failed · 0 unresolved / 50 (↑2)');
   await expect(page.locator('[data-condition="generation_sfb__flows"] [data-stat="securityIssues"]')).toHaveText('1 failed · 1 unresolved / 50 (↓3–4)');
@@ -69,7 +77,15 @@ test('quality metrics and one security issue column fit on desktop, with coverag
   expect(exported.getCell(columns.indexOf('security_issues_delta')).value).toBe(-3);
   expect(exported.getCell(columns.indexOf('security_issues_unresolved')).value).toBe(0);
   expect(exported.getCell(columns.indexOf('security_issues_expected')).value).toBe(50);
+  expect(exported.getCell(columns.indexOf('N')).value).toBe(5);
+  expect(exported.getCell(columns.indexOf('unit_numerator')).value).toBe(35);
+  expect(exported.getCell(columns.indexOf('unit_denominator')).value).toBe(35);
+  expect(exported.getCell(columns.indexOf('unit_fraction')).value).toBe(1);
+  expect(exported.getCell(columns.indexOf('full_numerator')).value).toBe(0);
+  expect(exported.getCell(columns.indexOf('full_denominator')).value).toBe(5);
   expect(columns).not.toContain('Invoked %');
+  expect(columns).not.toContain('invoked_fraction');
+  expect(columns.filter(c => /%$/.test(c))).toEqual([]);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   expect(errors).toEqual([]);

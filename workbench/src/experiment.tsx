@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { MatrixData } from './experiment-types';
-import { combinationRows, statColumns, type SecurityIssues, type StatColumn } from './combination-stats';
+import { PERCENT_MIN_N, combinationRows, fractionText, percentAllowed, percentText, statColumns, type CombinationRow, type SecurityIssues, type StatColumn } from './combination-stats';
 export type * from './experiment-types';
 
 const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only', catalog: 'CWE catalog' };
-const format = (value: number | null, column: StatColumn) => value === null ? '—' : column.format === 'count' ? String(value) : value.toFixed(1);
+// Counts first (docs/REPORTING.md): every rate cell reads k/N; the percentage is confined to the tooltip.
+const cellText = (r: CombinationRow, column: StatColumn) => column.format === 'count' ? String(r.attempts) : fractionText(r.stats[column.key]) ?? '—';
+const cellTitle = (r: CombinationRow, column: StatColumn, unit: string) => {
+  if (column.format === 'count') return column.description;
+  const f = r.stats[column.key], percent = percentText(f);
+  if (!percent) return `${column.description} No observations.`;
+  return `${fractionText(f)} = ${percent}. ${column.description}` + (percentAllowed(f) ? '' : ` Not printed as a percentage: N = ${r.attempts} ${unit} is below ${PERCENT_MIN_N}; the counts are the result.`);
+};
 function IssueCount({ issues: s }: { issues: SecurityIssues }) {
   const bounds = s.deltaBounds;
   const trend = !bounds ? 'Δ —' : bounds[1] < 0 ? `↓${-bounds[1]}${bounds[0] === bounds[1] ? '' : `–${-bounds[0]}`}` : bounds[0] > 0 ? `↑${bounds[0]}${bounds[0] === bounds[1] ? '' : `–${bounds[1]}`}` : bounds[0] === 0 && bounds[1] === 0 ? '→0' : 'Δ —';
@@ -39,8 +46,8 @@ export function Experiment() {
   const budget = Math.max(...data.studies.map(s => s.plan.maxSubmissions ?? 1));
   const download = async (kind: 'json' | 'xlsx' | 'report') => { setBusy(true); try { const { exportExperiment } = await import('./experiment-export'); await exportExperiment(data, kind); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
   return <section aria-label="Context combinations">
-    <div className="combination-tools"><p className="note">{rows.length} combinations · Quality percentages use all N {unit}.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('report')}>Export report XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
-    {!data.local && rows.every(r => !r.values.attempts) && <p className="note">Public plans only. No observations in this snapshot.</p>}
+    <div className="combination-tools"><p className="note">{rows.length} combinations · Cells are k/N counts on all N {unit}: compiled / N, unit checks / 7N, live checks / 5N, full / N. Percentages appear only in cell tooltips.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('report')}>Export report XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
+    {!data.local && rows.every(r => !r.attempts) && <p className="note">Public plans only. No observations in this snapshot.</p>}
     {error && <p role="alert">{error}</p>}
     {data.studies.filter(s => s.plan.evaluationNote).map(s => <p className="note" key={s.plan.id}>{s.plan.evaluationNote}</p>)}
     <div className="combination-scroll" tabIndex={0} aria-label="All context combinations and numeric results"><table className="combination-table"><thead>
@@ -48,7 +55,7 @@ export function Experiment() {
         {statColumns.map(c => <th key={c.key} scope="col" title={c.description}>{c.label}</th>)}<th scope="col" className="security-heading">Security issues</th></tr>
     </thead><tbody>{rows.map((r, index) => <tr key={`${r.study}:${r.condition}`} data-condition={r.condition} data-study={r.study} className={index === 0 || r.phase !== rows[index - 1].phase || r.method !== rows[index - 1].method || r.paper.join() !== rows[index - 1].paper.join() ? 'combination-start' : ''}>
       <td>{r.phase}</td><td>{r.method}</td><td>{r.paper.length ? r.paper.map(p => <span key={p} className="paper-context">{p}</span>) : 'None'}</td><td>{r.security === 'none' ? 'None' : <span className={`security-context security-${r.security}`}>{securityNames[r.security] ?? r.security}</span>}</td>
-      {statColumns.map(c => <td key={c.key} data-stat={c.key} className="numeric">{format(r.values[c.key], c)}</td>)}<IssueCount issues={r.issues} />
+      {statColumns.map(c => <td key={c.key} data-stat={c.key} className="numeric" title={cellTitle(r, c, unit)}>{cellText(r, c)}</td>)}<IssueCount issues={r.issues} />
     </tr>)}</tbody></table></div>
     <p className="note">Security issues = failed · unresolved / planned issue checks (10 checks × N {unit}), not unique vulnerabilities; the remainder passed, and unresolved checks are not passes. Arrow ranges allow every unmeasured check to pass or fail; they are not confidence intervals. Δ — = no clear direction or comparison unavailable. Per-test detail remains in the export.</p>
   </section>;

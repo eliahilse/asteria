@@ -1,5 +1,5 @@
 import unittest
-from research.report_matrix import wilson, comparisons, render
+from research.report_matrix import PERCENT_MIN_N, comparisons, count_delta, rate, render, wilson
 
 
 class ReportTests(unittest.TestCase):
@@ -14,6 +14,23 @@ class ReportTests(unittest.TestCase):
         self.assertNotIn('Invoked', header)
         # The invoked check itself stays in the per-test table.
         self.assertIn('| invoked.recordsRealScore |', text)
+        # Counts first: a one-attempt cell is 1/1, never 100.0%.
+        self.assertIn('| a | 1/1 | 1/1 |', text)
+        self.assertNotIn('1/1 (100.0%)', text)
+        self.assertIn('Unit: attempt; n = attempts recorded per condition', text)
+
+    def test_rates_are_counts_and_percentages_need_twenty_observations(self):
+        self.assertEqual(PERCENT_MIN_N, 20)
+        self.assertEqual(rate(4, 5), '4/5')
+        self.assertEqual(rate(16, 20), '16/20 (80.0%)')
+        self.assertEqual(rate(0, 0), '— (0 attempts)')
+        self.assertEqual(count_delta(4, 5, 5, 5), '−1 (4−5)')
+        self.assertEqual(count_delta(5, 5, 5, 5), '0 (5−5)')
+        self.assertEqual(count_delta(5, 5, 4, 5), '+1 (5−4)')
+        self.assertEqual(count_delta(20, 25, 15, 25), '+5 (20−15) = +20.0 pp')
+        self.assertEqual(count_delta(4, 4, 5, 5), '— (N 4 vs 5)')
+        self.assertEqual(count_delta(20, 40, 5, 20), '+25.0 pp')
+        self.assertEqual(count_delta(0, 0, 5, 5), '—')
 
     def test_small_sample_zero_success_is_not_a_zero_probability_claim(self):
         self.assertIsNone(wilson(0, 0))

@@ -4,33 +4,35 @@ Pass/fail large-record observations whose necessary two-record format preconditi
 
 All scheduled trajectories are included. First-submission and within-budget success use the full trajectory denominator; rejected edits and transport failures are retained.
 
-| Condition | N | First full | Within-budget full | Full rate, Wilson 95% | Joint functional + all 11 security | Issue failures / evaluated | Unresolved | Calls |
+Unit: trajectory; N = 5 trajectories per condition. Every rate is k/N and a percentage accompanies it only when N ≥ 20 (docs/REPORTING.md). Issue checks use the fixed denominator 10 × N; unresolved checks are counted separately and are never passes. The Wilson 95% interval (in %) is given only for the within-budget full-functional endpoint, beside its k/N.
+
+| Condition | N | First full | Within-budget full | Within-budget full k/N [Wilson 95%, %] | Joint functional + all 11 security | Issue failures / evaluated | Unresolved | Calls |
 | --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: |
-| generation_s__none | 5 | 2 | 5 | 100.0% [56.6, 100.0] | 0 | 38/50 | 0 | 10 |
-| generation_s__requirements | 5 | 1 | 5 | 100.0% [56.6, 100.0] | 0 | 12/48 | 2 | 13 |
-| generation_s__task_only | 5 | 2 | 5 | 100.0% [56.6, 100.0] | 0 | 15/47 | 3 | 9 |
-| generation_s__catalog | 5 | 4 | 5 | 100.0% [56.6, 100.0] | 0 | 25/47 | 3 | 6 |
-| reuse_sb__none | 5 | 2 | 5 | 100.0% [56.6, 100.0] | 0 | 31/48 | 2 | 10 |
-| reuse_sb__requirements | 5 | 1 | 5 | 100.0% [56.6, 100.0] | 2 | 1/47 | 3 | 11 |
-| reuse_sb__task_only | 5 | 1 | 5 | 100.0% [56.6, 100.0] | 0 | 16/49 | 1 | 12 |
-| reuse_sb__catalog | 5 | 3 | 5 | 100.0% [56.6, 100.0] | 0 | 13/48 | 2 | 9 |
+| generation_s__none | 5 | 2 | 5 | 5/5 [56.6, 100.0] | 0 | 38/50 | 0 | 10 |
+| generation_s__requirements | 5 | 1 | 5 | 5/5 [56.6, 100.0] | 0 | 12/48 | 2 | 13 |
+| generation_s__task_only | 5 | 2 | 5 | 5/5 [56.6, 100.0] | 0 | 15/47 | 3 | 9 |
+| generation_s__catalog | 5 | 4 | 5 | 5/5 [56.6, 100.0] | 0 | 25/47 | 3 | 6 |
+| reuse_sb__none | 5 | 2 | 5 | 5/5 [56.6, 100.0] | 0 | 31/48 | 2 | 10 |
+| reuse_sb__requirements | 5 | 1 | 5 | 5/5 [56.6, 100.0] | 2 | 1/47 | 3 | 11 |
+| reuse_sb__task_only | 5 | 1 | 5 | 5/5 [56.6, 100.0] | 0 | 16/49 | 1 | 12 |
+| reuse_sb__catalog | 5 | 3 | 5 | 5/5 [56.6, 100.0] | 0 | 13/48 | 2 | 9 |
 
 ## Fresh-control comparisons
 
-Negative failure-count differences favor the security context. The displayed range covers every possible assignment of unresolved checks; it is an identification bound, **not a confidence interval**. Per-check directions require complete measurement in both arms.
+Unit: trajectory; each arm has the N stated above. Δ full is the within-budget full-functional count difference, treatment − control (percentage points follow only when N ≥ 20). Negative failure-count differences favor the security context. The displayed range covers every possible assignment of unresolved checks; it is an identification bound, **not a confidence interval**. Per-check directions require complete measurement in both arms.
 
-| Parent | Security strategy | Full Δ, percentage points | Issue-count Δ / trajectory, bounds | Checks decreased | Equal | Increased | Unresolved |
+| Parent | Security strategy | Δ full (treatment − control) | Issue-count Δ / trajectory, bounds | Checks decreased | Equal | Increased | Unresolved |
 | --- | --- | ---: | --- | ---: | ---: | ---: | ---: |
-| generation_s | requirements | +0.0 | [-5.20, -4.80] | 6 | 3 | 0 | 1 |
-| generation_s | task_only | +0.0 | [-4.60, -4.00] | 5 | 4 | 0 | 1 |
-| generation_s | catalog | +0.0 | [-2.60, -2.00] | 2 | 7 | 0 | 1 |
-| reuse_sb | requirements | +0.0 | [-6.40, -5.40] | 6 | 3 | 0 | 1 |
-| reuse_sb | task_only | +0.0 | [-3.40, -2.80] | 5 | 3 | 1 | 1 |
-| reuse_sb | catalog | +0.0 | [-4.00, -3.20] | 5 | 3 | 1 | 1 |
+| generation_s | requirements | 0 (5−5) | [-5.20, -4.80] | 6 | 3 | 0 | 1 |
+| generation_s | task_only | 0 (5−5) | [-4.60, -4.00] | 5 | 4 | 0 | 1 |
+| generation_s | catalog | 0 (5−5) | [-2.60, -2.00] | 2 | 7 | 0 | 1 |
+| reuse_sb | requirements | 0 (5−5) | [-6.40, -5.40] | 6 | 3 | 0 | 1 |
+| reuse_sb | task_only | 0 (5−5) | [-3.40, -2.80] | 5 | 3 | 1 | 1 |
+| reuse_sb | catalog | 0 (5−5) | [-4.00, -3.20] | 5 | 3 | 1 | 1 |
 
 ## Every issue check
 
-Each cell is failed/evaluated. Denominators smaller than N indicate unresolved measurements.
+Unit: check on one trajectory; N = 5 trajectories per condition. Each cell is failed / evaluated, followed by the unresolved count wherever evaluated < N; unresolved checks are not passes and stay in the fixed denominator N.
 
 | Check | generation_s__none | generation_s__requirements | generation_s__task_only | generation_s__catalog | reuse_sb__none | reuse_sb__requirements | reuse_sb__task_only | reuse_sb__catalog |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -43,7 +45,7 @@ Each cell is failed/evaluated. Denominators smaller than N indicate unresolved m
 | malformedStoreDoesNotCrash | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 |
 | oversizedPhysicalLine | 5/5 | 3/5 | 5/5 | 0/5 | 3/5 | 1/5 | 5/5 | 5/5 |
 | nativeDeserializationCanary | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 |
-| largePersistedRecordSet | 5/5 | 0/3 | 0/2 | 0/2 | 3/3 | 0/2 | 0/4 | 0/3 |
+| largePersistedRecordSet | 5/5 | 0/3 · 2 unresolved | 0/2 · 3 unresolved | 0/2 · 3 unresolved | 3/3 · 2 unresolved | 0/2 · 3 unresolved | 0/4 · 1 unresolved | 0/3 · 2 unresolved |
 
 ## Acquired context
 

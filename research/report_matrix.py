@@ -23,8 +23,24 @@ def wilson(passes: int, attempts: int) -> tuple[float, float] | None:
     return max(0, center - radius), min(1, center + radius)
 
 
+PERCENT_MIN_N = 20  # docs/REPORTING.md: a percentage may accompany k/N only from this denominator upwards.
+
+
 def rate(p: int, n: int) -> str:
-    return f'{p}/{n} ({100 * p / n:.1f}%)' if n else '— (0 attempts)'
+    """Counts first: `k/N`, with a percentage beside it only when N >= PERCENT_MIN_N. It never replaces the counts."""
+    if not n: return '— (0 attempts)'
+    return f'{p}/{n}' + (f' ({100 * p / n:.1f}%)' if n >= PERCENT_MIN_N else '')
+
+
+def count_delta(treatment: int, n_treatment: int, control: int, n_control: int) -> str:
+    """Treatment minus control as a count difference `Δ (k−k)` at equal N; percentage points only when N >= PERCENT_MIN_N."""
+    if not n_treatment or not n_control: return '—'
+    if n_treatment != n_control:
+        pp = 100 * (treatment / n_treatment - control / n_control)
+        return f'{pp:+.1f} pp' if min(n_treatment, n_control) >= PERCENT_MIN_N else f'— (N {n_treatment} vs {n_control})'
+    delta = treatment - control
+    text = f"{'+' if delta > 0 else '−' if delta < 0 else ''}{abs(delta)} ({treatment}−{control})"
+    return text + (f' = {100 * delta / n_treatment:+.1f} pp' if n_treatment >= PERCENT_MIN_N else '')
 
 
 def interval(p: int, n: int) -> str:
@@ -58,7 +74,7 @@ def render(data: dict, created: str) -> str:
              'Generation implements the feature from target ApoMario source. Reuse also receives the ApoIcarus donor implementation and reuse-prioritizing instructions.', '',
              'The paper matrix crosses these two methods with None, S, F, B, S+F, S+B, F+B and S+F+B. Each cell has five independent code requests. None still includes the task and target source.', '',
              'The follow-up evaluates the top two functional conditions per method against fresh no-security controls and three acquired security-context strategies. Security outcomes do not select conditions.', '',
-             'Read the cell counts before interpreting percentages. Full functionality means all 16 functional checks pass on one response. Test/check totals are correlated outcomes, not additional independent replicates. Wilson intervals below apply only to the full-functionality endpoint within a cell, following the [NIST formula](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm). They assume independent draws with stable success probability in that cell; requested sampling settings remain unverified.', '']
+             f'Every rate is reported as k/N; a percentage accompanies the counts only when N ≥ {PERCENT_MIN_N} (docs/REPORTING.md). Full functionality means all 16 functional checks pass on one response. Test/check totals are correlated outcomes, not additional independent replicates. Wilson intervals below apply only to the full-functionality endpoint within a cell, following the [NIST formula](https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm). They assume independent draws with stable success probability in that cell; requested sampling settings remain unverified.', '']
     for study in data['studies']:
         plan, summary = study['plan'], study['summary']
         rows = {r['id']: r for r in summary['conditions']}
@@ -73,7 +89,9 @@ def render(data: dict, created: str) -> str:
             # per-test tables below; they are not a separate headline column.
             suites = [rate(sum(t['pass'] for t in r['checks'] if t['suite'] == suite), count * r['attempts']) for suite, count in [('unit', 7), ('autonomous', 5), ('security_v1', 11)]]
             overview.append([c['id'], rate(r['compiled'], r['attempts']), rate(r['fullFunctional'], r['attempts']), interval(r['fullFunctional'], r['attempts']), *suites])
-        lines += [table(['Condition', 'Game compiled', 'Fully functional', '95% Wilson interval', 'Unit passes / 7n', 'Autonomous passes / 5n', 'Security passes / 11n'], overview), '']
+        unit = plan.get('observationUnit') or 'attempt'
+        lines += [f'Unit: {unit}; n = attempts recorded per condition, shown as the denominator of every cell. Check columns use fixed denominators (7n, 5n, 11n).', '',
+                  table(['Condition', 'Game compiled', 'Fully functional', 'Wilson 95% for fully functional', 'Unit passes / 7n', 'Autonomous passes / 5n', 'Security passes / 11n'], overview), '']
         if plan['phase'] == 'screening':
             lines += ['### Functional selection', '', 'Rule: ' + '; '.join(plan['selection']['order']) + '.', '']
             if summary['complete']:
@@ -88,17 +106,18 @@ def render(data: dict, created: str) -> str:
                 [a['method'], a['strategy'], a['id'], a['items'], f"{a['citationChecks']['matched']}/{a['citationChecks']['total']}", a['citationChecks']['uncitedItems'], a['status']] for a in plan['acquisitions']]), '',
                 'Each context is acquired once and reused across that method’s selected paper contexts and code repetitions. Citation matching checks exact inspected source text; it does not prove the security claim.', '']
         if plan['phase'] == 'security_followup':
-            lines += ['### Security differences from fresh controls', '', 'Treatment minus the matching follow-up control, in percentage points (pp). Responses are independent; matching repetition labels do not imply shared model seeds. These are descriptive differences without a multiplicity-adjusted significance claim.', '']
+            lines += ['### Security differences from fresh controls', '', f'Treatment minus the matching follow-up control as a count difference, Δ (treatment − control), at equal denominators; percentage points follow only when N ≥ {PERCENT_MIN_N} (docs/REPORTING.md). Unit: attempt; tested = attempts with an executed check. Responses are independent; matching repetition labels do not imply shared model seeds. These are descriptive differences without a multiplicity-adjusted significance claim.', '']
             all_comparisons = list(comparisons(study))
             for parent in plan['selected']:
                 lines += [f'#### {parent}', '']
                 for kind in ('functional', 'security'):
-                    lines += [f'{kind.capitalize()} checks:', '', table(['Test', 'Security case', 'Control pass / tested', 'Treatment pass / tested', 'Control pass / attempts', 'Treatment pass / attempts', 'Δ tested pp', 'Δ all attempts pp'], [
+                    lines += [f'{kind.capitalize()} checks:', '', table(['Test', 'Security case', 'Control pass / tested', 'Treatment pass / tested', 'Control pass / attempts', 'Treatment pass / attempts', 'Δ passes, tested (k−k)', 'Δ passes, all attempts (k−k)'], [
                         [c['test'], c['securityStrategy'], rate(c['controlCounts']['pass'], c['controlCounts']['executed']), rate(c['treatmentCounts']['pass'], c['treatmentCounts']['executed']),
                          rate(c['controlCounts']['pass'], c['controlCounts']['attempts']), rate(c['treatmentCounts']['pass'], c['treatmentCounts']['attempts']),
-                         '—' if c['testedDeltaPp'] is None else f"{c['testedDeltaPp']:+.1f}", '—' if c['allAttemptDeltaPp'] is None else f"{c['allAttemptDeltaPp']:+.1f}"]
+                         count_delta(c['treatmentCounts']['pass'], c['treatmentCounts']['executed'], c['controlCounts']['pass'], c['controlCounts']['executed']),
+                         count_delta(c['treatmentCounts']['pass'], c['treatmentCounts']['attempts'], c['controlCounts']['pass'], c['controlCounts']['attempts'])]
                         for c in all_comparisons if c['parentCondition'] == parent and c['kind'] == kind]), '']
-        lines += ['### Every test by condition', '', 'Counts preserve pass, fail and unresolved outcomes. Pass/tested conditions on execution; pass/attempt retains every recorded model attempt.', '']
+        lines += ['### Every test by condition', '', 'Unit: check; n = attempts in the condition. Counts preserve pass, fail and unresolved outcomes. Pass/tested conditions on execution; pass/attempt retains every recorded model attempt.', '']
         for c in plan['conditions']:
             lines += [f"#### {c['id']}", '', table(['Test', 'Pass', 'Fail', 'Not run', 'Unknown', 'Compile error', 'Environment error', 'Pass / tested', 'Pass / attempts'], [
                 [t['id'], t['pass'], t['fail'], t['not_run'], t['unknown'], t['compile_error'], t['infrastructure_error'], rate(t['pass'], t['executed']), rate(t['pass'], t['attempts'])] for t in rows[c['id']]['checks']]), '']

@@ -1,5 +1,5 @@
 import unittest
-from research.scientific_summary import ISSUES, summarize, wilson
+from research.scientific_summary import ISSUES, render, summarize, wilson
 
 
 def study_fixture():
@@ -38,6 +38,21 @@ class ScientificSummaryTests(unittest.TestCase):
         self.assertEqual(comparison['failureCountDeltaIdentificationBoundsPerTrajectory'], [-10., -10.])
         self.assertEqual(comparison['perCheckDirections']['decreased'], 10)
         self.assertEqual(report['conditions'][1]['withinBudgetFullWilson95'], wilson(2, 2))
+
+    def test_markdown_shows_counts_before_intervals_and_count_differences(self):
+        report = summarize(study_fixture())
+        self.assertEqual(report['comparisons'][0]['withinBudgetFullCountDelta'], -2)
+        self.assertEqual(report['comparisons'][0]['firstFullCountDelta'], -2)
+        self.assertEqual((report['comparisons'][0]['treatmentN'], report['comparisons'][0]['controlN']), (2, 2))
+        text = render('fixture', report)
+        self.assertIn('Unit: trajectory; N = 2 trajectories per condition', text)
+        self.assertIn('| none | 2 | 2 | 2 | 2/2 [34.2, 100.0] |', text)
+        self.assertIn('| requirements | 2 | 0 | 0 | 0/2 [0.0, 65.8] |', text)
+        self.assertNotIn('100.0% [', text)
+        self.assertNotIn('percentage points |', text)
+        self.assertIn('| generation_sfb | requirements | −2 (0−2) | [-10.00, +0.00] |', text)
+        self.assertIn('| rejectsNullName | 2/2 | 0/0 · 2 unresolved |', text)
+        self.assertTrue(render('fixture', report, 'qualified-', {'meaning': 'Qualified.'}).startswith('# fixture: qualified per-test effects and uncertainty\n\nQualified.\n'))
 
     def test_partial_schedules_do_not_get_final_intervals(self):
         study = study_fixture(); study['summary']['complete'] = False

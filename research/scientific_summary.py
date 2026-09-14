@@ -14,6 +14,7 @@ from pathlib import Path
 
 from research.import_evidence import ROOT, canonical, digest
 from research.iteration_results import read_study
+from research.report_matrix import PERCENT_MIN_N, count_delta, rate
 
 WILSON_SOURCE = 'https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm'
 ISSUES = {
@@ -87,6 +88,8 @@ def summarize(study):
         lower = issues['failed'] / n - (base_issues['failed'] + base_issues['unresolved']) / bn
         upper = (issues['failed'] + issues['unresolved']) / n - base_issues['failed'] / bn
         comparisons.append({'parent': condition['parentCondition'], 'control': control['id'], 'treatment': condition['id'], 'securityStrategy': condition['securityStrategy'],
+            'treatmentN': n, 'controlN': bn,
+            'withinBudgetFullCountDelta': full - base['fullFunctional'], 'firstFullCountDelta': first - base['firstFullFunctional'],
             'functionalRateDelta': full / n - base['fullFunctional'] / bn,
             'firstFunctionalRateDelta': first / n - base['firstFullFunctional'] / bn,
             'failureCountDeltaIdentificationBoundsPerTrajectory': [lower, upper],
@@ -129,26 +132,37 @@ def save(identifier, qualified=False):
     (directory / f'{prefix}analysis.json').write_bytes(canonical(result))
     (directory / f'{prefix}per-test.csv').write_bytes(csv_bytes(result['perTest']))
     (directory / f'{prefix}security-effects.csv').write_bytes(csv_bytes([{'parent': c['parent'], 'strategy': c['securityStrategy'], **t} for c in result['comparisons'] for t in c['tests']]))
-    lines = [f'# {identifier}: {"qualified " if qualified else ""}per-test effects and uncertainty', '',
+    (directory / f'{prefix}analysis.md').write_text(render(identifier, result, prefix, metadata))
+    print(f"Saved {len(result['conditions'])} conditions, {len(result['perTest'])} test-rate rows and {len(result['comparisons']) * len(ISSUES)} issue comparisons")
+    return result
+
+
+def render(identifier, result, prefix='', metadata=None) -> str:
+    """Markdown under the counts-first standard (docs/REPORTING.md): k/N before any interval, count differences, units and N stated."""
+    by_condition = {c['condition']: c for c in result['conditions']}
+    sizes = ', '.join(str(n) for n in sorted({c['n'] for c in result['conditions']}))
+    lines = [f'# {identifier}: {"qualified " if prefix else ""}per-test effects and uncertainty', '',
         'All scheduled trajectories are included. First-submission and within-budget success use the full trajectory denominator; rejected edits and transport failures are retained.', '',
-        '| Condition | N | First full | Within-budget full | Full rate, Wilson 95% | Joint functional + all 11 security | Issue failures / evaluated | Unresolved | Calls |',
+        f'Unit: trajectory; N = {sizes} trajectories per condition. Every rate is k/N and a percentage accompanies it only when N ≥ {PERCENT_MIN_N} (docs/REPORTING.md). Issue checks use the fixed denominator 10 × N; unresolved checks are counted separately and are never passes. The Wilson 95% interval (in %) is given only for the within-budget full-functional endpoint, beside its k/N.', '',
+        '| Condition | N | First full | Within-budget full | Within-budget full k/N [Wilson 95%, %] | Joint functional + all 11 security | Issue failures / evaluated | Unresolved | Calls |',
         '| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | ---: |']
     if metadata: lines[2:2] = [metadata['meaning'], '']
     for c in result['conditions']:
         lo, hi = c['withinBudgetFullWilson95']; issues = c['issues']
-        lines.append(f"| {c['condition']} | {c['n']} | {c['firstFull']} | {c['withinBudgetFull']} | {100*c['withinBudgetFullRate']:.1f}% [{100*lo:.1f}, {100*hi:.1f}] | {c['functionalAndAllDeclaredSecurityPass']} | {issues['failed']}/{issues['evaluated']} | {issues['unresolved']} | {c['modelSubmissions']} |")
+        lines.append(f"| {c['condition']} | {c['n']} | {c['firstFull']} | {c['withinBudgetFull']} | {rate(c['withinBudgetFull'], c['n'])} [{100*lo:.1f}, {100*hi:.1f}] | {c['functionalAndAllDeclaredSecurityPass']} | {issues['failed']}/{issues['evaluated']} | {issues['unresolved']} | {c['modelSubmissions']} |")
     lines += ['', '## Fresh-control comparisons', '',
-        'Negative failure-count differences favor the security context. The displayed range covers every possible assignment of unresolved checks; it is an identification bound, **not a confidence interval**. Per-check directions require complete measurement in both arms.', '',
-        '| Parent | Security strategy | Full Δ, percentage points | Issue-count Δ / trajectory, bounds | Checks decreased | Equal | Increased | Unresolved |',
+        f'Unit: trajectory; each arm has the N stated above. Δ full is the within-budget full-functional count difference, treatment − control (percentage points follow only when N ≥ {PERCENT_MIN_N}). Negative failure-count differences favor the security context. The displayed range covers every possible assignment of unresolved checks; it is an identification bound, **not a confidence interval**. Per-check directions require complete measurement in both arms.', '',
+        '| Parent | Security strategy | Δ full (treatment − control) | Issue-count Δ / trajectory, bounds | Checks decreased | Equal | Increased | Unresolved |',
         '| --- | --- | ---: | --- | ---: | ---: | ---: | ---: |']
     for c in result['comparisons']:
         lo, hi = c['failureCountDeltaIdentificationBoundsPerTrajectory']; d = c['perCheckDirections']
-        lines.append(f"| {c['parent']} | {c['securityStrategy']} | {100*c['functionalRateDelta']:+.1f} | [{lo:+.2f}, {hi:+.2f}] | {d['decreased']} | {d['equal']} | {d['increased']} | {d['unresolved']} |")
-    lines += ['', '## Every issue check', '', 'Each cell is failed/evaluated. Denominators smaller than N indicate unresolved measurements.', '',
+        treatment, control = by_condition[c['treatment']], by_condition[c['control']]
+        lines.append(f"| {c['parent']} | {c['securityStrategy']} | {count_delta(treatment['withinBudgetFull'], treatment['n'], control['withinBudgetFull'], control['n'])} | [{lo:+.2f}, {hi:+.2f}] | {d['decreased']} | {d['equal']} | {d['increased']} | {d['unresolved']} |")
+    lines += ['', '## Every issue check', '', f'Unit: check on one trajectory; N = {sizes} trajectories per condition. Each cell is failed / evaluated, followed by the unresolved count wherever evaluated < N; unresolved checks are not passes and stay in the fixed denominator N.', '',
         '| Check | ' + ' | '.join(c['condition'] for c in result['conditions']) + ' |', '| --- | ' + ' | '.join('---:' for _ in result['conditions']) + ' |']
     for name in ISSUES:
         cells = [next(t for t in result['perTest'] if t['condition'] == c['condition'] and t['suite'] == 'security_v1' and t['test'] == name) for c in result['conditions']]
-        lines.append('| ' + name + ' | ' + ' | '.join(f"{t['failed']}/{t['evaluated']}" for t in cells) + ' |')
+        lines.append('| ' + name + ' | ' + ' | '.join(f"{t['failed']}/{t['evaluated']}" + (f" · {t['unresolved']} unresolved" if t['unresolved'] else '') for t in cells) + ' |')
     lines += ['', '## Acquired context', '', '| Method | Strategy | Items | Recommendations | Unknowns | Model turns | Inspected files | Insert characters |', '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |']
     for a in result['acquisitions']:
         kinds = a['citationChecks']['itemsByKind']
@@ -157,9 +171,7 @@ def save(identifier, qualified=False):
         f"Individual rate intervals use the [Wilson method described by NIST]({WILSON_SOURCE}). They describe uncertainty conditional on this fixed task and acquired context; they do not establish generalization across repositories or independently acquired contexts.", '',
         result['methods']['scope'], '', result['methods']['unit'], '',
         f'The complete per-test rates and intervals are in `{prefix}per-test.csv`; all fresh-control check effects are in `{prefix}security-effects.csv`. Exact values and context provenance are in `{prefix}analysis.json`. Context prompt inserts remain in `contexts/`. No results are selected for omission, and no significance claim is inferred from a favorable count.', '']
-    (directory / f'{prefix}analysis.md').write_text('\n'.join(lines))
-    print(f"Saved {len(result['conditions'])} conditions, {len(result['perTest'])} test-rate rows and {len(result['comparisons']) * len(ISSUES)} issue comparisons")
-    return result
+    return '\n'.join(lines)
 
 
 if __name__ == '__main__':

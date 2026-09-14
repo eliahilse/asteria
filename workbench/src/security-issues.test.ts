@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { securityIssues, combinationRows } from './combination-stats';
+import { PERCENT_MIN_N, combinationRows, fraction, fractionText, fractionValue, percentAllowed, percentText, securityIssues } from './combination-stats';
 import type { MatrixData } from './experiment-types';
 
 function fixture() {
@@ -44,4 +44,28 @@ test('count changes require equal attempts and no pending requests, and replay h
   expect(securityIssues(treatment, control).delta).toBeNull();
   const { data } = fixture();
   expect(combinationRows(data).every(r => r.issues.delta === null && !r.issues.hasControl)).toBe(true);
+});
+
+test('quality cells keep numerator and denominator, and percentages never replace them', () => {
+  const { data, summary } = fixture();
+  const row = combinationRows(data).find(r => r.condition === summary.id)!;
+  expect(row.attempts).toBe(5);
+  expect(row.stats.compiled).toEqual({ numerator: summary.compiled, denominator: 5 });
+  expect(row.stats.unit).toEqual({ numerator: 35, denominator: 35, units: 5 });
+  expect(row.stats.autonomous).toEqual({ numerator: 25, denominator: 25, units: 5 });
+  expect(fractionText(row.stats.unit)).toBe('35/35');
+  // 28/35 checks rest on five correlated artifacts: no percentage, whereas 16/20 trajectories may carry one.
+  expect(percentAllowed(row.stats.unit)).toBe(false);
+  expect(percentAllowed(fraction(28, 35, { units: 5 }))).toBe(false);
+  expect(percentAllowed(fraction(4, 5))).toBe(false);
+  expect(percentAllowed(fraction(16, 20))).toBe(true);
+  expect(fractionText(fraction(4, 5))).toBe('4/5');
+  expect(fractionText(fraction(2, 3, { unresolved: 4 }))).toBe('2/3; 4 unresolved');
+  expect(fractionValue(fraction(4, 5))).toBe(0.8);
+  expect(percentText(fraction(4, 5))).toBe('80.0%');
+  // An empty rate is not zero.
+  expect(fractionText(fraction(0, 0))).toBeNull();
+  expect(fractionValue(fraction(0, 0))).toBeNull();
+  expect(percentText(fraction(0, 0))).toBeNull();
+  expect(PERCENT_MIN_N).toBe(20);
 });

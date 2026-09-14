@@ -29,6 +29,7 @@ reports every check as failed / unresolved / passed out of a fixed N, and the
 explains the mechanism each artifact used for each check, with cited lines and a
 [catalog of excerpts](research/iterations/i07-operational-replication/issue-catalog.md).
 Checks are described in CWE terms in [`research/security/CWE_MAPPING.md`](research/security/CWE_MAPPING.md).
+All tables follow the counts-first standard in [`docs/REPORTING.md`](docs/REPORTING.md).
 [I09](research/iterations/i09-generic-acquisition/findings.md) compares a task-only
 instruction and a [CWE Top 25 catalog](research/security/cwe-top25-2025.json)
 instruction against fresh controls and the fixed requirements insert: 40/40 full

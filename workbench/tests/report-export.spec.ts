@@ -15,6 +15,15 @@ test('downloads the report layout separately from the detailed XLSX', async ({ p
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile((await file.path())!);
   expect(workbook.getWorksheet('Compile Rate')).toBeDefined();
+  // Counts first (docs/REPORTING.md): k/N text beside the numeric fraction; N = 5 cells carry no percentage format.
+  expect(workbook.getWorksheet('Compile Rate')!.getRow(1).values).toContain('S (fraction)');
+  const reuseB = workbook.getWorksheet('Compile Rate')!.getRows(2, 9)!.find(r => r.getCell(3).value === 'Reuse' && r.getCell(4).value === 'none')!;
+  expect(reuseB.getCell(11).value).toBe('4/5');
+  expect(reuseB.getCell(12).value).toBe(0.8);
+  expect(reuseB.getCell(12).numFmt).not.toBe('0.0%');
+  const overview = workbook.getWorksheet('Overview')!;
+  expect(overview.getRow(11).values).toEqual([undefined, 'Overall compile', '78/80', 0.975]);
+  expect(overview.getRow(11).getCell(3).numFmt).toBe('0.0%');
   expect(workbook.getWorksheet('Per-Test Breakdown')).toBeDefined();
   expect(workbook.getWorksheet('Raw Data')!.rowCount).toBe(81);
   expect(workbook.getWorksheet('Security Issues')!.rowCount).toBe(17);

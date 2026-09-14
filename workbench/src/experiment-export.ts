@@ -2,7 +2,7 @@ import ExcelJS from 'exceljs';
 import type { MatrixData } from './experiment';
 import { textChunks } from './export';
 import { matrixComparisons } from './experiment-analysis';
-import { combinationRows, statColumns } from './combination-stats';
+import { combinationRows, fractionValue, statColumns } from './combination-stats';
 import { wilson } from './analysis';
 import { reportWorkbook } from './report-workbook';
 type Row = Record<string, string | number | boolean | null | undefined>;
@@ -15,7 +15,9 @@ export function experimentWorkbook(data: MatrixData) {
     s.getRow(1).font = { bold: true }; return s;
   };
   sheet('Combinations', combinationRows(data).map(r => ({ study: r.study, cohort: r.phase, method: r.method, paper_context: r.paper.join('+') || 'None', security_strategy: r.security,
-    ...Object.fromEntries(statColumns.map(c => [c.label, r.values[c.key]])), security_issues_detected: r.issues.detected,
+    // Counts first (docs/REPORTING.md): numerator and denominator for every stat, with the numeric fraction beside them.
+    N: r.attempts, ...Object.fromEntries(statColumns.filter(c => c.format === 'fraction').flatMap(c => { const f = r.stats[c.key]; return [[`${c.key}_numerator`, f.numerator], [`${c.key}_denominator`, f.denominator], [`${c.key}_fraction`, fractionValue(f)]]; })),
+    security_issues_detected: r.issues.detected,
     security_checks_evaluated: r.issues.evaluated, security_issues_unresolved: r.issues.unresolved, security_issues_expected: r.issues.expected, security_issues_delta: r.issues.delta,
     issue_count_delta_lower_bound: r.issues.deltaBounds?.[0], issue_count_delta_upper_bound: r.issues.deltaBounds?.[1] })));
   sheet('Studies', data.studies.map(s => ({ id: s.plan.id, phase: s.plan.phase, manifest_sha256: s.plan.fingerprint, model: s.plan.model, requested_reasoning: s.plan.reasoning, complete: s.summary.complete, selected: s.summary.selected.join(', '), deviations: s.plan.deviations.join('\n') })));

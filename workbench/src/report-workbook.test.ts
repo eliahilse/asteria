@@ -17,13 +17,44 @@ it('recreates the report sheets with numeric values, context columns, and blank 
   const perTest = loaded.getWorksheet('Per-Test Breakdown')!;
   expect(perTest.getRows(2, perTest.rowCount - 1)!.some(r => r.getCell(5).value === 'Invoked (coupling)')).toBe(true);
   expect(loaded.getWorksheet('Raw Data')!.getRow(1).values).toContain('Invoked P');
+  expect(loaded.getWorksheet('Raw Data')!.getRow(1).values).toContain('Combined (fraction)');
+  // Counts first (docs/REPORTING.md): every rate is a k/N text cell with its numeric fraction beside it.
   const compile = loaded.getWorksheet('Compile Rate')!;
-  expect(compile.getRow(1).values).toEqual([undefined, 'Study', 'Task', 'Method', 'Security strategy', 'None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B', 'Overall']);
+  const contexts = ['None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B', 'Overall'];
+  expect(compile.getRow(1).values).toEqual([undefined, 'Study', 'Task', 'Method', 'Security strategy', ...contexts.flatMap(c => [c, `${c} (fraction)`])]);
   const generation = compile.getRows(2, compile.rowCount - 1)!.find(r => r.getCell(3).value === 'Generation' && r.getCell(4).value === 'none')!;
   expect(generation.getCell(5).value).toBeNull();
-  expect(generation.getCell(6).value).toBe(1);
-  expect(generation.getCell(6).numFmt).toBe('0.0%');
+  expect(generation.getCell(6).value).toBeNull();
+  expect(generation.getCell(7).value).toBe('5/5');
+  expect(generation.getCell(8).value).toBe(1);
+  // N = 5 is below the percentage threshold: the fraction stays a plain number.
+  expect(generation.getCell(8).numFmt).not.toBe('0.0%');
+  expect(generation.getCell(21).value).toBe('10/10');
+  expect(generation.getCell(22).value).toBe(1);
   expect(compile.views[0].state).toBe('frozen');
+  expect(compile.getCell(compile.rowCount, 1).value).toMatch(/^Observation unit: trajectory/);
+  const overview = loaded.getWorksheet('Overview')!;
+  const summary = (label: string) => { let found: ExcelJS.Row | undefined; overview.eachRow(r => { if (r.getCell(1).value === label) found = r; }); return found!; };
+  expect(summary('Overall compile').getCell(2).value).toBe('78/80');
+  expect(summary('Overall compile').getCell(3).value).toBeCloseTo(0.975);
+  expect(summary('Overall compile').getCell(3).numFmt).toBe('0.0%');
+  expect(summary('Fully functional / all runs').getCell(2).value).toBe('74/80');
+  expect(summary('Unit').getCell(2).value).toBe('546/546');
+  expect(summary('Unit').getCell(3).numFmt).toBe('0.0%');
+  expect(summary('Unit').getCell(4).value).toBe(0);
+  // 78/80 evaluated checks rest on five trajectories: counts, no percentage format.
+  const pass = loaded.getWorksheet('Pass Rate')!;
+  const reuseBoundaries = pass.getRows(2, pass.rowCount - 1)!.find(r => r.getCell(3).value === 'Reuse' && r.getCell(4).value === 'boundaries')!;
+  expect(reuseBoundaries.getCell(11).value).toBe('78/80');
+  expect(reuseBoundaries.getCell(12).value).toBeCloseTo(0.975);
+  expect(reuseBoundaries.getCell(12).numFmt).not.toBe('0.0%');
+  expect(overview.getRow(20).values).toEqual([undefined, 'Test Type', 'Pass rate', 'Pass rate (fraction)', 'Unresolved']);
+  expect(perTest.getCell(1, 7).note).toMatch(/^Observation unit: check/);
+  expect(perTest.getCell(2, 13).value).toBe('5/5');
+  expect(perTest.getCell(2, 13).note).toBe('5 passed / 5 evaluated; 0 failed; 0 unresolved on compiled runs.');
+  const effects = loaded.getWorksheet('Context Effect')!;
+  expect(effects.getRow(3).values).toContain('Delta compile (fraction difference)');
+  expect(effects.getRow(3).values).not.toContain('Compile% present');
   expect(loaded.getWorksheet('Raw Data')!.rowCount).toBe(81);
   expect(loaded.getWorksheet('Per-Test Breakdown')!.rowCount).toBe(129);
   const raw = loaded.getWorksheet('Raw Data')!;
@@ -45,6 +76,11 @@ it('recreates the report sheets with numeric values, context columns, and blank 
   const qualification = provenance.getRows(2, provenance.rowCount - 1)!.find(r => r.getCell(2).value === 'Changed measurements')!;
   expect(qualification.getCell(3).value).toBe(16);
   expect(provenance.getRows(2, provenance.rowCount - 1)!.find(r => r.getCell(2).value === 'Test tiers')!.getCell(3).value).toMatch(/not reported as a separate tier/);
+  expect(provenance.getRows(2, provenance.rowCount - 1)!.find(r => r.getCell(2).value === 'Reporting standard')!.getCell(3).value).toMatch(/docs\/REPORTING\.md/);
+  const checks = loaded.getWorksheet('Security Checks')!;
+  expect(checks.getRow(1).values).toContain('Fail rate (fraction)');
+  expect(checks.getRow(2).getCell(14).value).toBe('0/5');
+  expect(checks.getRow(2).getCell(15).value).toBe(0);
 });
 
 it('reports every issue check against the fixed denominator with unresolved reasons', async () => {
@@ -93,7 +129,7 @@ it('leaves planned-but-unobserved report rates blank', async () => {
   const wb = reportWorkbook(data);
   expect(wb.getWorksheet('Raw Data')!.rowCount).toBe(1);
   const compile = wb.getWorksheet('Compile Rate')!;
-  compile.eachRow((row, i) => { if (i > 1) for (let column = 5; column <= 13; column++) expect(row.getCell(column).value).toBeNull(); });
+  compile.eachRow((row, i) => { if (i > 1 && typeof row.getCell(1).value !== 'string') for (let column = 5; column <= 22; column++) expect(row.getCell(column).value).toBeNull(); });
   const matrix = wb.getWorksheet('Issue Matrix')!;
   expect(matrix.getRow(13).getCell(2).value).toBe('Total (10 issue checks)');
   for (let column = 4; column <= matrix.columnCount; column++) expect(matrix.getRow(13).getCell(column).value).toBeNull();

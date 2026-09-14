@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
-import { allRunPassRate, compileRate, functionalCounts, reportGroups, suiteOutcome, type ReportEntry } from './report-data';
+import { allRunPassCounts, allRunPassRate, compileCounts, compileRate, functionalCounts, passCounts, reportGroups, suiteOutcome, type ReportEntry } from './report-data';
+import { fractionText, fractionValue } from './combination-stats';
 import type { MatrixData, MatrixRun } from './experiment-types';
 
 const run = (id: string, compilation: string | null, statuses: string[]): MatrixRun => ({
@@ -18,6 +19,13 @@ it('separates measured pass rates, unknown coverage, and all-run denominators', 
   expect(suiteOutcome(entries[1], 'unit')).toBe('game compile-fail');
   expect(suiteOutcome(entries[2], 'unit')).toBe('not evaluated');
   expect(functionalCounts([], 'unit').rate).toBeNull();
+  // Counts first: the report tables receive numerator, denominator and the unresolved count together.
+  expect(compileCounts(entries)).toEqual({ numerator: 1, denominator: 3 });
+  expect(passCounts(entries, 'unit')).toEqual({ numerator: 2, denominator: 3, unresolved: 4, units: 3 });
+  expect(fractionText(passCounts(entries, 'unit'))).toBe('2/3; 4 unresolved');
+  expect(allRunPassCounts(entries)).toEqual({ numerator: 2, denominator: 48, units: 3 });
+  expect(fractionValue(allRunPassCounts(entries))).toBe(2 / 48);
+  expect(fractionText(passCounts([], 'unit'))).toBeNull();
 });
 
 it('computes overall rates from counts rather than averaging context percentages', () => {
