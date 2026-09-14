@@ -34,8 +34,8 @@ from research.security_followup import acquisition_task, repository_input
 PROTOCOL = 'agentic-delivery-v1'
 EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once')
-GATE_KINDS = ('gate', 'coach', 'gate_once')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
+SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once', 'rewind')
+GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
 ACTIONS = ('search', 'read', 'submit_feature_changes')
 DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS]  # judge arms are requested explicitly
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
@@ -304,7 +304,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         if text is not None and not isinstance(text, str): raise SidecarError('judge text must be a string or None')
         event = {'turn': turn_number, 'stage': 'gate', 'submission': submission_number, 'consulted': bool(verdict.get('consulted')), 'intervene': verdict['intervene'],
                  'injected': verdict['intervene'] and bool(text), 'ids': list(verdict.get('ids') or []), 'reason': verdict.get('reason'), 'touchedFiles': sorted(files_touched),
-                 'transcript': verdict.get('transcript'), **{k: verdict[k] for k in ('wouldIntervene', 'verdictIntervene', 'citedIds', 'quoted', 'unquoted') if k in verdict}}
+                 'transcript': verdict.get('transcript'), **{k: verdict[k] for k in ('wouldIntervene', 'verdictIntervene', 'citedIds', 'quoted', 'unquoted', 'rewind') if k in verdict}}
         if event['injected']: event.update(sha256=digest(text.encode()), characters=len(text))
         advice = verdict.get('advice')
         if advice is not None and not isinstance(advice, str): raise SidecarError('judge advice must be a string or None')
@@ -318,13 +318,16 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             if text is not None and not isinstance(text, str): raise SidecarError('initial must return a string or None')
             record['staticInsert'] = {'sha256': condition['contextInsertSha256'], 'sidecarConfirmed': None if text is None else digest(text.encode()) == condition['contextInsertSha256']}
             if record['staticInsert']['sidecarConfirmed'] is False: raise SidecarError('initial() differs from the frozen static insert')
-        pending = 'before_submit'
+        pending = 'before_submit'; checkpoints = {}; record['rewinds'] = []
         while True:
             if turn_number >= max_turns: record.update(status='budget_exhausted', budgetLimit='turns'); break
             if pending == 'before_submit':
                 text = consult('before_submit'); pending = None
                 if text: messages.append({'role': 'user', 'content': text})
             turn_number += 1
+            # Conversation and working state before this turn's request; a rewind restores one of these.
+            checkpoints[turn_number] = {'messages': list(messages), 'files': dict(files), 'touched': {'files': set(touched['files']), 'symbols': set(touched['symbols']),
+                                        'queries': list(touched['queries']), 'ranges': {k: [list(s) for s in v] for k, v in touched['ranges'].items()}}}
             if mode == 'single_shot':
                 submission_number += 1
                 request_id, tools, name = f'{run_id}-s{submission_number}', [TOOL], 'submit_feature_changes'
@@ -397,6 +400,22 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             else:
                 verdict = gate(changes, pre_edit); advice = None
                 if verdict is not None and not verdict['intervene']: advice = verdict.get('advice') or None
+                if verdict is not None and verdict.get('rewind'):
+                    # Rewind: discard the offending submission and the `rewind` tool turns before it, restore that state, and inject the verdict there.
+                    steps = int(verdict['rewind']); target = max(1, turn_number - steps); checkpoint = checkpoints[target]
+                    submission.update(status='rewound_by_sidecar', feedback={'deliveryError': 'Submission rewound by the security sidecar: ' + str(verdict.get('reason') or ''), 'applied': False})
+                    for past in record['turns']:
+                        if target <= past['number'] <= turn_number: past['discarded'] = True
+                    messages[:] = checkpoint['messages']; files = dict(checkpoint['files'])
+                    touched['files'], touched['symbols'], touched['queries'] = set(checkpoint['touched']['files']), set(checkpoint['touched']['symbols']), list(checkpoint['touched']['queries'])
+                    touched['ranges'] = {k: [list(s) for s in v] for k, v in checkpoint['touched']['ranges'].items()}
+                    text = (verdict.get('text') or '') + f'\n{max_submissions - submission_number} submissions remain. {max_turns - turn_number} tool turns remain.'
+                    messages.append({'role': 'user', 'content': text})
+                    record['rewinds'].append({'submission': submission_number, 'fromTurn': turn_number, 'toTurn': target, 'discardedTurns': list(range(target, turn_number + 1)), 'characters': len(text), 'sha256': digest(text.encode())})
+                    for event in reversed(record['sidecarEvents']):
+                        if event.get('stage') == 'gate' and event.get('submission') == submission_number: event.update(rewound=True, injected=True, sha256=digest(text.encode()), characters=len(text)); break
+                    if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
+                    write_atomic(path, record); continue
                 if verdict is not None and verdict['intervene']:
                     submission['status'] = 'rejected_by_sidecar'
                     feedback = {'deliveryError': 'Submission rejected by the security sidecar: ' + str(verdict.get('reason') or ''), 'applied': False, 'securityContext': verdict.get('text')}
@@ -486,6 +505,7 @@ def summary(manifest_dir: Path) -> dict:
             'gateInterventions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('intervene')) for r in records]),
             'gatePositiveVerdicts': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('wouldIntervene')) for r in records]),
             'coachedSubmissions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('advice')) for r in records]),
+            'rewinds': counts([len(r.get('rewinds') or []) for r in records]),
             'trajectoriesWithInjection': ratio(sum(any(e['injected'] for e in r['sidecarEvents']) for r in records)),
             'statuses': statuses}
     return {'id': plan['id'], 'protocol': plan['protocol'], 'maxTurns': plan['maxTurns'], 'maxSubmissions': plan['maxSubmissions'],

@@ -144,6 +144,37 @@ class GraphSidecarTests(unittest.TestCase):
         self.assertIn('SUBMISSION REJECTED', requests[1]['messages'][-1]['content']); self.assertIn('SECURITY CONTEXT FOR THIS SUBMISSION', requests[2]['messages'][-1]['content'])
         self.assertNotIn('SECURITY CONTEXT FOR THIS SUBMISSION', requests[2]['messages'][-1]['content'].split('SECURITY CONTEXT FOR THIS SUBMISSION', 1)[1])
 
+    def test_rewind_policy_restores_state_two_turns_back_and_injects_the_verdict(self):
+        level_file = 'ApoMario/src/apoMario/level/ApoMarioLevel.java'; symbol = 'apoMario.level.ApoMarioLevel'
+        doc = {'angle': 'dataflow', 'summary': 'S', 'limitations': [], 'assets': [], 'boundaries': [],
+               'items': [item('R1', 'requirement', 'task', [], enforcement_point=anchor(symbol, 1, 3, level_file)),
+                         item('C1', 'control', 'reasoned', [], ['R1'], enforcement_point=anchor(symbol, 1, 3, level_file), failure_behavior='reject')]}
+        model = {'symbols': [{'id': symbol, 'file': level_file, 'start': 1, 'end': 3, 'sinks': []}], 'edges': []}
+        (self.directory / 'generation-dataflow.graph.json').write_bytes(canonical(context_graph.build(doc, model)))
+        positive = {'intervene': True, 'statement_ids': ['C1'], 'quoted_lines': ['int preserved; int added;'], 'reason': 'violation'}
+        script = iter([positive, positive])
+
+        def fake(command, request, timeout):
+            return {'protocol_version': 1, 'request_id': request['request_id'], 'model': request['model'], 'settings': None, 'finish_reason': 'stop', 'output_text': json.dumps(next(script)), 'usage': {}, 'cost_usd': None}
+        sidecar = graph_sidecar.GateSidecar(self.directory, command=['j'], policy='auto')
+        with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=fake):
+            fixture = Fixture(Path(temporary))
+            for c in fixture.conditions:
+                if c['sidecar'] == 'adaptive': c['sidecar'] = 'rewind'; c['id'] = c['id'].replace('adaptive', 'rewind')
+            for row in fixture.plan['schedule']: row['condition'] = row['condition'].replace('adaptive', 'rewind'); row['runId'] = row['runId'].replace('adaptive', 'rewind')
+            actions = [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 2}]), act('search', query='name'), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes())]
+            record, requests = fixture.run('agentic', 'rewind', actions, [report(True)], sidecar)
+        self.assertEqual([s['status'] for s in record['submissions']], ['rewound_by_sidecar', 'evaluated']); self.assertTrue(record['functionalSuccess'])
+        self.assertEqual(record['rewinds'][0]['fromTurn'], 3); self.assertEqual(record['rewinds'][0]['toTurn'], 1); self.assertEqual(record['rewinds'][0]['discardedTurns'], [1, 2, 3])
+        self.assertEqual([t.get('discarded') for t in record['turns']], [True, True, True, None])
+        fourth = requests[3]['messages']
+        self.assertEqual([m['role'] for m in fourth], ['system', 'user', 'user']); self.assertIn('A previous attempt at this change violated the controls below and was discarded.', fourth[2]['content'])
+        self.assertNotIn('evidence_id', json.dumps(fourth))  # the read and search results are gone from the conversation
+        gate_events = [e for e in record['sidecarEvents'] if e['stage'] == 'gate']
+        self.assertEqual((gate_events[0]['rewound'], gate_events[0]['rewind']), (True, 2)); self.assertEqual((gate_events[1]['advice'], gate_events[1]['capped']), (True, True))  # second positive verdict is coached
+        self.assertEqual(sidecar.describe()['rewindTurns'], 2)
+        self.assertEqual(record['touchedFiles'], sorted(record['touchedFiles']))  # restored touched state, then the second submission's files
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -188,3 +188,15 @@ compilation and evaluation, with the cited statements as feedback; the
 submission counts against the budget. Every gate event records consultation,
 verdict, ids, reason and the judge transcript with hashes. The judge sees the
 edits and the statements only, never test outcomes.
+
+## Rewind sidecar (added for I15)
+
+Sidecar kind `rewind`: the judge runs as for `gate`. On the first positive
+verdict the harness discards the offending submission and the `rewind_turns`
+(default 2) tool turns before it, restores the conversation, working files and
+touched state saved before the earliest discarded turn, appends the verdict
+text there ("a previous attempt violated the controls below and was
+discarded"), and continues. Discarded turns stay in the record with
+`discarded: true`; the rewound submission counts against the submission
+budget; `record.rewinds` lists each rewind with from/to turns. Later positive
+verdicts are coached. `research.graph_sidecar:REWIND` serves I15.
