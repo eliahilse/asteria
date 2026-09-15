@@ -163,5 +163,29 @@ class CostTableTests(unittest.TestCase):
                 self.assertEqual((int(calls), inp, out, reasoning, minutes), (int(total['calls']), f"{total['inputTokens']/1e3:.0f}", f"{total['outputTokens']/1e3:.1f}", f"{total['reasoningTokens']/1e3:.1f}", f"{total['callSeconds']/60:.1f}"), f'{label} {what}')
 
 
+class I28TableTests(unittest.TestCase):
+    CELLS = {'Generation S': 'generation_s', 'Reuse S+B': 'reuse_sb'}
+    ARMS = {'none': 'none', 'insert': 'static', 'insert + graph': 'static-ast', '+ guard': 'static-ast-guard', '+ advisory': 'static-ast-advise'}
+
+    def test_i28_table_matches_qualified_analysis_full_hits_and_cost(self):
+        import csv
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        header, body = parse_table(source, 'tab:i28')
+        self.assertEqual(header, ['Arm', 'Functional', 'Policy clean', 'Checks f / u / p', 'Turns', 'Submissions', 'Guard', 'Calls', 'Input (M)'])
+        conditions = analysis('i28-graph')
+        hits = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i28-graph/full-hits.csv').open())}
+        cost = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i28-graph/cost.csv').open())}
+        self.assertEqual(len(body), 10)
+        for cell, (label, functional, clean, checks, turns, submissions, guard, calls, tokens) in body:
+            kind = self.ARMS[label]; arm = f'{self.CELLS[cell]}__agentic__{kind}'; c = conditions[arm]; h = hits[arm]; k = cost[arm]
+            failed, unresolved, passed = map(int, checks.split('/'))
+            self.assertEqual((int(functional), int(clean), failed, unresolved, passed), (c['withinBudgetFull'], int(h['inputPolicyClean']), c['issues']['failed'], c['issues']['unresolved'], c['issues']['evaluated'] - c['issues']['failed']), arm)
+            self.assertEqual(failed + unresolved + passed, 50, arm)
+            self.assertEqual((float(turns), int(submissions)), (float(h['toolTurnsMedian']), int(h['submissions'])), arm)
+            expected = f"{h['guardConsultations']} / {h['guardInterventions']}" if kind.endswith('guard') else (f"{h['guardConsultations']} / adv" if kind.endswith('advise') else '--')
+            self.assertEqual(guard, expected, arm)
+            self.assertEqual((int(calls), tokens), (int(k['calls']), f"{int(k['inputTokens'])/1e6:.1f}"), arm)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -216,16 +216,16 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i27-graph | generation_s__agentic__static-ast-guard | 3 | 59 | 4,159,634 | 0 | 58,179 | 17,816 | 11.7 | 15.0 |
 | i27-graph | generation_s__agentic__static-ast | 3 | 26 | 2,707,553 | 0 | 37,786 | 14,564 | 10.1 | 10.5 |
 | i27-graph | generation_s__agentic__static | 3 | 16 | 1,674,950 | 0 | 22,356 | 7,877 | 5.4 | 5.9 |
-| i28-graph | generation_s__agentic__none | 2 | 17 | 1,591,009 | 0 | 15,847 | 7,003 | 4.0 | 4.4 |
-| i28-graph | generation_s__agentic__static-ast-advise | 1 | 1 | 97,744 | 0 | 2,472 | 407 | 0.4 | 0.4 |
-| i28-graph | generation_s__agentic__static-ast-guard | 2 | 19 | 1,251,007 | 0 | 22,993 | 6,688 | 3.8 | 4.7 |
-| i28-graph | generation_s__agentic__static-ast | 1 | 8 | 850,552 | 0 | 13,595 | 4,398 | 2.7 | 2.9 |
-| i28-graph | generation_s__agentic__static | 2 | 9 | 932,937 | 0 | 12,236 | 1,979 | 2.2 | 2.4 |
-| i28-graph | reuse_sb__agentic__none | 1 | 4 | 575,846 | 0 | 4,636 | 1,009 | 1.1 | 1.1 |
-| i28-graph | reuse_sb__agentic__static-ast-advise | 1 | 4 | 600,509 | 0 | 4,550 | 748 | 1.1 | 1.1 |
-| i28-graph | reuse_sb__agentic__static-ast-guard | 1 | 30 | 3,317,953 | 0 | 28,934 | 8,880 | 4.8 | 6.4 |
-| i28-graph | reuse_sb__agentic__static-ast | 2 | 11 | 1,665,086 | 0 | 13,464 | 4,775 | 3.0 | 3.3 |
-| i28-graph | reuse_sb__agentic__static | 2 | 11 | 1,688,347 | 0 | 14,149 | 4,627 | 3.0 | 3.1 |
+| i28-graph | generation_s__agentic__none | 5 | 46 | 4,333,094 | 0 | 48,305 | 19,805 | 10.6 | 11.7 |
+| i28-graph | generation_s__agentic__static-ast-advise | 5 | 90 | 5,674,895 | 0 | 66,920 | 20,049 | 10.9 | 16.5 |
+| i28-graph | generation_s__agentic__static-ast-guard | 5 | 88 | 5,042,448 | 0 | 98,171 | 28,764 | 14.0 | 19.7 |
+| i28-graph | generation_s__agentic__static-ast | 5 | 41 | 4,331,622 | 0 | 64,912 | 22,395 | 12.1 | 13.0 |
+| i28-graph | generation_s__agentic__static | 5 | 41 | 4,285,743 | 0 | 49,166 | 15,074 | 9.5 | 10.4 |
+| i28-graph | reuse_sb__agentic__none | 5 | 41 | 6,027,380 | 143,383 | 55,509 | 18,978 | 10.8 | 11.5 |
+| i28-graph | reuse_sb__agentic__static-ast-advise | 5 | 77 | 9,656,840 | 0 | 71,822 | 31,141 | 14.2 | 17.9 |
+| i28-graph | reuse_sb__agentic__static-ast-guard | 5 | 94 | 8,994,452 | 0 | 98,195 | 32,374 | 15.6 | 20.9 |
+| i28-graph | reuse_sb__agentic__static-ast | 5 | 36 | 5,565,211 | 299,440 | 53,018 | 19,615 | 10.1 | 11.0 |
+| i28-graph | reuse_sb__agentic__static | 5 | 42 | 6,519,219 | 149,688 | 71,470 | 21,594 | 12.7 | 13.7 |
 
 ## Acquisitions (context agent)
 

@@ -1,0 +1,2984 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__agentic__none",
+      "input_rejection_policy": 20,
+      "issueChecksEvaluated": 45,
+      "issueChecksUnresolved": 5,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "input_rejection_policy": 2,
+      "issueChecksEvaluated": 46,
+      "issueChecksUnresolved": 4,
+      "n": 5,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 1,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "input_rejection_policy": 2,
+      "issueChecksEvaluated": 47,
+      "issueChecksUnresolved": 3,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 3,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "input_rejection_policy": 1,
+      "issueChecksEvaluated": 46,
+      "issueChecksUnresolved": 4,
+      "n": 5,
+      "observed_heap_exhaustion": 2,
+      "other_fixture_failure": 2,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "input_rejection_policy": 1,
+      "issueChecksEvaluated": 46,
+      "issueChecksUnresolved": 4,
+      "n": 5,
+      "observed_heap_exhaustion": 4,
+      "other_fixture_failure": 3,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 4
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "input_rejection_policy": 1,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 2,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "input_rejection_policy": 1,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r1/submission-5/evaluation/report.json",
+      "reportSha256": "0b1dac2cd03f4058b9c23255405ed81cdfaa57f3a02f2d27085a56625d6d31b6",
+      "responseSha256": "109f0ca913d592cd562ab1311880af0032c5e41e69f16a3e192836b134b90ef0",
+      "runId": "i28-graph__reuse_sb__agentic__static__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "90e0aeabe58a0dce060cdf8d39d78ed916673cff79e4752fb5e6fc934a173aef",
+      "responseSha256": "0114459782c7daccce64ce885a3193d11308b226c61d401caaf46809bb9e8193",
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r1/submission-2/evaluation/report.json",
+      "reportSha256": "d4c1445d96cbf38f334a6e4a6e3f961e7919c04cce217aeb0e75e16af7345f27",
+      "responseSha256": "3b7da009aadf9d17e8663672e606ce0f03fe932a602a208b953f77f2d0006146",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r1/submission-4/evaluation/report.json",
+      "reportSha256": "9ee4b46eca952bec53ae6fad6bede6191e75bcdfdb235d2be344eb66886a65f3",
+      "responseSha256": "fd5c8db84ff4adbce61c316968f66fdbbb799a7d77603812e593ed72f5b47653",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r1/submission-4/evaluation/report.json",
+      "reportSha256": "fdfcc656fbc421f5167e50af6c228c7f2dad26c93200aed60e01bdbaadbdc492",
+      "responseSha256": "ae235b66f0c695aba85b14056f903babc92ad1d610aa7893839457ee181c8f6e",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r1/submission-4/evaluation/report.json",
+      "reportSha256": "f8852ff455c723c66c61227d6ec2e23a6ced65a742e33518eeac1a6467c5ea2a",
+      "responseSha256": "6db8d717a1a77d67ed63927085dacd54d35cd5a67148b9473733ed800c25e55f",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "635511fa1576b8c411ea7aa519ee7592ee36a10a1613e2cda01b40d569e0e05a",
+      "responseSha256": "284429d8843a66f27b4372271413679ab46f4e2a098e3c35b3b7caf488b45a27",
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r1/submission-2/evaluation/report.json",
+      "reportSha256": "a8382b18d7c90de995b2a8a28336199cbcdaebb750f0a53aa4a9b17e09a6e90c",
+      "responseSha256": "e8d9a446b5f82832109e174608c1af2e782d65222fc1ea32716fd027b595c667",
+      "runId": "i28-graph__generation_s__agentic__static-ast__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r2/submission-2/evaluation/report.json",
+      "reportSha256": "046b7dbbb3c44d8fa5dd0e4b09f8ec870acc6c4bb80f22fb46cc7b03791104c8",
+      "responseSha256": "a7ba5e49e27e612ca37c42b83e597646648e1f416989d1687fdd7ecd198ce594",
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r2/submission-2/evaluation/report.json",
+      "reportSha256": "046b7dbbb3c44d8fa5dd0e4b09f8ec870acc6c4bb80f22fb46cc7b03791104c8",
+      "responseSha256": "a7ba5e49e27e612ca37c42b83e597646648e1f416989d1687fdd7ecd198ce594",
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r2/submission-2/evaluation/report.json",
+      "reportSha256": "dafcc8e5deefaa14634ac366841d7020e2384ee677ab03c7289a997cf7ad8b2b",
+      "responseSha256": "8074f3caa85ce183ae4b97cc45d34f2c582bbe9bdfe107b90eae388467db14e6",
+      "runId": "i28-graph__generation_s__agentic__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r2/submission-2/evaluation/report.json",
+      "reportSha256": "01e1b5424a139ed62c1ffd59b0bfb61cee44719f327a2698b075d8ede1f57e63",
+      "responseSha256": "e97bd9296405df6891919906c23db8aa6a0810a33999b8362a14c802b4d323fa",
+      "runId": "i28-graph__reuse_sb__agentic__static__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "e0cc1c91bd19d2c2aa3b1ebe10c19596068602dd8721a409041bb6b503031e54",
+      "responseSha256": "ddb95ed6f6218559bb4e080486776176faaeacb3d83c6c3e97abe31e57639859",
+      "runId": "i28-graph__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "e0cc1c91bd19d2c2aa3b1ebe10c19596068602dd8721a409041bb6b503031e54",
+      "responseSha256": "ddb95ed6f6218559bb4e080486776176faaeacb3d83c6c3e97abe31e57639859",
+      "runId": "i28-graph__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "e0cc1c91bd19d2c2aa3b1ebe10c19596068602dd8721a409041bb6b503031e54",
+      "responseSha256": "ddb95ed6f6218559bb4e080486776176faaeacb3d83c6c3e97abe31e57639859",
+      "runId": "i28-graph__generation_s__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "e0cc1c91bd19d2c2aa3b1ebe10c19596068602dd8721a409041bb6b503031e54",
+      "responseSha256": "ddb95ed6f6218559bb4e080486776176faaeacb3d83c6c3e97abe31e57639859",
+      "runId": "i28-graph__generation_s__agentic__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r2/submission-3/evaluation/report.json",
+      "reportSha256": "0970b45d2921e3736040f932bf9de5d5577638ddc96ccb2882b291f245ac504e",
+      "responseSha256": "c7846e7d94d150518c200d3880090c6c1b8f5d86b3665f7b46776d1c3dd835c3",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r2/submission-3/evaluation/report.json",
+      "reportSha256": "0970b45d2921e3736040f932bf9de5d5577638ddc96ccb2882b291f245ac504e",
+      "responseSha256": "c7846e7d94d150518c200d3880090c6c1b8f5d86b3665f7b46776d1c3dd835c3",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r2/submission-3/evaluation/report.json",
+      "reportSha256": "0970b45d2921e3736040f932bf9de5d5577638ddc96ccb2882b291f245ac504e",
+      "responseSha256": "c7846e7d94d150518c200d3880090c6c1b8f5d86b3665f7b46776d1c3dd835c3",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r2/submission-5/evaluation/report.json",
+      "reportSha256": "958b582c626d70584aae5764f324f089d23ffb16acb48c8623d4f75db81709a8",
+      "responseSha256": "7da0cc84912059327e6fa1fd3f1240ac641ed95718bfdd80b33b13da08021126",
+      "runId": "i28-graph__generation_s__agentic__static-ast__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r2/submission-5/evaluation/report.json",
+      "reportSha256": "958b582c626d70584aae5764f324f089d23ffb16acb48c8623d4f75db81709a8",
+      "responseSha256": "7da0cc84912059327e6fa1fd3f1240ac641ed95718bfdd80b33b13da08021126",
+      "runId": "i28-graph__generation_s__agentic__static-ast__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r2/submission-4/evaluation/report.json",
+      "reportSha256": "77704d0fc61dc6bb0165f65248c4dc8b17288e1dba5998094622cc861d56400f",
+      "responseSha256": "39e91d1884dc3079d97931f24d8741102d0b17c5c8f5b6dd9dbd3ed97b2cedcf",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r2/submission-2/evaluation/report.json",
+      "reportSha256": "c9e44c613f3113988abbcdf8b9339fa9531cb325c5d4f398f194fffdf9fc2d57",
+      "responseSha256": "ae69596161b2dc0a737947df85d5ca34328d24a2de1980f1e741c59df9c538d4",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r2/submission-4/evaluation/report.json",
+      "reportSha256": "58fe5fffab92c5b63d3cee0db7612de35bbafe4bcc6cb42f22a939dc672a4f3c",
+      "responseSha256": "b6cb3c4cdd58fbf793930c501dde16e33828301a5de3439855ef502a788f3bc1",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r2/submission-4/evaluation/report.json",
+      "reportSha256": "58fe5fffab92c5b63d3cee0db7612de35bbafe4bcc6cb42f22a939dc672a4f3c",
+      "responseSha256": "b6cb3c4cdd58fbf793930c501dde16e33828301a5de3439855ef502a788f3bc1",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "05b8cf97117d09c09a45098d4c05a9eb11ed02cb747ba338c1d4fc80d0e7d49e",
+      "responseSha256": "dec87f882bccec00f51f8c819544b26ce6028c3c679df7e5fc904cde61921644",
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "05b8cf97117d09c09a45098d4c05a9eb11ed02cb747ba338c1d4fc80d0e7d49e",
+      "responseSha256": "dec87f882bccec00f51f8c819544b26ce6028c3c679df7e5fc904cde61921644",
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "05b8cf97117d09c09a45098d4c05a9eb11ed02cb747ba338c1d4fc80d0e7d49e",
+      "responseSha256": "dec87f882bccec00f51f8c819544b26ce6028c3c679df7e5fc904cde61921644",
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "05b8cf97117d09c09a45098d4c05a9eb11ed02cb747ba338c1d4fc80d0e7d49e",
+      "responseSha256": "dec87f882bccec00f51f8c819544b26ce6028c3c679df7e5fc904cde61921644",
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "05b8cf97117d09c09a45098d4c05a9eb11ed02cb747ba338c1d4fc80d0e7d49e",
+      "responseSha256": "dec87f882bccec00f51f8c819544b26ce6028c3c679df7e5fc904cde61921644",
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r3/submission-2/evaluation/report.json",
+      "reportSha256": "836a7c161cc241412dd9bd8282dcccbad4db65fa9539bf495cd6b34042eb436a",
+      "responseSha256": "622f9faeac0c153359d1236dc3d24f0482faac9e47b8c479389cfa1eaf097f86",
+      "runId": "i28-graph__reuse_sb__agentic__static__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r3/submission-2/evaluation/report.json",
+      "reportSha256": "1df11778a9053a200c61512c80806d73d56c1f21fa54f2327342f8b5cdc8b8fd",
+      "responseSha256": "3bcc1f12d2f898d664e28a79c5c795e7ce6a4b1df035065c971ff8f56c89ec23",
+      "runId": "i28-graph__generation_s__agentic__static-ast__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r3/submission-2/evaluation/report.json",
+      "reportSha256": "1df11778a9053a200c61512c80806d73d56c1f21fa54f2327342f8b5cdc8b8fd",
+      "responseSha256": "3bcc1f12d2f898d664e28a79c5c795e7ce6a4b1df035065c971ff8f56c89ec23",
+      "runId": "i28-graph__generation_s__agentic__static-ast__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r3/submission-3/evaluation/report.json",
+      "reportSha256": "7951e8af890cc6f8e7576e3eaea5fe87ec438e674f126ae14aae14527e3a6cc6",
+      "responseSha256": "ea2a3ffb3c52ac8b9338922970c0e9374e7e2d52722fddca7a9a4d2853fce63e",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/report.json",
+      "reportSha256": "90dcd853c8dd1b0fe2d2847cdbbf9404e53c359a10da8bc13d5fae6ae5a1995e",
+      "responseSha256": "44e612b46b3725e0d1ce7e2e759d367a1bc1b029ec1f7cdcec63a495c54ace58",
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r3/submission-5/evaluation/report.json",
+      "reportSha256": "dbdb1a6a486d032b9d3b070d8e27962fd029382ad1a38368cc48a267ead344d8",
+      "responseSha256": "b80900ff68d03fb9c2f6e1f6543eea3f42afdeb151c8607190412b931326f9de",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "5299179d34ba3c42068da42a185c94c4becf1925a03ef05982703a3bfacf8be6",
+      "responseSha256": "d50b3441294abf151ba810599c22c284255c22493839c5e10046e9a904fc862b",
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r3/submission-1/evaluation/report.json",
+      "reportSha256": "28cc26263cb3a2359f40d0ca23c73ea14a4071bf911e8f9f2c9da4aaf6bfa54c",
+      "responseSha256": "5a3ba9fec90e5cdb9e7b0124e2ce9caa657df00c618ecee7b355e810e76bc104",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r3/submission-4/evaluation/report.json",
+      "reportSha256": "10409ec2e9a9cd10752271f59163c2de14f60726a04971be62b4c1805c99b65d",
+      "responseSha256": "33997da5593a9c7eadaac3721f5661d451ba3aba9937a568c73057bbc695cbda",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r3/submission-3/evaluation/report.json",
+      "reportSha256": "293d6b77bf055dc4a1178bae708d0bdfd65757ff57924db0d27901fb8e1db8e0",
+      "responseSha256": "e6363f37334593e322c20b062abea11836c19a8d30eb1558c24a399560fc77b1",
+      "runId": "i28-graph__generation_s__agentic__static__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r3/submission-3/evaluation/report.json",
+      "reportSha256": "293d6b77bf055dc4a1178bae708d0bdfd65757ff57924db0d27901fb8e1db8e0",
+      "responseSha256": "e6363f37334593e322c20b062abea11836c19a8d30eb1558c24a399560fc77b1",
+      "runId": "i28-graph__generation_s__agentic__static__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r4/submission-1/evaluation/report.json",
+      "reportSha256": "009fbeac4edcaa3205bbbbf81c4cfebfc98943bc890a13627185787266894446",
+      "responseSha256": "1afeab301beb72b08959b4f0c55fb580f7d0bd797e72013b9aba74b8d4d2a070",
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r4/submission-1/evaluation/report.json",
+      "reportSha256": "009fbeac4edcaa3205bbbbf81c4cfebfc98943bc890a13627185787266894446",
+      "responseSha256": "1afeab301beb72b08959b4f0c55fb580f7d0bd797e72013b9aba74b8d4d2a070",
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r4/submission-4/evaluation/report.json",
+      "reportSha256": "82285777d83ed09ee7f66d75f9af6fd3a57327b7bb810a4618bccfb044bc9c11",
+      "responseSha256": "0768a755b7d3e6120dc3c9dadbbcfb3dfc85109a16ee35e26c7765038704e7ef",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "a2f58b2b6f4cb026583508895ab5690e7b06ff7410b1bf391701d6f74b75150b",
+      "responseSha256": "39379360e4410022192518a7f6c8352fde792ea38431b2f762c9ad723ee9847e",
+      "runId": "i28-graph__generation_s__agentic__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "a2f58b2b6f4cb026583508895ab5690e7b06ff7410b1bf391701d6f74b75150b",
+      "responseSha256": "39379360e4410022192518a7f6c8352fde792ea38431b2f762c9ad723ee9847e",
+      "runId": "i28-graph__generation_s__agentic__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "a2f58b2b6f4cb026583508895ab5690e7b06ff7410b1bf391701d6f74b75150b",
+      "responseSha256": "39379360e4410022192518a7f6c8352fde792ea38431b2f762c9ad723ee9847e",
+      "runId": "i28-graph__generation_s__agentic__none__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "a2f58b2b6f4cb026583508895ab5690e7b06ff7410b1bf391701d6f74b75150b",
+      "responseSha256": "39379360e4410022192518a7f6c8352fde792ea38431b2f762c9ad723ee9847e",
+      "runId": "i28-graph__generation_s__agentic__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r4/submission-4/evaluation/report.json",
+      "reportSha256": "f05966503b1170c9128654517e1fa495477d52ab61bf66b893eeef5f16f0b94f",
+      "responseSha256": "e4fcef18920071126300ed25d502b19bf3c25c1ba06c61c7b647f8a022873c94",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r4/submission-4/evaluation/report.json",
+      "reportSha256": "f05966503b1170c9128654517e1fa495477d52ab61bf66b893eeef5f16f0b94f",
+      "responseSha256": "e4fcef18920071126300ed25d502b19bf3c25c1ba06c61c7b647f8a022873c94",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r4/submission-1/evaluation/report.json",
+      "reportSha256": "024bcc993bbfe7919abec7e59091574ca645c3a6c02831625a7e5f40a9e318d1",
+      "responseSha256": "133cc898ff05e85a016c5aa314ee034e496e936a53e129369c76159b5108c3e4",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r4/submission-3/evaluation/report.json",
+      "reportSha256": "2cb4cf9ee0585e3e265ba7656e5789b41fabdc60ddf832688933e8ebba5f90a3",
+      "responseSha256": "bb89ba64628b8894d3b5cff8815d8c293977d15fa2f87bf2fde7d27c46eb8d71",
+      "runId": "i28-graph__reuse_sb__agentic__static__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r4/submission-2/evaluation/report.json",
+      "reportSha256": "e8996c8b94ad127feb440d4893516f0e4fa99576da352fbcd41758e5b413f8cc",
+      "responseSha256": "c5f2537f32ccb21ecca10a65419d27f6bf20ba5493db3c31dc7a268f0152f5f9",
+      "runId": "i28-graph__generation_s__agentic__static__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r4/submission-2/evaluation/report.json",
+      "reportSha256": "e8996c8b94ad127feb440d4893516f0e4fa99576da352fbcd41758e5b413f8cc",
+      "responseSha256": "c5f2537f32ccb21ecca10a65419d27f6bf20ba5493db3c31dc7a268f0152f5f9",
+      "runId": "i28-graph__generation_s__agentic__static__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r4/submission-2/evaluation/report.json",
+      "reportSha256": "e8996c8b94ad127feb440d4893516f0e4fa99576da352fbcd41758e5b413f8cc",
+      "responseSha256": "c5f2537f32ccb21ecca10a65419d27f6bf20ba5493db3c31dc7a268f0152f5f9",
+      "runId": "i28-graph__generation_s__agentic__static__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "8d85260c247442c6fdcd8305380ce1cb6de7e3a59462fd6e4f3df500f126de25",
+      "responseSha256": "c0973c562fbbe3c1c9c25f30dcfa4b0fc1e660d31218e3f8b3164e6ab2aa6a2e",
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "8d85260c247442c6fdcd8305380ce1cb6de7e3a59462fd6e4f3df500f126de25",
+      "responseSha256": "c0973c562fbbe3c1c9c25f30dcfa4b0fc1e660d31218e3f8b3164e6ab2aa6a2e",
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "8d85260c247442c6fdcd8305380ce1cb6de7e3a59462fd6e4f3df500f126de25",
+      "responseSha256": "c0973c562fbbe3c1c9c25f30dcfa4b0fc1e660d31218e3f8b3164e6ab2aa6a2e",
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "8d85260c247442c6fdcd8305380ce1cb6de7e3a59462fd6e4f3df500f126de25",
+      "responseSha256": "c0973c562fbbe3c1c9c25f30dcfa4b0fc1e660d31218e3f8b3164e6ab2aa6a2e",
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "8d85260c247442c6fdcd8305380ce1cb6de7e3a59462fd6e4f3df500f126de25",
+      "responseSha256": "c0973c562fbbe3c1c9c25f30dcfa4b0fc1e660d31218e3f8b3164e6ab2aa6a2e",
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r5/submission-5/evaluation/report.json",
+      "reportSha256": "b01bfd47845b015c8a8f04b97078c8325ab6481e39ad0af5e070c41d87d6a763",
+      "responseSha256": "0ceaeda01b36b0d57187aaf7b6820baba547821c3a1a2633befc83f6fbba1387",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r5/submission-5/evaluation/report.json",
+      "reportSha256": "b01bfd47845b015c8a8f04b97078c8325ab6481e39ad0af5e070c41d87d6a763",
+      "responseSha256": "0ceaeda01b36b0d57187aaf7b6820baba547821c3a1a2633befc83f6fbba1387",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-advise",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r5/submission-5/evaluation/report.json",
+      "reportSha256": "b01bfd47845b015c8a8f04b97078c8325ab6481e39ad0af5e070c41d87d6a763",
+      "responseSha256": "0ceaeda01b36b0d57187aaf7b6820baba547821c3a1a2633befc83f6fbba1387",
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "152599787c1ed86777f5095458ad1937dcf39a8aeb34ab41555b84f98a226a2e",
+      "responseSha256": "87957d0682c1f813f3c8caa9fa4a8692711ce18a36486d762ea40e4f23ae6f85",
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r5/submission-3/evaluation/report.json",
+      "reportSha256": "2903713d285db37b4519429fd7edd173fe06007a830168baf917227052e48131",
+      "responseSha256": "17428a838aa58bdd86598e2bcd9760a30c3db612d72fda91b2099e936cae2a68",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r5/submission-2/evaluation/report.json",
+      "reportSha256": "6d5b0318aa58262a564c5903a497b2ecd037d5357391d0b58d6c344af6606a6b",
+      "responseSha256": "e4aeee9fd03bed1e182722ddc5bac52f92215209d1a229a9105b210b3521815c",
+      "runId": "i28-graph__reuse_sb__agentic__static__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r5/submission-2/evaluation/report.json",
+      "reportSha256": "6d5b0318aa58262a564c5903a497b2ecd037d5357391d0b58d6c344af6606a6b",
+      "responseSha256": "e4aeee9fd03bed1e182722ddc5bac52f92215209d1a229a9105b210b3521815c",
+      "runId": "i28-graph__reuse_sb__agentic__static__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r5/submission-2/evaluation/report.json",
+      "reportSha256": "a2f39f2179c9c060ae0e90f2de2b2142ca5fea26c0883aacf5bba625dcfb009f",
+      "responseSha256": "b7cfe36e38034d7680a50ab888097e206d1152b6561a471a7d19fe54eafc4239",
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r5/submission-1/evaluation/report.json",
+      "reportSha256": "181daf7343a4fdb7aa35026c8db0f64b6f0caf0a4bfb0202aa1c20482963d4f2",
+      "responseSha256": "961efb165aa810057d761e33b492f34b49497f829cf2ae65b98f0506e32d7ca2",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r5/submission-1/evaluation/report.json",
+      "reportSha256": "181daf7343a4fdb7aa35026c8db0f64b6f0caf0a4bfb0202aa1c20482963d4f2",
+      "responseSha256": "961efb165aa810057d761e33b492f34b49497f829cf2ae65b98f0506e32d7ca2",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "ce05604e708ac428228d871b73bf95532bf334d8baff611aeed967d87452d321",
+      "responseSha256": "3b67735ab486acbbf77467e8c087d8ece391e6f45e712f59dd33e85804e0572a",
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "ce05604e708ac428228d871b73bf95532bf334d8baff611aeed967d87452d321",
+      "responseSha256": "3b67735ab486acbbf77467e8c087d8ece391e6f45e712f59dd33e85804e0572a",
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "ce05604e708ac428228d871b73bf95532bf334d8baff611aeed967d87452d321",
+      "responseSha256": "3b67735ab486acbbf77467e8c087d8ece391e6f45e712f59dd33e85804e0572a",
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "ce05604e708ac428228d871b73bf95532bf334d8baff611aeed967d87452d321",
+      "responseSha256": "3b67735ab486acbbf77467e8c087d8ece391e6f45e712f59dd33e85804e0572a",
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "ce05604e708ac428228d871b73bf95532bf334d8baff611aeed967d87452d321",
+      "responseSha256": "3b67735ab486acbbf77467e8c087d8ece391e6f45e712f59dd33e85804e0572a",
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r5/submission-5/evaluation/report.json",
+      "reportSha256": "3cb0c66b515c282e17d8d946deb219828afad5a6735ee64ae5e1bd89282b4523",
+      "responseSha256": "7c644d5e5ff40ed50e7e81438c08d502eb8bca6d282262deff128c628f59cfe1",
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r5",
+      "test": "boundsRetainedEntries"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i28-graph",
+  "manifestFingerprint": "170f02c720b035e20e4f7bbf26a0d29409d4fa4663b64ab5f075f644eedebd71",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 47,
+          "text": "        if (playersScores.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 121,
+          "text": "            if (Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 124,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 125,
+          "text": "            if (lines.size() < 2 || !HEADER.equals(lines.get(0))) {"
+        },
+        {
+          "line": 129,
+          "text": "            if (count < 0 || count > MAX_ENTRIES || lines.size() < count + 2) {"
+        },
+        {
+          "line": 163,
+          "text": "        if (name == null || name.length() == 0 || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 223,
+          "text": "        if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 224,
+          "text": "            name = name.substring(0, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 255,
+          "text": "        int limit = Math.min(MAX_ENTRIES, Math.min(playersNames.size(), Math.min(playersScores.size(), survivalTimes.size())));"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r1/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "549f2767124ce8bd55e950ee78311c87f1821a0bcf1b2a9249c1c49e22d7ee26"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 55,
+          "text": "        if (this.runs.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 133,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 169,
+          "text": "                if (count < 0 || count > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r1/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6add106fa9f1c73c288f390eac596a65af30c935042cb7d5995e3b5b369d0268"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 132,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 136,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__none__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f5d8dfac4bfa5b5073ffdf867445c3e373e0f1de12b77e7d8a46f5dc12e76bb6"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 37,
+          "text": "        if (score < 0 || survivalTime < 0 || !validName(playerName) || names.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 94,
+          "text": "        if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 133,
+          "text": "            if (Files.size(store) > MAX_FILE_SIZE) throw new IOException(\"file too large\");"
+        },
+        {
+          "line": 134,
+          "text": "            List<String> lines = Files.readAllLines(store, Charset.forName(\"UTF-8\"));"
+        },
+        {
+          "line": 135,
+          "text": "            if (lines.size() % 3 != 0 || lines.size() / 3 > MAX_RECORDS) throw new IOException(\"invalid layout\");"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7ddaf7900ec675f7d471ae305a79327ba670694be5a2f3c97515ffbfc0308063"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final long MAX_STORE_BYTES = 256L * 1024L;"
+        },
+        {
+          "line": 138,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.trim().length() == 0) {"
+        },
+        {
+          "line": 159,
+          "text": "        while (records.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 171,
+          "text": "                if (Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 178,
+          "text": "                        String scoreLine = reader.readLine();"
+        },
+        {
+          "line": 182,
+          "text": "                        String timeLine = reader.readLine();"
+        },
+        {
+          "line": 183,
+          "text": "                        String nameLine = reader.readLine();"
+        },
+        {
+          "line": 184,
+          "text": "                        if (timeLine == null || nameLine == null || loaded.size() >= MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r1/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a9476d867af69b20bcd643d63e0d9db8fd619caba789279bfe15ec338667b403"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 20;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 37,
+          "text": "                || !validName(playerName) || entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 129,
+          "text": "            if (Files.size(store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 135,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 140,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 141,
+          "text": "                    if (entries.size() >= MAX_ENTRIES || line.length() > MAX_NAME_LENGTH + 32) {"
+        },
+        {
+          "line": 175,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 193,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r1/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c59d17e460464ed79a666e85e4e0a8fdb31df0472ba03dae5ece778b27f7d373"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 40,
+          "text": "                || playerName.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 45,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 51,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 142,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 149,
+          "text": "                    if (name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a335870ebde16d5eddcf76eb7b4edfe48b9791256c1439cf69f8cc39230aea6e"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 35,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 36,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 39,
+          "text": "    private static final long MAX_STORE_SIZE = 1024L * 1024L;"
+        },
+        {
+          "line": 72,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) return null;"
+        },
+        {
+          "line": 96,
+          "text": "            if (!Files.isRegularFile(this.store) || Files.size(this.store) > MAX_STORE_SIZE) {"
+        },
+        {
+          "line": 106,
+          "text": "                if (count < 0 || count > MAX_RECORDS) throw new IOException(\"invalid highscore record count\");"
+        },
+        {
+          "line": 136,
+          "text": "        if (candidate.size() >= MAX_RECORDS) candidate.remove(candidate.size() - 1);"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r1/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1b2acd65c46e0b31e849c4b57176a8fba544eda3a574e92832d90fff4b04e50c"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 165,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__none__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "9f8d84d5387415f7dcd6e91fa3fc310f38be627c9c0868ad5d65d8a18d4723c5"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 52,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 129,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 155,
+          "text": "            if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 158,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 159,
+          "text": "            if (lines.size() < 2 || !HEADER.equals(lines.get(0))) {"
+        },
+        {
+          "line": 163,
+          "text": "            if (count < 0 || count > MAX_ENTRIES || lines.size() != count + 2) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast__r1",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ce4418eaaa6dc66dd6c9d4d9bf7cece590a58e9e786c13e134bf0f3b47e0bbf2"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 27,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_LINE_LENGTH = 256;"
+        },
+        {
+          "line": 47,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 55,
+          "text": "        if (playersNames.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 56,
+          "text": "            playersNames.remove(MAX_ENTRIES);"
+        },
+        {
+          "line": 57,
+          "text": "            playersScores.remove(MAX_ENTRIES);"
+        },
+        {
+          "line": 58,
+          "text": "            survivalTimes.remove(MAX_ENTRIES);"
+        },
+        {
+          "line": 111,
+          "text": "                for (int i = 0; i < playersNames.size() && i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 134,
+          "text": "                if (!HEADER.equals(reader.readLine())) {"
+        },
+        {
+          "line": 140,
+          "text": "                while ((line = reader.readLine()) != null && count < MAX_ENTRIES) {"
+        },
+        {
+          "line": 156,
+          "text": "        if (line == null || line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 167,
+          "text": "            if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || time < 0) {"
+        },
+        {
+          "line": 215,
+          "text": "        int rows = Math.min(MAX_ENTRIES, Math.min(playersNames.size(), Math.min(playersScores.size(), survivalTimes.size())));"
+        },
+        {
+          "line": 216,
+          "text": "        int rowHeight = Math.max(15, (height - 55) / (MAX_ENTRIES + 1));"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "8fd8aa46f581b9ac83410adb5a239fb1889dfa3115676d85972f7be39c9d64bd"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 41,
+          "text": "        if (playersNames.size() >= MAX_ENTRIES && score <= playersScores.get(playersScores.size() - 1).intValue()) {"
+        },
+        {
+          "line": 48,
+          "text": "        while (playersNames.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 130,
+          "text": "                if (!HEADER.equals(reader.readLine())) {"
+        },
+        {
+          "line": 134,
+          "text": "                while (playersNames.size() < MAX_ENTRIES && (line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 167,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5370cf88184e3e58cbf94a6d1470d78d74c8ea9b3817bb8abfca70529dbdd6e5"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 81,
+          "text": "                if (count < 0 || count > MAX_RECORDS) {"
+        },
+        {
+          "line": 189,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a41797feffff5cdb233b3ad8e2e8248d71bddc31aced1b54e9ca9b42f98f2b38"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 59,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 85,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 157,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 180,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__none__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ff815029f22edd6b807ff4d88242dd8f3b049a2eb140bb0f5c47717fff67ab58"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 55,
+          "text": "                || this.names.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 129,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 166,
+          "text": "            List<String> lines = Files.readAllLines(this.store, Charset.forName(\"UTF-8\"));"
+        },
+        {
+          "line": 167,
+          "text": "            if (lines.size() < 2 || !HEADER.equals(lines.get(0))) {"
+        },
+        {
+          "line": 171,
+          "text": "            if (count < 0 || count > MAX_RECORDS || lines.size() != 2 + count * 3) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c19c2cbc4e8519609fbc995086fa3aa5842c27577cf859f2a6c59d785b9a16d9"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 46,
+          "text": "        if (this.playersNames.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 105,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.trim().length() == 0) {"
+        },
+        {
+          "line": 156,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 161,
+          "text": "                if (nameLength == 0 || nameLength > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 208,
+          "text": "                    if (name.length == 0 || name.length > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r2/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "e9f66f45000bd0763b980c3de08fb27b8389fa024e3a927b065902b9ffd2c1b4"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 54,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 60,
+          "text": "        if (entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 79,
+          "text": "        if (!player.isBVisible() && level.getPlayers().size() > 1) {"
+        },
+        {
+          "line": 163,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 168,
+          "text": "                for (int i = 0; i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 169,
+          "text": "                    line = reader.readLine();"
+        },
+        {
+          "line": 178,
+          "text": "                if (reader.readLine() != null) {"
+        },
+        {
+          "line": 201,
+          "text": "            if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || score < 0"
+        },
+        {
+          "line": 228,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r2/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "dbfb4b154a5aa46f78f459d4af381079200346ee5830f614ee43940ca60dff7d"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 31,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 33,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 126,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) return null;"
+        },
+        {
+          "line": 145,
+          "text": "            if (Files.isDirectory(this.store) || Files.size(this.store) > MAX_STORE_BYTES) throw new IOException(\"invalid highscore store size\");"
+        },
+        {
+          "line": 146,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 147,
+          "text": "            if (lines.size() % 3 != 0 || lines.size() / 3 > MAX_RECORDS) throw new IOException(\"invalid highscore record count\");"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f1c5125dee486b6628d6d0bb1dc3f5afba227fd28350d5dbebffeec2ee6363d9"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 32,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 33,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 34,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 69,
+          "text": "                || this.scores.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 164,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 180,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 183,
+          "text": "            List<String> lines = Files.readAllLines(this.store, Charset.forName(\"UTF-8\"));"
+        },
+        {
+          "line": 184,
+          "text": "            if (lines.size() % 3 != 0 || lines.size() / 3 > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r2/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d79a11ccc9486dae39b903e11774cb47adfa1f0055b6817d13efdfbba05994d0"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 52,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 126,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__none__r2",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "701373bd1ef68ede98b6d018e7d1e8b03de272df81e2d35234e431fe42179240"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final long MAX_STORE_BYTES = 256L * 1024L;"
+        },
+        {
+          "line": 50,
+          "text": "                || this.runs.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 128,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 155,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 158,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 159,
+          "text": "            if (lines.size() > MAX_RECORDS * 3 || lines.size() % 3 != 0) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "8d213b8e1570550b832c4755ba555ddcfb2b8bf40ce0cf8aac397adf57b0edb7"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 51,
+          "text": "                || playerName.length() > MAX_NAME_LENGTH || hasControlCharacter(playerName)) {"
+        },
+        {
+          "line": 55,
+          "text": "        if (entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 118,
+          "text": "        if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 119,
+          "text": "            name = name.substring(0, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 160,
+          "text": "            if (Files.size(store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 163,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 165,
+          "text": "                    || lines.size() - 1 > MAX_ENTRIES) {"
+        },
+        {
+          "line": 177,
+          "text": "                        || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "98f1c42da4542d729b6f5dc4ebb01d50ae85e81f354bc3d96a66c4dc53fdfae6"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 122,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 166,
+          "text": "                if (count < 0 || count > MAX_RECORDS) throw new IOException(\"invalid highscore count\");"
+        },
+        {
+          "line": 171,
+          "text": "                    if (byteLength > MAX_NAME_LENGTH * 3) throw new IOException(\"invalid highscore name\");"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "cabb87201a2c897384232bbc7424f2160651114c7d75952ba961be868f9a40ab"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 149,
+          "text": "            for (String line : Files.readAllLines(this.store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__none__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r3/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1694eaa0942f832b5bba84ee1a5f827f47c0b898072b50e58b5438720edb2560"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 57,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || hasControlCharacter(name)) {"
+        },
+        {
+          "line": 61,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 174,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 180,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 184,
+          "text": "                    if (records++ >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 219,
+          "text": "                && name.length() <= MAX_NAME_LENGTH && !hasControlCharacter(name);"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r3/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5ffa6c6bd50d6647524c37d0e0235e5d69bbcd386f971fdefac64077246e4af9"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 136,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 161,
+          "text": "        while (this.runs.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__none__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "00f7411705307890a56451085a89c845e2e95db5b23fed1e91fbcad54fda0a82"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 176,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 206,
+          "text": "                if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 213,
+          "text": "                        String scoreLine = reader.readLine();"
+        },
+        {
+          "line": 217,
+          "text": "                        String timeLine = reader.readLine();"
+        },
+        {
+          "line": 218,
+          "text": "                        String nameLine = reader.readLine();"
+        },
+        {
+          "line": 219,
+          "text": "                        if (timeLine == null || nameLine == null || loaded.size() >= MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "095792232c7518dd08db097f3f6a55df3bf728138665a43f499f1674684b44a8"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 121,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) return false;"
+        },
+        {
+          "line": 140,
+          "text": "            if (Files.size(this.store) > 262144L) throw new IllegalArgumentException(\"file too large\");"
+        },
+        {
+          "line": 141,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 142,
+          "text": "            if (lines.size() < 2 || !HEADER.equals(lines.get(0))) throw new IllegalArgumentException(\"header\");"
+        },
+        {
+          "line": 144,
+          "text": "            if (count < 0 || count > MAX_RECORDS || lines.size() != count + 2) throw new IllegalArgumentException(\"count\");"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r3/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "66b5fc64a435e3b041034ee8d966c1fc55c598bf3e2b34eebc352cb4ec517afc"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 55,
+          "text": "                || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 61,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 173,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 178,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 179,
+          "text": "                    if (line.length() > 512 || count >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 190,
+          "text": "                            || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c4b2e9efce3ed79ca10e5c8028d55fbbc69f241dc0807af7524cea1dd8da6d40"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 44,
+          "text": "        if (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 141,
+          "text": "            if (Files.size(this.store) > 65536L) {"
+        },
+        {
+          "line": 144,
+          "text": "            DataInputStream input = new DataInputStream(new ByteArrayInputStream(Files.readAllBytes(this.store)));"
+        },
+        {
+          "line": 149,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 198,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH || !name.equals(name.trim())) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r3",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r3/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ff2b99c313bddd22d1eaa57b2316257b8dc423ebe718fd436a75f3cb3a8bee4b"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 71,
+          "text": "                || playerName.trim().length() == 0 || playerName.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 72,
+          "text": "                || containsControlCharacter(playerName) || playersNames.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 142,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 144,
+          "text": "                        || loadedNames.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 158,
+          "text": "                if (nameBytes.length == 0 || nameBytes.length > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 162,
+          "text": "                if (name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1376cb7da63e963af47527afd04e5307048e9c2df5acd4e6abe4db78741bca7d"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 30,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 31,
+          "text": "    private static final int MAX_NAME_LENGTH = 80;"
+        },
+        {
+          "line": 59,
+          "text": "        if (!valid(score, survivalTime, playerName) || this.scores.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 171,
+          "text": "            if (Files.size(this.store) > 1024L * 1024L) {"
+        },
+        {
+          "line": 177,
+          "text": "                    String points = reader.readLine();"
+        },
+        {
+          "line": 181,
+          "text": "                    String time = reader.readLine();"
+        },
+        {
+          "line": 182,
+          "text": "                    String name = reader.readLine();"
+        },
+        {
+          "line": 183,
+          "text": "                    if (time == null || name == null || loaded.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 213,
+          "text": "        if (name == null || name.length() == 0 || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r4/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "debfe1b89a707ed80e1065bfe01c4f83bc113cbd8e3c9947d7071055a92c010f"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 33,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 34,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 66,
+          "text": "        if (scores.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 161,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) return null;"
+        },
+        {
+          "line": 175,
+          "text": "            if (Files.size(store) > 1024L * 1024L) throw new IOException(\"store is too large\");"
+        },
+        {
+          "line": 176,
+          "text": "            List<String> lines = Files.readAllLines(store, UTF8);"
+        },
+        {
+          "line": 178,
+          "text": "                    || (lines.size() - 1) / 3 > MAX_RECORDS) throw new IOException(\"invalid store format\");"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r4/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "625ddd7667490e25d68b03a19e126079c770ef24ec83e4c1124526560882fe76"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 138,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__none__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "40d90ec23d001b790bef56f342f9f1f29008e100771c9055d2da29e326d68797"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 53,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 71,
+          "text": "        if (level.getPlayers().size() > 1) {"
+        },
+        {
+          "line": 162,
+          "text": "            if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 166,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 167,
+          "text": "            if (lines.size() == 0 || !FORMAT.equals(lines.get(0)) || lines.size() - 1 > MAX_ENTRIES) {"
+        },
+        {
+          "line": 197,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH || score < 0 || survivalTime < 0) {"
+        },
+        {
+          "line": 215,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r4/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "484f35464a8a189678a82c04c0c7a40ac5289d06a1195926bdc71db2158aed6d"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final int MAX_FILE_LINES = MAX_ENTRIES + 1;"
+        },
+        {
+          "line": 53,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 56,
+          "text": "                || entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 72,
+          "text": "        if (player == null || (!player.isBVisible() && level.getPlayers().size() > 1"
+        },
+        {
+          "line": 170,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 176,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 177,
+          "text": "                    if (++count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 191,
+          "text": "                        if (name.length() > 0 && name.length() <= MAX_NAME_LENGTH && time >= 0) {"
+        },
+        {
+          "line": 217,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r4/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "42972a14dfbaf8ac9517966fcb501ddd0b9ccf68e06eee0757fb185ab4279d5f"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 69,
+          "text": "        if (score < 0 || survivalTime < 0 || name == null || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 70,
+          "text": "                || containsControl(name) || scores.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 223,
+          "text": "            if (Files.size(store) > MAX_FILE_BYTES) {"
+        },
+        {
+          "line": 230,
+          "text": "                    String pointsLine = reader.readLine();"
+        },
+        {
+          "line": 234,
+          "text": "                    String timeLine = reader.readLine();"
+        },
+        {
+          "line": 235,
+          "text": "                    String nameLine = reader.readLine();"
+        },
+        {
+          "line": 236,
+          "text": "                    if (timeLine == null || nameLine == null || loaded.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 242,
+          "text": "                            || nameLine.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 305,
+          "text": "        return name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH;"
+        },
+        {
+          "line": 319,
+          "text": "        return safe.length() > MAX_NAME_LENGTH ? safe.substring(0, MAX_NAME_LENGTH) : safe;"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b94fe465affe17d1b99d3cf591da4ce8193e406981c4acd27b4f6f16bcd89363"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME = 64;"
+        },
+        {
+          "line": 48,
+          "text": "        if (!valid(score, survivalTime, playerName) || runs.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 72,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME || control(name)) {"
+        },
+        {
+          "line": 140,
+          "text": "            if (Files.size(store) > MAX_FILE) throw new IOException(\"file too large\");"
+        },
+        {
+          "line": 145,
+          "text": "                if (count < 0 || count > MAX_RECORDS) throw new IOException(\"invalid count\");"
+        },
+        {
+          "line": 175,
+          "text": "                && name.length() <= MAX_NAME && !control(name);"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "4e5778fbd5eb0fed279c6bcdf643f66d86b96dfec79eeded8a6efa1a515d5ce8"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 45,
+          "text": "                || this.names.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 136,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 183,
+          "text": "                if (!HEADER.equals(reader.readLine())) {"
+        },
+        {
+          "line": 188,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 189,
+          "text": "                    if (++count > MAX_ENTRIES || line.length() > 4096) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ef2424d6d5bc674bfd2dd5cf540d96795d192be60bf8824e57ccb31416d79fbc"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 27,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 54,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) this.entries.remove(this.entries.size() - 1);"
+        },
+        {
+          "line": 127,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) return;"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__none__r4",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "74d5e443555cc86b49a0c05e307744b05b8eb275ad25247c4a02dfa6013db2cb"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 53,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 150,
+          "text": "                String header = reader.readLine();"
+        },
+        {
+          "line": 156,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 158,
+          "text": "                    if (recordNumber > MAX_ENTRIES) {"
+        },
+        {
+          "line": 206,
+          "text": "        return name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-advise__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-advise__r5/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "bc926b47cb89ae2d5f4dbfadf81887dc6f4e476e41424fbe38eadf998e078a76"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 178,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__none__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__none__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7a94cb66432a0488fff79e970e011f62eeb62810c77251114dd4b541615ea28b"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 39,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 40,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 67,
+          "text": "        if (this.names.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 165,
+          "text": "            if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 174,
+          "text": "                    String scoreLine = reader.readLine();"
+        },
+        {
+          "line": 178,
+          "text": "                    String timeLine = reader.readLine();"
+        },
+        {
+          "line": 179,
+          "text": "                    String nameLine = reader.readLine();"
+        },
+        {
+          "line": 180,
+          "text": "                    if (timeLine == null || nameLine == null || loadedNames.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 213,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-guard__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-guard__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "76b413604cb6f605cd098dda071a9be5fc0f435ec255a93539f72645bbe8bdab"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 141,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 163,
+          "text": "                    String scoreLine = reader.readLine();"
+        },
+        {
+          "line": 167,
+          "text": "                    String timeLine = reader.readLine();"
+        },
+        {
+          "line": 168,
+          "text": "                    String nameLine = reader.readLine();"
+        },
+        {
+          "line": 169,
+          "text": "                    if (timeLine == null || nameLine == null || loadedScores.size() >= MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "884092e30c50148e129192be11de8f8d3ef39e47183a8eac1703f870b56dbde7"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 56,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 155,
+          "text": "                if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 161,
+          "text": "                    String line = reader.readLine();"
+        },
+        {
+          "line": 167,
+          "text": "                    while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 168,
+          "text": "                        if (count >= MAX_ENTRIES || line.length() > 256) {"
+        },
+        {
+          "line": 223,
+          "text": "        return name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH;"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5a5c67037d67ee8a7451dd7ecd2ae051ed1fa520a9348e9dac8a3280bd89aa6e"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 54,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 148,
+          "text": "            if (Files.size(this.store) > 65536L) {"
+        },
+        {
+          "line": 154,
+          "text": "                String header = reader.readLine();"
+        },
+        {
+          "line": 160,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 161,
+          "text": "                    if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 208,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast-guard__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast-guard__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "e21a179380eaff54ec0c406b941260f7f20c709239be5de8e4ff86ede268c5ea"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 85,
+          "text": "        if (this.records.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 152,
+          "text": "        if (playerName == null || playerName.length() == 0 || playerName.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 182,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 189,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 193,
+          "text": "                if (loaded.size() >= MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "145d5497189925d3a9265e32564906f0d441b437af6d2873d0074f08f22cd169"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 139,
+          "text": "            if (Files.size(store) > 1024 * 1024) {"
+        },
+        {
+          "line": 148,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 182,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 196,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i28-graph__generation_s__agentic__static-ast__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__generation_s__agentic__static-ast__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d03f94abaabfa1008232253995cbcfb18f360a34b0155e9c2df495abc81d1b1c"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 40,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) this.entries.remove(this.entries.size() - 1);"
+        },
+        {
+          "line": 140,
+          "text": "                if (count < 0 || count > MAX_ENTRIES * 10) return;"
+        },
+        {
+          "line": 145,
+          "text": "                while (this.entries.size() > MAX_ENTRIES) this.entries.remove(this.entries.size() - 1);"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__none__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__none__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "7a6d7d5025c92960bd4cd8b059227110a7f67ae6ec95896e428a1474c5a25f18"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-ast-advise",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 1000;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 129,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 175,
+          "text": "                if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 178,
+          "text": "                List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 179,
+          "text": "                if (lines.size() % 3 != 0 || lines.size() / 3 > MAX_RECORDS) {"
+        },
+        {
+          "line": 209,
+          "text": "            if (this.names.size() != this.scores.size() || this.names.size() != this.times.size() || this.names.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i28-graph__reuse_sb__agentic__static-ast-advise__r5",
+      "source": ".local/iterations/i28-graph/runs/i28-graph__reuse_sb__agentic__static-ast-advise__r5/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "12592fbf5a4d7ded0cc57569070a6799ebd9769726deeade05005fb6089ac26b"
+    }
+  ]
+}
