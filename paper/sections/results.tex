@@ -23,7 +23,7 @@ Reuse S+B & 5; 32/1/17 & 5; 8/5/37 & 5; 0/5/45 & 5; 19/2/29 \\
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Agent-acquired data-flow context against a fresh control in each round: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
+\caption{Agent-acquired data-flow context against a fresh control in each round: full functional (of 5) and issue checks failed / unresolved / passed (of 50); I21a and I21b are of 3 and of 30.}
 \label{tab:agent}
 \begin{tabular}{@{}llllll@{}}
 \toprule
@@ -41,6 +41,10 @@ I19 & Generation S & single-shot & compact, protocol v9 & 5; 37/2/11 & 5; 31/2/1
 I19 & Reuse S+B & single-shot & compact, protocol v9 & 5; 35/1/14 & 4; 9/4/37 \\
 I20 & Generation S & single-shot & compact, protocol v10 & 5; 39/1/10 & 5; 11/5/34 \\
 I20 & Reuse S+B & single-shot & compact, protocol v10 & 5; 31/1/18 & 5; 7/2/41 \\
+I21a & Generation S & single-shot & v10, acquisition 2 & 3; 24/0/6 & 3; 6/2/22 \\
+I21a & Reuse S+B & single-shot & v10, acquisition 2 & 3; 17/2/11 & 3; 3/3/24 \\
+I21b & Generation S & single-shot & v10, acquisition 3 & 3; 24/0/6 & 3; 2/1/27 \\
+I21b & Reuse S+B & single-shot & v10, acquisition 3 & 3; 18/2/10 & 3; 4/1/25 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -161,12 +165,20 @@ Generation (bound $-5.8$ to $-4.6$) and from 31 to 7 in Reuse (bound $-5.0$
 to $-4.4$), every input-policy check passes in Reuse and 23 of 25 in
 Generation, functional success is 5 of 5 in every arm, no nameless run is
 lost, and submissions equal the controls' (10 and 10; 11 against 13). The
-remaining failures are resource checks; the Reuse retention bound worsens
-from 0 to 3 of 5.
+remaining failures are resource checks. Two further v10 acquisitions per
+method, each against its own fresh control (I21a, I21b; $N=3$), give the
+same direction in all four comparisons (Generation 24 to 6 and 24 to 2,
+Reuse 17 to 3 and 18 to 4 of 30), 3 of 3 functional in every arm and no
+nameless run lost: the result is a property of the protocol, not of one
+document. Which resource checks survive varies by acquisition, and the
+Reuse retention bound worsens under every v10 insert (3 of 5, 3 of 3, 2 of
+3 failed against 0 in controls); none of the three states a record-count
+limit where the earlier insert did.
 
 \paragraph{Limits.}
-One task, one repository pair, one acquisition per arm shared by five
-trajectories; counts are descriptive. Large-record outcomes are often
+One task, one repository pair, one acquisition per arm shared by its
+trajectories, three acquisitions per method only under v10; counts are
+descriptive. Large-record outcomes are often
 unresolved (43 of 80 in I07). Artifact review and hook classes are
 single-pass model judgements with cited lines; a second reader checked 12
 audit rows, and the hook rule was corrected until both agreed on all 12.
