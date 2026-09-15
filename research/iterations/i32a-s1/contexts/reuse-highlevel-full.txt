@@ -1,0 +1,102 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Add a local persistent highscore store, a finished-run recording path, and a menu panel. Reuse ApoIcarus’s parallel record model and descending-score presentation while replacing its remote service dependency with bounded local-file persistence.
+
+Assets:
+- Finished-run record containing actual score, player name, and survival time [integrity]
+- Persistent leaderboard and its score ordering [integrity]
+- Highscore menu panel and its displayed records [availability]
+
+Trust boundaries:
+- Level-end recording [entry point]: Player name and mutable level/player state at a cleared or lost level from The running game and local player-controlled or tampered game state to The operation that receives a new highscore record
+- Leaderboard persistence [entry point]: Stored leaderboard bytes, including records and fields from The user-editable local store file to The highscore store’s parser and in-memory records
+- Menu presentation: Records loaded from the local store from The highscore store to The dedicated menu highscore panel and its renderer
+
+[X1; change_risk; reasoned; tampering; CWE-20; CAPEC-153] A tampered local game state or player name could create a false finished-run record if the level-end integration records values without domain validation.
+Task relevance: Protects the requirement that the board reflects the run’s actual non-negative score, player name, and elapsed time.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[X2; change_risk; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-230] Malformed or oversized local store content could corrupt the leaderboard, consume excessive resources, or make the menu unusable if persistence input is read without bounds and structural validation.
+Task relevance: Protects persistence across runs and continued availability of the menu panel.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R1; requirement; task; tampering] At the level-end integration point, record exactly one finished run for both level clearing and losing, using the level’s final player score, player name, and elapsed survival time rather than a preview, default, or remote value.
+Task relevance: Provides the feature’s primary effect: recording the real result of every completed run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R2; requirement; task; tampering; CWE-20; CAPEC-153] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival time, and a name that is non-null, non-blank after trimming, and at most 32 characters; display the accepted duration as mm:ss.
+Task relevance: Defines the input contract for storeRun and prevents invalid values from entering the leaderboard.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R3; requirement; task; tampering; CWE-922] Keep accepted records in the supplied local file so that a later highscore-store construction restores the same leaderboard records and their score, name, and survival-time association.
+Task relevance: Satisfies persistence across application runs without assuming a web endpoint.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R4; requirement; task; tampering; CWE-20] When records are retained or exposed to the panel, sort complete records by score descending while moving each name and survival time with its score.
+Task relevance: Satisfies the required leaderboard ordering and prevents mismatched displayed fields.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R5; requirement; task; denial_of_service] Expose the leaderboard through a dedicated menu panel that displays each retained player name, score, and survival time and can be reached from the game menu.
+Task relevance: Integrates the highscore board into the game’s existing menu/view flow.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R6; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230] Bound the leaderboard to 10 displayed records, bound each stored name to 32 characters, and bound each serialized record to 256 bytes; retain valid records by evicting records beyond the display capacity rather than rejecting a valid record that fits the input contract.
+Task relevance: Keeps the local store and menu sized to the feature while preserving valid run recording.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R7; requirement; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Use a local, explicitly structured persistence format for the Path-backed store and do not introduce network submission or general object deserialization for highscore records.
+Task relevance: Fits the desktop-game threat model and limits the attack surface while reusing the donor’s record and presentation concepts.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-153] At the receiving record operation, reject and report a null/blank/overlong name or a negative score or duration; before calling it, the level-end integration trims the name and substitutes a stated safe default name for missing or invalid player-name data so the run is still recorded.
+Task relevance: Enforces R1 and R2 while preserving the level-end recording effect.
+Failure behavior: The store rejects invalid input and reports the rejection; the caller normalizes or defaults missing name data before invoking it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1, satisfies R2
+
+[C2; control; reasoned; tampering] Make the level-end path idempotent for a finished run and invoke it from the common clear/loss transition after final scoring and elapsed-time calculation.
+Task relevance: Ensures R1 records the actual final result exactly once for either end condition.
+Failure behavior: A repeated transition does not create duplicate records, while the first valid transition still records the run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C3; control; reasoned; tampering; CWE-20; CAPEC-153] Parse the local store with an explicit format, reject malformed records, and report parse failures without coercing, clamping, or partially accepting invalid fields.
+Task relevance: Enforces R3 and R7 against edited or corrupted store content.
+Failure behavior: The parser rejects and reports the invalid record; the caller uses an empty valid in-memory leaderboard so the menu remains available.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3, satisfies R7
+
+[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-230] Apply a byte limit before reading each serialized record and field, and stop reading beyond the configured store budget instead of allocating from unbounded input.
+Task relevance: Enforces R6 against oversized local-file input.
+Failure behavior: Oversized input is rejected and reported; existing valid records remain usable and the panel still opens.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R6
+
+[C5; control; reasoned; tampering] Maintain at most 10 retained records by evicting the lowest-ranked records after insertion, then expose aligned name, score, and survival-time collections in descending score order.
+Task relevance: Enforces R4 and R6 without costing a valid run that fits the record contract.
+Failure behavior: Only excess low-ranked records are evicted; the newly accepted valid record is not rejected solely because the board is full.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4, satisfies R6
+
+[C6; control; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Persist through a bounded local-file writer using an explicit text or primitive-value format and atomic replacement where supported, rather than a general object deserializer or remote request.
+Task relevance: Enforces R3 and R7 while adapting the donor implementation to the Path-backed desktop feature.
+Failure behavior: A write failure is reported and the in-memory accepted record remains available for the current panel; no remote submission or unsafe deserialization is attempted.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3, satisfies R7
+
+[C7; control; reasoned; tampering; CWE-20; CAPEC-153] Have the menu panel render only the bounded, validated store view and format survival time from non-negative seconds as mm:ss without reinterpreting or reordering fields during drawing.
+Task relevance: Enforces R4, R5, and R6 at the display boundary.
+Failure behavior: Invalid or unavailable rows are omitted from the rendered view while the dedicated panel remains navigable and displays the remaining valid rows.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4, satisfies R5, satisfies R6
+
+Uncertainty and limits:
+- The requested angle name highlevel is not permitted by the supplied schema.json, whose allowed values are dataflow, requirements, and catalog; requirements is used to remain schema-valid.
+- The guidance is intentionally unanchored per the task’s high-level-angle instructions; repository-specific symbol and line evidence is therefore not included.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

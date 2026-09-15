@@ -1,0 +1,449 @@
+{
+ "schemaVersion": 1,
+ "angle": "requirements",
+ "summary": "Add a local persistent highscore store, a finished-run recording path, and a menu panel. Reuse ApoIcarus’s parallel record model and descending-score presentation while replacing its remote service dependency with bounded local-file persistence.",
+ "limitations": [
+  "The requested angle name highlevel is not permitted by the supplied schema.json, whose allowed values are dataflow, requirements, and catalog; requirements is used to remain schema-valid.",
+  "The guidance is intentionally unanchored per the task’s high-level-angle instructions; repository-specific symbol and line evidence is therefore not included."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Finished-run record containing actual score, player name, and survival time",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Persistent leaderboard and its score ordering",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Highscore menu panel and its displayed records",
+   "property": "availability"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Level-end recording",
+   "untrusted_input": "Player name and mutable level/player state at a cleared or lost level",
+   "source": "The running game and local player-controlled or tampered game state",
+   "sink": "The operation that receives a new highscore record",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Leaderboard persistence",
+   "untrusted_input": "Stored leaderboard bytes, including records and fields",
+   "source": "The user-editable local store file",
+   "sink": "The highscore store’s parser and in-memory records",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "Menu presentation",
+   "untrusted_input": "Records loaded from the local store",
+   "source": "The highscore store",
+   "sink": "The dedicated menu highscore panel and its renderer",
+   "entry_point": false
+  },
+  {
+   "id": "item:X1",
+   "kind": "change_risk",
+   "label": "A tampered local game state or player name could create a false finished-run record if the level-end integration records values without domain validation.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Protects the requirement that the board reflects the run’s actual non-negative score, player name, and elapsed time."
+  },
+  {
+   "id": "item:X2",
+   "kind": "change_risk",
+   "label": "Malformed or oversized local store content could corrupt the leaderboard, consume excessive resources, or make the menu unusable if persistence input is read without bounds and structural validation.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-20",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-230"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Protects persistence across runs and continued availability of the menu panel."
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "At the level-end integration point, record exactly one finished run for both level clearing and losing, using the level’s final player score, player name, and elapsed survival time rather than a preview, default, or remote value.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Provides the feature’s primary effect: recording the real result of every completed run."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival time, and a name that is non-null, non-blank after trimming, and at most 32 characters; display the accepted duration as mm:ss.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Defines the input contract for storeRun and prevents invalid values from entering the leaderboard."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "Keep accepted records in the supplied local file so that a later highscore-store construction restores the same leaderboard records and their score, name, and survival-time association.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-922"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Satisfies persistence across application runs without assuming a web endpoint."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "When records are retained or exposed to the panel, sort complete records by score descending while moving each name and survival time with its score.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Satisfies the required leaderboard ordering and prevents mismatched displayed fields."
+  },
+  {
+   "id": "item:R5",
+   "kind": "requirement",
+   "label": "Expose the leaderboard through a dedicated menu panel that displays each retained player name, score, and survival time and can be reached from the game menu.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Integrates the highscore board into the game’s existing menu/view flow."
+  },
+  {
+   "id": "item:R6",
+   "kind": "requirement",
+   "label": "Bound the leaderboard to 10 displayed records, bound each stored name to 32 characters, and bound each serialized record to 256 bytes; retain valid records by evicting records beyond the display capacity rather than rejecting a valid record that fits the input contract.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-230"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Keeps the local store and menu sized to the feature while preserving valid run recording."
+  },
+  {
+   "id": "item:R7",
+   "kind": "requirement",
+   "label": "Use a local, explicitly structured persistence format for the Path-backed store and do not introduce network submission or general object deserialization for highscore records.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-502"
+   ],
+   "capec": [
+    "CAPEC-586"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Fits the desktop-game threat model and limits the attack surface while reusing the donor’s record and presentation concepts."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "At the receiving record operation, reject and report a null/blank/overlong name or a negative score or duration; before calling it, the level-end integration trims the name and substitutes a stated safe default name for missing or invalid player-name data so the run is still recorded.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The store rejects invalid input and reports the rejection; the caller normalizes or defaults missing name data before invoking it.",
+   "verification": null,
+   "task_relevance": "Enforces R1 and R2 while preserving the level-end recording effect."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "Make the level-end path idempotent for a finished run and invoke it from the common clear/loss transition after final scoring and elapsed-time calculation.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "A repeated transition does not create duplicate records, while the first valid transition still records the run.",
+   "verification": null,
+   "task_relevance": "Ensures R1 records the actual final result exactly once for either end condition."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "Parse the local store with an explicit format, reject malformed records, and report parse failures without coercing, clamping, or partially accepting invalid fields.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The parser rejects and reports the invalid record; the caller uses an empty valid in-memory leaderboard so the menu remains available.",
+   "verification": null,
+   "task_relevance": "Enforces R3 and R7 against edited or corrupted store content."
+  },
+  {
+   "id": "item:C4",
+   "kind": "control",
+   "label": "Apply a byte limit before reading each serialized record and field, and stop reading beyond the configured store budget instead of allocating from unbounded input.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-230"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Oversized input is rejected and reported; existing valid records remain usable and the panel still opens.",
+   "verification": null,
+   "task_relevance": "Enforces R6 against oversized local-file input."
+  },
+  {
+   "id": "item:C5",
+   "kind": "control",
+   "label": "Maintain at most 10 retained records by evicting the lowest-ranked records after insertion, then expose aligned name, score, and survival-time collections in descending score order.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Only excess low-ranked records are evicted; the newly accepted valid record is not rejected solely because the board is full.",
+   "verification": null,
+   "task_relevance": "Enforces R4 and R6 without costing a valid run that fits the record contract."
+  },
+  {
+   "id": "item:C6",
+   "kind": "control",
+   "label": "Persist through a bounded local-file writer using an explicit text or primitive-value format and atomic replacement where supported, rather than a general object deserializer or remote request.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-502"
+   ],
+   "capec": [
+    "CAPEC-586"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "A write failure is reported and the in-memory accepted record remains available for the current panel; no remote submission or unsafe deserialization is attempted.",
+   "verification": null,
+   "task_relevance": "Enforces R3 and R7 while adapting the donor implementation to the Path-backed desktop feature."
+  },
+  {
+   "id": "item:C7",
+   "kind": "control",
+   "label": "Have the menu panel render only the bounded, validated store view and format survival time from non-negative seconds as mm:ss without reinterpreting or reordering fields during drawing.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Invalid or unavailable rows are omitted from the rendered view while the dedicated panel remains navigable and displays the remaining valid rows.",
+   "verification": null,
+   "task_relevance": "Enforces R4, R5, and R6 at the display boundary."
+  }
+ ],
+ "edges": [
+  {
+   "from": "item:R1",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R2",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R3",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R4",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R5",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R6",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R7",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C1",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R7",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C4",
+   "to": "item:R6",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C5",
+   "to": "item:R4",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C5",
+   "to": "item:R6",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C6",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C6",
+   "to": "item:R7",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C7",
+   "to": "item:R4",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C7",
+   "to": "item:R5",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C7",
+   "to": "item:R6",
+   "type": "satisfies"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "change_risk": 2,
+   "requirement": 7,
+   "control": 7
+  },
+  "edgesByType": {
+   "mitigates": 7,
+   "satisfies": 13
+  },
+  "items": 16,
+  "anchoredItems": 0,
+  "entryPoints": 2,
+  "controls": 7,
+  "controlsWithEnforcementPoint": 0,
+  "itemsLinkedToRequirementOrRisk": 14,
+  "sinkSymbols": 124,
+  "sinkSymbolsAnchored": 0
+ },
+ "sha256": "535e7ff62b4e3bfbedd15f2291f9c0d4744bc3ff139f0aaf349c0984abc5d672"
+}
