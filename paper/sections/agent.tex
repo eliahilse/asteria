@@ -1,72 +1,48 @@
 \section{Security context agent}
 \label{sec:agent}
 
-\paragraph{Problem.}
-Earlier rounds supplied the acquisition step with researcher-written security
-perspectives (requirements, trust boundaries, operational guards). Such
-instructions encode knowledge of the task and its likely flaws; a practitioner
-who can write them can also write the guards. The agent described here removes
-that input. It receives a repository and a one-line feature description and
-assembles $\mathrm{SC}(R,\Delta)$ using only the vocabulary of
-Section~\ref{sec:terminology} and published catalogues.
-
-\paragraph{Inputs and constraints.}
-The agent receives (i) a read-only snapshot of the target repository and, for
-reuse tasks, of the donor repository; (ii) the feature description as given to
-the generator, for example ``Implement a Highscore feature in ApoMario'';
-(iii) the ontology of Section~\ref{sec:terminology} as an output schema with
-its catalogue vocabulary (CWE, CAPEC, ASVS). It receives no check, fixture,
-threshold, earlier security context, generated code, audit or test outcome. It
-executes no repository code. Its tool budget, model and sampling settings are
-fixed and recorded.
+\paragraph{Problem and inputs.}
+Earlier rounds supplied acquisition with researcher-written security
+perspectives; a practitioner who can write them can also write the guards.
+The agent removes that input and assembles $\mathrm{SC}(R,\Delta)$ from a
+read-only snapshot of the target repository (for reuse tasks also the donor),
+the one-line feature description given to the generator, and the ontology of
+Section~\ref{sec:terminology} as an output schema with its catalogue
+vocabulary (CWE, CAPEC, ASVS). It receives no check, fixture, threshold,
+earlier security context, generated code, audit or test outcome, executes no
+repository code, and runs under a fixed, recorded tool budget, model and
+sampling settings.
 
 \paragraph{Code model.}
-Before the agent runs, the harness parses every source file into a code model:
-types, methods, constructors and fields with file and line ranges, invocations,
-resolvable call edges, and sink tags for file, network, deserialization,
-class-loading, reflection, process and system-property APIs. The code model is
-written to the workspace as data and a compact outline. Every agent statement
-is anchored to a code-model symbol, a file range or both. The harness resolves
-anchors against the source and hashes the cited text, tying each statement to
-a code element.
+The harness parses every source file into a code model (types, methods,
+constructors, fields, call edges, sink tags). Every statement is anchored to
+a code-model symbol, a file range or both.
 
 \paragraph{Angles.}
-The agent runs an inspection loop with shell tools over the workspace, in the
-manner of agent--computer interfaces for software engineering~\citep{yang2024},
-and produces one typed document. Its instruction fixes the analysis order but
-no content. Three angles define complete procedures over
-the same vocabulary and output schema:
+The agent runs an inspection loop with shell tools~\citep{yang2024} and
+produces one typed document. Three angles:
 \begin{enumerate}\setlength\itemsep{0pt}
-\item \emph{Data flow}: locate the code the change touches, name assets, trace
-  untrusted data from sources to sinks across trust boundaries, enumerate
-  threats per boundary with STRIDE, map them to weakness types with a
-  reachability judgement, and place a security requirement and security control
-  at the operation that first receives the data.
-\item \emph{Requirements}: name assets and the security property each must
-  preserve, then constrain every operation of the feature (create, validate,
-  store, load, display, integrate) with a security requirement, its
-  enforcement point and a security control with failure behaviour, citing
-  conventions where available.
-\item \emph{Catalogue}: decide for every entry of a published weakness
-  catalogue~\citep{cwetop25} whether it applies to the change in this
-  repository, with evidence, and derive security requirements and security
-  controls only for applicable entries.
+\item \emph{Data flow}: trace untrusted data from the touched code across
+  trust boundaries to sinks, enumerate threats per boundary (STRIDE), map
+  them to weakness types with a reachability judgement, and place requirement
+  and control where the data first arrives.
+\item \emph{Requirements}: name assets and their properties, then constrain
+  every feature operation with a requirement, enforcement point and control
+  with failure behaviour.
+\item \emph{Catalogue}: decide with evidence, per entry of a published
+  weakness catalogue~\citep{cwetop25}, whether it applies to this change;
+  derive requirements and controls only for applicable entries.
 \end{enumerate}
-All angles end with verification hints and explicit unknowns. They differ in
-their starting point (flows, assets, catalogue); the constraints on statement
-content are identical.
 
 \paragraph{Output.}
 Each statement carries a kind, a basis (observed, task, reasoned), catalogue
-identifiers, and references to inspected excerpts. Table~\ref{tab:terms}
-maps the vocabulary of Section~\ref{sec:terminology} to the schema and to the
-graph of the next paragraph. The harness, not the model, resolves references
-to exact file and line ranges of the snapshot; a reference to an unknown symbol
-with a verifiable file range is kept as the range and the correction counted;
-an unresolvable reference invalidates the statement. Observations and existing
-risks require references; requirements and controls may be prospective and are
-labelled so. The validated document is rendered verbatim as a prompt insert and
-appended after the unchanged task; control conditions receive no insert.
+identifiers and references to inspected excerpts (Table~\ref{tab:terms}).
+The harness, not the model, resolves references to file and line ranges and
+hashes the cited text; an unknown symbol with a verifiable file range is
+kept as the range and the correction counted; an unresolvable reference
+invalidates the statement. The validated document is stored as a typed graph
+(Table~\ref{tab:terms}) and rendered verbatim, in a fixed order, as an insert
+after the unchanged task; controls receive no insert.
 
 \begin{table}[t]
 \centering
@@ -94,54 +70,38 @@ Code element & anchor symbol, file, line range & symbol and file nodes, \emph{ca
 \end{tabular}}
 \end{table}
 
-\paragraph{Context graph.}
-The validated document is stored as a typed graph: assets, trust boundaries and
-items are nodes; anchors become \emph{anchored\_at}, \emph{enforced\_at},
-\emph{located\_at} and \emph{crosses} edges to code-model symbols; item
-relations are typed from their kinds (\emph{satisfies}, \emph{mitigates},
-\emph{verifies}, \emph{weakens}); call edges of the code model connect the
-symbols. The graph renders to the insert in a fixed order and supports
-\emph{slicing}: given the symbols the generator has read or edited, the
-statements anchored at those symbols, at their call neighbours, and their
-related security requirements and security controls are selected once each.
-
 \paragraph{Delivery modes.}
-The next round compares \emph{single-shot} delivery (the protocol of
-Section~\ref{sec:design}) with \emph{agentic} delivery, in which the generator
-may search and read the repository before submitting, under three sidecar
-settings: none, static (the full insert appended to the task) and adaptive (no
-upfront insert; after each read and before each submission the harness injects
-the graph slice for the code touched so far). The adaptive setting supplies
-security context in proportion to what the generator inspects; its cost is
-measured in injected statements and characters. A fourth setting, the
-\emph{gatekeeper}, injects nothing: for each submission that edits an
-enforcement point it asks a one-turn judge (the same model, recorded) whether
-the edit clearly violates an anchored control, rejects the submission with the
-violated statements only on a positive verdict, and is otherwise silent.
-Consultations and interventions are counted; the judge sees the edit and the
-statements, never test outcomes.
+\emph{Single-shot} delivery is the protocol of Section~\ref{sec:design}; in
+\emph{agentic} delivery the generator may search and read the repository
+before submitting. Sidecars: none; static (the full insert); adaptive (no upfront insert; after each read and before each
+submission the harness injects the graph \emph{slice} for the code touched
+so far: the statements anchored at the symbols read or edited or at their
+call neighbours, with their requirements and controls, once each);
+gatekeeper (injects nothing; when a submission edits an enforcement point, a
+one-turn judge, the same model, recorded, rejects it with the violated
+statements only if the edit clearly violates an anchored control). The judge
+sees the edit and the statements, never test outcomes.
 
 \paragraph{Provenance.}
-A record freezes the instruction, ontology and snapshot fingerprints, every
-tool call and model turn, the validated output, its rendered insert and their
-hashes before any code generation starts. Failed or degenerate acquisitions are
-kept and used; none is regenerated. In round I09, one acquisition in the
-catalogue arm inspected nothing because its tool calls used the wrong path
-syntax; its insert was used unchanged and reported as uninspected.
+A record freezes instruction, ontology and snapshot fingerprints, every tool
+call and model turn, the validated output and its insert, with hashes, before
+code generation. Failed or degenerate acquisitions are kept and
+used, none regenerated: in I09 one catalogue acquisition inspected nothing
+(wrong path syntax in its tool calls); its insert was used unchanged and
+reported as uninspected.
 
 \paragraph{Ablations.}
-Two arms bracket the angles: a \emph{task-only} arm whose instruction is a
-single sentence without ontology, code model or procedure, and a flat
-\emph{catalogue} arm that adds the CWE Top~25 list~\citep{cwetop25} without
-procedure or code model. The researcher-written perspectives of earlier rounds
-serve as within-round bridges. Differences between arms confound instruction,
-generated content and insert length; the design does not isolate wording.
+Two arms bracket the angles: \emph{task-only}, a single sentence without
+ontology, code model or procedure, and a flat \emph{catalogue} arm adding the
+CWE Top~25 list~\citep{cwetop25} without procedure or code model. Differences
+between arms confound instruction, generated content and insert length; the
+design does not isolate wording.
 
 \paragraph{Relation to prior work.}
-Prior work evaluates code-model security with isolated
-scenarios~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the model
-itself~\citep{he2023}, or varies generic prompt wording~\citep{tony2025}. User
-studies report that assistance without security cues degrades
-security~\citep{perry2023}. The agent derives repository-specific
-security context from evidence before generation, in a corpus where flaws
-propagate by clone-and-own reuse~\citep{krueger2018,dubinsky2013}.
+Prior work evaluates code-model security in isolated
+scenarios~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
+model~\citep{he2023} or varies generic prompt wording~\citep{tony2025}; user
+studies find assistance without security cues degrades
+security~\citep{perry2023}. Here repository-specific security context is
+derived from evidence before generation, in a corpus where flaws propagate by
+clone-and-own reuse~\citep{krueger2018,dubinsky2013}.
