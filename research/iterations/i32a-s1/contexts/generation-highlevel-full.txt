@@ -1,0 +1,109 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+High-level security guidance for adding a persistent, sorted highscore store, recording runs at level end, and exposing a bounded menu view in a desktop game.
+
+Assets:
+- Highscore records [integrity]
+- Player performance data [accountability]
+- Highscore menu view [availability]
+
+Trust boundaries:
+- Highscore persistence boundary [entry point]: User-editable local highscore file contents from Local file reader and parser to Retained highscore records and menu display
+- Level-content boundary [entry point]: Locally edited or shared-server level content that influences gameplay from Level loader and game loop to Finished-run score and elapsed-time recording
+- Player-input boundary [entry point]: Locally tampered player name or gameplay state from Name input and level-end integration to New highscore record
+
+[X1; change_risk; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; CAPEC-230; V5.1.1; V12.1.1] Malformed or oversized persisted records could corrupt the leaderboard, inject misleading display text, or consume excessive resources.
+Task relevance: The feature introduces a new local persistence format and reads it for a menu view.
+Failure behavior: Invalid persisted data must be rejected and reported without being retained or displayed.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[X2; change_risk; reasoned; tampering; CWE-345; CWE-348; CAPEC-153; V2.1.1] Recording the wrong player, score, or elapsed time at a level transition could make the leaderboard misleading and allow local cheating to affect retained results.
+Task relevance: The feature must connect the actual level-end state to the new highscore record.
+Failure behavior: The integration must normalize missing or invalid values before submitting the run so the recording effect still occurs.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R1; requirement; task; tampering; CWE-345; CAPEC-153; V2.1.1] At the operation that handles a finished level, record exactly one run for each eligible human run end, whether the level is cleared or lost, using the final score, the player's name, and elapsed survival time; exclude replay, simulation, and editor-only flows unless explicitly treated as runs.
+Task relevance: Ensures the feature captures the player's real performance at the required level-end events.
+Failure behavior: If the source values are missing or invalid, the integration supplies stated safe defaults or normalized values before recording; it does not skip the run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R2; requirement; task; tampering; CWE-20; CAPEC-153; V5.1.1] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming player name of at most 32 characters.
+Task relevance: Defines the input contract for storing and displaying highscore data.
+Failure behavior: Values outside these domains are rejected and reported; valid values are not clamped or substituted at the receiving operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R3; requirement; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] At the persistence reader, bound every physical line, record, and field before retaining it: use at most 256 bytes per line, at most 64 records, and at most 32 characters for a name.
+Task relevance: Keeps the local store proportional to what a leaderboard view needs and limits parser resource use.
+Failure behavior: Oversized lines, records, or fields are rejected and reported rather than truncated into a different value.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R4; requirement; task; tampering; CWE-345; CAPEC-153; V5.1.1] Keep each retained name, score, and survival duration as one aligned record, and order the records by score descending whenever they are stored, returned, or rendered.
+Task relevance: Preserves correct player-to-score-to-time relationships and implements the requested leaderboard ordering.
+Failure behavior: Malformed or inconsistent records are rejected and reported; valid records are retained with their fields aligned and sorted.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R5; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Bound the retained leaderboard to 64 records, evicting only the lowest-ranked excess records after a valid run is accepted so that a valid input that fits is never rejected.
+Task relevance: Provides a concrete storage and display bound suitable for a dedicated leaderboard panel.
+Failure behavior: Excess lower-ranked records are evicted after acceptance and the operation reports the resulting bounded state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R6; requirement; task; tampering; CWE-663; CAPEC-153; V12.1.1] Persist accepted records to the configured store so that a newly created highscore view in a later process observes the same bounded, score-descending records.
+Task relevance: Implements persistence across application runs.
+Failure behavior: A persistence failure is reported while the in-memory accepted record remains available for the current run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R7; requirement; task; information_disclosure; CWE-20; CAPEC-153; V5.1.1] Expose the leaderboard through a dedicated menu panel that renders the player's name, score, and survival time in mm:ss, limiting displayed rows to the bounded leaderboard size.
+Task relevance: Connects the stored data to the requested menu presentation without unbounded rendering.
+Failure behavior: Missing or invalid display values are normalized before rendering, and invalid persisted rows are not displayed.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-153; V5.1.1] Reject and report invalid values in the record-receiving operation, including negative scores or durations, blank names, and names longer than 32 characters.
+Task relevance: Protects the store's record contract at its receiving operation.
+Failure behavior: The invalid submission is rejected and reported without clamping or partial insertion.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C2; control; reasoned; tampering; CWE-20; CWE-345; CAPEC-153; V2.1.1; V5.1.1] Before invoking the record operation at level end, normalize a missing or invalid score or duration to a stated non-negative default and normalize a missing or invalid name to a stated non-blank default.
+Task relevance: Keeps the primary recording effect active while preserving strict validation at the receiving operation.
+Failure behavior: The integration reports the normalization and still submits one complete run record.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C3; control; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] Use a bounded reader and parser for the local store, enforcing 256 bytes per line, 64 records, and 32 characters per name before data is retained.
+Task relevance: Prevents malformed or oversized local persistence data from reaching the leaderboard state.
+Failure behavior: The offending line or record is rejected and reported; it is not truncated or retained.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; tampering; CWE-345; CAPEC-153; V5.1.1] Represent leaderboard entries as one atomic record and sort copies or the collection by non-negative score descending before getters and rendering expose them.
+Task relevance: Prevents field misalignment and ordering mistakes in the board.
+Failure behavior: Inconsistent entries are rejected and reported, while valid entries remain aligned and ordered.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Maintain the 64-record bound by evicting the lowest-ranked entries after insertion and before persistence or display.
+Task relevance: Controls memory, file growth, and panel rendering for the leaderboard.
+Failure behavior: Only excess lower-ranked records are evicted; a valid record that fits is preserved.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C6; control; reasoned; denial_of_service; CWE-703; CAPEC-154; V12.1.1] Write the bounded, validated store through a failure-aware persistence mechanism that keeps the accepted in-memory state when file output fails.
+Task relevance: Provides persistence without suppressing the current run's highscore effect.
+Failure behavior: Report the write failure and retain the accepted current-process leaderboard state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R6
+
+[C7; control; task; tampering; CWE-20; CAPEC-153; V5.1.1] Have the dedicated menu panel read only the bounded getter results and format each non-negative elapsed duration as mm:ss using the corresponding player's name and score.
+Task relevance: Ensures the requested board is readable and cannot expand beyond the store's display bound.
+Failure behavior: Invalid rows are omitted from rendering and reported by the reader; the panel continues displaying valid rows.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R7
+
+Uncertainty and limits:
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

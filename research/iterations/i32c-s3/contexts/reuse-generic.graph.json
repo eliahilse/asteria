@@ -1,0 +1,264 @@
+{
+ "schemaVersion": 1,
+ "angle": "requirements",
+ "summary": "Generic security context for a Java desktop game's local highscore feature. No repository was available for inspection, so no code anchors apply.",
+ "limitations": [
+  "No repository or donor source was available, so implementation-specific symbols, files, line anchors, and existing controls could not be inspected."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Persisted highscore records",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Game availability during highscore loading",
+   "property": "availability"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Highscore data as inert data",
+   "property": "resistance"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Running game to highscore recorder",
+   "untrusted_input": "Score, survival time, and player name produced or supplied by the running game",
+   "source": "Running game state",
+   "sink": "Highscore recording operation",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Local highscore file",
+   "untrusted_input": "User-editable persisted records, fields, and file size",
+   "source": "Local filesystem",
+   "sink": "Highscore file parser and loader",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "Externally loaded game content",
+   "untrusted_input": "Content originating from a shared level server or other external source",
+   "source": "External content loader",
+   "sink": "Game state and highscore integration",
+   "entry_point": true
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "The run-recording operation shall accept only a non-negative integer score, a non-negative integer survival time, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report values outside those domains.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The receiving operation rejects and reports invalid values without storing them.",
+   "verification": null,
+   "task_relevance": "Protects the integrity of the player's recorded score, name, and mm:ss duration."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "The integration point shall normalize a missing or invalid score, survival time, or player name to stated safe defaults before invoking the recording operation, so finishing a run still records its primary result.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The caller substitutes safe defaults before the recording call; it does not skip or suppress run-end recording.",
+   "verification": null,
+   "task_relevance": "Preserves run-end recording when game state is incomplete or locally tampered with."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "The file reader shall treat the local highscore file as untrusted text data, avoid Java object deserialization, and impose limits of 4096 bytes per line, 4096 characters per field, and 100 records before retaining data.",
+   "basis": "task",
+   "threat": "information_disclosure",
+   "cwe": [
+    "CWE-502",
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Malformed, oversized, or unsupported records are rejected and reported; no object deserialization occurs.",
+   "verification": null,
+   "task_relevance": "Prevents malicious or corrupted local files from causing code execution, excessive memory use, or parser instability."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "The retained leaderboard shall be bounded to 100 records, sorted by non-negative points in descending order, and evict records beyond the bound without rejecting a valid record that fits.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Entries exceeding the retention bound are evicted after ordering; valid fitting entries remain available.",
+   "verification": null,
+   "task_relevance": "Keeps the menu view responsive while preserving the highest-scoring entries."
+  },
+  {
+   "id": "item:R5",
+   "kind": "requirement",
+   "label": "Malformed or unreadable highscore storage shall not prevent the game menu or run-end recording from functioning; loading shall fall back to an empty leaderboard and report the rejection.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The loader reports the failure and uses an empty in-memory leaderboard; the game continues.",
+   "verification": null,
+   "task_relevance": "Maintains game availability when the persisted file is corrupted, truncated, or inaccessible."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "Use explicit numeric-domain and trimmed-name validation at the run-recording operation, with rejection diagnostics.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report invalid score, duration, or name; do not store it.",
+   "verification": null,
+   "task_relevance": "Implements R1 at the untrusted-data receiving operation."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "Use run-end integration normalization that converts missing or invalid values to safe stated defaults before calling the recorder.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Substitute defaults and invoke recording; never suppress the recording operation.",
+   "verification": null,
+   "task_relevance": "Implements R2 while preserving the primary run-end recording effect."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "Use a bounded text parser with fixed byte and character limits and a format containing only primitive fields; do not use Java object deserialization.",
+   "basis": "reasoned",
+   "threat": "information_disclosure",
+   "cwe": [
+    "CWE-502",
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report malformed or oversized input without deserializing it.",
+   "verification": null,
+   "task_relevance": "Implements R3 for the user-editable store."
+  },
+  {
+   "id": "item:C4",
+   "kind": "control",
+   "label": "Use a bounded, score-descending collection that retains at most 100 records and evicts lower-priority excess entries.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Evict entries beyond the bound after sorting; do not reject a valid fitting record.",
+   "verification": null,
+   "task_relevance": "Implements R4 for storage and menu display."
+  },
+  {
+   "id": "item:C5",
+   "kind": "control",
+   "label": "Wrap highscore loading and persistence failures with reporting and an empty in-memory fallback, keeping menu construction and run-end recording operational.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Report the storage failure and continue with an empty leaderboard.",
+   "verification": null,
+   "task_relevance": "Implements R5 for availability under malformed or inaccessible storage."
+  }
+ ],
+ "edges": [
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C4",
+   "to": "item:R4",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C5",
+   "to": "item:R5",
+   "type": "satisfies"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "requirement": 5,
+   "control": 5
+  },
+  "edgesByType": {
+   "satisfies": 5
+  },
+  "items": 10,
+  "anchoredItems": 0,
+  "entryPoints": 3,
+  "controls": 5,
+  "controlsWithEnforcementPoint": 0,
+  "itemsLinkedToRequirementOrRisk": 10,
+  "sinkSymbols": 0,
+  "sinkSymbolsAnchored": 0
+ },
+ "sha256": "cab9682d85beb5037b9a61c2c85d9fe025fab3e57d3ef8b6f588bb4aaeedddd3"
+}

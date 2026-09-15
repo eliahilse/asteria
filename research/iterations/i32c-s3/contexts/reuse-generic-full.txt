@@ -1,0 +1,71 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Generic security context for a Java desktop game's local highscore feature. No repository was available for inspection, so no code anchors apply.
+
+Assets:
+- Persisted highscore records [integrity]
+- Game availability during highscore loading [availability]
+- Highscore data as inert data [resistance]
+
+Trust boundaries:
+- Running game to highscore recorder [entry point]: Score, survival time, and player name produced or supplied by the running game from Running game state to Highscore recording operation
+- Local highscore file [entry point]: User-editable persisted records, fields, and file size from Local filesystem to Highscore file parser and loader
+- Externally loaded game content [entry point]: Content originating from a shared level server or other external source from External content loader to Game state and highscore integration
+
+[R1; requirement; task; tampering; CWE-20] The run-recording operation shall accept only a non-negative integer score, a non-negative integer survival time, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report values outside those domains.
+Task relevance: Protects the integrity of the player's recorded score, name, and mm:ss duration.
+Failure behavior: The receiving operation rejects and reports invalid values without storing them.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R2; requirement; task; tampering; CWE-20] The integration point shall normalize a missing or invalid score, survival time, or player name to stated safe defaults before invoking the recording operation, so finishing a run still records its primary result.
+Task relevance: Preserves run-end recording when game state is incomplete or locally tampered with.
+Failure behavior: The caller substitutes safe defaults before the recording call; it does not skip or suppress run-end recording.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R3; requirement; task; information_disclosure; CWE-502; CWE-400] The file reader shall treat the local highscore file as untrusted text data, avoid Java object deserialization, and impose limits of 4096 bytes per line, 4096 characters per field, and 100 records before retaining data.
+Task relevance: Prevents malicious or corrupted local files from causing code execution, excessive memory use, or parser instability.
+Failure behavior: Malformed, oversized, or unsupported records are rejected and reported; no object deserialization occurs.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R4; requirement; task; denial_of_service; CWE-400] The retained leaderboard shall be bounded to 100 records, sorted by non-negative points in descending order, and evict records beyond the bound without rejecting a valid record that fits.
+Task relevance: Keeps the menu view responsive while preserving the highest-scoring entries.
+Failure behavior: Entries exceeding the retention bound are evicted after ordering; valid fitting entries remain available.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R5; requirement; task; denial_of_service; CWE-400] Malformed or unreadable highscore storage shall not prevent the game menu or run-end recording from functioning; loading shall fall back to an empty leaderboard and report the rejection.
+Task relevance: Maintains game availability when the persisted file is corrupted, truncated, or inaccessible.
+Failure behavior: The loader reports the failure and uses an empty in-memory leaderboard; the game continues.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[C1; control; reasoned; tampering; CWE-20] Use explicit numeric-domain and trimmed-name validation at the run-recording operation, with rejection diagnostics.
+Task relevance: Implements R1 at the untrusted-data receiving operation.
+Failure behavior: Reject and report invalid score, duration, or name; do not store it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-20] Use run-end integration normalization that converts missing or invalid values to safe stated defaults before calling the recorder.
+Task relevance: Implements R2 while preserving the primary run-end recording effect.
+Failure behavior: Substitute defaults and invoke recording; never suppress the recording operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; information_disclosure; CWE-502; CWE-400] Use a bounded text parser with fixed byte and character limits and a format containing only primitive fields; do not use Java object deserialization.
+Task relevance: Implements R3 for the user-editable store.
+Failure behavior: Reject and report malformed or oversized input without deserializing it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400] Use a bounded, score-descending collection that retains at most 100 records and evicts lower-priority excess entries.
+Task relevance: Implements R4 for storage and menu display.
+Failure behavior: Evict entries beyond the bound after sorting; do not reject a valid fitting record.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; denial_of_service; CWE-400] Wrap highscore loading and persistence failures with reporting and an empty in-memory fallback, keeping menu construction and run-end recording operational.
+Task relevance: Implements R5 for availability under malformed or inaccessible storage.
+Failure behavior: Report the storage failure and continue with an empty leaderboard.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+Uncertainty and limits:
+- No repository or donor source was available, so implementation-specific symbols, files, line anchors, and existing controls could not be inspected.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
