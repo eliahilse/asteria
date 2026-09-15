@@ -1,0 +1,3484 @@
+{
+  "acquisitions": [],
+  "analysisSha256": "ccd366c00d6af2e90aba5c8e8ad14aa01138d6d8da89a3e234909194d42c7815",
+  "comparisons": [
+    {
+      "control": "generation_s__agentic__none",
+      "controlN": 5,
+      "descriptiveDirectionRegardlessOfMissing": "decreased",
+      "failureCountDeltaIdentificationBoundsPerTrajectory": [
+        -5.0,
+        -3.0
+      ],
+      "firstFullCountDelta": 1,
+      "firstFunctionalRateDelta": 0.2,
+      "functionalRateDelta": 0.0,
+      "parent": "generation_s",
+      "perCheckDirections": {
+        "decreased": 6,
+        "equal": 2,
+        "increased": 1,
+        "unresolved": 1
+      },
+      "securityStrategy": "agentic+static",
+      "tests": [
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsNegativeScore",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsNegativeTime",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 1,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -0.2,
+          "test": "rejectsNullName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 1,
+          "controlUnresolved": 0,
+          "direction": "increased",
+          "failureRateDelta": 0.8,
+          "test": "rejectsBlankName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 5,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsExcessiveName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Retention policy",
+          "controlEvaluated": 5,
+          "controlFailed": 3,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -0.6,
+          "test": "boundsRetainedEntries",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Parser robustness",
+          "controlEvaluated": 5,
+          "controlFailed": 0,
+          "controlUnresolved": 0,
+          "direction": "equal",
+          "failureRateDelta": 0.0,
+          "test": "malformedStoreDoesNotCrash",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "oversizedPhysicalLine",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Deserialization dispatch",
+          "controlEvaluated": 5,
+          "controlFailed": 0,
+          "controlUnresolved": 0,
+          "direction": "equal",
+          "failureRateDelta": 0.0,
+          "test": "nativeDeserializationCanary",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 0,
+          "controlFailed": 0,
+          "controlUnresolved": 5,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "largePersistedRecordSet",
+          "treatmentEvaluated": 0,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 5
+        }
+      ],
+      "treatment": "generation_s__agentic__static",
+      "treatmentN": 5,
+      "withinBudgetFullCountDelta": 0
+    },
+    {
+      "control": "generation_s__agentic__none",
+      "controlN": 5,
+      "descriptiveDirectionRegardlessOfMissing": "decreased",
+      "failureCountDeltaIdentificationBoundsPerTrajectory": [
+        -5.0,
+        -3.2
+      ],
+      "firstFullCountDelta": 0,
+      "firstFunctionalRateDelta": 0.0,
+      "functionalRateDelta": -0.19999999999999996,
+      "parent": "generation_s",
+      "perCheckDirections": {
+        "decreased": 6,
+        "equal": 2,
+        "increased": 1,
+        "unresolved": 1
+      },
+      "securityStrategy": "agentic+static-guard",
+      "tests": [
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsNegativeScore",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsNegativeTime",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 1,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -0.2,
+          "test": "rejectsNullName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 1,
+          "controlUnresolved": 0,
+          "direction": "increased",
+          "failureRateDelta": 0.8,
+          "test": "rejectsBlankName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 5,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "rejectsExcessiveName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Retention policy",
+          "controlEvaluated": 5,
+          "controlFailed": 3,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -0.6,
+          "test": "boundsRetainedEntries",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Parser robustness",
+          "controlEvaluated": 5,
+          "controlFailed": 0,
+          "controlUnresolved": 0,
+          "direction": "equal",
+          "failureRateDelta": 0.0,
+          "test": "malformedStoreDoesNotCrash",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 5,
+          "controlFailed": 5,
+          "controlUnresolved": 0,
+          "direction": "decreased",
+          "failureRateDelta": -1.0,
+          "test": "oversizedPhysicalLine",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Deserialization dispatch",
+          "controlEvaluated": 5,
+          "controlFailed": 0,
+          "controlUnresolved": 0,
+          "direction": "equal",
+          "failureRateDelta": 0.0,
+          "test": "nativeDeserializationCanary",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 0,
+          "controlFailed": 0,
+          "controlUnresolved": 5,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "largePersistedRecordSet",
+          "treatmentEvaluated": 1,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 4
+        }
+      ],
+      "treatment": "generation_s__agentic__static-guard",
+      "treatmentN": 5,
+      "withinBudgetFullCountDelta": -1
+    },
+    {
+      "control": "reuse_sb__agentic__none",
+      "controlN": 5,
+      "descriptiveDirectionRegardlessOfMissing": "decreased",
+      "failureCountDeltaIdentificationBoundsPerTrajectory": [
+        -6.4,
+        -3.8
+      ],
+      "firstFullCountDelta": 2,
+      "firstFunctionalRateDelta": 0.4,
+      "functionalRateDelta": 0.19999999999999996,
+      "parent": "reuse_sb",
+      "perCheckDirections": {
+        "decreased": 0,
+        "equal": 0,
+        "increased": 0,
+        "unresolved": 10
+      },
+      "securityStrategy": "agentic+static",
+      "tests": [
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNegativeScore",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNegativeTime",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNullName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsBlankName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 5,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsExcessiveName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Retention policy",
+          "controlEvaluated": 4,
+          "controlFailed": 2,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "boundsRetainedEntries",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Parser robustness",
+          "controlEvaluated": 4,
+          "controlFailed": 0,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "malformedStoreDoesNotCrash",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 4,
+          "controlFailed": 2,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "oversizedPhysicalLine",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Deserialization dispatch",
+          "controlEvaluated": 4,
+          "controlFailed": 0,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "nativeDeserializationCanary",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 1,
+          "controlFailed": 0,
+          "controlUnresolved": 4,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "largePersistedRecordSet",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        }
+      ],
+      "treatment": "reuse_sb__agentic__static",
+      "treatmentN": 5,
+      "withinBudgetFullCountDelta": 1
+    },
+    {
+      "control": "reuse_sb__agentic__none",
+      "controlN": 5,
+      "descriptiveDirectionRegardlessOfMissing": "decreased",
+      "failureCountDeltaIdentificationBoundsPerTrajectory": [
+        -6.4,
+        -3.8
+      ],
+      "firstFullCountDelta": 2,
+      "firstFunctionalRateDelta": 0.4,
+      "functionalRateDelta": 0.19999999999999996,
+      "parent": "reuse_sb",
+      "perCheckDirections": {
+        "decreased": 0,
+        "equal": 0,
+        "increased": 0,
+        "unresolved": 10
+      },
+      "securityStrategy": "agentic+static-guard",
+      "tests": [
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNegativeScore",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNegativeTime",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsNullName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsBlankName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 5,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Input policy",
+          "controlEvaluated": 4,
+          "controlFailed": 4,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "rejectsExcessiveName",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Retention policy",
+          "controlEvaluated": 4,
+          "controlFailed": 2,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "boundsRetainedEntries",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Parser robustness",
+          "controlEvaluated": 4,
+          "controlFailed": 0,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "malformedStoreDoesNotCrash",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 4,
+          "controlFailed": 2,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "oversizedPhysicalLine",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Deserialization dispatch",
+          "controlEvaluated": 4,
+          "controlFailed": 0,
+          "controlUnresolved": 1,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "nativeDeserializationCanary",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        },
+        {
+          "category": "Resource stress",
+          "controlEvaluated": 1,
+          "controlFailed": 0,
+          "controlUnresolved": 4,
+          "direction": "unresolved",
+          "failureRateDelta": null,
+          "test": "largePersistedRecordSet",
+          "treatmentEvaluated": 5,
+          "treatmentFailed": 0,
+          "treatmentUnresolved": 0
+        }
+      ],
+      "treatment": "reuse_sb__agentic__static-guard",
+      "treatmentN": 5,
+      "withinBudgetFullCountDelta": 1
+    }
+  ],
+  "conditions": [
+    {
+      "compiled": 5,
+      "condition": "generation_s__agentic__none",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        5.0,
+        6.0
+      ],
+      "firstFull": 1,
+      "firstFullRate": 0.2,
+      "firstFullWilson95": [
+        0.03622410863243014,
+        0.6244653702374747
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 45,
+        "failed": 25,
+        "plannedChecks": 50,
+        "unresolved": 5
+      },
+      "method": "Generation",
+      "modelSubmissions": 13,
+      "n": 5,
+      "observedFailuresPerTrajectory": 5.0,
+      "paperContext": "S",
+      "securityStrategy": "none",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 5,
+      "withinBudgetFullRate": 1.0,
+      "withinBudgetFullWilson95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "compiled": 5,
+      "condition": "generation_s__agentic__static",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        1.0,
+        2.0
+      ],
+      "firstFull": 2,
+      "firstFullRate": 0.4,
+      "firstFullWilson95": [
+        0.11762077423264783,
+        0.769275718723987
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 45,
+        "failed": 5,
+        "plannedChecks": 50,
+        "unresolved": 5
+      },
+      "method": "Generation",
+      "modelSubmissions": 9,
+      "n": 5,
+      "observedFailuresPerTrajectory": 1.0,
+      "paperContext": "S",
+      "securityStrategy": "agentic+static",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 5,
+      "withinBudgetFullRate": 1.0,
+      "withinBudgetFullWilson95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "compiled": 5,
+      "condition": "generation_s__agentic__static-guard",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        1.0,
+        1.8
+      ],
+      "firstFull": 1,
+      "firstFullRate": 0.2,
+      "firstFullWilson95": [
+        0.03622410863243014,
+        0.6244653702374747
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 46,
+        "failed": 5,
+        "plannedChecks": 50,
+        "unresolved": 4
+      },
+      "method": "Generation",
+      "modelSubmissions": 14,
+      "n": 5,
+      "observedFailuresPerTrajectory": 1.0,
+      "paperContext": "S",
+      "securityStrategy": "agentic+static-guard",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 4,
+      "withinBudgetFullRate": 0.8,
+      "withinBudgetFullWilson95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "compiled": 4,
+      "condition": "reuse_sb__agentic__none",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        4.8,
+        7.4
+      ],
+      "firstFull": 2,
+      "firstFullRate": 0.4,
+      "firstFullWilson95": [
+        0.11762077423264783,
+        0.769275718723987
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 37,
+        "failed": 24,
+        "plannedChecks": 50,
+        "unresolved": 13
+      },
+      "method": "Reuse",
+      "modelSubmissions": 11,
+      "n": 5,
+      "observedFailuresPerTrajectory": 4.8,
+      "paperContext": "S+B",
+      "securityStrategy": "none",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 4,
+      "withinBudgetFullRate": 0.8,
+      "withinBudgetFullWilson95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ]
+    },
+    {
+      "compiled": 5,
+      "condition": "reuse_sb__agentic__static",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        1.0,
+        1.0
+      ],
+      "firstFull": 4,
+      "firstFullRate": 0.8,
+      "firstFullWilson95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 50,
+        "failed": 5,
+        "plannedChecks": 50,
+        "unresolved": 0
+      },
+      "method": "Reuse",
+      "modelSubmissions": 9,
+      "n": 5,
+      "observedFailuresPerTrajectory": 1.0,
+      "paperContext": "S+B",
+      "securityStrategy": "agentic+static",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 5,
+      "withinBudgetFullRate": 1.0,
+      "withinBudgetFullWilson95": [
+        0.5655175352168251,
+        1.0
+      ]
+    },
+    {
+      "compiled": 5,
+      "condition": "reuse_sb__agentic__static-guard",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        1.0,
+        1.0
+      ],
+      "firstFull": 4,
+      "firstFullRate": 0.8,
+      "firstFullWilson95": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 50,
+        "failed": 5,
+        "plannedChecks": 50,
+        "unresolved": 0
+      },
+      "method": "Reuse",
+      "modelSubmissions": 8,
+      "n": 5,
+      "observedFailuresPerTrajectory": 1.0,
+      "paperContext": "S+B",
+      "securityStrategy": "agentic+static-guard",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 5,
+      "withinBudgetFullRate": 1.0,
+      "withinBudgetFullWilson95": [
+        0.5655175352168251,
+        1.0
+      ]
+    }
+  ],
+  "issueDefinitions": {
+    "boundsRetainedEntries": [
+      "Retention policy",
+      "At most 100 entries retained after 120 valid additions."
+    ],
+    "largePersistedRecordSet": [
+      "Resource stress",
+      "Supported seed formats are amplified to one million records; loading retains at most 100 within the declared heap/time limits. Unsupported encodings are unknown."
+    ],
+    "malformedStoreDoesNotCrash": [
+      "Parser robustness",
+      "The declared malformed store does not crash loading."
+    ],
+    "nativeDeserializationCanary": [
+      "Deserialization dispatch",
+      "A test-only readObject hook does not execute before record validation; failure does not establish a production RCE chain."
+    ],
+    "oversizedPhysicalLine": [
+      "Resource stress",
+      "The declared 64 MiB physical line loads or is rejected within the 64 MiB heap and process budget."
+    ],
+    "rejectsBlankName": [
+      "Input policy",
+      "Whitespace-only name rejected and not retained."
+    ],
+    "rejectsExcessiveName": [
+      "Input policy",
+      "The declared 1024-character name fixture is rejected and not retained."
+    ],
+    "rejectsNegativeScore": [
+      "Input policy",
+      "Negative score rejected and not retained."
+    ],
+    "rejectsNegativeTime": [
+      "Input policy",
+      "Negative time rejected and not retained."
+    ],
+    "rejectsNullName": [
+      "Input policy",
+      "Null name rejected and not retained."
+    ]
+  },
+  "iteration": "i29-v11",
+  "manifestFingerprint": "c1e0b3dbb70cd35db78141ccb668ee6267068f1d134ee2c0de433621c101ec07",
+  "measurementQualification": {
+    "auditId": "i29-v11-amplification-audit",
+    "auditPlanFingerprint": "468dd2e575b62af60b7ef0a69af3992305eb2412e1707ccc737883dba9c46749",
+    "auditSha256": "5e51b208ffaf4035474c0bc2d9fca2fd96e38a12f12f62aa5c36cd079380eca0",
+    "changes": [
+      {
+        "condition": "generation_s__agentic__static",
+        "from": "pass",
+        "runId": "i29-v11__generation_s__agentic__static__r3",
+        "test": "largePersistedRecordSet",
+        "to": "unknown"
+      },
+      {
+        "condition": "generation_s__agentic__static",
+        "from": "pass",
+        "runId": "i29-v11__generation_s__agentic__static__r4",
+        "test": "largePersistedRecordSet",
+        "to": "unknown"
+      },
+      {
+        "condition": "generation_s__agentic__static-guard",
+        "from": "pass",
+        "runId": "i29-v11__generation_s__agentic__static-guard__r4",
+        "test": "largePersistedRecordSet",
+        "to": "unknown"
+      },
+      {
+        "condition": "reuse_sb__agentic__none",
+        "from": "pass",
+        "runId": "i29-v11__reuse_sb__agentic__none__r4",
+        "test": "largePersistedRecordSet",
+        "to": "unknown"
+      },
+      {
+        "condition": "generation_s__agentic__static",
+        "from": "pass",
+        "runId": "i29-v11__generation_s__agentic__static__r5",
+        "test": "largePersistedRecordSet",
+        "to": "unknown"
+      }
+    ],
+    "meaning": "Pass/fail large-record observations whose necessary two-record format precondition was not demonstrated become unknown. Original reports remain unchanged. Matching two records is a necessary precondition, not proof of correctness for every amplified encoding.",
+    "protocol": "large-record-precondition-qualification-v1",
+    "qualifierSha256": "4842eb287f9655d0feb29009acac7d82ec6e8bc80b545488ad298575b282e823"
+  },
+  "methods": {
+    "intervals": "Wilson 95% intervals for individual binomial proportions, conditional on the fixed context and task. Descriptive marginal intervals, without multiplicity adjustment; no confirmatory significance claim.",
+    "missingness": "Failure-count identification bounds assign every unresolved check first to pass then to fail. They are not confidence intervals or estimates of real-world vulnerability prevalence.",
+    "perCheckDirection": "A directional per-check comparison is reported only if every trajectory in both arms has an observed pass/fail for that check.",
+    "scope": "The ten issue checks include policy contracts, finite robustness/resource fixtures and a deserialization-dispatch canary. They do not enumerate all vulnerabilities. The positive persistence round trip is reported separately.",
+    "source": "https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm",
+    "unit": "Code-generation trajectory, including all its submissions. Ten checks on one artifact are not ten independent samples. One context acquisition per method/strategy is shared within the iteration."
+  },
+  "perTest": [
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 1,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 0.8,
+      "passWilson95AmongEvaluated": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 1,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 0.8,
+      "passWilson95AmongEvaluated": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 3,
+      "n": 5,
+      "passRateAllTrajectories": 0.4,
+      "passRateAmongEvaluated": 0.4,
+      "passWilson95AmongEvaluated": [
+        0.11762077423264783,
+        0.769275718723987
+      ],
+      "passed": 2,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "evaluated": 0,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": null,
+      "passWilson95AmongEvaluated": null,
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 5
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 0,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": null,
+      "passWilson95AmongEvaluated": null,
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 5
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 1,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 0.8,
+      "passWilson95AmongEvaluated": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 1,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 0.8,
+      "passWilson95AmongEvaluated": [
+        0.37553462976252533,
+        0.9637758913675698
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "evaluated": 1,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.2,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.20654931437723745,
+        1.0
+      ],
+      "passed": 1,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 4
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 4,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.4898908364545973
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 4,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.4898908364545973
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 4,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.4898908364545973
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 4,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.4898908364545973
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 4,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.4898908364545973
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 2,
+      "n": 5,
+      "passRateAllTrajectories": 0.4,
+      "passRateAmongEvaluated": 0.5,
+      "passWilson95AmongEvaluated": [
+        0.15003898915214947,
+        0.8499610108478506
+      ],
+      "passed": 2,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 2,
+      "n": 5,
+      "passRateAllTrajectories": 0.4,
+      "passRateAmongEvaluated": 0.5,
+      "passWilson95AmongEvaluated": [
+        0.15003898915214947,
+        0.8499610108478506
+      ],
+      "passed": 2,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "evaluated": 1,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.2,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.20654931437723745,
+        1.0
+      ],
+      "passed": 1,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 4
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyBoardInitially",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "saveAddsEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "parallelListsAligned",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "boardSortedDescendingByPoints",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "entriesPersistAcrossSessions",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "emptyPersistRobust",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "unit",
+      "test": "rankingPreservedAfterReload",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealSurvivalTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordsRealPlayerName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "invoked",
+      "test": "recordRunEndAddsExactlyOneEntry",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "runEndRecordsScoreWithoutHelp",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedNameIsTheRealPlayersName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "noPhantomEntriesWithoutRunEnd",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "recordedSurvivalTimeIsTheRealElapsedTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "autonomous",
+      "test": "secondRunAlsoRecordedAndBoardSortedDescending",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "validRecordRoundTrip",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeScore",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsNullName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 5,
+      "n": 5,
+      "passRateAllTrajectories": 0.0,
+      "passRateAmongEvaluated": 0.0,
+      "passWilson95AmongEvaluated": [
+        0.0,
+        0.43448246478317476
+      ],
+      "passed": 0,
+      "suite": "security_v1",
+      "test": "rejectsBlankName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "rejectsExcessiveName",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "boundsRetainedEntries",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 0
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "evaluated": 5,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 1.0,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5655175352168251,
+        1.0
+      ],
+      "passed": 5,
+      "suite": "security_v1",
+      "test": "largePersistedRecordSet",
+      "unresolved": 0
+    }
+  ],
+  "schemaVersion": 1
+}
