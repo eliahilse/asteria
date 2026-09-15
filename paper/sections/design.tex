@@ -84,10 +84,11 @@ model call. An arm may combine the static insert, this sidecar and the
 guard (for example all three), so the security effect of the judge and the
 functional effect of the graph can be separated.
 
-The same model (Luna) serves as acquisition agent, generator and judge; its
-served identity is recorded per response, sampling settings are requested
-per round (reasoning effort medium for rounds up to I22, high from I23 on)
-and are not attested by the provider. Every round is declared and frozen
+One model, OpenAI's \texttt{gpt-5.6-luna} through the Codex adapter,
+serves as acquisition agent, generator and judge; its served identity is
+recorded per response, sampling settings are requested per round
+(reasoning effort medium for rounds up to I22, high from I23 on, no
+temperature) and are not attested by the provider. Every round is declared and frozen
 before its first model call, has its own fresh control arm collected at
 the same time, and is completed regardless of direction. Time and tokens
 (input, output, reasoning) are recorded for every model call and every
