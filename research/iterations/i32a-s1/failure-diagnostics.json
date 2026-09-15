@@ -1,0 +1,438 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__single_shot__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 29,
+      "issueChecksUnresolved": 21,
+      "n": 5,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 0,
+      "process_time_budget": 3,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 36,
+      "issueChecksUnresolved": 14,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "process_time_budget",
+      "condition": "generation_s__single_shot__static",
+      "detail": "Exceeded the protocol's 15s process budget; bounded-time property failed, not a universal DoS proof.",
+      "report": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r1/submission-1/evaluation/report.json",
+      "reportSha256": "276bb7602773706ddfdb4cd5c7614d9f6e51e3665b247e1194365c74e7390ab4",
+      "responseSha256": "706087425589122a8304035bb9bb70394c6e066d589349f322d3f6b3de36de61",
+      "runId": "i32a-s1__generation_s__single_shot__static__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r1/submission-1/evaluation/report.json",
+      "reportSha256": "276bb7602773706ddfdb4cd5c7614d9f6e51e3665b247e1194365c74e7390ab4",
+      "responseSha256": "706087425589122a8304035bb9bb70394c6e066d589349f322d3f6b3de36de61",
+      "runId": "i32a-s1__generation_s__single_shot__static__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "process_time_budget",
+      "condition": "generation_s__single_shot__static",
+      "detail": "Exceeded the protocol's 15s process budget; bounded-time property failed, not a universal DoS proof.",
+      "report": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r2/submission-1/evaluation/report.json",
+      "reportSha256": "dc9d72100897cc6e13bf0d763b768a2b541dfb9827c11663c1d52b88db5fe4c5",
+      "responseSha256": "e1bd48eaa096d0b95c40d86973be3e18ca9dc7212d282ceb14225e3bb9bb8118",
+      "runId": "i32a-s1__generation_s__single_shot__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "process_time_budget",
+      "condition": "generation_s__single_shot__static",
+      "detail": "Exceeded the protocol's 15s process budget; bounded-time property failed, not a universal DoS proof.",
+      "report": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r3/submission-1/evaluation/report.json",
+      "reportSha256": "46896854eb58bb8c4f64f4d6414b37fc66fec2951722ea31784752cac672268c",
+      "responseSha256": "0637744f1d364af4f9214d6b03c81d842d24d58aec377965096554d827c41d01",
+      "runId": "i32a-s1__generation_s__single_shot__static__r3",
+      "test": "oversizedPhysicalLine"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i32a-s1",
+  "manifestFingerprint": "b9727336b357e6356effcbaaf90737a437666ac03fc9339314810fa40142ea3b",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 36,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 37,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 39,
+          "text": "    private static final int MAX_STORE_BYTES = 64 * 1024;"
+        },
+        {
+          "line": 86,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 139,
+          "text": "        if (bytes.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 227,
+          "text": "        for (int i = 0; i < this.runs.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 246,
+          "text": "            long size = Files.size(this.store);"
+        },
+        {
+          "line": 247,
+          "text": "            if (size < 0 || size > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 251,
+          "text": "            byte[] bytes = Files.readAllBytes(this.store);"
+        },
+        {
+          "line": 252,
+          "text": "            if (bytes.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 339,
+          "text": "        return trimmed.length() > 0 && trimmed.length() <= MAX_NAME_LENGTH && trimmed.equals(name);"
+        },
+        {
+          "line": 349,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i32a-s1__reuse_sb__single_shot__static__r1",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__reuse_sb__single_shot__static__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "744e31998e0224588970d762fb8dea482f946bdb1cb399d2242fb8a965759b79"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 34,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 35,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 36,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 62,
+          "text": "                || playerName.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 151,
+          "text": "        int rows = Math.min(MAX_RECORDS, this.entries.size());"
+        },
+        {
+          "line": 181,
+          "text": "                while ((line = readLine(input)) != null) {"
+        },
+        {
+          "line": 182,
+          "text": "                    if (line.length > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 213,
+          "text": "        if (name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 238,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 243,
+          "text": "    private static byte[] readLine(InputStream input) throws IOException {"
+        }
+      ],
+      "runId": "i32a-s1__generation_s__single_shot__static__r1",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "93c950a66692416f748dd4b8b17c5c966980d29cbc2dcd5828074547f6e67df7"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 39,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 40,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 41,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 211,
+          "text": "        int maxRows = Math.min(MAX_RECORDS, Math.min(names.size(), Math.min(scores.size(), times.size())));"
+        },
+        {
+          "line": 255,
+          "text": "                    if (this.entries.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 260,
+          "text": "                    if (line.size() >= MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 267,
+          "text": "            if (line.size() > 0 || oversized) {"
+        },
+        {
+          "line": 326,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 332,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i32a-s1__generation_s__single_shot__static__r2",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "bd600acb7b24c6dd26d84365b4f58562c5979fe8c02d221e190d5cb0750219b4"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 36,
+          "text": "    public static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 37,
+          "text": "    public static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 39,
+          "text": "    private static final long MAX_STORE_BYTES = 64L * 1024L;"
+        },
+        {
+          "line": 69,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 102,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 238,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 245,
+          "text": "                String header = reader.readLine();"
+        },
+        {
+          "line": 251,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 281,
+          "text": "            if (nameBytes.length > MAX_NAME_LENGTH * 4) {"
+        },
+        {
+          "line": 286,
+          "text": "            if (name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 305,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i32a-s1__reuse_sb__single_shot__static__r2",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__reuse_sb__single_shot__static__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a60b2d357d46cc7a374277faf419a543d584f9ba92ba69e625f8b0d5d9fbbaa7"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 37,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 38,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 39,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 72,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || containsUnsafeCharacter(name)) {"
+        },
+        {
+          "line": 114,
+          "text": "        if (name.trim().length() > MAX_NAME_LENGTH || containsUnsafeCharacter(name.trim())) {"
+        },
+        {
+          "line": 116,
+          "text": "            name = name.trim().substring(0, Math.min(MAX_NAME_LENGTH, name.trim().length()));"
+        },
+        {
+          "line": 192,
+          "text": "        int rows = Math.min(MAX_RECORDS, this.entries.size());"
+        },
+        {
+          "line": 229,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 240,
+          "text": "            while (!done && this.entries.size() < MAX_RECORDS) {"
+        },
+        {
+          "line": 241,
+          "text": "                BoundedLine line = readLine(input);"
+        },
+        {
+          "line": 250,
+          "text": "            if (this.entries.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 251,
+          "text": "                BoundedLine extra = readLine(input);"
+        },
+        {
+          "line": 273,
+          "text": "                    name.length() > MAX_NAME_LENGTH || containsUnsafeCharacter(name)) {"
+        },
+        {
+          "line": 307,
+          "text": "    private static BoundedLine readLine(InputStream input) throws IOException {"
+        },
+        {
+          "line": 308,
+          "text": "        ByteArrayOutputStream bytes = new ByteArrayOutputStream(MAX_LINE_BYTES + 1);"
+        },
+        {
+          "line": 317,
+          "text": "            if (bytes.size() < MAX_LINE_BYTES) {"
+        }
+      ],
+      "runId": "i32a-s1__generation_s__single_shot__static__r3",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__generation_s__single_shot__static__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "8b1a5951178dc001510c07a3e5239106815ad63adcc82ff9946017c3fdd1c950"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    public static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    public static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_STORE_BYTES = 8192;"
+        },
+        {
+          "line": 65,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 113,
+          "text": "        if (bytes.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 157,
+          "text": "                if (!Files.isRegularFile(store) || Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 160,
+          "text": "                byte[] bytes = Files.readAllBytes(store);"
+        },
+        {
+          "line": 161,
+          "text": "                if (bytes.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 191,
+          "text": "                    if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || !name.equals(name.trim())) {"
+        },
+        {
+          "line": 234,
+          "text": "        while (records.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i32a-s1__reuse_sb__single_shot__static__r4",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__reuse_sb__single_shot__static__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d92dfbfe21001019855fb3bf3aa0ac0d67246f54412327f34d41f77314557659"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 43,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 44,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 46,
+          "text": "    private static final int MAX_STORE_BYTES = 64 * 1024;"
+        },
+        {
+          "line": 199,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 219,
+          "text": "                if (Files.size(path) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 226,
+          "text": "                    String header = reader.readLine();"
+        },
+        {
+          "line": 232,
+          "text": "                    while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 297,
+          "text": "        while (this.records.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i32a-s1__reuse_sb__single_shot__static__r5",
+      "source": ".local/iterations/i32a-s1/runs/i32a-s1__reuse_sb__single_shot__static__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5b3f8b3595da55885e0908a2bb273d9e313402d20b73b5341a2e7181031c5d34"
+    }
+  ]
+}
