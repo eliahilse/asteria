@@ -90,7 +90,7 @@ class FakeGuard:
 
 
 GUARD_ARMS = [{'mode': 'agentic', 'sidecar': 'guard'}, {'mode': 'agentic', 'sidecar': 'guard_shadow'}]
-COMBINED_ARMS = [{'mode': 'agentic', 'sidecar': 'static-ast-guard'}, {'mode': 'agentic', 'sidecar': 'ast'}]
+COMBINED_ARMS = [{'mode': 'agentic', 'sidecar': 'static-ast-guard'}, {'mode': 'agentic', 'sidecar': 'ast'}, {'mode': 'agentic', 'sidecar': 'static-ast-advise'}]
 
 
 class FakeComposite:
@@ -516,6 +516,24 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertIn('guardInterventions', counts); self.assertIn('guardCancelledSubmissions', counts); self.assertIn('sidecarInjections', counts)
             plain, _ = fixture.run('agentic', 'ast', [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]), act('submit_feature_changes', **valid_changes())], reports=[report(True)], sidecar=FakeComposite(FakeSidecar(), FakeGuard([])))
             self.assertEqual([(e['stage'], e['injected']) for e in plain['sidecarEvents']], [('after_read', True)]); self.assertNotIn('guardInterventions', plain)
+
+    def test_advisory_guard_continues_after_a_functional_submission_with_a_positive_verdict(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=INSERT, max_submissions=3)
+            verdicts = [{'intervene': True, 'reason': 'store accepts a negative score', 'quoted': ['int preserved; int added;'], 'advice': 'reject negative scores'}, {'intervene': False, 'reason': 'ok'}]
+            guard = FakeGuard(verdicts)
+            class Advisory(FakeComposite):
+                def judge(self, view):
+                    verdict = self.guard.judge(view); would = verdict['wouldIntervene']
+                    return {**verdict, 'intervene': False, 'advisory': True, 'text': 'GUARD ADVICE: ' + verdict['reason'] if would else None}
+            actions = [act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **CORRECTION)]
+            record, requests = fixture.run('agentic', 'static-ast-advise', actions, reports=[report(True), report(True)], sidecar=Advisory(FakeSidecar(), guard))
+            self.assertEqual((record['status'], record['functionalSuccess'], len(record['submissions']), record['guardInterventions']), ('completed', True, 2, 0))
+            self.assertEqual([t['status'] for t in record['turns']], ['submitted', 'submitted'])
+            guard_events = [e for e in record['sidecarEvents'] if e['stage'] == 'guard']
+            self.assertEqual([(e['intervene'], e.get('advised'), e.get('injected')) for e in guard_events], [(False, True, True), (False, None, False)])
+            feedback = [m['content'] for m in requests[1]['messages'] if 'GUARD ADVICE: store accepts a negative score' in m['content']]
+            self.assertEqual(len(feedback), 1); self.assertIn('"functionalSuccess": true', feedback[0])  # the advice rides on the functional submission's feedback
 
 
 if __name__ == '__main__': unittest.main()
