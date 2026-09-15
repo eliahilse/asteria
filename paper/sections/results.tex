@@ -10,7 +10,7 @@ conditions; every arm has a control collected in the same session.
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{The prior study's Highscore matrix and its reruns with our generator, one response per prompt, no security context, five trajectories per cell. ``Prior'' is the number compiled in the prior study; C is compiled and F functional (all sixteen tests pass), each of 5, under strict delivery (round I23: a returned file that names an existing file is rejected) and under lenient delivery (round I25: it replaces the file). The prior study's pipeline repairs imports and file placement before compiling; ours rejected 35 of 80 responses under the strict rule and 27 of 80 under the lenient rule.}
+\caption{Baseline without security context: the prior study's Highscore matrix and its rerun with \texttt{gpt-5.6-luna}, one response per prompt, five artifacts per cell. ``Prior'' is the number compiled in the prior study; C is compiled and F functional (all sixteen tests pass), each of 5, under strict delivery (a returned file that names an existing file is rejected) and under lenient delivery (it replaces the file, as the prior study's pipeline does).}
 \label{tab:matrix}
 \begin{tabular}{@{}lrrrrrrrrrr@{}}
 \toprule
