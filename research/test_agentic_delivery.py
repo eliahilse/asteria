@@ -63,21 +63,53 @@ class FakeSidecar:
         return (f'SECURITY CONTEXT {" ".join(ids)}', ids) if ids else (None, [])
 
 
-class Fixture:
-    """A manifest directory with all six arms of one cell, a scripted adapter and fake evaluation."""
+class FakeGuard:
+    """Scripted guard judge: one verdict per consultation, in order; records every view. `reads` are repository requests the judge makes first (through the view's callable)."""
 
-    def __init__(self, root: Path, *, max_turns=24, max_submissions=5, repetitions=1):
+    def __init__(self, verdicts, judge_turns=3, reads=(), request_ids=None):
+        self.verdicts, self.views, self.judge_turns, self.reads, self.request_ids = list(verdicts), [], judge_turns, list(reads), request_ids
+
+    def describe(self): return {'module': 'fake-guard', 'judgeTurns': self.judge_turns}
+
+    def initial(self, condition): return None
+
+    def update(self, touched, shown_ids): return None, []
+
+    def judge(self, view):
+        self.views.append({k: v for k, v in view.items() if k != 'repository'})
+        verdict, actions, base = self.verdicts.pop(0), [], view['requestId']
+        for n, request in enumerate(self.reads, 1):
+            result = view['repository'](request); actions.append({'action': request['action'], 'result': result})
+            view['transcript'].append({'request': {'request_id': f'{base}k{n}'}, 'response': {'output_text': json.dumps(request)}})
+        ids = self.request_ids or [f'{base}k{len(self.reads) + 1}']
+        view['transcript'].append({'request': {'request_id': ids[-1]}, 'response': {'output_text': json.dumps(verdict)}})
+        shadow = view['sidecar'] == 'guard_shadow'; intervene = bool(verdict['intervene']) and not shadow
+        return {'consulted': True, 'intervene': intervene, 'wouldIntervene': bool(verdict['intervene']), 'verdictIntervene': bool(verdict['intervene']), 'capped': False, 'shadow': shadow,
+                'ids': ['item:C1'] if verdict['intervene'] else [], 'quoted': verdict.get('quoted', []), 'unquoted': 0, 'reason': verdict['reason'], 'advice': verdict.get('advice', ''),
+                'text': f"GUARD: {verdict['reason']}" if intervene else None, 'judgeActions': actions, 'historyOmitted': 0}
+
+
+GUARD_ARMS = [{'mode': 'agentic', 'sidecar': 'guard'}, {'mode': 'agentic', 'sidecar': 'guard_shadow'}]
+
+
+class Fixture:
+    """A manifest directory with all six arms of one cell (plus the two guard arms when `guard_insert` is given), a scripted adapter and fake evaluation."""
+
+    def __init__(self, root: Path, *, max_turns=24, max_submissions=5, repetitions=1, guard_insert=None):
         self.root, self.repo = root, synthetic_repository(root)
         self.snap = snapshot(self.repo)
         index = agentic.repository_index(self.snap)
         (root / 'repository').mkdir(); (root / 'repository/generation-index.txt').write_text(index); (root / 'prompts').mkdir()
-        self.conditions = []
-        for arm in agentic.DEFAULT_ARMS:
+        self.conditions, arms, guard_file = [], list(agentic.DEFAULT_ARMS), root / 'guard-insert.txt'
+        if guard_insert is not None: guard_file.write_text(guard_insert); arms += GUARD_ARMS
+        for arm in arms:
             text = PROMPT + ('\n\n' + INSERT if arm['sidecar'] == 'static' else '')
             sha = digest(text.encode()); (root / 'prompts' / f'{sha}.txt').write_text(text)
+            guard = arm['sidecar'] in agentic.GUARD_KINDS
             self.conditions.append({'id': f"generation_s__{arm['mode']}__{arm['sidecar']}", 'parentCondition': 'generation_s', 'strategy': 'Generation', 'repository': 'Generation', **arm,
                 'promptFile': f'prompts/{sha}.txt', 'promptSha256': sha, 'snapshotFingerprint': self.snap['fingerprint'], 'repositoryIndexFile': 'repository/generation-index.txt',
-                'repositoryIndexSha256': digest(index.encode()), 'contextInsertSha256': digest(INSERT.encode()) if arm['sidecar'] == 'static' else None})
+                'repositoryIndexSha256': digest(index.encode()), 'contextInsertSha256': digest(INSERT.encode()) if arm['sidecar'] == 'static' else digest(guard_insert.encode()) if guard else None,
+                'contextInsertFile': str(guard_file) if guard else None})
         self.plan = {'id': 'fixture', 'protocol': agentic.PROTOCOL, 'fingerprint': 'fixture', 'model': MODEL, 'settings': SETTINGS, 'system': agentic.delivery_system(max_submissions),
                      'systemAgentic': agentic.agentic_system(max_turns, max_submissions), 'maxTurns': max_turns, 'maxSubmissions': max_submissions,
                      'parentIteration': {'id': 'fixture-parent'}, 'conditions': self.conditions,
@@ -325,6 +357,125 @@ class AgenticDeliveryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'initial'): agentic.load_sidecar('fixture_sidecar_module:broken')
         with self.assertRaisesRegex(ValueError, 'module:attribute'): agentic.load_sidecar('nocolon')
         self.assertIsNone(agentic.load_sidecar(None))
+
+    def test_guard_cancels_a_read_and_hands_the_verdict_back_as_the_tool_result(self):
+        block, allow = {'intervene': True, 'reason': 'reading the store before the bound', 'advice': 'Add the bound first.'}, {'intervene': False, 'reason': 'fine'}
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=INSERT)
+            guard = FakeGuard([block, allow, allow], reads=[{'action': 'read', 'files': [{'path': 'ApoMarioLevel.java', 'start_line': 1, 'end_line': 2}]}])
+            actions = [act('read', files=[{'path': 'missing.java', 'start_line': 1, 'end_line': 2}]), act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]),
+                       act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]), act('submit_feature_changes', **valid_changes())]
+            record, requests = fixture.run('agentic', 'guard', actions, [report(True)], guard)
+            run_id = 'fixture__generation_s__agentic__guard__r1'
+            self.assertEqual((record['status'], record['functionalSuccess'], record['guardInterventions'], len(requests)), ('completed', True, 1, 4))
+            self.assertEqual(record['guardInsert'], {'file': str(fixture.root / 'guard-insert.txt'), 'sha256': digest(INSERT.encode()), 'characters': len(INSERT)})
+            # the malformed read (turn 1) is unjudged; the second read is cancelled, the third executes, the submission is judged and allowed
+            self.assertEqual([t['status'] for t in record['turns']], ['tool_result', 'cancelled_by_guard', 'tool_result', 'submitted'])
+            self.assertEqual(record['turns'][1]['toolResult'], {'cancelled': 'read', 'securityGuard': 'GUARD: reading the store before the bound'})
+            self.assertEqual(requests[2]['messages'][-1]['content'], json.dumps(record['turns'][1]['toolResult']) + '\n22 tool turns and 5 submissions remain.')
+            self.assertEqual(record['filesRead'], [{'turn': 3, 'path': SCORE_PATH, 'start_line': 1, 'end_line': 3, 'evidence_id': 'E0001'}]); self.assertEqual(list(record['evidenceIndex']), ['E0001'])
+            events = record['sidecarEvents']
+            self.assertEqual([(e['turn'], e['stage'], e['action'], e['intervene'], e['cancelled'], e['status']) for e in events],
+                             [(2, 'guard', 'read', True, 'read', 'judged'), (3, 'guard', 'read', False, None, 'judged'), (4, 'guard', 'submit_feature_changes', False, None, 'judged')])
+            first = events[0]
+            self.assertEqual((first['consulted'], first['wouldIntervene'], first['verdictIntervene'], first['capped'], first['shadow'], first['ids'], first['reason'], first['adviceText']),
+                             (True, True, True, False, False, ['item:C1'], 'reading the store before the bound', 'Add the bound first.'))
+            self.assertEqual((first['messageText'], first['messageTextNote']), (None, agentic.MESSAGE_TEXT_NOTE))
+            self.assertEqual((first['requestId'], first['requestIds'], first['judgeTurns'], first['injected'], first['characters']), (run_id + '-g2', [run_id + '-g2k1', run_id + '-g2k2'], 2, True, len('GUARD: reading the store before the bound')))
+            self.assertEqual(first['sha256'], digest(b'GUARD: reading the store before the bound')); self.assertEqual(first['touchedFiles'], [SCORE_PATH])
+            self.assertEqual([e['historyEntries'] for e in events], [1, 2, 3]); self.assertEqual(events[1]['injected'], False); self.assertNotIn('sha256', events[1])
+            # the judge read the working file ApoMarioLevel.java by name without touching the generator's evidence
+            self.assertEqual(first['judgeActions'][0]['result']['excerpts'][0]['text'], 'class ApoMarioLevel {\n  int preserved;')
+            self.assertEqual(len(first['transcript']), 2); self.assertEqual(first['transcript'][1]['response']['output_text'], json.dumps(block))
+            views = guard.views
+            self.assertEqual((views[0]['action'], views[0]['arguments'], views[0]['files'], views[0]['ranges']), ('read', {'files': [{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]}, [SCORE_PATH], {SCORE_PATH: [[1, 3]]}))
+            self.assertEqual((views[0]['task'], views[0]['insert'], views[0]['message'], views[0]['sidecar'], views[0]['stage']), (PROMPT, INSERT, None, 'guard', 'before_tool_call'))
+            self.assertNotIn('REPOSITORY FILE INDEX', views[0]['task'])
+            self.assertEqual((views[0]['turn'], views[0]['turnsRemaining'], views[0]['submissionsRemaining'], views[0]['interventions'], views[1]['interventions']), (2, 22, 5, 0, 1))
+            self.assertEqual(views[0]['history'], [{'turn': 1, 'action': 'read', 'error': 'Path is not in the source snapshot'}])
+            self.assertEqual(views[1]['history'][1], {'turn': 2, 'action': 'read', 'status': 'cancelled_by_guard', 'guard': {'wouldIntervene': True, 'intervene': True, 'reason': 'reading the store before the bound'}})
+            self.assertEqual(views[2]['history'][2], {'turn': 3, 'action': 'read', 'files': [f'{SCORE_PATH}:1-3'], 'guard': {'wouldIntervene': False, 'intervene': False, 'reason': 'fine'}})
+            self.assertEqual(views[0]['working'], {name: {'sha256': digest(text.encode()), 'lines': 3, 'state': 'unchanged'} for name, text in SOURCES.items()})
+            self.assertEqual((views[0]['requestId'], views[0]['model'], views[0]['settings'], views[0]['runId']), (run_id + '-g2', MODEL, SETTINGS, run_id))
+            self.assertNotIn('SECURITY_FEEDBACK_MUST_STAY_PRIVATE', json.dumps(views)); self.assertNotIn('GUARD:', requests[1]['messages'][-1]['content'])
+
+    def test_guard_cancels_a_submission_without_consuming_a_submission(self):
+        block, allow = {'intervene': True, 'reason': 'stores without validation', 'quoted': ['int preserved; int added;']}, {'intervene': False, 'reason': 'ok'}
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), max_submissions=3, guard_insert=INSERT); guard = FakeGuard([block, allow, allow])
+            actions = [act('submit_feature_changes', new_files=[], edits=[]), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **CORRECTION)]
+            record, requests = fixture.run('agentic', 'guard', actions, [report(False), report(True)], guard)
+            self.assertEqual((record['status'], record['functionalSuccess'], len(requests), record['guardInterventions']), ('completed', True, 4, 1))
+            self.assertEqual([t['status'] for t in record['turns']], ['submitted', 'cancelled_by_guard', 'submitted', 'submitted'])
+            self.assertEqual([(s['number'], s['turn'], s['status']) for s in record['submissions']], [(1, 1, 'invalid_changes'), (2, 3, 'evaluated'), (3, 4, 'evaluated')])
+            self.assertEqual([e['turn'] for e in record['sidecarEvents']], [2, 3, 4])  # the invalid submission is not judged
+            self.assertEqual(requests[2]['messages'][-1]['content'], json.dumps({'cancelled': 'submit_feature_changes', 'securityGuard': 'GUARD: stores without validation'}) + '\n22 tool turns and 2 submissions remain.')
+            self.assertFalse((fixture.root / 'runs' / record['runId'] / 'submission-2/complete-files.txt').exists() and record['submissions'][1]['turn'] != 3)
+            self.assertEqual(record['finalEvaluation'], 'submission-3/evaluation/report.json')
+            views = guard.views
+            self.assertEqual((views[0]['action'], views[0]['arguments'], views[0]['ranges'][LEVEL_PATH]), ('submit_feature_changes', valid_changes(), [[2, 2]]))
+            self.assertEqual(views[1]['history'][0], {'turn': 1, 'action': 'submit_feature_changes', 'submission': 1, 'files': [], 'status': 'invalid_changes', 'deliveryError': 'Deliver 1–60 changes'})
+            self.assertEqual(views[2]['history'][2], {'turn': 3, 'action': 'submit_feature_changes', 'submission': 2, 'files': sorted([LEVEL_PATH, 'ApoMario/src/apoMario/game/ApoMarioPanel.java', 'ApoMario/src/apoMario/game/panels/ApoMarioMenu.java', 'Scores.java']),
+                                                       'status': 'evaluated', 'compilation': 'pass', 'functionalSuccess': False, 'guard': {'wouldIntervene': False, 'intervene': False, 'reason': 'ok'}})
+            self.assertEqual((views[2]['working']['Scores.java']['state'], views[2]['working']['ApoMarioLevel.java']['state'], views[1]['working']['ApoMarioLevel.java']['state']), ('new', 'changed', 'unchanged'))
+            self.assertEqual(record['sidecarEvents'][0]['quoted'], ['int preserved; int added;'])
+
+    def test_guard_shadow_kind_never_cancels_and_summary_counts_guard_events(self):
+        block = {'intervene': True, 'reason': 'violation'}
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=INSERT)
+            record, requests = fixture.run('agentic', 'guard_shadow', [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 2}]), act('submit_feature_changes', **valid_changes())], [report(True)], FakeGuard([block, block]))
+            self.assertEqual((record['status'], [t['status'] for t in record['turns']], record['guardInterventions']), ('completed', ['tool_result', 'submitted'], 0))
+            self.assertEqual([(e['intervene'], e['wouldIntervene'], e['shadow'], e['cancelled'], e['injected']) for e in record['sidecarEvents']], [(False, True, True, None, False)] * 2)
+            self.assertIn('evidence_id', requests[1]['messages'][-1]['content'])
+            fixture.run('agentic', 'guard', [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 2}]), act('search', query='name'), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes())],
+                        [report(True)], FakeGuard([block, {'intervene': False, 'reason': 'ok'}, block, {'intervene': False, 'reason': 'ok'}], reads=[{'action': 'search', 'query': 'name'}]))
+            result = agentic.summary(fixture.root)
+            guard, shadow = result['conditions']['generation_s__agentic__guard'], result['conditions']['generation_s__agentic__guard_shadow']
+            self.assertEqual((guard['N'], guard['guardConsultations'], guard['guardPositiveVerdicts'], guard['guardInterventions'], guard['guardCapped']),
+                             (1, {'total': 4, 'perTrajectory': [4]}, {'total': 2, 'perTrajectory': [2]}, {'total': 2, 'perTrajectory': [2]}, {'total': 0, 'perTrajectory': [0]}))
+            self.assertEqual((guard['guardCancelledReads'], guard['guardCancelledSearches'], guard['guardCancelledSubmissions']), ({'total': 1, 'perTrajectory': [1]}, {'total': 0, 'perTrajectory': [0]}, {'total': 1, 'perTrajectory': [1]}))
+            self.assertEqual((guard['guardJudgeTurns'], guard['guardJudgeReads'], guard['guardJudgeSearches']), ({'total': 8, 'perTrajectory': [8]}, {'total': 0, 'perTrajectory': [0]}, {'total': 4, 'perTrajectory': [4]}))
+            self.assertEqual((guard['reads'], guard['readsExecuted'], guard['searchesExecuted'], guard['submissions'], guard['trajectoriesWithIntervention'], guard['fullWithinBudget']),
+                             ({'total': 1, 'perTrajectory': [1]}, {'total': 0, 'perTrajectory': [0]}, {'total': 1, 'perTrajectory': [1]}, {'total': 1, 'perTrajectory': [1]}, {'count': 1, 'of': 1}, {'count': 1, 'of': 1}))
+            self.assertEqual((shadow['guardConsultations']['total'], shadow['guardPositiveVerdicts']['total'], shadow['guardInterventions']['total'], shadow['trajectoriesWithIntervention']), (2, 2, 0, {'count': 0, 'of': 1}))
+            self.assertEqual(result['conditions']['generation_s__agentic__none']['guardConsultations'], {'total': 0, 'perTrajectory': []}); self.assertNotIn('%', json.dumps(result))
+
+    def test_guard_request_ids_are_bounded_before_any_model_call_and_checked_after_the_judge(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=INSERT)
+            with self.assertRaisesRegex(ValueError, 'judge_turns'): fixture.run('agentic', 'guard', [], [], FakeGuard([], judge_turns=agentic.GUARD_JUDGE_TURNS_LIMIT + 1))
+            with self.assertRaisesRegex(ValueError, 'sidecar object'): fixture.run('agentic', 'guard', [], [], None)
+            self.assertFalse((fixture.root / 'runs').exists())
+            run_id = 'fixture__generation_s__agentic__guard__r1'
+            record, requests = fixture.run('agentic', 'guard', [act('search', query='name')], [], FakeGuard([{'intervene': False, 'reason': 'ok'}], request_ids=[run_id + '-g10k1']))
+            self.assertEqual((record['status'], len(requests), record['sidecarEvents'][0]['status']), ('sidecar_error', 1, 'error')); self.assertIn('request ids', record['errorDetail'])
+            self.assertTrue(all(len(f"{r['runId']}-g{fixture.plan['maxTurns']}k{agentic.GUARD_JUDGE_TURNS_LIMIT + 1}") <= agentic.REQUEST_ID_LIMIT for r in fixture.plan['schedule']))
+
+    def test_prepare_freezes_guard_arms_with_the_insert_and_the_judge_request_id_suffix(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); repo = synthetic_repository(root)
+            parent = root / 'parent'; parent.mkdir()
+            plan = {'id': 'fixture-parent', 'maxSubmissions': 5}; plan['fingerprint'] = digest(canonical(plan))
+            (parent / 'manifest.json').write_bytes(canonical(plan)); (parent / 'generation-input.json').write_bytes(canonical({'sources': {}, 'games': ['ApoMario']}))
+            calibration = root / 'calibration.json'; calibration.write_bytes(canonical({'protocol': agentic.EVALUATION_PROTOCOL, 'functionalSuccess': True, 'inputHashes': {}}))
+            insert = root / 'generation-static.txt'; insert.write_text(INSERT)
+            arms = ['agentic:none', 'agentic:static', 'agentic:guard', 'agentic:guard_shadow']
+            with patch.object(agentic, 'repository_input', return_value=repo), patch.object(agentic, 'CALIBRATION', calibration):
+                with self.assertRaisesRegex(ValueError, 'agentic mode'): agentic.normalize_arms(['single_shot:guard'])
+                with self.assertRaisesRegex(ValueError, 'No static context insert'): agentic.prepare('i25-guard', ['generation_s'], ['agentic:guard'], 2, {}, parent, directory=root / 'noinsert')
+                with self.assertRaisesRegex(ValueError, 'would reach 66'): agentic.prepare('i25-guard-round-xx', ['generation_s'], arms, 5, {'generation_s': insert}, parent, directory=root / 'long')
+                agentic.prepare('i25-guard-round-xx', ['generation_s'], ['agentic:none', 'agentic:static'], 5, {'generation_s': insert}, parent, directory=root / 'long-no-guard')
+                first = agentic.prepare('i25-guard', ['generation_s'], arms, 2, {'generation_s': insert}, parent, directory=root / 'iteration')
+            by_id = {c['id']: c for c in first['conditions']}
+            none, guard, shadow = by_id['generation_s__agentic__none'], by_id['generation_s__agentic__guard'], by_id['generation_s__agentic__guard_shadow']
+            self.assertEqual((guard['promptSha256'], shadow['promptSha256'], guard['promptFile']), (none['promptSha256'], none['promptSha256'], none['promptFile']))
+            self.assertNotIn(INSERT, (root / 'iteration' / guard['promptFile']).read_text())
+            self.assertEqual((guard['contextInsertFile'], guard['contextInsertSha256'], guard['sidecar'], guard['mode']), (str(insert.resolve()), digest(INSERT.encode()), 'guard', 'agentic'))
+            self.assertEqual((none['contextInsertFile'], none['contextInsertSha256']), (None, None)); self.assertIn(str(insert.resolve()), first['sourceHashes'])
+            self.assertTrue(all(len(f"{r['runId']}-g{first['maxTurns']}k{agentic.GUARD_JUDGE_TURNS_LIMIT + 1}") <= agentic.REQUEST_ID_LIMIT for r in first['schedule']))
+            self.assertEqual(first['arms'], [{'mode': 'agentic', 'sidecar': s} for s in ('none', 'static', 'guard', 'guard_shadow')])
+            self.assertNotIn({'mode': 'agentic', 'sidecar': 'guard'}, agentic.DEFAULT_ARMS)
 
 
 if __name__ == '__main__': unittest.main()

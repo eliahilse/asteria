@@ -34,11 +34,14 @@ from research.security_followup import acquisition_task, repository_input
 PROTOCOL = 'agentic-delivery-v1'
 EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once', 'rewind')
+SIDECARS = ('none', 'static', 'adaptive', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow')
 GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
+GUARD_KINDS = ('guard', 'guard_shadow')  # kinds served by the pre-tool-call judge hook; guard_shadow records verdicts and never cancels
+GUARD_JUDGE_TURNS_LIMIT = 9  # bound on a guard sidecar's judge_turns; one consultation sends at most judge_turns + 1 judge requests, ids <runId>-g<turn>k<n>
+MESSAGE_TEXT_NOTE = 'not available: adapter protocol v1 returns the forced tool call arguments only'
 ACTIONS = ('search', 'read', 'submit_feature_changes')
 REQUEST_ID_LIMIT = 64  # the private adapter forwards request ids as the provider's `user` field, capped at 64 characters
-DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS]  # judge arms are requested explicitly
+DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS and sidecar not in GUARD_KINDS]  # judge arms are requested explicitly
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
 CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'
 ITERATIONS = ROOT / '.local/iterations'
@@ -106,6 +109,7 @@ def normalize_arms(arms) -> list[dict]:
         elif isinstance(arm, (tuple, list)): arm = dict(zip(('mode', 'sidecar'), arm))
         if not isinstance(arm, dict) or arm.get('mode') not in MODES or arm.get('sidecar') not in SIDECARS: raise ValueError(f'Invalid arm: {arm!r}')
         arm = {'mode': arm['mode'], 'sidecar': arm['sidecar']}
+        if arm['sidecar'] in GUARD_KINDS and arm['mode'] != 'agentic': raise ValueError(f'Guard kinds need the agentic mode: {arm}')
         if arm in result: raise ValueError(f'Duplicate arm: {arm}')
         result.append(arm)
     if not result: raise ValueError('At least one arm is required')
@@ -161,12 +165,12 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
         prompt = (acquisition_task(method) + '\n\n--- BEGIN ATTACHED' + attachments).replace('\r\n', '\n')
         for arm in arms:
             text, insert_key, insert_sha = prompt, None, None
-            if arm['sidecar'] == 'static':
+            if arm['sidecar'] == 'static' or arm['sidecar'] in GUARD_KINDS:  # a guard condition freezes the insert its judge reads; the prompt stays the none arm's
                 insert_path = context_inserts.get(cell) or context_inserts.get(method) or context_inserts.get(method.lower())
                 if insert_path is None: raise ValueError(f'No static context insert for {cell}')
                 insert = Path(insert_path).read_bytes()
                 if not insert.strip(): raise ValueError(f'Empty static context insert for {cell}')
-                text += '\n\n' + insert.decode()
+                if arm['sidecar'] == 'static': text += '\n\n' + insert.decode()
                 insert_key, insert_sha = source_key(Path(insert_path)), digest(insert); sources[insert_key] = insert_sha
             sha = digest(text.encode()); path = directory / 'prompts' / f'{sha}.txt'; path.parent.mkdir(exist_ok=True)
             if path.exists() and path.read_bytes() != text.encode(): raise ValueError('Prompt changed')
@@ -178,7 +182,9 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
                 'repository': method, 'snapshotFingerprint': repository['snapshotFingerprint'],
                 'repositoryIndexFile': repository['indexFile'], 'repositoryIndexSha256': repository['indexSha256']})
     schedule, rng = [], random.Random(identifier)
-    longest = max(len(f"{identifier}__{c['id']}__r{repetitions}-{suffix}") for c in conditions for suffix in (f's{max_submissions}', f't{max_turns}', f'j{max_submissions}'))
+    suffixes = [f's{max_submissions}', f't{max_turns}', f'j{max_submissions}']
+    if any(a['sidecar'] in GUARD_KINDS for a in arms): suffixes.append(f'g{max_turns}k{GUARD_JUDGE_TURNS_LIMIT + 1}')
+    longest = max(len(f"{identifier}__{c['id']}__r{repetitions}-{suffix}") for c in conditions for suffix in suffixes)
     if longest > REQUEST_ID_LIMIT: raise ValueError(f'Request identifiers would reach {longest} characters; the provider accepts at most {REQUEST_ID_LIMIT}. Use a shorter iteration id.')
     for repetition in range(1, repetitions + 1):
         block = [{'runId': f'{identifier}__{c["id"]}__r{repetition}', 'condition': c['id'], 'repetition': repetition} for c in conditions]
@@ -230,14 +236,22 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
-    if (kind == 'adaptive' or kind in GATE_KINDS) and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
+    if (kind == 'adaptive' or kind in GATE_KINDS or kind in GUARD_KINDS) and sidecar is None: raise ValueError('Adaptive, gate and guard conditions need a sidecar object')
     sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
+    if kind in GUARD_KINDS:  # the judge's request ids <runId>-g<turn>k<n> must fit the provider limit for every turn and judge call; checked before any model call
+        judge_turns = (sidecar_config or {}).get('judgeTurns', GUARD_JUDGE_TURNS_LIMIT)
+        if type(judge_turns) is not int or not 0 <= judge_turns <= GUARD_JUDGE_TURNS_LIMIT: raise ValueError(f'Guard judge_turns must be an integer from 0 to {GUARD_JUDGE_TURNS_LIMIT}')
+        if len(f"{run_id}-g{plan['maxTurns']}k{judge_turns + 1}") > REQUEST_ID_LIMIT: raise ValueError(f'Guard judge request identifiers would exceed {REQUEST_ID_LIMIT} characters')
     if command is None: command = command_from_env()
     directory = manifest.parent / 'runs' / run_id
     directory.mkdir(parents=True, exist_ok=False)
     original, origins = original_sources(); files = dict(original)
     prompt = (manifest.parent / condition['promptFile']).read_bytes().decode()
     if digest(prompt.encode()) != condition['promptSha256']: raise ValueError('Prompt fingerprint mismatch')
+    task, insert = prompt, None  # the guard judge sees the condition prompt without the repository index, and the frozen insert a static arm would receive
+    if kind in GUARD_KINDS:
+        insert = (ROOT / condition['contextInsertFile']).read_bytes().decode()
+        if digest(insert.encode()) != condition['contextInsertSha256']: raise ValueError('Guard insert fingerprint mismatch')
     snap = repository_snapshot(plan, condition)
     if mode == 'agentic':
         index = (manifest.parent / condition['repositoryIndexFile']).read_bytes().decode()
@@ -249,13 +263,15 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
               'maxTurns': max_turns, 'maxSubmissions': max_submissions, 'sourceOrigins': origins, 'snapshotFingerprint': snap['fingerprint'],
               'turns': [], 'submissions': [], 'sidecarEvents': [], 'filesRead': [], 'searches': [], 'functionalSuccess': False, 'settingsVerified': None, 'budgetLimit': None,
               'sidecarSpec': getattr(sidecar, 'spec', None), 'sidecarConfig': sidecar_config}
+    if insert is not None: record['guardInsert'] = {'file': condition['contextInsertFile'], 'sha256': condition['contextInsertSha256'], 'characters': len(insert)}
     path = directory / 'record.json'; write_atomic(path, record)
     by_name = {}
     for source in snap['files']: by_name.setdefault(source['path'].rsplit('/', 1)[-1], []).append(source['path'])
     touched = {'files': set(), 'symbols': set(), 'queries': [], 'ranges': {}}
     shown, evidence = set(), {}
-    turn_number = submission_number = 0
+    turn_number = submission_number = interventions = 0
     turn = submission = {}
+    history = []  # guard kinds only: one compact entry per completed turn (actions, functional outcomes, verdicts); what the judge sees as the trajectory so far
 
     def consult(stage: str) -> str | None:
         if kind != 'adaptive' or not (touched['files'] or touched['symbols'] or touched['queries']): return None
@@ -325,6 +341,50 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         record['sidecarEvents'].append(event)
         return verdict
 
+    def remember(entry: dict, verdict=None):
+        """Guard kinds: keep a compact entry for the completed turn; None values are dropped and a judged turn carries its verdict."""
+        if kind not in GUARD_KINDS: return
+        if verdict is not None: entry['guard'] = {'wouldIntervene': bool(verdict.get('wouldIntervene')), 'intervene': bool(verdict.get('intervene')), 'reason': verdict.get('reason')}
+        history.append({k: v for k, v in entry.items() if v is not None})
+
+    def guard(action: str, arguments: dict):
+        """Ask the guard sidecar whether the pending, valid tool call may execute. The event is recorded before the judge runs, and the judge appends
+        every request/response with hashes to its transcript as it goes, so a failing judge call keeps what was sent. Only kind `guard` cancels."""
+        if action == 'submit_feature_changes': files_named, ranges = change_ranges(arguments, files)
+        elif action == 'read':
+            files_named, ranges = {f['path'] for f in arguments['files']}, {}
+            for f in arguments['files']: ranges.setdefault(f['path'], []).append([f['start_line'], f['end_line']])
+        else: files_named, ranges = set(arguments.get('paths') or []), {}
+        base = f'{run_id}-g{turn_number}'
+        event = {'turn': turn_number, 'stage': 'guard', 'action': action, 'status': 'started', 'requestId': base, 'touchedFiles': sorted(files_named), 'historyEntries': len(history),
+                 'messageText': None, 'messageTextNote': MESSAGE_TEXT_NOTE, 'transcript': []}
+        record['sidecarEvents'].append(event); write_atomic(path, record)
+        sources = [*snap['sources'], *({'path': name, 'text': content, 'lines': len(content.splitlines())} for name, content in files.items())]  # working files are read by name
+        view = {'method': condition.get('strategy'), 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'sidecar': kind, 'stage': 'before_tool_call',
+                'turn': turn_number, 'action': action, 'arguments': arguments, 'files': sorted(files_named), 'ranges': ranges, 'task': task, 'insert': insert,
+                'history': [dict(h) for h in history], 'message': None, 'interventions': interventions, 'maxTurns': max_turns, 'maxSubmissions': max_submissions,
+                'turnsRemaining': max_turns - turn_number, 'submissionsRemaining': max_submissions - submission_number,
+                'working': {name: {'sha256': digest(content.encode()), 'lines': len(content.splitlines()), 'state': 'new' if name not in original else 'changed' if content != original[name] else 'unchanged'} for name, content in files.items()},
+                'runId': run_id, 'requestId': base, 'model': plan['model'], 'settings': plan['settings'], 'transcript': event['transcript'],
+                'repository': lambda request: operate({'sources': sources}, request)}
+        try:
+            verdict = call_sidecar(sidecar.judge, view)
+            if not isinstance(verdict, dict) or not isinstance(verdict.get('intervene'), bool): raise SidecarError('judge must return a dict with a boolean intervene')
+            text, transcript = verdict.get('text'), verdict.get('transcript', event['transcript'])
+            if text is not None and not isinstance(text, str): raise SidecarError('judge text must be a string or None')
+            if not isinstance(transcript, list) or not all(isinstance(t, dict) for t in transcript): raise SidecarError('judge transcript must be a list of request/response entries')
+            ids = [(t.get('request') or {}).get('request_id') for t in transcript]
+            if ids != [f'{base}k{n}' for n in range(1, len(ids) + 1)] or any(len(i) > REQUEST_ID_LIMIT for i in ids): raise SidecarError('judge request ids must be <runId>-g<turn>k<n> within the provider limit')
+        except SidecarError as error:
+            event.update(status='error', error=str(error), errorCategory=getattr(error.__cause__, 'category', None)); raise
+        intervene = verdict['intervene'] and kind == 'guard'
+        event.update(status='judged', consulted=bool(verdict.get('consulted')), intervene=intervene, injected=intervene and bool(text), ids=list(verdict.get('ids') or []),
+                     reason=verdict.get('reason'), adviceText=verdict.get('advice') if isinstance(verdict.get('advice'), str) else None, transcript=transcript, requestIds=ids,
+                     judgeTurns=len(transcript), cancelled=action if intervene else None,
+                     **{k: verdict[k] for k in ('wouldIntervene', 'verdictIntervene', 'verdictStatus', 'capped', 'shadow', 'quoted', 'unquoted', 'judgeActions', 'historyOmitted') if k in verdict})
+        if event['injected']: event.update(sha256=digest(text.encode()), characters=len(text))
+        return {**verdict, 'intervene': intervene}
+
     try:
         if kind == 'static' and sidecar is not None:
             text = call_sidecar(sidecar.initial, condition)
@@ -368,7 +428,25 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                     if not isinstance(payload, dict) or payload.get('action') not in ACTIONS: raise ValueError('Choose action search, read or submit_feature_changes')
                     action = payload['action']
                 except ValueError as error: action, payload = 'invalid', {'error': str(error)}
-            turn['action'] = action
+            turn['action'] = action; judged = None
+            if action != 'invalid' and kind in GUARD_KINDS:
+                # Guard: a pending call that would execute is judged first; malformed calls take the usual error path unjudged (apply_changes and operate are pure).
+                try:
+                    if action == 'submit_feature_changes':
+                        arguments = {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
+                        if [n for n in TARGETS if apply_changes(files, arguments)[n] == original[n]]: raise ValueError('missing edits')
+                    else:
+                        arguments = {k: v for k, v in payload.items() if k in ('query', 'paths', 'files') and v is not None}
+                        operate(snap, {'action': action, 'query': payload.get('query'), 'paths': payload.get('paths'), 'files': payload.get('files')})
+                except (ValueError, KeyError, TypeError, AttributeError): arguments = None
+                judged = guard(action, arguments) if arguments is not None else None
+                if judged is not None and judged['intervene']:
+                    interventions += 1
+                    result = {'cancelled': action, 'securityGuard': judged.get('text') or ''}
+                    turn.update(status='cancelled_by_guard', toolResult=result)
+                    remember({'turn': turn_number, 'action': action, 'status': 'cancelled_by_guard'}, judged)
+                    messages.append({'role': 'user', 'content': json.dumps(result, ensure_ascii=False) + f'\n{max_turns - turn_number} tool turns and {max_submissions - submission_number} submissions remain.'})
+                    write_atomic(path, record); continue
             if action != 'submit_feature_changes':
                 turn['status'] = 'tool_result'
                 if action == 'invalid': result = payload
@@ -396,6 +474,9 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                     text = consult('after_read')
                     if text: content += '\n\n' + text
                 messages.append({'role': 'user', 'content': content})
+                if 'error' in result: remember({'turn': turn_number, 'action': action, 'error': result['error']}, judged)
+                elif action == 'search': remember({'turn': turn_number, 'action': action, 'query': payload['query'], 'paths': payload.get('paths'), 'totalMatches': result.get('totalMatches'), 'returned': len(result['excerpts']), 'matchedPaths': sorted({e['path'] for e in result['excerpts']})[:5]}, judged)
+                else: remember({'turn': turn_number, 'action': action, 'files': [f"{e['path']}:{e['start_line']}-{e['end_line']}" for e in result['excerpts']]}, judged)
                 write_atomic(path, record); continue
             if mode == 'agentic':
                 submission_number += 1
@@ -452,6 +533,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                         record.update(status='completed', functionalSuccess=True); break
             submission['feedback'] = feedback
             touch_changes(changes, pre_edit)
+            remember({'turn': turn_number, 'action': action, 'submission': submission_number, 'files': sorted(change_ranges(changes)[0]), 'status': submission['status'],
+                      'compilation': feedback.get('compilation'), 'functionalSuccess': feedback.get('functionalSuccess'), 'deliveryError': feedback.get('deliveryError')}, judged)
             if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
             content = json.dumps(feedback) + f'\n{max_submissions - submission_number} submissions remain. Correct the current source using exact edits.'
             if mode == 'agentic': content += f' {max_turns - turn_number} tool turns remain.'
@@ -472,7 +555,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         record['status'] = 'evaluation_error' if submission.get('status') == 'evaluating' else 'interrupted'; raise
     finally:
         record.update(finishedAt=timestamp(), touchedFiles=sorted(touched['files']), touchedRanges=touched['ranges'], evidenceIndex=evidence,
-                      toolTurns=turn_number, sidecarInjections=sum(e['injected'] for e in record['sidecarEvents']))
+                      toolTurns=turn_number, sidecarInjections=sum(e.get('injected', False) for e in record['sidecarEvents']))
+        if kind in GUARD_KINDS: record['guardInterventions'] = interventions
         write_atomic(path, record)
     print(f'{run_id}: {record["status"]}; turns={turn_number}; submissions={submission_number}; functional={record["functionalSuccess"]}', flush=True)
     return record
@@ -481,7 +565,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
     plan = validate(manifest)
-    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS or c['sidecar'] in GUARD_KINDS for c in plan['conditions']): raise ValueError('Adaptive, gate and guard conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
     with (manifest.parent / '.iteration.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -504,6 +588,7 @@ def summary(manifest_dir: Path) -> dict:
         n = len(records); total += n
         ratio = lambda k: {'count': k, 'of': n}
         counts = lambda values: {'total': sum(values), 'perTrajectory': list(values)}
+        guard = lambda r, predicate: sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'guard' and predicate(e))
         statuses = {}
         for r in records: statuses[r['status']] = statuses.get(r['status'], 0) + 1
         conditions[condition['id']] = {'mode': condition['mode'], 'sidecar': condition['sidecar'], 'planned': len(rows), 'N': n,
@@ -519,7 +604,21 @@ def summary(manifest_dir: Path) -> dict:
             'gatePositiveVerdicts': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('wouldIntervene')) for r in records]),
             'coachedSubmissions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('advice')) for r in records]),
             'rewinds': counts([len(r.get('rewinds') or []) for r in records]),
-            'trajectoriesWithInjection': ratio(sum(any(e['injected'] for e in r['sidecarEvents']) for r in records)),
+            'trajectoriesWithInjection': ratio(sum(any(e.get('injected', False) for e in r['sidecarEvents']) for r in records)),
+            # Guard kinds: consultations and verdicts per trajectory; cancelled calls cost a turn and never executed. reads/searches above count turns, including cancelled and failed ones.
+            'readsExecuted': counts([sum(t.get('action') == 'read' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
+            'searchesExecuted': counts([sum(t.get('action') == 'search' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
+            'guardConsultations': counts([guard(r, lambda e: e.get('consulted')) for r in records]),
+            'guardPositiveVerdicts': counts([guard(r, lambda e: e.get('wouldIntervene')) for r in records]),
+            'guardInterventions': counts([guard(r, lambda e: e.get('intervene')) for r in records]),
+            'guardCapped': counts([guard(r, lambda e: e.get('capped')) for r in records]),
+            'guardCancelledReads': counts([guard(r, lambda e: e.get('cancelled') == 'read') for r in records]),
+            'guardCancelledSearches': counts([guard(r, lambda e: e.get('cancelled') == 'search') for r in records]),
+            'guardCancelledSubmissions': counts([guard(r, lambda e: e.get('cancelled') == 'submit_feature_changes') for r in records]),
+            'guardJudgeTurns': counts([sum(e.get('judgeTurns') or 0 for e in r['sidecarEvents'] if e.get('stage') == 'guard') for r in records]),
+            'guardJudgeReads': counts([sum(a.get('action') == 'read' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
+            'guardJudgeSearches': counts([sum(a.get('action') == 'search' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
+            'trajectoriesWithIntervention': ratio(sum(guard(r, lambda e: e.get('intervene')) > 0 for r in records)),
             'statuses': statuses}
     return {'id': plan['id'], 'protocol': plan['protocol'], 'maxTurns': plan['maxTurns'], 'maxSubmissions': plan['maxSubmissions'],
             'planned': len(plan['schedule']), 'records': total, 'conditions': conditions,
@@ -532,7 +631,7 @@ if __name__ == '__main__':
     parser.add_argument('--run-id')
     parser.add_argument('--workers', type=int, choices=range(1, 5), default=3)
     parser.add_argument('--execute', action='store_true')
-    parser.add_argument('--sidecar', help='module:attribute exposing initial(condition) and update(touched, shown_ids); required for adaptive conditions')
+    parser.add_argument('--sidecar', help='module:attribute exposing initial(condition) and update(touched, shown_ids), plus judge(view) for gate and guard kinds; required for adaptive, gate and guard conditions')
     parser.add_argument('--summary', action='store_true')
     parser.add_argument('--prepare', metavar='IDENTIFIER')
     parser.add_argument('--cells', default='generation_s,generation_sfb,reuse_b,reuse_sb')

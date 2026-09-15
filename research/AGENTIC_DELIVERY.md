@@ -200,3 +200,94 @@ discarded"), and continues. Discarded turns stay in the record with
 `discarded: true`; the rewound submission counts against the submission
 budget; `record.rewinds` lists each rewind with from/to turns. Later positive
 verdicts are coached. `research.graph_sidecar:REWIND` serves I15.
+
+## Guard sidecar (pre-tool-call judge)
+
+Sidecar kinds `guard` and `guard_shadow` (agentic mode only; `normalize_arms`
+rejects `single_shot:guard*`). No upfront insert and no passive injection. The
+condition freezes the round's security context insert exactly like a static arm
+(`--insert`, `contextInsertFile/Sha256`, `sourceHashes`) but the prompt stays the
+`none` arm's; the insert is what the judge reads. No trajectory of this kind has
+been executed yet.
+
+**When it runs.** Before every tool call of the generator that would execute:
+`search`, `read` and `submit_feature_changes` alike, after the `act` payload is
+parsed. Malformed calls (operate errors, invalid or incomplete changes) take the
+usual error path unjudged, so a consultation is never spent on a call that could
+not execute. `apply_changes` and `operate` are pure, so this pre-check has no
+side effect.
+
+**What the judge sees** (`sidecar.judge(view)`, `GuardSidecar` in
+`research/graph_sidecar.py`): the task text of the condition prompt before the
+attachments (capped at `TASK_CHARS`), the frozen insert verbatim, the working
+files by name with line counts, hashes and state (`unchanged`, `changed`,
+`new`), the trajectory so far as one compact JSON line per completed turn
+(action, arguments in short, functional outcome, earlier verdicts; the newest
+entries kept within `HISTORY_CHARS`, the number omitted is stated), the pending
+call with its arguments (edits and new files capped like the gate prompt), the
+visible message text of the turn, and the guard state (interventions so far,
+judge calls available). Under adapter protocol v1 no visible message or
+reasoning text exists (the adapter returns the forced tool call's arguments
+only); the prompt says so, and every event records `messageText: null` with
+`messageTextNote`. Nothing is inferred from the arguments. Security check
+results are never part of the view.
+
+**Judge turns.** The judge answers through tools: `guard_act` (`search`, `read`
+or `verdict`) on its first `judge_turns` calls (default 3), then `guard_verdict`
+is forced. Its `read`/`search` run through `context_repository.operate` on the
+frozen snapshot plus the generator's current working files addressed by bare
+file name (`ApoMarioLevel.java`, a new file), with the generator's limits;
+results are line-numbered, capped at `RESULT_CHARS`, and never touch the
+generator's evidence index, `filesRead` or `touched`. Request ids are
+`<runId>-g<turn>k<n>`; `prepare` reserves `g{maxTurns}k{GUARD_JUDGE_TURNS_LIMIT+1}`
+in the request-id length check whenever a guard arm is present, and
+`trajectory` refuses a sidecar whose `judgeTurns` would exceed the limit before
+any model call. The verdict is `{intervene, reason, quoted, statement_ids, advice}`.
+
+**What an intervention does.** A verdict acts only when `intervene` is true and
+at least one cited statement id is present in the insert; the harness's
+`interventions` count is passed in the view and the sidecar reports `capped`
+once it reaches `max_interventions` (default 3), after which verdicts are
+recorded but nothing is cancelled. `shadow=True` on the sidecar, or the kind
+`guard_shadow`, records verdicts and never cancels (the harness also never
+cancels for `guard_shadow`, whatever the sidecar returns). On an intervention
+the pending call is not executed: no `operate`, no `apply_changes`, no
+evaluation and no `submissions[]` entry. The generator receives, as the tool
+result, `{"cancelled": <action>, "securityGuard": <text>}` followed by the usual
+remaining-budget line, where `<text>` is
+`--- TOOL CALL CANCELLED BY THE SECURITY GUARD ---`, the reason, the advice, the
+quoted lines and the cited statements copied from the insert, `--- END ---`.
+The turn counts against `maxTurns`; a cancelled submission does not count
+against `maxSubmissions` (it never became a submission; `gate` rejections do).
+The turn is recorded with `status: cancelled_by_guard`.
+
+**What is recorded.** Each consultation is one `sidecarEvents[]` entry with
+`stage: guard`, written before the judge runs (`status: started`) and completed
+afterwards (`judged`, or `error` with `error`/`errorCategory`): `turn`, `action`,
+`requestId`, `requestIds`, `consulted`, `intervene`, `wouldIntervene`,
+`verdictIntervene`, `verdictStatus` (`verdict`, `identity_mismatch`,
+`settings_mismatch`, `incomplete_response`, `invalid_verdict`, `no_verdict`),
+`capped`, `shadow`, `ids` (cited, `item:` form), `quoted`, `unquoted` (quotes
+absent from a submission), `reason`, `adviceText`, `messageText`,
+`messageTextNote`, `judgeTurns`, `judgeActions` (the judge's own reads and
+searches with counts or errors), `historyEntries`, `historyOmitted`,
+`touchedFiles`, `transcript` (one entry per judge request: `request`,
+`requestSha256`, `response`, `responseSha256`, timestamps, `status`,
+`settingsVerified`), `cancelled` (the cancelled action or `null`), `injected`,
+`sha256`, `characters`. The insert's bytes are recorded as `record.guardInsert`
+and the sidecar's `describe()` (judge turns, cap, shadow, graph, prompt and tool
+hashes, budgets) as `sidecarConfig`; the closing count is
+`record.guardInterventions`. `GuardSidecar` refuses an insert whose statement
+lines are not rendered from the frozen graph of the method (`sidecar_error`),
+so the cited statements always come from the insert the judge read.
+
+`summary()` adds, per condition and as counts: `guardConsultations`,
+`guardPositiveVerdicts`, `guardInterventions`, `guardCapped`,
+`guardCancelledReads`, `guardCancelledSearches`, `guardCancelledSubmissions`,
+`guardJudgeTurns`, `guardJudgeReads`, `guardJudgeSearches`,
+`trajectoriesWithIntervention` (k/N), plus `readsExecuted` and
+`searchesExecuted` (tool turns that returned a result; `reads` and `searches`
+keep counting turns, cancelled and failed ones included).
+`research.graph_sidecar:GUARD` and `GUARD_SHADOW` construct the judge over the
+frozen I12 Generation graph; a round that adopts the guard should add its own
+factory pointing at its contexts.
