@@ -9,3 +9,5 @@ document version (v13), the same cells and the same N. The document is a
 fresh v13 acquisition per method (`contexts/` of i32a-s1 for S1,
 i32c-s3 for S3). Prediction: the document arm fails fewer security checks
 than the control in both cells.
+
+The control-relative category analysis is undefined for this round (no control arm of its own); compare with the shared control named above.
