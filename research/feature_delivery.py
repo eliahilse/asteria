@@ -54,7 +54,8 @@ No security context or security-test feedback is supplied in this delivery calib
 '''
 
 
-def apply_changes(files: dict[str, str], action: dict) -> dict[str, str]:
+def apply_changes(files: dict[str, str], action: dict, lenient: bool = False) -> dict[str, str]:
+    """`lenient=True` (declared per round as delivery 'lenient'): a new file that names an existing file replaces it whole, as the prior study's pipeline does; edits stay exact."""
     if not isinstance(action, dict) or set(action) != {'new_files', 'edits'}: raise ValueError('Return new_files and edits')
     if not isinstance(action['new_files'], list) or not isinstance(action['edits'], list): raise ValueError('Changes must be arrays')
     if not 1 <= len(action['new_files']) + len(action['edits']) <= 60: raise ValueError('Deliver 1–60 changes')
@@ -64,7 +65,7 @@ def apply_changes(files: dict[str, str], action: dict) -> dict[str, str]:
         return value
     for item in action['new_files']:
         name = filename(item['filename'])
-        if name in result: raise ValueError(f'{name} exists; edit it instead')
+        if name in result and not lenient: raise ValueError(f'{name} exists; edit it instead')
         if not isinstance(item['content'], str) or not item['content'].strip(): raise ValueError('New files must contain source')
         result[name] = item['content'].replace('\r\n', '\n')
     for edit in action['edits']:

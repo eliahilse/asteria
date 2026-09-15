@@ -124,9 +124,10 @@ def resolve_settings(reasoning_effort: str | None = None) -> dict:
 
 def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_inserts: dict[str, Path] | None,
             parent: str | Path = 'i07-operational-replication', *, max_turns=DEFAULT_MAX_TURNS, max_submissions=DEFAULT_MAX_SUBMISSIONS,
-            directory: Path | None = None, reasoning_effort: str | None = None) -> dict:
+            directory: Path | None = None, reasoning_effort: str | None = None, delivery_mode: str = 'strict') -> dict:
     arms = normalize_arms(arms); context_inserts = dict(context_inserts or {})
     if not re.fullmatch(r'[a-z0-9][a-z0-9_-]+', identifier) or not cells or len(set(cells)) != len(cells) or not 1 <= repetitions <= 30: raise ValueError('Invalid iteration plan')
+    if delivery_mode not in ('strict', 'lenient'): raise ValueError('delivery must be strict or lenient')
     if type(max_turns) is not int or type(max_submissions) is not int or not 1 <= max_submissions <= 5 or not max_submissions <= max_turns <= 60: raise ValueError('Invalid budget')
     directory = directory or ITERATIONS / identifier; directory.mkdir(parents=True, exist_ok=True)
     parent_dir = parent if isinstance(parent, Path) else ITERATIONS / parent
@@ -185,7 +186,7 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
         rng.shuffle(block); schedule.extend(block)
     system, single = agentic_system(max_turns, max_submissions), delivery_system(max_submissions, parent_plan)
     plan = {'id': identifier, 'phase': 'agentic_delivery', 'protocol': PROTOCOL, 'evaluationProtocol': EVALUATION_PROTOCOL, 'createdAt': timestamp(),
-        'model': MODEL, 'settings': resolve_settings(reasoning_effort), 'maxSubmissions': max_submissions, 'maxTurns': max_turns,
+        'model': MODEL, 'settings': resolve_settings(reasoning_effort), 'delivery': delivery_mode, 'maxSubmissions': max_submissions, 'maxTurns': max_turns,
         'system': single, 'systemSha256': digest(single.encode()), 'systemAgentic': system, 'systemAgenticSha256': digest(system.encode()),
         'tools': {'single_shot': TOOL, 'agentic': ACT}, 'arms': arms, 'repositories': list(repositories.values()), 'conditions': conditions, 'schedule': schedule,
         'sourceHashes': sources, 'calibrationReportSha256': digest(CALIBRATION.read_bytes()),
@@ -405,7 +406,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             turn['status'] = 'submitted'; changes = None; pre_edit = dict(files); advice = None
             try:
                 changes = json.loads(response['output_text']) if mode == 'single_shot' else {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
-                candidate = apply_changes(files, changes)
+                candidate = apply_changes(files, changes, lenient=plan.get('delivery') == 'lenient')
                 missing = [name for name in TARGETS if candidate[name] == original[name]]
                 if missing: raise ValueError('Missing required game integration edits: ' + ', '.join(missing))
             except (ValueError, KeyError, TypeError) as error:
@@ -479,7 +480,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 
 
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
-    if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
+    if not 1 <= workers <= 8: raise ValueError('Use 1–8 workers')
     plan = validate(manifest)
     if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
@@ -530,7 +531,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--manifest', type=Path)
     parser.add_argument('--run-id')
-    parser.add_argument('--workers', type=int, choices=range(1, 5), default=3)
+    parser.add_argument('--workers', type=int, choices=range(1, 9), default=3)
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--sidecar', help='module:attribute exposing initial(condition) and update(touched, shown_ids); required for adaptive conditions')
     parser.add_argument('--summary', action='store_true')
@@ -543,11 +544,12 @@ if __name__ == '__main__':
     parser.add_argument('--max-turns', type=int, default=DEFAULT_MAX_TURNS)
     parser.add_argument('--max-submissions', type=int, default=DEFAULT_MAX_SUBMISSIONS)
     parser.add_argument('--reasoning-effort', choices=EFFORTS, help='generator reasoning effort for this round (default: the shared setting)')
+    parser.add_argument('--delivery', choices=('strict', 'lenient'), default='strict', help='lenient: a new file naming an existing file replaces it whole')
     args = parser.parse_args()
     if args.prepare:
         inserts = {key: Path(value) for key, value in (item.split('=', 1) for item in args.insert)}
         plan = prepare(args.prepare, args.cells.split(','), args.arms.split(','), args.repetitions, inserts, args.parent,
-                       max_turns=args.max_turns, max_submissions=args.max_submissions, reasoning_effort=args.reasoning_effort)
+                       max_turns=args.max_turns, max_submissions=args.max_submissions, reasoning_effort=args.reasoning_effort, delivery_mode=args.delivery)
         print(f"{plan['id']}: {len(plan['conditions'])} conditions; {len(plan['schedule'])} trajectories; {plan['fingerprint']}")
     elif not args.manifest: parser.error('--manifest is required')
     elif args.summary: print(json.dumps(summary(args.manifest.parent), indent=2))
