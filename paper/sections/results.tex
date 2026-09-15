@@ -466,7 +466,41 @@ documents say ``non-null'' where the version-10 ones said
 ``null/blank/oversized'', and all twenty artifacts accept a blank name.
 The guard adds nothing (the same 5 failed, at twice the calls). Round I30
 runs the same arms with a version-12 document whose rule names the domain
-of a text.
+of a text (non-null, not blank after trimming, a length bound;
+Table~\ref{tab:i30}). The blank-name failures go from 20 of 20 to 0; the
+document arms pass every input-policy, retention, parser and round-trip
+check in all twenty artifacts, and 4 (document) and 5 (document and guard)
+artifacts of 10 pass all sixteen tests and all eleven checks, the first
+full hits of an agentic arm at five trajectories per cell and the most of
+any arm in this study; no control artifact does. What remains is the
+resource pair: the oversized-line check fails in 7 of 20 document
+artifacts (the documents bound records and names, not the length of a
+line) and the million-record check in 2. The guard is within one artifact
+of the document alone in either direction (Reuse 0 failed and 4 full hits
+against 1 and 2, Generation 5 and 1 against 3 and 2) at twice the calls.
+Three revisions of one ground rule thus take the document arms of these
+cells from 12 failed checks of 100 and no full artifact (version 10) to 4
+and 4 of 10 (version 12), with every artifact functional throughout.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Round I30, the version-12 document in agentic delivery with five trajectories per cell and arm, columns as in Table~\ref{tab:i29}. The document arms reach 4 and 5 full hits of 10; the controls none.}
+\label{tab:i30}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}llrrlrlrr@{}}
+\toprule
+Cell & Arm & Functional & Full hits & Checks f / u / p & Turns & Guard & Calls & Input (M) \\
+\midrule
+Generation S & none & 5 & 0 & 21 / 5 / 24 & 10 & -- & 47 & 4.4 \\
+Generation S & v12 document & 5 & 2 & 3 / 1 / 46 & 6 & -- & 32 & 3.2 \\
+Generation S & v12 document + guard & 5 & 1 & 5 / 1 / 44 & 11 & 7 / 2 & 78 & 5.5 \\
+Reuse S+B & none & 5 & 0 & 31 / 5 / 14 & 8 & -- & 38 & 5.6 \\
+Reuse S+B & v12 document & 5 & 2 & 1 / 2 / 47 & 7 & -- & 36 & 5.5 \\
+Reuse S+B & v12 document + guard & 5 & 4 & 0 / 1 / 49 & 7 & 10 / 5 & 71 & 5.4 \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \paragraph{Cost.}
 Table~\ref{tab:cost} gives the time and tokens behind the one-response
