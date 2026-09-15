@@ -4,7 +4,8 @@ import { PERCENT_MIN_N, combinationRows, fractionText, percentAllowed, percentTe
 export type * from './experiment-types';
 
 const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only', catalog: 'CWE catalog',
-  'single_shot+static': 'Agent insert', 'agentic+none': 'Agentic, no context', 'agentic+static': 'Agentic + insert', 'agentic+adaptive': 'Agentic + adaptive sidecar', 'agentic+gate': 'Agentic + gate', 'agentic+coach': 'Agentic + coach', 'agentic+gate_once': 'Agentic + gate once', 'agentic+rewind': 'Agentic + rewind' };
+  'single_shot+static': 'Agent insert', 'agentic+none': 'Agentic, no context', 'agentic+static': 'Agentic + insert', 'agentic+adaptive': 'Agentic + adaptive sidecar', 'agentic+gate': 'Agentic + gate', 'agentic+coach': 'Agentic + coach', 'agentic+gate_once': 'Agentic + gate once', 'agentic+rewind': 'Agentic + rewind',
+  'agentic+guard': 'Agentic + guard judge', 'agentic+guard_shadow': 'Agentic + shadow guard', 'agentic+ast': 'Agentic + code graph', 'agentic+static-ast': 'Agentic + insert + code graph', 'agentic+static-guard': 'Agentic + insert + guard judge', 'agentic+static-ast-guard': 'Agentic + insert + code graph + guard judge' };
 // Rounds in natural order (i9 < i16 < i16b < i21a); the newest round is the default view.
 const roundKey = (id: string) => { const m = /^i(\d+)([a-z]?)/.exec(id); return m ? [Number(m[1]), m[2]] as const : [Number.MAX_SAFE_INTEGER, id] as const; };
 const byRound = (a: string, b: string) => { const [x, y] = [roundKey(a), roundKey(b)]; return x[0] - y[0] || String(x[1]).localeCompare(String(y[1])); };
