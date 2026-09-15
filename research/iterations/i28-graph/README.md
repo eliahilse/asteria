@@ -46,3 +46,17 @@ failed / unresolved / passed of 50; full hits of 5; tool turns, reads,
 searches, submissions, injections, guard consultations / positive / acted
 verdicts; tokens and time of generator and judge. Predictions checked one
 by one; identification bounds per cell; no significance claims.
+
+## Amendment (2026-09-15, 09:45, during collection)
+
+In the first wave of five parallel trajectories the provider served
+`gpt-5.6-terra` for one response each, and seven of the first nine
+trajectories stopped with a served-identity mismatch before any submission
+was evaluated. Earlier rounds kept such trajectories as lost (I24c 3 of
+50, I25 4 of 80, I27 3 of 15). For this round a stopped trajectory is a
+transport failure, not an outcome: after each pass, trajectories whose
+status is `identity_mismatch` or `adapter_error` are moved to
+`runs-superseded/` with their provider traces and collected again under
+the same run id, at most three passes in total. Nothing evaluated is ever
+replaced; the superseded attempts stay on disk and are counted in the
+findings.
