@@ -24,6 +24,17 @@ def index(public=False, iteration=None):
         plan = json.loads((directory / 'manifest.json').read_text())
     else: return {'local': False, 'iteration': None, 'groups': []}
     groups = {}
+    if public and not plan.get('acquisitions') and any(c.get('contextInsertFile') for c in plan.get('conditions', [])):
+        # Agent rounds (agentic-delivery plans): one static insert per cell, referenced by the condition.
+        for condition in plan['conditions']:
+            file = condition.get('contextInsertFile')
+            if not file: continue
+            text = (ROOT / file).read_text(); method = condition.get('repository') or condition.get('strategy')
+            if condition.get('contextInsertSha256') and digest(text.encode()) != condition['contextInsertSha256']: raise ValueError('Frozen public context insert differs')
+            group = groups.setdefault((method, file), {'method': method, 'task': f"Cell {condition.get('parentCondition', condition['id'])}; insert file {file}", 'inserts': []})
+            if not any(i['id'] == file for i in group['inserts']):
+                group['inserts'].append({'id': file, 'strategy': condition.get('sidecar', 'static'), 'label': f"{condition.get('mode', '')} {condition.get('sidecar', '')} ({Path(file).stem})".strip(), 'text': text, 'sha256': digest(text.encode())})
+        return {'local': False, 'iteration': plan['id'], 'groups': list(groups.values())}
     for item in plan.get('acquisitions', []):
         if public:
             text = (directory / 'contexts' / f"{item['method'].lower()}-{item['strategy']}.txt").read_text()
