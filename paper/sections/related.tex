@@ -32,3 +32,13 @@ in a user study, people with an AI assistant wrote less secure code than
 people without~\citep{perry2023}. We work inside a real code base: a
 family of games maintained by copying one game into the
 next~\citep{krueger2018,dubinsky2013}.
+
+The study this work extends compares structural, functional and
+behavioural context for generation and reuse on three tasks in the same
+game family, with one model response per prompt (240 runs, Gemini 3.1
+Flash Lite), scored by compilation and test pass rates; its replication
+package supplies the tasks, the test suites and the context files reused
+here.\footnote{\url{https://github.com/ieiris/llm-context-generation-reuse}}
+This work keeps its Highscore task, tests and context types, adds security
+context and security checks, and, until round I22, lets the model resubmit
+with feedback; Section~\ref{sec:method} states that difference.
