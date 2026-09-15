@@ -119,5 +119,25 @@ class StrategyTableTests(unittest.TestCase):
             self.assertEqual(failed + unresolved + passed, 250, label)
 
 
+class GraphTableTests(unittest.TestCase):
+    ARMS = {'none': 'none', 'insert': 'static', 'graph': 'ast', 'insert + graph': 'static-ast', 'insert + guard': 'static-guard', 'insert + graph + guard': 'static-ast-guard'}
+
+    def test_graph_table_matches_qualified_analysis_and_full_hits(self):
+        import csv
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        header, body = parse_table(source, 'tab:graph')
+        self.assertEqual(header, ['Functional', 'Full hits', 'Checks f / u / p', 'Turns', 'Guard', 'Calls', 'Input (M tokens)'])
+        conditions = analysis('i26-graph')
+        hits = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i26-graph/full-hits.csv').open())}
+        cost = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i26-graph/cost.csv').open())}
+        for label, (functional, full, checks, turns, guard, calls, tokens) in body:
+            arm = f'generation_s__agentic__{self.ARMS[label]}'; c = conditions[arm]; h = hits[arm]; k = cost[arm]
+            failed, unresolved, passed = map(int, checks.split('/'))
+            self.assertEqual((int(functional), int(full), failed, unresolved, passed), (c['withinBudgetFull'], int(h['fullHits']), c['issues']['failed'], c['issues']['unresolved'], c['issues']['evaluated'] - c['issues']['failed']), label)
+            self.assertEqual(float(turns), float(h['toolTurnsMedian']), label)
+            self.assertEqual(guard, f"{h['guardConsultations']} / {h['guardInterventions']}" if self.ARMS[label].endswith('guard') else '--', label)
+            self.assertEqual((int(calls), tokens), (int(k['calls']), f"{int(k['inputTokens'])/1e6:.2f}"), label)
+
+
 if __name__ == '__main__':
     unittest.main()
