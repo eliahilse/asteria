@@ -1,0 +1,714 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__agentic__none",
+      "input_rejection_policy": 5,
+      "issueChecksEvaluated": 19,
+      "issueChecksUnresolved": 1,
+      "n": 2,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "input_rejection_policy": 2,
+      "issueChecksEvaluated": 19,
+      "issueChecksUnresolved": 1,
+      "n": 2,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 1,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "generation_s__agentic__ast",
+      "input_rejection_policy": 5,
+      "issueChecksEvaluated": 18,
+      "issueChecksUnresolved": 2,
+      "n": 2,
+      "observed_heap_exhaustion": 2,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 2,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 19,
+      "issueChecksUnresolved": 1,
+      "n": 2,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "input_rejection_policy": 2,
+      "issueChecksEvaluated": 20,
+      "issueChecksUnresolved": 0,
+      "n": 2,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 1,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 19,
+      "issueChecksUnresolved": 1,
+      "n": 2,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 1,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    }
+  ],
+  "failures": [
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "9b02d2c1657ae62011f524a4785a43885978809b7d3c0b73a3770aa7f31fe1e1",
+      "responseSha256": "b7980c7455fd0bbaf0952b4027c1ca10d24e8aa1fa1be3d1e3e6e0794381e521",
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "9b02d2c1657ae62011f524a4785a43885978809b7d3c0b73a3770aa7f31fe1e1",
+      "responseSha256": "b7980c7455fd0bbaf0952b4027c1ca10d24e8aa1fa1be3d1e3e6e0794381e521",
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "9b02d2c1657ae62011f524a4785a43885978809b7d3c0b73a3770aa7f31fe1e1",
+      "responseSha256": "b7980c7455fd0bbaf0952b4027c1ca10d24e8aa1fa1be3d1e3e6e0794381e521",
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "9b02d2c1657ae62011f524a4785a43885978809b7d3c0b73a3770aa7f31fe1e1",
+      "responseSha256": "b7980c7455fd0bbaf0952b4027c1ca10d24e8aa1fa1be3d1e3e6e0794381e521",
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "9b02d2c1657ae62011f524a4785a43885978809b7d3c0b73a3770aa7f31fe1e1",
+      "responseSha256": "b7980c7455fd0bbaf0952b4027c1ca10d24e8aa1fa1be3d1e3e6e0794381e521",
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-guard__r1/submission-1/evaluation/report.json",
+      "reportSha256": "232c693929fb798fdc490acd2cfc375310e6855f3e2a4922c011a5de9919a90f",
+      "responseSha256": "b83f1066bbf7bc8c6f892d7263805035cd4312ae9d98318de30719e341a74862",
+      "runId": "i26-graph__generation_s__agentic__static-guard__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e9e0b6a1c5acc1e772ec2794717ab7c1158c4316cdcb617e8309d3b006e57fe5",
+      "responseSha256": "83e408d02629764f79dc99bec54d34a21bb6feb16899804b6797c974899e375c",
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e9e0b6a1c5acc1e772ec2794717ab7c1158c4316cdcb617e8309d3b006e57fe5",
+      "responseSha256": "83e408d02629764f79dc99bec54d34a21bb6feb16899804b6797c974899e375c",
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e9e0b6a1c5acc1e772ec2794717ab7c1158c4316cdcb617e8309d3b006e57fe5",
+      "responseSha256": "83e408d02629764f79dc99bec54d34a21bb6feb16899804b6797c974899e375c",
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e9e0b6a1c5acc1e772ec2794717ab7c1158c4316cdcb617e8309d3b006e57fe5",
+      "responseSha256": "83e408d02629764f79dc99bec54d34a21bb6feb16899804b6797c974899e375c",
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__ast",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/report.json",
+      "reportSha256": "e9e0b6a1c5acc1e772ec2794717ab7c1158c4316cdcb617e8309d3b006e57fe5",
+      "responseSha256": "83e408d02629764f79dc99bec54d34a21bb6feb16899804b6797c974899e375c",
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast-guard__r1/submission-2/evaluation/report.json",
+      "reportSha256": "f461b2a55e3743adf057558bd550f35087fe3878b022e98c55c90f4546413814",
+      "responseSha256": "59b65b7ae58174ef304cfc6a53812ef1918e690ac26010bb6bfc7b4249e24603",
+      "runId": "i26-graph__generation_s__agentic__static-ast-guard__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r1/submission-4/evaluation/report.json",
+      "reportSha256": "4afbc1232c92e105c3c6db32b379a90910087c92ccd43e5f66e462b230719379",
+      "responseSha256": "b2312bb6d574f5cc5cd0f4646e8ecb2e9453d6d8b83f887e4377d0d9e9827e8e",
+      "runId": "i26-graph__generation_s__agentic__static__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r1/submission-4/evaluation/report.json",
+      "reportSha256": "4afbc1232c92e105c3c6db32b379a90910087c92ccd43e5f66e462b230719379",
+      "responseSha256": "b2312bb6d574f5cc5cd0f4646e8ecb2e9453d6d8b83f887e4377d0d9e9827e8e",
+      "runId": "i26-graph__generation_s__agentic__static__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a08b7cb663a583e7a5b53a35aaa8bec4f660e8dffa99de8b97e2a840de5b543d",
+      "responseSha256": "3e851947d5a23d12827c69169f02f4c86a1dd6062812b1e4ce92348a993b127b",
+      "runId": "i26-graph__generation_s__agentic__static__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r2/submission-2/evaluation/report.json",
+      "reportSha256": "a08b7cb663a583e7a5b53a35aaa8bec4f660e8dffa99de8b97e2a840de5b543d",
+      "responseSha256": "3e851947d5a23d12827c69169f02f4c86a1dd6062812b1e4ce92348a993b127b",
+      "runId": "i26-graph__generation_s__agentic__static__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-guard__r2/submission-5/evaluation/report.json",
+      "reportSha256": "925227f0911e3c4578794df0e6e48b6926f693f49cb9ccc11f46e26419f6907e",
+      "responseSha256": "565ddb6d04edcc08bafb8dabb3cf8bc07acba88ab8fb1fce2d99a53061e11572",
+      "runId": "i26-graph__generation_s__agentic__static-guard__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-guard__r2/submission-5/evaluation/report.json",
+      "reportSha256": "925227f0911e3c4578794df0e6e48b6926f693f49cb9ccc11f46e26419f6907e",
+      "responseSha256": "565ddb6d04edcc08bafb8dabb3cf8bc07acba88ab8fb1fce2d99a53061e11572",
+      "runId": "i26-graph__generation_s__agentic__static-guard__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "063e7c09a6630a1854e69825d06aaadcfe3020c2ee57cde4a57aeb52dd47a96d",
+      "responseSha256": "495f99289c61ae6ecbea841200ac805e136fc224c75a34b4eb13bd589d158795",
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "063e7c09a6630a1854e69825d06aaadcfe3020c2ee57cde4a57aeb52dd47a96d",
+      "responseSha256": "495f99289c61ae6ecbea841200ac805e136fc224c75a34b4eb13bd589d158795",
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "063e7c09a6630a1854e69825d06aaadcfe3020c2ee57cde4a57aeb52dd47a96d",
+      "responseSha256": "495f99289c61ae6ecbea841200ac805e136fc224c75a34b4eb13bd589d158795",
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "063e7c09a6630a1854e69825d06aaadcfe3020c2ee57cde4a57aeb52dd47a96d",
+      "responseSha256": "495f99289c61ae6ecbea841200ac805e136fc224c75a34b4eb13bd589d158795",
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/report.json",
+      "reportSha256": "063e7c09a6630a1854e69825d06aaadcfe3020c2ee57cde4a57aeb52dd47a96d",
+      "responseSha256": "495f99289c61ae6ecbea841200ac805e136fc224c75a34b4eb13bd589d158795",
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7d02a2841898abfa2ae77b37e2c7b859cb9755598b9de387f132ff73c3ab22b4",
+      "responseSha256": "f6aafc1017954028b035b2f2b505f34c5327bb0ba4eaf58fd2af5b15565016fb",
+      "runId": "i26-graph__generation_s__agentic__ast__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7d02a2841898abfa2ae77b37e2c7b859cb9755598b9de387f132ff73c3ab22b4",
+      "responseSha256": "f6aafc1017954028b035b2f2b505f34c5327bb0ba4eaf58fd2af5b15565016fb",
+      "runId": "i26-graph__generation_s__agentic__ast__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__ast",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7d02a2841898abfa2ae77b37e2c7b859cb9755598b9de387f132ff73c3ab22b4",
+      "responseSha256": "f6aafc1017954028b035b2f2b505f34c5327bb0ba4eaf58fd2af5b15565016fb",
+      "runId": "i26-graph__generation_s__agentic__ast__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__ast",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r2/submission-1/evaluation/report.json",
+      "reportSha256": "7d02a2841898abfa2ae77b37e2c7b859cb9755598b9de387f132ff73c3ab22b4",
+      "responseSha256": "f6aafc1017954028b035b2f2b505f34c5327bb0ba4eaf58fd2af5b15565016fb",
+      "runId": "i26-graph__generation_s__agentic__ast__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__agentic__static-ast-guard",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast-guard__r2/submission-3/evaluation/report.json",
+      "reportSha256": "e13072967a8d4acc57eb46fdcfb0a08252ea18dedc63e6aef2324a8757001c49",
+      "responseSha256": "fc00a687e4fbdba7abf60ae1a1a80ddd94a66e19a7467a944ccdbee0d20ef28c",
+      "runId": "i26-graph__generation_s__agentic__static-ast-guard__r2",
+      "test": "boundsRetainedEntries"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i26-graph",
+  "manifestFingerprint": "e22fe9ced1b86d70627616a0a5f02ee43beaa0aed28138188c34ee694504fc04",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 172,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__none__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "89743e865615793ade7530c8d18bda7e9dbe78e7e5079af49dd5695ccf77c19f"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 24;"
+        },
+        {
+          "line": 44,
+          "text": "        if (this.playersScores.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 136,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 196,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-guard__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-guard__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "43fb65f8f0a3d9016e7abe06de832e49622125fc355cd0c49f71c7ddf32f8b81"
+    },
+    {
+      "condition": "generation_s__agentic__ast",
+      "excerpts": [
+        {
+          "line": 139,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__ast__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a18ed8678c9eec0ec01d44aaa2451db52d555037b20d7dd69307a268c6999dae"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 44,
+          "text": "        if (this.playersNames.size() >= MAX_ENTRIES"
+        },
+        {
+          "line": 46,
+          "text": "            report(\"Rejected highscore run outside the top \" + MAX_ENTRIES);"
+        },
+        {
+          "line": 53,
+          "text": "        if (this.playersNames.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 158,
+          "text": "            if (Files.size(this.store) > MAX_FILE_BYTES) {"
+        },
+        {
+          "line": 164,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 170,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 174,
+          "text": "                    if (validCount >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 209,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-ast__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "4de783ad4de82b3f0531c7b56eab199bb152f7e587d4be3cbb01c5852a85bd1a"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_LINE_LENGTH = 4096;"
+        },
+        {
+          "line": 53,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 165,
+          "text": "                if (!HEADER.equals(reader.readLine())) {"
+        },
+        {
+          "line": 171,
+          "text": "                while (this.entries.size() < MAX_ENTRIES && (line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 173,
+          "text": "                    if (line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 222,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-ast-guard__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast-guard__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "19f0c8b0ad9c716887d5e75100b67cdf764f7d9d934cced17493c41e677d447d"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_LINE_LENGTH = 256;"
+        },
+        {
+          "line": 84,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 93,
+          "text": "        if (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 133,
+          "text": "            String header = reader.readLine();"
+        },
+        {
+          "line": 140,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 142,
+          "text": "                if (lineCount > MAX_ENTRIES || line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 154,
+          "text": "            while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 233,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static__r1",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r1/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d495d653b27c643f54fd65141a6b688039fb3f69142d41e332a94bb0498e909d"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 56,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 170,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 216,
+          "text": "        return name != null && name.trim().length() > 0 && name.length() <= MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d675b2535b56afddbbade01305dcd8bba0db932abd3c793b8836e38b1ad991df"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 54,
+          "text": "        if (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 158,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 206,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-ast__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d5f310e9c3255af71f745a53e5af37623c55de4d975481a201ad3a2c9eae3260"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 39,
+          "text": "                || playerName.length() > MAX_NAME_LENGTH || score < MIN_SCORE"
+        },
+        {
+          "line": 45,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 49,
+          "text": "        if (entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 149,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 156,
+          "text": "                if (name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-guard__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-guard__r2/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b752aa0dd0ffef5055c2f7670a0b4c11d71a80fef38598108c18d1e2cabf020f"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 136,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__none__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__none__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "49b10b3c00f9fffbc2a97b5a29400caa3a64b332d0a776f47bcf21741aadbcd0"
+    },
+    {
+      "condition": "generation_s__agentic__ast",
+      "excerpts": [
+        {
+          "line": 136,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__ast__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__ast__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "11cafb013ffefed2895cd6da238a90a20e217a0d2911dd6eca89c516f1da1d7f"
+    },
+    {
+      "condition": "generation_s__agentic__static-ast-guard",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final long MAX_STORE_BYTES = 8192L;"
+        },
+        {
+          "line": 56,
+          "text": "        if (this.entries.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 161,
+          "text": "        for (int i = 0; i < this.entries.size() && i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 186,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 194,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 231,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i26-graph__generation_s__agentic__static-ast-guard__r2",
+      "source": ".local/iterations/i26-graph/runs/i26-graph__generation_s__agentic__static-ast-guard__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5ea8558c92fe2a72383601ef90eaa0b0acd2f404d146a75243a0d36070eff921"
+    }
+  ]
+}
