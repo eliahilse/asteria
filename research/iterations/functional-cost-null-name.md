@@ -90,5 +90,26 @@ expected fallback.
 Hook classes are regular-expression judgments; the test outcome columns are
 authoritative and every cited line is printed. Rows where class and outcome
 disagree are listed per round under "Rows for hand review"; their review is
-recorded below when complete. One task, one repository pair, N = 3 to 5 per
-arm, descriptive counts.
+recorded below. One task, one repository pair, N = 3 to 5 per arm,
+descriptive counts.
+
+## Hand review of 12 rows
+
+A second reader (muse spark 1.3 via opencode, single pass, read the full final artifacts, the coupling test and the driver) judged the fate of a null-name run for the 7 rows where the first regex rule and the test outcome disagreed and for 4 concordant spot checks (2 skips, 1 store rejection, 1 control). Verdicts with citations: `hook-audit-review.json`. The rule was then widened (helper validation and ternary fallbacks); the column "audit now" shows the current class.
+
+| Trajectory | Audit before | Reader | Audit now | Null-name tests failed | Reader's reason |
+| --- | --- | --- | --- | ---: | --- |
+| i09-generic-acquisition reuse_sb requirements r4 | rejected at store | recorded | recorded | 0 | Audit cites only the getTeamName line and misses the Player fallback on the next line, while all functional checks pass. |
+| i10-agentic-delivery generation_s agentic adaptive r5 | recorded | recorded | recorded | 2 | Both null-name tests fail because no run is recorded in the test despite the Player+i+1 fallback (all five autonomous checks fail), indicating the hook never fires for the driver player due to the isB |
+| i10-agentic-delivery reuse_sb agentic adaptive r1 | recorded | recorded | recorded | 2 | Both null-name tests fail because the artifact does not compile due to a type mismatch in ApoMarioHighscoreView.java:15, so the whole suite fails. |
+| i10-agentic-delivery reuse_sb agentic static r1 | recorded | rejected at store | rejected at store | 2 | Null team name is passed unchanged to storeRun where normalize(null) returns null and storeRun returns false, so null-name runs leave no entry and indexOf fails. |
+| i10-agentic-delivery reuse_sb agentic static r5 | rejected at store | recorded | recorded | 0 | Audit labels the hook rejected_at_store but the hook substitutes Player before storeRun, and all functional checks pass. |
+| i10-agentic-delivery reuse_sb single_shot static r1 | rejected at store | recorded | recorded | 0 | Audit labels the hook rejected_at_store but the hook substitutes Human for null before storeRun, and all functional checks pass. |
+| i10-agentic-delivery reuse_sb single_shot static r2 | rejected at store | rejected at store | rejected at store | 2 | Null team name reaches storeRun where normalize returns null and storeRun returns false, so null-name runs leave no entry and the board assertions fail. |
+| i10-agentic-delivery reuse_sb single_shot static r3 | recorded | recorded | recorded | 0 | Hook substitutes Human for null or empty names and all functional checks pass. |
+| i11-symbol-sidecar generation_s single_shot static r2 | recorded | recorded | recorded | 2 | Both null-name tests fail not from null rejection (fallback Player is applied) but because the single-shot bRunRecorded flag is never reset on resetLevel, so only the first autonomous run is recorded  |
+| i16-compact-confirmation reuse_sb single_shot static r1 | skipped at hook | skipped at hook | skipped at hook | 2 | Hook returns early when selected team name is null, so null-name runs never reach the store and the board stays empty. |
+| i16b-gen-compact generation_s single_shot none r2 | recorded | recorded | recorded | 0 | Both the Level hook and storeRun substitute Player for null and all functional checks pass. |
+| i16b-gen-compact generation_s single_shot static r4 | skipped at hook | skipped at hook | skipped at hook | 2 | Hook filters null team names when selecting the player, so selected stays null and returns without calling the store. |
+
+Reader and current audit agree on 12 of 12 rows. The 12 trajectories that fail only the null-name tests are unaffected: the reader confirmed skip at the hook (I16 Reuse r1, I16b Generation r4) and rejection at the store (I10 Reuse single-shot r2) on the sampled rows. The three remaining discordant rows fail the null-name tests for other reasons the reader names (hook never fires for the driver player; compile error; a run-recorded flag never reset), consistent with their exclusion from the 12.

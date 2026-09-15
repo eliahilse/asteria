@@ -51,6 +51,7 @@ Final evaluated submission: 3; compilation: pass; rejectsNullName: fail; failing
 - `ApoMarioLevel.java:1183` `if (name == null || name.trim().length() == 0) name = "Player";`
 - `ApoMarioPanel.java:544` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:38` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:39` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:69` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:70` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -59,6 +60,7 @@ Final evaluated submission: 3; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:35` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:36` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:70` `String name = selected.getTeamName();`
 
 ### generation_s__single_shot__static r1: fallback, recorded, functional

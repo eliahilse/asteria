@@ -9,11 +9,11 @@ Test columns are authoritative; the mechanism columns are aids, and rows where t
 | generation_s__single_shot__none | 5 | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0 |
 | generation_s__single_shot__static | 5 | 0 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | reuse_sb__single_shot__none | 5 | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 5 | 0 | 0 | 0 | 0 | 0 |
-| reuse_sb__single_shot__static | 5 | 3 | 2 | 2 | 1 | 0 | 2 | 1 | 2 | 3 | 2 | 2 | 2 | 1 |
+| reuse_sb__single_shot__static | 5 | 3 | 3 | 2 | 0 | 0 | 2 | 0 | 3 | 2 | 2 | 2 | 2 | 0 |
 
 ## Rows for hand review
 
-- reuse_sb__single_shot__static r3: passthrough, rejected at store, rejectsNullName pass, null-name tests failed 0, functional
+- none
 
 ## Trajectories
 
@@ -22,6 +22,7 @@ Test columns are authoritative; the mechanism columns are aids, and rows where t
 Final evaluated submission: 2; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:50` `String name = playerName == null ? "Unknown" : playerName.trim();`
+- `ApoMarioHighscore.java:51` `if (name.length() == 0) name = "Unknown";`
 - `ApoMarioHighscore.java:87` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:88` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -47,8 +48,10 @@ Final evaluated submission: 3; compilation: pass; rejectsNullName: fail; failing
 - `ApoMarioPanel.java:232` `String name = best.getTeamName();`
 - `ApoMarioPanel.java:233` `if (name == null || name.trim().length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:29` `String name = playerName == null ? "Unknown" : playerName.trim();`
+- `ApoMarioHighscore.java:30` `if (name.length() == 0) name = "Unknown";`
 - `ApoMarioHighscore.java:57` `String name = best.getTeamName();`
 - `ApoMarioHighscore.java:58` `if (name == null || name.trim().length() == 0) name = "Player";`
+- `ApoMarioHighscore.java:127` `if (names.isEmpty()) g.drawString("No runs recorded yet", x + 18, row);`
 
 ### generation_s__single_shot__none r5: fallback, recorded, functional
 
@@ -93,6 +96,7 @@ Final evaluated submission: None; compilation: None; rejectsNullName: None; fail
 Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:40` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:41` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:92` `String name = chosen.getTeamName();`
 - `ApoMarioHighscore.java:93` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -101,6 +105,7 @@ Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:32` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:33` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:65` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:66` `if (name == null || name.trim().length() == 0) name = "Human";`
 
@@ -109,6 +114,7 @@ Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:36` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:37` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:59` `String name = best.getTeamName();`
 - `ApoMarioHighscore.java:60` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -125,6 +131,7 @@ Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 3; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:33` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:34` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:45` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:46` `if ((name == null || name.trim().length() == 0) && player.getAi() != null) name = player.getAi().getTeamName();`
 
@@ -142,10 +149,11 @@ Final evaluated submission: 2; compilation: pass; rejectsNullName: pass; failing
 - `ApoMarioHighscore.java:144` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:145` `if (name == null || name.trim().length() == 0) name = "Human";`
 
-### reuse_sb__single_shot__static r3: passthrough, rejected at store, functional
+### reuse_sb__single_shot__static r3: fallback, recorded, functional
 
 Final evaluated submission: 3; compilation: pass; rejectsNullName: pass; failing functional checks: none.
 
+- `ApoMarioHighscore.java:45` `try{Path parent=store.toAbsolutePath().getParent();if(parent!=null)Files.createDirectories(parent);tmp=Files.createTempFile(parent,"apomario-highscore-",".tmp");DataOutputStream out=new DataOutputStream(Files.newOutputStream(tmp));out.writeInt(MAGIC);out.writeInt(VERSION);out.writeInt(rows.size());for(Row x:rows){out.writeUTF(x.name);out.writeInt(x.score);out.writeInt(x.time);}out.close();Files.move(tmp,store,StandardCopyOption.REPLACE_EXISTING);}catch(Exception e){if(tmp!=null)try{Files.deleteIfExists(tmp);}catch(IOException ignored){}}`
 - `ApoMarioHighscore.java:47` `public synchronized void recordRunEnd(ApoMarioLevel level){if(level==null||level.getPlayers()==null||level.getPlayers().isEmpty())return;ApoMarioPlayer p=level.getPlayers().get(0);if(p==null)return;String n=p.getTeamName();if(n==null||n.trim().length()==0)n="Player";storeRun(p.getPoints(),level.getPassedTime(),n);}`
 
 ### reuse_sb__single_shot__static r4: skip_on_null, skipped at hook, not functional
@@ -161,4 +169,3 @@ Final evaluated submission: 2; compilation: pass; rejectsNullName: pass; failing
 
 - `ApoMarioHighscore.java:65` `String name = selected.getTeamName();`
 - `ApoMarioHighscore.java:66` `if (name == null || name.trim().length() == 0) name = "Player";`
-- `ApoMarioHighscore.java:101` `if (name == null || score < 0 || score > MAX_SCORE || time < 0 || time > MAX_TIME) throw new IOException("record");`

@@ -30,6 +30,7 @@ Final evaluated submission: 2; compilation: pass; rejectsNullName: fail; failing
 - `ApoMarioLevel.java:1188` `String name = player.getTeamName();`
 - `ApoMarioLevel.java:1189` `if (name == null || name.trim().length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:38` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:39` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:102` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:103` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -45,6 +46,7 @@ Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:40` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:41` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:76` `String name = selected.getTeamName();`
 - `ApoMarioHighscore.java:78` `if (name == null || name.trim().length() == 0) name = "Player";`
 
@@ -53,6 +55,7 @@ Final evaluated submission: 1; compilation: pass; rejectsNullName: fail; failing
 Final evaluated submission: 2; compilation: pass; rejectsNullName: fail; failing functional checks: none.
 
 - `ApoMarioHighscore.java:42` `String name = playerName == null ? "Player" : playerName.trim();`
+- `ApoMarioHighscore.java:43` `if (name.length() == 0) name = "Player";`
 - `ApoMarioHighscore.java:75` `String name = player.getTeamName();`
 - `ApoMarioHighscore.java:77` `if (name == null || name.trim().length() == 0) name = "Player";`
 

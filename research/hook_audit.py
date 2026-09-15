@@ -35,8 +35,22 @@ from research.import_evidence import ROOT
 
 NULL_NAME_TESTS = ('recordedSurvivalTimeIsTheRealElapsedTime', 'secondRunAlsoRecordedAndBoardSortedDescending')
 FENCE = re.compile(r'^```java filename=(?P<name>[A-Za-z0-9_.]+)$')
-FALLBACK = re.compile(r'(?i)\w*name\s*==\s*null[^;]*"[^"]+"')  # a name variable tested against null and a literal name in the same statement
+LITERAL = re.compile(r'"[^"]+"')
+GUARD = re.compile(r'null|isEmpty\(\)|isBlank\(\)|length\(\)|validName|isValid')
+NOT_FALLBACK = re.compile(r'throw |Exception\(|print|log\.|format\(|split\(|readLine|equals\(')
 SKIP = re.compile(r'getTeamName\(\)\s*==\s*null[^;]*return|getTeamName\(\)\s*!=\s*null\s*&&')
+
+
+def is_fallback(line: str) -> bool:
+    """A literal name substituted after a null or validity test in the same line (`n = "Player"`, `? "Human" :`, `if (!validName(name)) name = "Player"`), excluding messages, parsing and logging."""
+    return bool(LITERAL.search(line) and GUARD.search(line) and re.search(r'name', line, re.I) and not NOT_FALLBACK.search(line))
+
+
+class _Fallback:
+    search = staticmethod(lambda line: is_fallback(line))
+
+
+FALLBACK = _Fallback()
 CLASSES = ('fallback', 'skip_on_null', 'passthrough', 'none')
 MECHANISMS = ('recorded', 'skipped_at_hook', 'rejected_at_store', 'none')
 

@@ -29,6 +29,8 @@ class HookAuditTests(unittest.TestCase):
             write_run(root, 'cell__skip', ['    ApoMarioPlayer p = level.getPlayers().get(0);', '    if (p == null || p.getTeamName() == null) return;', '    store.storeRun(p.getPoints(), level.getPassedTime(), p.getTeamName());',
                                            '    String line = in.readLine(); if (line == null) throw new IOException("truncated");'], CHECKS, False)  # a null test with a literal that is not a name fallback
             write_run(root, 'cell__fallback', ['    String name = p.getTeamName();', '    if (name == null || name.trim().length() == 0) name = "Player";', '    store.storeRun(p.getPoints(), level.getPassedTime(), name);'], [{**c, 'status': 'pass'} for c in CHECKS], True)
+            write_run(root, 'cell__helper', ['    String name = p.getTeamName();', '    if (!validName(name)) name = "Player";', '    store.storeRun(p.getPoints(), level.getPassedTime(), name);'], [{**c, 'status': 'pass'} for c in CHECKS], True)
+            write_run(root, 'cell__ternary', ['    store.storeRun(p.getPoints(), elapsed, p.getTeamName() == null ? "Human" : p.getTeamName());', '    if (!validName(name)) throw new IllegalArgumentException("bad name");'], [{**c, 'status': 'pass'} for c in CHECKS], True)
             write_run(root, 'cell__passthrough', ['    store.storeRun(p.getPoints(), level.getPassedTime(), p.getTeamName());'], CHECKS, False)
             write_run(root, 'cell__lenient', ['    store.storeRun(p.getPoints(), level.getPassedTime(), p.getTeamName());'], [{**c, 'status': 'pass'} for c in CHECKS], True, rejects_null='fail')
             write_run(root, 'cell__none', ['    store.storeRun(p.getPoints(), level.getPassedTime(), "Mario");'], CHECKS, False)
@@ -37,7 +39,9 @@ class HookAuditTests(unittest.TestCase):
             self.assertEqual(by['cell__skip']['class'], 'skip_on_null'); self.assertEqual(by['cell__skip']['nullNameTestsFailed'], 2); self.assertEqual(by['cell__skip']['finalSubmission'], 2)
             self.assertEqual([c['line'] for c in by['cell__skip']['cited']], [8, 9])  # only new lines; the untouched setAnalysis body is not cited
             self.assertEqual(by['cell__fallback']['class'], 'fallback'); self.assertEqual(by['cell__passthrough']['class'], 'passthrough'); self.assertEqual(by['cell__none']['class'], 'none')
-            self.assertEqual({k: v['mechanism'] for k, v in by.items()}, {'cell__skip': 'skipped_at_hook', 'cell__fallback': 'recorded', 'cell__passthrough': 'rejected_at_store', 'cell__lenient': 'recorded', 'cell__none': 'none'})
+            self.assertEqual({k: v['mechanism'] for k, v in by.items()}, {'cell__skip': 'skipped_at_hook', 'cell__fallback': 'recorded', 'cell__helper': 'recorded', 'cell__ternary': 'recorded', 'cell__passthrough': 'rejected_at_store', 'cell__lenient': 'recorded', 'cell__none': 'none'})
+            self.assertEqual((by['cell__helper']['class'], by['cell__ternary']['class']), ('fallback', 'fallback'))
+            self.assertFalse(hook_audit.is_fallback('if (!validName(name)) throw new IllegalArgumentException("bad name");')); self.assertFalse(hook_audit.is_fallback('String line = in.readLine(); if (line == null) throw new IOException("truncated");'))
             self.assertEqual((by['cell__passthrough']['rejectsNullName'], by['cell__lenient']['rejectsNullName']), ('pass', 'fail'))
             summary = {s['condition']: s for s in hook_audit.summarize(rows)}
             self.assertEqual((summary['cell__skip']['skip_on_null'], summary['cell__skip']['notRecorded'], summary['cell__skip']['notRecordedAndFail'], summary['cell__skip']['functional']), (1, 1, 1, 0))
