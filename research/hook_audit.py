@@ -45,12 +45,6 @@ def is_fallback(line: str) -> bool:
     """A literal name substituted after a null or validity test in the same line (`n = "Player"`, `? "Human" :`, `if (!validName(name)) name = "Player"`), excluding messages, parsing and logging."""
     return bool(LITERAL.search(line) and GUARD.search(line) and re.search(r'name', line, re.I) and not NOT_FALLBACK.search(line))
 
-
-class _Fallback:
-    search = staticmethod(lambda line: is_fallback(line))
-
-
-FALLBACK = _Fallback()
 CLASSES = ('fallback', 'skip_on_null', 'passthrough', 'none')
 MECHANISMS = ('recorded', 'skipped_at_hook', 'rejected_at_store', 'none')
 
@@ -75,7 +69,7 @@ def new_lines(files: dict[str, list[str]], originals: dict[str, str]) -> list[tu
 
 def classify(cited: list[tuple[str, int, str]]) -> str:
     if not cited: return 'none'
-    if any(FALLBACK.search(l) for _, _, l in cited): return 'fallback'
+    if any(is_fallback(l) for _, _, l in cited): return 'fallback'
     if any(SKIP.search(l) for _, _, l in cited): return 'skip_on_null'
     return 'passthrough'
 
@@ -108,7 +102,7 @@ def audit_run(run_dir: Path, originals: dict[str, str]) -> dict:
     row['nullNameTestsFailed'] = sum(1 for name in NULL_NAME_TESTS if name in row['failingChecks'])
     complete = run_dir / f"submission-{final['number']}" / 'complete-files.txt'
     if complete.exists():
-        cited = [(n, i, l) for n, i, l in new_lines(parse_complete_files(complete.read_text()), originals) if 'getTeamName' in l or FALLBACK.search(l) and re.search(r'name', l, re.I)]
+        cited = [(n, i, l) for n, i, l in new_lines(parse_complete_files(complete.read_text()), originals) if 'getTeamName' in l or is_fallback(l)]
         row['cited'] = [{'file': n, 'line': i, 'text': l.strip()} for n, i, l in cited]
         row['class'] = classify(cited)
     row['rejectsNullName'] = store_rejects_null(run_dir, record)
