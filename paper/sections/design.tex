@@ -1,25 +1,127 @@
 \section{Study Design}
 \label{sec:method}
 
-\paragraph{Task and checks.}
+\subsection{Task}
 The task is a Highscore feature for the game ApoMario: record a finished
 run's score, player name and survival time, keep the records in a file
 across sessions, and show them sorted in a menu panel. In the
 \emph{Generation} variant the model sees only ApoMario; in the \emph{Reuse}
 variant it also sees the sibling game ApoIcarus, which has a Highscore
-feature, and is asked to reuse it. The threat model is a desktop game: the
-untrusted inputs are local files the user can edit, level content from a
-shared server, and in-game values a player can tamper with to cheat. The
-ten security checks (Table~\ref{tab:mapping}) ask: does the store reject a
-negative score, a negative time, a missing name, a blank name and an
-over-long name (five checks); does it keep at most one hundred records;
-does a corrupted store file crash the game; does a single huge line, or a
-store of one million records, exhaust memory (two checks); and does the
-code deserialize Java objects, a mechanism through which a crafted file can
-reach code paths it should not. Each check probes a weakness type, not an
-exploit. The feature contract fixes rejection as the policy for invalid
-input so that all arms are measured against one rule; normalising invalid
-input is a legitimate design elsewhere, and CWE-20 allows both.
+feature, and is asked to reuse it. Task text, target and donor games and
+the functional test suites are those of the prior study. The threat model
+is a desktop game: the untrusted inputs are local files the user can edit,
+level content from a shared server, and in-game values a player can tamper
+with to cheat.
+
+\subsection{Harness}
+The model receives the task, the base-context files of its cell and, in a
+context arm, the security context appended after the task. It answers with
+new classes and exact edits to three existing files, delivered through a
+tool call. We call one such conversation a \emph{trajectory} and its final
+code the \emph{artifact}. Three delivery modes are used.
+
+\paragraph{One-shot.}
+One response, no feedback: the protocol of the prior study (rounds I22 to
+I25). Delivery is \emph{strict} by default: a returned file that names an
+existing file is rejected as a delivery error, an edit anchor must occur
+exactly once, and the three target files must differ from the originals.
+Because a rejected response never reaches the compiler and the prior
+study's pipeline writes every returned file before compiling, the one-shot
+baseline is also collected under \emph{lenient} delivery, in which a
+returned file that names an existing file replaces it whole; edit anchors
+stay exact. Which mode a round used is declared in its plan.
+
+\paragraph{Submit with feedback.}
+The mode of rounds I03 to I21b: after each submission the model receives
+the compiler's diagnostics and the outcome of the sixteen functional tests,
+and may submit up to five times in total. No repository tools. An artifact
+is \emph{functional} when it passes all sixteen tests within the budget;
+the first-submission count is reported alongside because it is the
+one-shot-comparable number.
+
+\paragraph{Agentic.}
+The model may search and read the repository through the same tool before
+submitting, under a budget of tool turns. A \emph{sidecar} can act on the
+trajectory: inject the statements relevant to the code just read or edited
+(adaptive), or judge a submission that edits an enforcement point and
+reject it, attach advice, or rewind the conversation (gate variants,
+Section~\ref{sec:results}).
+
+\paragraph{Guard sidecar (judge).}
+The sidecar used for the agentic rounds of the next series runs
+\emph{before every tool call}, not only on submissions. The judge, the same
+model in a separate conversation, receives the task, the security context,
+a compact trace of the trajectory so far, the pending action with its
+arguments and the model's visible message text for that turn (the provider
+does not return hidden reasoning; when no text is available the record says
+so). It may itself read and search the repository for a bounded number of
+turns, then must answer with a verdict: intervene or not, with the
+statements it cites and advice. On intervention the pending call is not
+executed; the generator receives the advice and the cited statements as
+the tool result, marked as coming from the guard, and continues. A cap on
+interventions per trajectory and a shadow mode that records verdicts
+without acting allow the judge to be calibrated before it is let act.
+Every judge request and response is recorded with the trajectory.
+
+The same model (Luna) serves as acquisition agent, generator and judge; its
+served identity is recorded per response, sampling settings are requested
+per round (reasoning effort medium for rounds up to I22, high from I23 on)
+and are not attested by the provider. Every round is declared and frozen
+before its first model call, has its own fresh control arm collected at
+the same time, and is completed regardless of direction. Time and tokens
+(input, output, reasoning) are recorded for every model call and every
+acquisition and reported per arm.
+
+\subsection{Context}
+Base context is what the prior study varied: structural (S), functional
+(F) and behavioural (B) descriptions of the target game, alone or combined,
+or none. A \emph{cell} is a task variant with one such combination. Round
+I23 reran all sixteen cells with our generator under the one-shot protocol
+(Table~\ref{tab:matrix}); the cells with the most functional artifacts on
+one response, Generation None, S and S+F+B and Reuse F and S+F+B, are the
+cells of the one-shot security rounds. The earlier rounds used Generation
+S, Generation S+F+B, Reuse B and Reuse S+B.
+
+\subsection{Security Context}
+\paragraph{Generation.}
+Security context is produced without a person who knows the code. The
+acquisition agent receives a one-line task sentence (the feature and the
+target), the vocabulary of Section~\ref{sec:related} as an output schema
+with CWE, CAPEC and ASVS identifiers, and, depending on the strategy, a
+read-only snapshot of the repository (for Reuse, of both games). It
+receives no test, no threshold, no earlier context and no generated code.
+It inspects what it is given with shell tools~\citep{yang2024} under a
+recorded command budget and writes one typed document. Every statement
+that cites code is checked: the harness resolves each citation against the
+parsed code and drops statements whose citations do not resolve, which
+validates that the cited code exists, not that the statement is right.
+Statements carry a one-line \emph{failure behaviour}, what the code should
+do when input is invalid; the agent's instructions were revised twice
+about it (versions 9 and 10, Section~\ref{sec:results}). The document is
+rendered as text and appended once after the unchanged task, either in
+full (assets, trust boundaries, then every statement) or as a
+\emph{compact insert} of requirement and control statements only.
+
+\paragraph{Cases.}
+Three strategies are paired with the base contexts in the one-shot rounds:
+\begin{enumerate}\setlength\itemsep{0pt}
+\item \emph{High-level guidance} (S1): the agent reads the repository but
+  writes general rules for this kind of feature in this kind of program,
+  naming operations by their role and citing no code.
+\item \emph{Full document} (S2): the data-flow angle (trace untrusted data
+  from where it enters to where it is stored, enumerate STRIDE threats,
+  place requirement and control where the data first arrives), rendered in
+  full with every statement anchored to code.
+\item \emph{Generic} (S3): no repository at all; context written from the
+  language, the kind of program and the task sentence.
+\end{enumerate}
+The earlier rounds also used researcher-written inserts (operations,
+requirements, trust boundaries), a one-sentence generic instruction, the
+flat CWE Top~25 list~\citep{cwetop25}, two further agent angles
+(requirements, catalogue) and the compact renderings. In the agentic
+rounds the same three strategies are injected statically, plus a fourth,
+S2 with its verification hints and an instruction to verify, and each is
+run again with the guard sidecar.
 
 \begin{table}[t]
 \centering
@@ -40,83 +142,39 @@ Deserialization dispatch & CWE-502 & Integrity & CERT SER; ASVS \\
 \end{tabular}}
 \end{table}
 
-\paragraph{One trajectory.}
-The model receives the task, the relevant source files and, in a context
-arm, the security context appended after the task. It answers with new
-classes and exact edits to three existing files, delivered through a tool
-call. It then receives the compiler's diagnostics and the outcome of
-sixteen functional tests, and may submit up to five times in total. We call
-the whole conversation a \emph{trajectory} and its final code the
-\emph{artifact}. An artifact is \emph{functional} when it passes all
-sixteen functional tests within those five submissions; this one criterion
-replaces earlier separate compile and test counts.
-The model never sees a security test result. In one round and in the
-sidecar pilots the model may also search and read the repository before
-submitting; we call that \emph{agentic} delivery, and delivery without
-repository tools \emph{single-shot}. Single-shot here still allows
-resubmission with feedback, unlike the one-response protocol of the prior
-study; the first-submission count is the comparable number, and round I22
-repeats the final design under a one-response budget. The same model (Luna) serves as
-acquisition agent and as generator; its served identity is recorded per
-response, and sampling settings are requested but not attested by the
-provider.
-
-\paragraph{Security evaluation.}
+\subsection{Security Evaluation}
 Every final artifact runs the ten security checks of
 Table~\ref{tab:mapping} in an isolated Java virtual machine with a 64~MiB
-heap and a 15~s limit per check; a persistence round trip is run as well
-and reported separately, not counted among the ten. A check passes,
-fails, or is \emph{unresolved}: the artifact did not compile (then all ten
-are unresolved), the check could not run, or its precondition was not met
-(the one-million-record check needs a file format the test generator can
-write). A safe and a deliberately weak reference implementation must
-produce the expected outcomes before every run, so a check that could never
-fail would be caught.
+heap and a 15~s limit per check, plus a persistence round trip reported
+separately. The checks: the store rejects a negative score, a negative
+survival time, a missing name, a blank name and an over-long name (five
+input-policy checks; a record must be refused, normalising it counts as
+a failure because the contract fixes rejection as the policy); at most one
+hundred records are retained after more are stored; a corrupted store file
+does not crash the game; a single line of 64~MiB and a store of one million
+records do not exhaust memory (two resource checks); and no Java object
+deserialization is used for the store. A check passes, fails, or is
+\emph{unresolved}: the artifact was rejected at delivery or did not
+compile (then all ten are unresolved), the check could not run, or its
+precondition was unmet (the million-record check needs a file format the
+generator can write). A safe and a deliberately weak reference
+implementation must produce the expected outcomes before every run.
+Beyond the checks, every final artifact's run-end method is audited for
+how it treats a player without a name (Section~\ref{sec:results}), and
+every reviewer classification cites the lines it rests on.
 
-\paragraph{Arms, cells and controls.}
-An \emph{arm} is one security-context condition within one cell. A
-\emph{cell} is one task variant, Generation or Reuse, together with the
-base files the model gets about the game: structural (S), functional (F)
-or behavioural (B) descriptions of it. Every round contains a fresh
-\emph{control} arm without security context, collected at the same time
-with the same model and settings, and every comparison is against that
-control, never against an older round. Each round is declared before its
-first model call and completed regardless of direction; failed or
-degenerate acquisitions are kept and used, never regenerated.
-
-\paragraph{Reporting.}
-We report counts, not percentages. For an arm with $N$ trajectories we give
-the number of functional artifacts out of $N$ and, for the ten security
-checks, the number failed, unresolved and passed out of $10N$. When we
-write that an insert removes between 4.6 and 5.8 failed checks per artifact
-(round I20, Generation), that range is the smallest and the largest
-difference to the control obtainable by resolving each arm's unresolved
-checks as passes or as failures; it is an identification bound, not a
-confidence interval. With three to five artifacts per arm we make no
-significance claims; our replication is a further round with its own
-control that shows the same direction. Per-check outcomes for every arm,
-spreadsheets with every trajectory and check, and the artifact reviews are
-in the study repository.
-
-\paragraph{The acquisition agent.}
-The first rounds used context written by a researcher who knew the code,
-which requires manual repository analysis. From round I10 on, an agent
-writes the context. It receives a read-only snapshot of the repository (for
-Reuse, of both games), the same one-line feature description the generator
-gets, and the vocabulary of Section~\ref{sec:setting} as an output schema
-with CWE, CAPEC and ASVS identifiers. It receives no test, no threshold, no
-earlier context and no generated code; its instructions were revised twice
-between rounds after we examined failures, and Step 6 says how. It inspects the code with shell tools~\citep{yang2024} under a
-recorded budget of at most 60 commands and writes one document along one
-of three angles: follow the data from where it enters to where it is
-stored (data flow), constrain every operation of the feature
-(requirements), or decide for each entry of the CWE Top~25
-list~\citep{cwetop25} whether it applies (catalogue). Every statement cites
-a symbol of the parsed code or a range of lines; the harness checks that
-each citation exists and drops any statement whose citation does not
-resolve, which validates that the cited code exists, not that the statement
-about it is right. The document is rendered as text after the unchanged
-task, either in full or as a \emph{compact insert} that keeps only the
-requirement and control statements. Each of those statements carries a
-one-line \emph{failure behaviour}: what the code should do when the input
-is invalid.
+\subsection{Functional Evaluation}
+Sixteen functional tests from the prior study score each submission:
+seven unit tests of the store, four integration tests that call the
+feature from real game objects, and five autonomous tests that end a run
+in the live game and inspect the board. We report, per arm with $N$
+trajectories: delivered (the response was accepted by the delivery
+protocol), compiled, functional (all sixteen tests pass) on the first
+submission and within the budget, and for the security checks the number
+failed, unresolved and passed out of $10N$. All numbers are counts over
+fixed denominators; no percentages are printed below twenty trajectories.
+A difference to the control is given as an identification bound: the
+smallest and the largest difference obtainable by resolving each arm's
+unresolved checks as passes or as failures; no confidence intervals and no
+significance claims. Per-check outcomes for every arm, spreadsheets with
+every trajectory, and the artifact reviews are in the study repository.
