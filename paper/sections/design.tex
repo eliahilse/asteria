@@ -27,7 +27,7 @@ input is a legitimate design elsewhere, and CWE-20 allows both.
 \setlength{\tabcolsep}{4pt}
 \caption{The ten security checks by category, with the weakness type each probes (CWE), the property at stake, and where the requirement comes from (the feature contract, the OWASP Application Security Verification Standard, or the CERT Oracle Secure Coding Standard for Java, whose rule families are named by their prefixes).}
 \label{tab:mapping}
-\begin{tabular}{@{}llll@{}}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}llll@{}}
 \toprule
 Category & Weakness type & Property & Requirement source \\
 \midrule
@@ -37,7 +37,7 @@ Parser robustness & CWE-755, CWE-20 & Availability & CERT ERR \\
 Resource stress & CWE-400, CWE-770, CWE-789 & Availability & CERT MSC, FIO \\
 Deserialization dispatch & CWE-502 & Integrity & CERT SER; ASVS \\
 \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 \paragraph{One trajectory.}
