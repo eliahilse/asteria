@@ -61,7 +61,15 @@ executed; the generator receives the advice and the cited statements as
 the tool result, marked as coming from the guard, and continues. A cap on
 interventions per trajectory and a shadow mode that records verdicts
 without acting allow the judge to be calibrated before it is let act.
-Every judge request and response is recorded with the trajectory.
+After its first round the judge is consulted on submissions only, and a
+verdict acts only if it cites at most two requirement or control
+statements, quotes at least one submitted line verbatim, and names a
+statement the guard has not already cancelled for in that trajectory. An
+\emph{advisory} variant never cancels: the submission executes, a positive
+verdict rides on its compiler and test feedback, and a functional
+submission with a positive verdict continues the trajectory instead of
+ending it. Every judge request and response is recorded with the
+trajectory.
 
 \paragraph{AST autocontext.}
 A second sidecar for the agentic rounds helps with the code rather than
