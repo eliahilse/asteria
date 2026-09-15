@@ -244,6 +244,10 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i31-v13 | reuse_sb__agentic__none | 5 | 33 | 4,806,819 | 0 | 49,706 | 21,147 | 9.5 | 10.3 |
 | i31-v13 | reuse_sb__agentic__static-guard | 5 | 95 | 8,068,773 | 0 | 100,804 | 35,462 | 14.0 | 20.5 |
 | i31-v13 | reuse_sb__agentic__static | 5 | 44 | 6,954,371 | 0 | 75,895 | 22,891 | 12.5 | 13.4 |
+| i32b-s2 | generation_s__single_shot__none | 5 | 5 | 389,535 | 0 | 71,801 | 16,679 | 8.1 | 9.0 |
+| i32b-s2 | generation_s__single_shot__static | 5 | 5 | 419,650 | 0 | 43,028 | 17,871 | 6.0 | 7.4 |
+| i32b-s2 | reuse_sb__single_shot__none | 5 | 5 | 627,850 | 0 | 100,170 | 17,657 | 10.7 | 11.3 |
+| i32b-s2 | reuse_sb__single_shot__static | 5 | 5 | 659,150 | 0 | 43,852 | 20,097 | 6.4 | 7.7 |
 
 ## Acquisitions (context agent)
 
@@ -273,3 +277,7 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | agent-9ac24a9788654c35b906e5c160b7f5bf | v12 | dataflow | Reuse | 22 | 3.4 | 528,495 | 438,528 | 9,499 | 1,341 | 17 |
 | agent-e17388c0f392492097a30057adc9d571 | v13 | dataflow | Generation | 54 | 3.7 | 471,836 | 373,760 | 10,766 | 787 | 18 |
 | agent-bb48045468d14b118c8c967ea3d9d3d8 | v13 | dataflow | Reuse | 34 | 4.2 | 1,041,748 | 934,656 | 12,099 | 2,580 | 17 |
+| agent-afab1ce1bbd147128e3cf0cf3d200942 | v13 | generic | Generation | 0 | 1.0 | 15,390 | 0 | 2,980 | 516 | 14 |
+| agent-8fbcde8f37434d5599817e4dd7cf3e53 | v13 | generic | Reuse | 0 | 0.7 | 15,429 | 0 | 1,989 | 254 | 10 |
+| agent-43a90b15b26b4be59c09192a2ce42443 | v13 | highlevel | Generation | 14 | 1.8 | 304,058 | 233,728 | 4,702 | 746 | 16 |
+| agent-a467c89d79d34295b2fb266e70f99e8c | v13 | highlevel | Reuse | 34 | 2.0 | 326,901 | 255,232 | 5,928 | 1,029 | 16 |

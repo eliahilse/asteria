@@ -1,0 +1,21 @@
+runId,condition,repetition,status,functionalSuccess,finalSubmission,compilation,class,rejectsNullName,mechanism,nullNameTestsFailed,failingChecks,citedLines
+i32b-s2__generation_s__single_shot__none__r1,generation_s__single_shot__none,1,completed,True,1,pass,fallback,fail,recorded,0,,"ApoMarioHighscore.java:51: String name = playerName == null ? ""Anonymous"" : playerName.trim(); | ApoMarioHighscore.java:127: String name = player.getTeamName(); | ApoMarioHighscore.java:129: name = player.getAi().getTeamName();"
+i32b-s2__generation_s__single_shot__none__r2,generation_s__single_shot__none,2,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__generation_s__single_shot__none__r3,generation_s__single_shot__none,3,completed,True,1,pass,passthrough,fail,recorded,0,,ApoMarioHighscore.java:143: String name = player.getTeamName(); | ApoMarioHighscore.java:146: name = player.getAi().getTeamName();
+i32b-s2__generation_s__single_shot__none__r4,generation_s__single_shot__none,4,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__generation_s__single_shot__none__r5,generation_s__single_shot__none,5,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__generation_s__single_shot__static__r1,generation_s__single_shot__static,1,completed,True,1,pass,passthrough,pass,rejected_at_store,0,,ApoMarioHighscore.java:160: String name = validName(best.getTeamName());
+i32b-s2__generation_s__single_shot__static__r2,generation_s__single_shot__static,2,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__generation_s__single_shot__static__r3,generation_s__single_shot__static,3,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__generation_s__single_shot__static__r4,generation_s__single_shot__static,4,completed,True,1,pass,passthrough,pass,rejected_at_store,0,,ApoMarioHighscore.java:141: String name = player == null ? null : player.getTeamName(); | ApoMarioHighscore.java:143: name = player.getAi().getTeamName();
+i32b-s2__generation_s__single_shot__static__r5,generation_s__single_shot__static,5,completed,True,1,pass,passthrough,pass,rejected_at_store,0,,ApoMarioHighscore.java:163: name = selected.getTeamName();
+i32b-s2__reuse_sb__single_shot__none__r1,reuse_sb__single_shot__none,1,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__none__r2,reuse_sb__single_shot__none,2,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__none__r3,reuse_sb__single_shot__none,3,completed,True,1,pass,passthrough,fail,recorded,0,,"ApoMarioHighscore.java:214: this.storeRun(best.getPoints(), level.getPassedTime(), best.getTeamName());"
+i32b-s2__reuse_sb__single_shot__none__r4,reuse_sb__single_shot__none,4,completed,True,1,pass,passthrough,fail,recorded,0,,ApoMarioHighscore.java:182: String name = player.getTeamName();
+i32b-s2__reuse_sb__single_shot__none__r5,reuse_sb__single_shot__none,5,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__static__r1,reuse_sb__single_shot__static,1,completed,True,1,pass,passthrough,pass,rejected_at_store,0,,ApoMarioHighscore.java:107: String name = selected.getTeamName();
+i32b-s2__reuse_sb__single_shot__static__r2,reuse_sb__single_shot__static,2,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__static__r3,reuse_sb__single_shot__static,3,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__static__r4,reuse_sb__single_shot__static,4,budget_exhausted,False,,,none,,none,0,,
+i32b-s2__reuse_sb__single_shot__static__r5,reuse_sb__single_shot__static,5,completed,True,1,pass,passthrough,pass,rejected_at_store,0,,ApoMarioHighscore.java:132: name = selected.getTeamName();
