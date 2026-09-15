@@ -63,6 +63,19 @@ interventions per trajectory and a shadow mode that records verdicts
 without acting allow the judge to be calibrated before it is let act.
 Every judge request and response is recorded with the trajectory.
 
+\paragraph{AST autocontext.}
+A second sidecar for the agentic rounds helps with the code rather than
+with security. The repository snapshot is parsed once into a code graph:
+every class, constructor and method with its file and line range, and the
+resolved call edges between them. After each read the sidecar appends to
+the tool result, for every method the read lines overlap that was not
+shown before, its callers and callees with the path and line range the
+generator can read next, bounded to six symbols and four thousand
+characters per injection. It contains no security statement and makes no
+model call. An arm may combine the static insert, this sidecar and the
+guard (for example all three), so the security effect of the judge and the
+functional effect of the graph can be separated.
+
 The same model (Luna) serves as acquisition agent, generator and judge; its
 served identity is recorded per response, sampling settings are requested
 per round (reasoning effort medium for rounds up to I22, high from I23 on)
@@ -124,7 +137,8 @@ flat CWE Top~25 list~\citep{cwetop25}, two further agent angles
 (requirements, catalogue) and the compact renderings. In the agentic
 rounds the same three strategies are injected statically, plus a fourth,
 S2 with its verification hints and an instruction to verify, and each is
-run again with the guard sidecar.
+run again with the guard sidecar and with the code graph; the first
+agentic round (I26) calibrates the guard and the graph on S2 alone.
 
 \begin{table}[t]
 \centering
