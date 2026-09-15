@@ -37,8 +37,9 @@ def is_full_hit(run: dict) -> bool:
 def compiling_turn(record: dict) -> int | None:
     """Tool turn of the first submission whose compilation succeeded, from a trajectory record; None when none compiled."""
     for submission in record.get('submissions') or []:
-        feedback = submission.get('feedback') or {}; compilation = feedback.get('compilation')
-        ok = compilation.get('success') if isinstance(compilation, dict) else bool(compilation)
+        compilation = submission.get('compilation')
+        if compilation is None: compilation = (submission.get('feedback') or {}).get('compilation')
+        ok = compilation.get('success') if isinstance(compilation, dict) else (compilation == 'pass' if isinstance(compilation, str) else bool(compilation))
         if ok: return submission.get('turn') or submission.get('number')
     return None
 

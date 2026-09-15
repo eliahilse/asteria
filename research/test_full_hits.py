@@ -24,7 +24,7 @@ class FullHitTests(unittest.TestCase):
             runs = [run('a', 'ix__a__r1', True, ['pass'] * 11), run('a', 'ix__a__r2', True, ['pass'] * 5 + ['fail'] + ['pass'] * 5), run('b', 'ix__b__r1', False, ['unresolved'] * 11, compiled=False)]
             (root / 'research/iterations/ix/results.json').write_text(json.dumps({'studies': [{'plan': {'id': 'ix', 'conditions': [{'id': 'a'}, {'id': 'b'}]}, 'runs': runs, 'summary': {}}]}))
             record = {'runId': 'ix__a__r1', 'toolTurns': 4, 'turns': [{'action': 'read'}, {'action': 'search'}, {'action': 'submit_feature_changes'}, {'action': 'submit_feature_changes'}],
-                      'submissions': [{'turn': 3, 'feedback': {'compilation': {'success': False}}}, {'turn': 4, 'feedback': {'compilation': {'success': True}}}],
+                      'submissions': [{'turn': 3, 'compilation': None, 'feedback': {'compilation': None}}, {'turn': 4, 'compilation': 'pass'}],
                       'sidecarEvents': [{'stage': 'after_read', 'injected': True}, {'stage': 'guard', 'consulted': True, 'wouldIntervene': True, 'intervene': True}, {'stage': 'guard', 'consulted': True, 'wouldIntervene': False, 'intervene': False}]}
             (root / '.local/iterations/ix/runs/ix__a__r1/record.json').write_text(json.dumps(record))
             rows = full_hits.arm_rows('ix', root)

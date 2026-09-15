@@ -279,27 +279,31 @@ S1 high-level (I24a) & control & 15 & 10 & 101 / 113 / 36 \\
 S1 high-level (I24a) & insert & 11 & 10 & 3 / 150 / 97 \\
 S2 full document (I24b) & control & 12 & 9 & 77 / 140 / 33 \\
 S2 full document (I24b) & insert & 15 & 12 & 17 / 111 / 122 \\
+S3 generic (I24c) & control & 14 & 13 & 94 / 122 / 34 \\
+S3 generic (I24c) & insert & 14 & 11 & 10 / 121 / 119 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Step 8: three strategies under one response.}
-Rounds I24a and I24b run the high-level (S1) and full-document (S2)
-strategies of Section~\ref{sec:method} in the five cells chosen after
-Step~0, one response each, against fresh controls (Table~\ref{tab:strategies};
-the generic strategy S3 of round I24c is added when its collection
-completes). Both keep the security effect of the feedback rounds: S1
-artifacts fail 3 checks in 250 against 101 for their controls and pass the
-five input-policy checks in all 55 resolved outcomes (controls fail all
-75); S2 artifacts fail 17 against 77 and pass the input-policy checks in 73
-of 75 (controls 4 of 60). What differs is the price under one response.
-S1 delivered and compiled 11 of 25 against 15 for its controls, as in I22;
-S2 compiled 15 against 12, with no delivery cost. Twelve of the 17 S2
-failures are the retention bound: S2 asks for ``a fixed maximum'' of records
-without naming a number, and the artifacts keep more than one hundred or
-reject a valid record when full. No one-response artifact of either round
-is a full hit (all sixteen tests and all eleven checks), because the
-million-record check stays unresolved for want of a writable file format.
+Rounds I24a to I24c run the three strategies of Section~\ref{sec:method}
+in the five cells chosen after Step~0, one response each, against fresh
+controls (Table~\ref{tab:strategies}). All three keep the security effect
+of the feedback rounds: in every cell where both arms have at least two
+compiled artifacts (15 of 15 such cells) the insert arm fails fewer checks
+than its control, and the five input-policy checks go from 199 failures in
+205 resolved control outcomes to 9 in 200 (S1 0 of 55, S2 2 of 75, S3 7 of
+70). The expected size ordering S2 $>$ S1 $>$ S3 does not hold: on failed
+checks of 250 the inserts order S1 3, S3 10, S2 17, and twelve of the S2
+failures are the retention bound, because S2 asks for ``a fixed maximum''
+of records without naming one and the artifacts keep more than one hundred
+or reject a valid record when full. The document written without any
+repository is not the weakest. Delivery under one response is not
+consistently lower with an insert: S1 compiled 11 of 25 against 15 for its
+controls, as in I22, but S2 15 against 12 and S3 16 against 14. No
+one-response artifact is a full hit (all sixteen tests and all eleven
+checks), because the million-record check stays unresolved for want of a
+writable file format.
 
 \paragraph{Step 7: one response, no feedback.}
 The prior study allowed one model response per prompt. Round I22 repeats the
