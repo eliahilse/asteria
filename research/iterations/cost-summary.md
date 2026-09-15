@@ -252,8 +252,8 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i32b-s2 | reuse_sb__single_shot__static | 5 | 5 | 659,150 | 0 | 43,852 | 20,097 | 6.4 | 7.7 |
 | i32c-s3 | generation_s__single_shot__static | 5 | 5 | 398,150 | 0 | 48,887 | 17,714 | 6.4 | 7.0 |
 | i32c-s3 | reuse_sb__single_shot__static | 5 | 5 | 633,925 | 0 | 42,554 | 18,553 | 6.2 | 8.2 |
-| i33a-s1 | generation_s__agentic__static | 1 | 9 | 848,123 | 0 | 13,733 | 5,217 | 2.6 | 3.0 |
-| i33a-s1 | reuse_sb__agentic__static | 2 | 14 | 2,072,061 | 0 | 24,283 | 9,818 | 4.6 | 5.3 |
+| i33a-s1 | generation_s__agentic__static | 5 | 43 | 4,232,770 | 0 | 54,071 | 21,257 | 11.0 | 13.1 |
+| i33a-s1 | reuse_sb__agentic__static | 5 | 37 | 5,561,817 | 0 | 67,184 | 24,418 | 12.1 | 13.8 |
 
 ## Acquisitions (context agent)
 
