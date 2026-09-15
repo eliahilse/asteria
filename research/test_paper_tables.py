@@ -84,5 +84,20 @@ class PaperTableTests(unittest.TestCase):
         self.assertIn(f'kept {kept} of the {produced} statements produced and verified {matched} of the {total} code locations', text)
 
 
+class MatrixTableTests(unittest.TestCase):
+    def test_matrix_table_matches_prior_data_and_i23(self):
+        from research.matrix_comparison import rows as comparison_rows
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        header, body = parse_table(source, 'tab:matrix')
+        table = {(r['method'], r['context']): r for r in comparison_rows('i23-matrix')}
+        contexts = ['None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B']
+        rows_by_label = {label: [int(v) for v in values] for label, values in body if label in contexts}
+        for context in contexts:
+            g, r = table[('Generation', context)], table[('Reuse', context)]
+            self.assertEqual(rows_by_label[context], [g['priorCompiled'], g['compiled'], g['functional'], r['priorCompiled'], r['compiled'], r['functional']], context)
+        total = [int(v) for label, values in body if label == 'Total of 40' for v in values]
+        self.assertEqual(total, [sum(table[(m, c)][k] for c in contexts) for m in ('Generation', 'Reuse') for k in ('priorCompiled', 'compiled', 'functional')])
+
+
 if __name__ == '__main__':
     unittest.main()

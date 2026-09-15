@@ -1,11 +1,10 @@
 % Evidence: sections/results.tex, sections/design.tex, sections/introduction.tex.
 \begin{abstract}
-When language models add a features to an existing program, security
-of its code depends on what it knows about that program. We study
-\emph{security context}: a short description of the assets, trust
+When generating code with LLMs (Large Language Models), security of their output depends primarily on knowledge of the existing program.
+This paper focusses on \emph{security context}: description of assets, trust
 boundaries, weakness types, requirements and controls that a planned change
-touches, each statement labelled by kind, appended to the model's prompt
-before it writes code. The task is a Highscore feature for a Java game,
+touches - each statement labelled by kind, and passed via the model's prompt
+before it writes code. The task in this case is a Highscore feature for a Java game,
 implemented either from scratch (Generation) or by reusing a sibling game's
 implementation (Reuse); ten security checks and sixteen functional tests
 score every delivered artifact, and every arm is compared with a control
@@ -23,5 +22,4 @@ artifacts in every arm stay functional, and two further acquisitions per
 task variant, with three artifacts per arm, reproduce the direction. One
 task, one pair of games and three to five artifacts per arm limit what the
 counts can claim.
-\keywords{LLM-assisted development \and code generation \and software reuse \and security context \and empirical study}
 \end{abstract}

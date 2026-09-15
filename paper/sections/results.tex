@@ -86,6 +86,45 @@ Agent-acquired context & I10 to I16b & 46 & 12 \\
 \end{tabular}
 \end{table}
 
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{5pt}
+\caption{The prior study's Highscore matrix and its rerun with our generator (round I23), one response per prompt, no security context, five trajectories per cell. ``Prior'' is the number compiled in the prior study; all counts are out of 5; functional means all sixteen tests pass. The prior study's pipeline repairs imports and file placement before compiling; ours rejects a malformed delivery, which happened to 35 of the 80 responses.}
+\label{tab:matrix}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{3}{c}{Generation} & \multicolumn{3}{c}{Reuse} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+Base context & Prior & Compiled & Functional & Prior & Compiled & Functional \\
+\midrule
+None & 1 & 3 & 3 & 1 & 0 & 0 \\
+S & 3 & 3 & 3 & 3 & 3 & 3 \\
+F & 3 & 2 & 2 & 1 & 4 & 4 \\
+B & 2 & 0 & 0 & 1 & 2 & 2 \\
+S+F & 2 & 3 & 2 & 1 & 3 & 3 \\
+S+B & 2 & 2 & 2 & 4 & 3 & 3 \\
+F+B & 4 & 2 & 2 & 0 & 2 & 1 \\
+S+F+B & 0 & 3 & 3 & 2 & 4 & 3 \\
+Total of 40 & 17 & 18 & 17 & 13 & 21 & 19 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Step 0: the baseline without security context.}
+Before any security context, round I23 reran the prior study's sixteen
+Highscore cells with our generator under the prior study's protocol, one
+response per prompt (Table~\ref{tab:matrix}). Compiled counts are at the
+prior study's level in Generation (18 against 17 of 40) and above it in
+Reuse (21 against 13), with 17 and 19 of 40 artifacts passing all sixteen
+tests. What separates the two studies is delivery: 35 of our 80 responses
+were rejected before compilation, mostly for returning a target file whole
+instead of as an edit; of the 45 that were delivered, 39 compiled. The
+cells with the most functional artifacts on one response (Generation None,
+S and S+F+B; Reuse F and S+F+B) are the cells the later one-response
+rounds use. All rounds before I22 allowed up to five submissions with
+feedback, under which every control cell reaches 4 or 5 of 5 functional.
+
 \paragraph{Step 1: does context help at all?}
 Round I07 (Table~\ref{tab:i07}) compares, in four cells, no security
 context against three kinds written by a researcher: \emph{operations}
