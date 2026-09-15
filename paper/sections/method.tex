@@ -1,0 +1,61 @@
+\section{Method}
+\label{sec:method}
+
+\paragraph{Task.}
+Apo-Games is a family of Java games maintained by
+clone-and-own~\citep{krueger2018}. The target, ApoMario, receives a Highscore
+feature with a fixed public API (store constructor, \texttt{storeRun}, three
+list accessors, persistence, run-end recording in the game). In
+\emph{Generation} the generator sees only the target; in \emph{Reuse} it also
+sees ApoIcarus and must reuse its Highscore. Structural (S), functional (F)
+and behavioural (B) context files define the cells Generation S, Generation
+S+F+B, Reuse B and Reuse S+B.
+
+\paragraph{Delivery and evaluation.}
+One model serves as agent and generator. A trajectory is one conversation:
+the generator delivers new classes and exact edits to three target files
+through a tool call, receives compiler diagnostics and the outcomes of 16
+functional checks, and may resubmit up to five times. Security feedback is
+never returned. In \emph{agentic} delivery it may also search and read the
+repository first. Eleven security checks run per final artifact in isolated
+JVMs (64~MiB heap, 15~s): a persistence round trip and ten issue checks. A
+safe and a deliberately weak reference implementation must produce the
+expected outcomes before each run; a precondition audit qualifies
+large-record outcomes, and unsupported encodings count as unknown, never as
+passes.
+
+\paragraph{Security context.}
+Researcher-written inserts (rounds I03 to I09) state operations,
+requirements or trust boundaries of the change under a perspective the
+researcher chose; two ablations bracket them, a one-sentence task-only
+instruction and the flat CWE Top~25 list~\citep{cwetop25}. The agent (I10
+onwards) replaces the researcher: it receives a read-only snapshot of the
+repository (and the donor for reuse), the one-line feature description the
+generator gets, and the vocabulary of Section~\ref{sec:setting} as an output
+schema with CWE, CAPEC and ASVS identifiers; no check, fixture, threshold,
+earlier context or test outcome. It inspects the code with shell
+tools~\citep{yang2024} under a recorded command budget and emits one typed
+document along one of three angles: data flow (trace untrusted data across
+boundaries to sinks, enumerate STRIDE threats, place requirement and control
+where the data first arrives), requirements (constrain every feature
+operation) or catalogue (decide per CWE Top~25 entry whether it applies).
+Every statement cites symbols of a parsed code model or file ranges; the
+harness resolves and hashes each anchor and drops statements whose anchors
+do not resolve. The document is stored as a typed graph and rendered
+verbatim after the unchanged task, in full or compact (requirements and
+controls only); controls receive no insert. Failed or degenerate
+acquisitions are kept and used, never regenerated.
+
+\paragraph{Sidecars.}
+In agentic delivery a sidecar can inject graph slices for the code read or
+edited so far (adaptive), or consult a one-turn judge on submissions that
+edit an enforcement point and reject, coach or rewind (gate variants). The
+judge sees the edit and the statements, never test outcomes.
+
+\paragraph{Reporting.}
+Every round is declared and frozen before its first model call, has its own
+fresh control, and is completed regardless of direction. Rates are counts
+over fixed denominators: $N$ trajectories per cell and arm, $10N$ for the
+ten issue checks; unresolved outcomes stay in the denominator. Differences
+are identification bounds over every assignment of unresolved outcomes, not
+confidence intervals; no significance is claimed.

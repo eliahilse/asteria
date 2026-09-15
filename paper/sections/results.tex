@@ -1,8 +1,18 @@
 \section{Results}
 \label{sec:results}
 
-\paragraph{Counts.}
-Tables~\ref{tab:i07} and~\ref{tab:i09} report I07 and I09 ($N=5$).
+\paragraph{Researcher-written context.}
+All 12 context arms of I07 and all 6 of I09 (Tables~\ref{tab:i07}
+and~\ref{tab:i09}) have fewer failed issue checks than their fresh control
+under every assignment of unresolved outcomes; the requirements arm has the
+fewest in every cell, and functionality is not traded (I09: 40 of 40).
+Review of all 79 delivered I07 artifacts: control artifacts normalise instead
+of reject, clamping negative times, substituting a default name and storing
+the record. Insert wording maps to code: every arm accepts negative scores
+except Reuse requirements, whose insert says ``reject negative scores''. Two
+checks never discriminate, since every artifact guards malformed stores and
+none uses Java object serialization. The one-sentence task-only instruction
+retains most of the effect (23 and 15 fewer failed checks than control).
 
 \begin{table}[t]
 \centering
@@ -38,289 +48,98 @@ Reuse S+B & 5; 31/2/17 & 5; 1/3/46 & 5; 16/1/33 & 5; 13/2/35 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Direction.}
-All 12 context arms of I07 and all 6 of I09 have fewer failed issue checks than
-their fresh control under every assignment of unresolved outcomes. The
-researcher-written requirements arm has the fewest in every cell. Full
-functionality is not systematically traded (I09: 40 of 40).
-
-\paragraph{Mechanisms.}
-Review of all 79 delivered I07 artifacts: control artifacts normalise instead
-of reject, clamping negative times, substituting a default name and storing
-the record, which fails the contract. Insert wording maps to code: every arm
-accepts negative scores except Reuse requirements, whose insert says
-``reject negative scores''; the Generation requirements insert says ``define
-bounds for score'' and all ten artifacts accept them. Every artifact guards
-malformed stores and none uses Java object serialization, so two issue checks
-never discriminate. Oversized-line passes come from a file-size cap before
-reading or a length-prefixed binary format; length checks after
-\texttt{readLine} do not prevent the allocation. All requirements and
-boundaries artifacts bound retention; four operations artifacts bound at
-1{,}000 instead of 100.
-
-\paragraph{Generic instructions.}
-The task-only instruction retains most of the effect (23 and 15 fewer failed
-issue checks than control). The uninspected Generation S catalogue insert
-reduces only retention and resource failures and leaves every input-policy
-check at the control's level; the Reuse S+B acquisition inspected 22 files
-and its insert reduces failures by 18.
-
-\paragraph{Agent acquisitions.}
-Six acquisitions (three angles, two methods; Table~\ref{tab:acq}) each
-finished within its command budget in under five minutes.
+\paragraph{Agent-acquired context.}
+Six acquisitions (three angles, two methods) finished within budget in 26 to
+60 commands, keeping 88 of 90 statements with 342 of 351 anchors verified.
+Table~\ref{tab:agent} reports the data-flow angle. Repository access alone
+leaves the counts unchanged (agentic, none) at three to five times the tool
+turns. The full graph insert (about 31,000 characters) gives 3 to 10 failed
+checks of 50 and, in Generation S, 1 and 2 of 5 functional. The compact
+insert (12,672 and 17,051 characters) removes more failures than the I09
+requirements insert (Reuse 29 to 2, Generation 37 to 3 of 50; bounds $-6.2$
+to $-4.6$ and $-7.2$ to $-5.8$ per trajectory; no check increases) but costs
+functional success, 5 to 3 of 5 in both cells, with submissions rising from
+7 to 18 in Generation.
 
 \begin{table}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Agent acquisitions: shell commands, statements kept of produced, anchors verified of cited (symbol corrections), insert size.}
-\label{tab:acq}
-\begin{tabular}{@{}llrrrrr@{}}
-\toprule
-Method & Angle & Commands & Statements & Anchors & Corrected & Characters \\
-\midrule
-Generation & data flow & 60 & 19/19 & 70/70 & 19 & 24457 \\
-Generation & requirements & 26 & 24/25 & 79/79 & 10 & 26889 \\
-Generation & catalogue & 52 & 7/7 & 40/40 & 8 & 12666 \\
-Reuse & data flow & 50 & 18/18 & 72/78 & 9 & 23972 \\
-Reuse & requirements & 32 & 12/13 & 47/50 & 3 & 15840 \\
-Reuse & catalogue & 28 & 8/8 & 34/34 & 8 & 11726 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Delivery modes and sidecar.}
-Table~\ref{tab:i10} reports I10: the data-flow graph of each method as a
-static insert of about 31,000 characters. Repository access alone leaves the
-counts unchanged (agentic, none) at three to five times the tool turns. The
-static graph insert gives 3 to 10 failed checks of 50 and, in Generation S,
-1 and 2 of 5 functional. The file-level adaptive sidecar
-injected 16 to 19 of the 18 to 19 statements at the first submission, because
-edits touch the three anchored target files.
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I10: full functional (of 5) and issue checks failed / unresolved / passed (of 50); arms are mode and sidecar.}
-\label{tab:i10}
+\caption{Agent-acquired data-flow context against a fresh control in each round: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
+\label{tab:agent}
 \begin{tabular}{@{}llllll@{}}
 \toprule
-Cell & Single-shot, none & Single-shot, static & Agentic, none & Agentic, static & Agentic, adaptive \\
+Round & Cell & Mode & Insert & None & Insert \\
 \midrule
-Generation S & 5; 33/4/13 & 2; 5/5/40 & 5; 32/1/17 & 1; 3/5/42 & 3; 8/4/38 \\
-Reuse S+B & 5; 35/0/15 & 4; 4/4/42 & 5; 35/1/14 & 4; 10/4/36 & 4; 23/11/16 \\
+I10 & Generation S & single-shot & full graph & 5; 33/4/13 & 2; 5/5/40 \\
+I10 & Reuse S+B & single-shot & full graph & 5; 35/0/15 & 4; 4/4/42 \\
+I10 & Generation S & agentic & full graph & 5; 32/1/17 & 1; 3/5/42 \\
+I10 & Reuse S+B & agentic & full graph & 5; 35/1/14 & 4; 10/4/36 \\
+I16 & Reuse S+B & single-shot & compact & 5; 29/4/17 & 3; 2/4/44 \\
+I16b & Generation S & single-shot & compact & 5; 37/2/11 & 3; 3/5/42 \\
+I17 & Generation S & single-shot & compact, no failure lines & 5; 36/4/10 & 4; 2/4/44 \\
+I18 & Reuse S+B & single-shot & compact, no failure lines & 5; 27/4/19 & 4; 4/5/41 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Pilot: compact insert and symbol-level sidecar.}
-I11 (Table~\ref{tab:i11}) renders the graph as requirement and control
-statements only (17,051 characters): the compact insert keeps the security
-effect at lower functional cost, and a sidecar sliced on line ranges read or
-edited changes when statements arrive, not how many. Three trajectories per
-arm give direction only.
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I11 pilot: full functional (of 3) and issue checks failed / unresolved / passed (of 30).}
-\label{tab:i11}
-\begin{tabular}{@{}llll@{}}
-\toprule
-Cell & Single-shot, none & Single-shot, static & Agentic, adaptive \\
-\midrule
-Generation S & 3; 23/1/6 & 2; 3/3/24 & 1; 1/2/27 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Pilot: gatekeeper.}
-The gatekeeper (I12, Table~\ref{tab:i12}) intervened on all 11 consultations
-and no gate artifact was evaluated. In shadow mode (I13, Table~\ref{tab:i13}) it would
-have intervened on all 6 judged first submissions, each failing 4 to 7 issue
-checks including at least one in a category the cited statements name: the
-gate fails by rejection without convergence, not by a wrong judge. Attaching
-the verdict to the functional feedback (I14, Table~\ref{tab:i14}) keeps 3 of
-3 functional; one rejection followed by coaching, and a rewind to before the
-judged submission (I15, Table~\ref{tab:i15}; 7 of 12 post-rewind submissions
-invalid, the generator having lost the turns in which it read the code),
-leave 0 of 3 functional at 3 failed of 30. Only the compact static insert of I11, delivered before
-the first attempt, reaches 3 failed of 30 with functional artifacts: when
+\paragraph{Sidecars ($N=3$ pilots).}
+Adaptive slicing changes when statements arrive, not how many, because a
+Highscore implementation edits the anchored methods (I11). A gate that
+rejects on every positive verdict evaluated no artifact (I12); in shadow mode
+the judge was right on all 6 judged first submissions (I13). Coaching after
+the first submission keeps 3 of 3 functional and moves failures from 19 to
+16 of 30 (I14); one rejection, or a two-turn rewind, reaches 3 failed of 30
+with 0 of 3 functional (I14, I15). Only the compact insert before the first
+attempt combines 3 failed of 30 with functional artifacts (I11): when
 context arrives matters more than how forcefully it is applied.
 
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I12 pilot: full functional (of 3) and issue checks failed / unresolved / passed (of 30); agentic delivery in both arms.}
-\label{tab:i12}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Agentic, none & Agentic, gate \\
-\midrule
-Generation S & 3; 15/1/14 & 0; 0/30/0 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I13 pilot, shadow gate: full functional (of 6) and issue checks failed / unresolved / passed (of 60).}
-\label{tab:i13}
-\begin{tabular}{@{}ll@{}}
-\toprule
-Cell & Agentic, gate (shadow) \\
-\midrule
-Generation S & 6; 37/0/23 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I14 pilot: full functional (of 3) and issue checks failed / unresolved / passed (of 30); agentic delivery in all arms.}
-\label{tab:i14}
-\begin{tabular}{@{}llll@{}}
-\toprule
-Cell & Agentic, none & Agentic, coach & Agentic, gate once \\
-\midrule
-Generation S & 3; 19/1/10 & 3; 16/0/14 & 0; 3/3/24 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I15 pilot: full functional (of 3) and issue checks failed / unresolved / passed (of 30); agentic delivery in both arms.}
-\label{tab:i15}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Agentic, none & Agentic, rewind \\
-\midrule
-Generation S & 2; 14/11/5 & 0; 3/3/24 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Confirmation of the compact insert.}
-In Reuse S+B (Table~\ref{tab:i16}) the compact agent-acquired insert reduces
-failed issue checks from 29 to 2 of 50 (bound $-6.2$ to $-4.6$ per
-trajectory; six checks decrease, none increases) and functional success
-from 5 to 3 of 5. The Generation S insert arm is unresolved: the provider
-rejected all five requests (run identifier over its 64-character field
-limit); they are retained as transport failures. Re-collected under a shorter
-round name (Table~\ref{tab:i16b}), the same insert
-reduces failed checks in Generation S from 37 to 3 of 50 (bound $-7.2$ to
-$-5.8$; seven checks decrease, none increases) and functional success from 5
-to 3 of 5; submissions rise from 7 to 18; the three remaining failures are
-blank names. In both cells the compact insert removes more failures than the
-I09 requirements insert (12 and 1 failed of 50) but costs functional success.
-
-\paragraph{Where the functional cost comes from.}
-A run-end hook audit of every final artifact (I09 to I16b): the coupling
-tests end a run on a player whose team name is null, two never set a name,
-and an artifact passes them and \texttt{rejectsNullName} only if the hook
-substitutes a name before calling the store. All 48 control artifacts
-and all 30 under researcher-written inserts do (``reject or safely normalize
-null \ldots{} names''). The agent-acquired inserts say at the hook ``if the
+\paragraph{The functional cost has one cause.}
+The coupling tests end a run on a player whose team name is null; two never
+set a name. An artifact passes them and \texttt{rejectsNullName} only if the
+run-end hook substitutes a name before calling the store. An audit of every
+final artifact's hook (Table~\ref{tab:hook}) shows that all control and all
+researcher-written-insert artifacts do (``reject or safely normalize null
+\ldots{} names''). The agent-written inserts say at the hook ``if the
 \ldots{} name \ldots{} is unavailable, skip recording'' (Generation) or
-``reject unavailable or inconsistent values'' (Reuse); in 12 of 46
-agent-insert trajectories the final artifact follows this literally, the run
-is not recorded, and exactly those two tests fail. Of the 19 agent-insert
-trajectories without a functional artifact, these 12 have no other failing
-check. The cost is a conflict between one insert clause and one fixture
-property the task contract leaves unstated, not a capability loss.
+``reject unavailable or inconsistent values'' (Reuse); 12 of 46
+agent-insert artifacts follow this literally, the run is not recorded, and
+exactly those two tests fail, with no other failing check. The cost is a
+conflict between one insert clause and one fixture property the task
+contract leaves unstated, not a capability loss.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Run-end hook audit, rounds I09 to I16b: completed trajectories whose only failing functional tests are the two that end a run on a player without a name.}
+\label{tab:hook}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Arm group & Rounds & Trajectories & Only null-name tests fail \\
+\midrule
+No security context & I09, I10, I11, I16, I16b & 48 & 0 \\
+Researcher-written inserts & I09 & 30 & 0 \\
+Agent-acquired inserts and slices & I10, I11, I16, I16b & 46 & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \paragraph{Rendering without failure clauses.}
-I17 (Table~\ref{tab:i17}) repeats Generation S with the insert rendered
-without its eleven ``Failure behavior'' lines (15,408 characters). Failed
-checks fall from 36 to 2 of 50 (bound $-7.6$ to $-6.0$; seven checks
-decrease, none increases); no trajectory fails only the null-name tests, all
-five insert artifacts substitute a name, and functional success is 4 of 5.
-The remaining loss is a once-per-level guard reset in the wrong method. One
-artifact passes every functional test and all eleven security checks, the
-first in Generation S. Submissions still triple (18 against 6).
-On Reuse S+B (I18, Table~\ref{tab:i18}) the same rendering gives 27 to 4
-failed of 50 (bound $-5.4$ to $-3.6$; five checks decrease, the oversized-line
-check increases from 2 to 4 of 5) and 4 of 5 functional; 1 of 5 still fails
-only the null-name tests, because in Reuse the instruction to reject an
-unavailable name is part of the C2 statement itself, not of a failure line.
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I16: full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery. The Generation S insert arm is unresolved throughout (transport failures).}
-\label{tab:i16}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Single-shot, none & Single-shot, static \\
-\midrule
-Generation S & 5; 36/2/12 & 0; 0/50/0 \\
-Reuse S+B & 5; 29/4/17 & 3; 2/4/44 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I16b: Generation S re-collected with a fresh control; full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery.}
-\label{tab:i16b}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Single-shot, none & Single-shot, static \\
-\midrule
-Generation S & 5; 37/2/11 & 3; 3/5/42 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I17: compact insert rendered without failure-behaviour lines; full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery, Generation S.}
-\label{tab:i17}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Single-shot, none & Single-shot, static \\
-\midrule
-Generation S & 5; 36/4/10 & 4; 2/4/44 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\caption{I18: compact insert rendered without failure-behaviour lines; full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery, Reuse S+B.}
-\label{tab:i18}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Cell & Single-shot, none & Single-shot, static \\
-\midrule
-Reuse S+B & 5; 27/4/19 & 4; 4/5/41 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Cost.}
-Catalogue arms reached full functionality on the first submission most often
-(4 and 3 of 5); requirements arms least often (1 of 5 each). Two-thirds of I07 trajectories needed more than one submission.
+The same inserts rendered without their ``Failure behavior'' lines (I17,
+I18; Table~\ref{tab:agent}) keep the effect: Generation 36 to 2 of 50 (bound
+$-7.6$ to $-6.0$; no check increases), Reuse 27 to 4 (bound $-5.4$ to
+$-3.6$; the oversized-line check increases from 2 to 4 of 5). Functional
+success is 4 of 5 in both cells. No Generation trajectory loses a nameless
+run; 1 of 5 in Reuse still does, because there the clause is part of the
+control statement itself. One Generation artifact passes every functional
+test and all eleven security checks, the first to do so. The clause must be
+fixed at acquisition, not at rendering; the next protocol version forbids
+failure behaviour that suppresses the change's primary effect.
 
 \paragraph{Limits.}
-One task, one repository pair, five trajectories per arm sharing one insert.
-Counts are descriptive; the unresolved large-record checks (43 of 80 in I07)
-limit the resource category. Reviewer classifications are single-pass model
-judgements with cited lines, not double-coded annotations.
+One task, one repository pair, one acquisition per arm shared by five
+trajectories; counts are descriptive. Large-record outcomes are often
+unresolved (43 of 80 in I07). Artifact review and hook classes are
+single-pass model judgements with cited lines; a second reader checked 12
+audit rows, and the hook rule was corrected until both agreed on all 12.

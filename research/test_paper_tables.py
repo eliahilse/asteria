@@ -1,4 +1,4 @@
-"""The paper's result tables must equal the saved qualified analyses."""
+"""The paper's result tables must equal the saved qualified analyses and audits."""
 import csv
 import json
 from pathlib import Path
@@ -8,9 +8,13 @@ import unittest
 from research.import_evidence import ROOT
 
 CELLS = {'Generation S': 'generation_s', 'Generation S+F+B': 'generation_sfb', 'Reuse B': 'reuse_b', 'Reuse S+B': 'reuse_sb'}
-ARMS = {'None': 'none', 'Operations': 'operations', 'Requirements': 'requirements', 'Boundaries': 'boundaries', 'Task only': 'task_only', 'Catalogue': 'catalog',
-        'Single-shot, none': 'single_shot__none', 'Single-shot, static': 'single_shot__static', 'Agentic, none': 'agentic__none', 'Agentic, static': 'agentic__static', 'Agentic, adaptive': 'agentic__adaptive', 'Agentic, gate': 'agentic__gate', 'Agentic, gate (shadow)': 'agentic__gate', 'Agentic, coach': 'agentic__coach', 'Agentic, gate once': 'agentic__gate_once', 'Agentic, rewind': 'agentic__rewind'}
-TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition', 'tab:i10': 'i10-agentic-delivery', 'tab:i11': 'i11-symbol-sidecar', 'tab:i12': 'i12-gate-sidecar', 'tab:i13': 'i13-shadow-gate', 'tab:i14': 'i14-coach-gate', 'tab:i15': 'i15-rewind', 'tab:i16': 'i16-compact-confirmation', 'tab:i16b': 'i16b-gen-compact', 'tab:i17': 'i17-nofb', 'tab:i18': 'i18-nofb-reuse'}
+ARMS = {'None': 'none', 'Operations': 'operations', 'Requirements': 'requirements', 'Boundaries': 'boundaries', 'Task only': 'task_only', 'Catalogue': 'catalog'}
+TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition'}
+ROUNDS = {'I10': 'i10-agentic-delivery', 'I16': 'i16-compact-confirmation', 'I16b': 'i16b-gen-compact', 'I17': 'i17-nofb', 'I18': 'i18-nofb-reuse'}
+MODES = {'single-shot': 'single_shot', 'agentic': 'agentic'}
+HOOK_ROUNDS = ('i09-generic-acquisition', 'i10-agentic-delivery', 'i11-symbol-sidecar', 'i16-compact-confirmation', 'i16b-gen-compact')
+NULL_NAME_TESTS = {'recordedSurvivalTimeIsTheRealElapsedTime', 'secondRunAlsoRecordedAndBoardSortedDescending'}
+CELL_VALUE = re.compile(r'(\d+); (\d+)/(\d+)/(\d+)')
 
 
 def parse_table(source: str, label: str) -> tuple[list[str], list[tuple[str, list[str]]]]:
@@ -21,40 +25,62 @@ def parse_table(source: str, label: str) -> tuple[list[str], list[tuple[str, lis
     return header, body
 
 
+def analysis(iteration: str) -> dict:
+    data = json.loads((ROOT / 'research/iterations' / iteration / 'qualified-analysis.json').read_text())
+    return {c['condition']: c for c in data['conditions']}
+
+
 class PaperTableTests(unittest.TestCase):
-    def test_result_tables_match_qualified_analysis(self):
+    def check_cell(self, condition: dict, value: str, where: str):
+        match = CELL_VALUE.fullmatch(value)
+        self.assertIsNotNone(match, f'{where}: {value!r}')
+        full, failed, unresolved, passed = map(int, match.groups())
+        issues = condition['issues']
+        self.assertEqual((full, failed, unresolved, passed), (condition['withinBudgetFull'], issues['failed'], issues['unresolved'], issues['evaluated'] - issues['failed']), where)
+        self.assertEqual(failed + unresolved + passed, issues['plannedChecks'], f'{where}: denominator')
+        self.assertEqual(condition['n'] * 10, issues['plannedChecks'], where)
+
+    def test_cell_by_arm_tables_match_qualified_analysis(self):
         source = (ROOT / 'paper/sections/results.tex').read_text()
         for label, iteration in TABLES.items():
-            analysis = json.loads((ROOT / 'research/iterations' / iteration / 'qualified-analysis.json').read_text())
-            conditions = {c['condition']: c for c in analysis['conditions']}
-            header, body = parse_table(source, label)
+            conditions = analysis(iteration); header, body = parse_table(source, label)
             self.assertTrue(body, label)
             for cell, values in body:
                 for arm, value in zip(header, values):
-                    condition = conditions[f'{CELLS[cell]}__{ARMS[arm]}']
-                    match = re.fullmatch(r'(\d+); (\d+)/(\d+)/(\d+)', value)
-                    self.assertIsNotNone(match, f'{label} {cell} {arm}: {value!r}')
-                    full, failed, unresolved, passed = map(int, match.groups())
-                    issues = condition['issues']
-                    expected = (condition['withinBudgetFull'], issues['failed'], issues['unresolved'], issues['evaluated'] - issues['failed'])
-                    self.assertEqual((full, failed, unresolved, passed), expected, f'{label} {cell} {arm}')
-                    self.assertEqual(failed + unresolved + passed, issues['plannedChecks'], f'{label} {cell} {arm}: denominator')
-                    self.assertEqual(condition['n'] * 10, issues['plannedChecks'])
+                    self.check_cell(conditions[f'{CELLS[cell]}__{ARMS[arm]}'], value, f'{label} {cell} {arm}')
 
-    def test_acquisition_table_matches_saved_summary(self):
+    def test_agent_table_matches_qualified_analyses(self):
         source = (ROOT / 'paper/sections/results.tex').read_text()
-        rows = {(r['method'], r['angle']): r for r in csv.DictReader((ROOT / 'research/iterations/i10-agentic-delivery/acquisitions.csv').open())}
-        angles = {'data flow': 'dataflow', 'requirements': 'requirements', 'catalogue': 'catalog'}
-        _, body = parse_table(source, 'tab:acq')
-        self.assertEqual(len(body), 6)
-        for method, values in body:
-            angle, commands, statements, anchors, corrected, characters = values
-            row = rows[(method, angles[angle])]
-            self.assertEqual(int(commands), int(row['commands']), (method, angle))
-            self.assertEqual(statements, f"{row['items']}/{row['rawItems']}", (method, angle))
-            self.assertEqual(anchors, f"{row['anchorsMatched']}/{row['anchorsTotal']}", (method, angle))
-            self.assertEqual(int(corrected), int(row['anchorsCorrected']), (method, angle))
-            self.assertEqual(int(characters), int(row['insertCharacters']), (method, angle))
+        header, body = parse_table(source, 'tab:agent')
+        self.assertEqual(header, ['Cell', 'Mode', 'Insert', 'None', 'Insert'])
+        self.assertEqual([r[0] for r in body], ['I10', 'I10', 'I10', 'I10', 'I16', 'I16b', 'I17', 'I18'])
+        for round_name, (cell, mode, _insert, none, static) in body:
+            conditions = analysis(ROUNDS[round_name]); prefix = f'{CELLS[cell]}__{MODES[mode]}'
+            self.check_cell(conditions[f'{prefix}__none'], none, f'tab:agent {round_name} {cell} {mode} none')
+            self.check_cell(conditions[f'{prefix}__static'], static, f'tab:agent {round_name} {cell} {mode} static')
+
+    def test_hook_table_matches_audits(self):
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        _, body = parse_table(source, 'tab:hook')
+        counts = {'No security context': [0, 0], 'Researcher-written inserts': [0, 0], 'Agent-acquired inserts and slices': [0, 0]}
+        for iteration in HOOK_ROUNDS:
+            for row in csv.DictReader((ROOT / 'research/iterations' / iteration / 'hook-audit.csv').open()):
+                if row['status'] not in ('completed', 'budget_exhausted'): continue
+                arm = row['condition'].split('__')[-1]
+                group = 'No security context' if arm == 'none' else ('Researcher-written inserts' if iteration == 'i09-generic-acquisition' else 'Agent-acquired inserts and slices')
+                failing = set(row['failingChecks'].split())
+                counts[group][0] += 1; counts[group][1] += bool(failing) and failing <= NULL_NAME_TESTS
+        self.assertEqual({g: (int(v[1]), int(v[2])) for g, v in body}, {g: tuple(c) for g, c in counts.items()})
+
+    def test_acquisition_sentence_matches_saved_summary(self):
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        rows = list(csv.DictReader((ROOT / 'research/iterations/i10-agentic-delivery/acquisitions.csv').open()))
+        self.assertEqual(len(rows), 6)
+        commands = sorted(int(r['commands']) for r in rows)
+        kept, produced = sum(int(r['items']) for r in rows), sum(int(r['rawItems']) for r in rows)
+        matched, total = sum(int(r['anchorsMatched']) for r in rows), sum(int(r['anchorsTotal']) for r in rows)
+        sentence = f'in {commands[0]} to\n{commands[-1]} commands, keeping {kept} of {produced} statements with {matched} of {total} anchors verified.'
+        self.assertIn(sentence, source)
 
 
 if __name__ == '__main__':

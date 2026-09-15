@@ -1,0 +1,52 @@
+\section{Setting}
+\label{sec:setting}
+
+A \emph{security property} is an attribute of an asset the system must
+preserve~\citep{avizienis2004,iso25010}; a \emph{threat} is a potential
+violation of it~\citep{rfc4949}, enumerated per element by
+STRIDE~\citep{shostack2014} and catalogued as attack patterns by
+CAPEC~\citep{capec}. A \emph{trust boundary} separates components of
+different trust; the entry points through which untrusted data reaches the
+system form the attack surface~\citep{manadhata2011}. A \emph{weakness} is
+a type of flaw (CWE~\citep{cwe}); a \emph{vulnerability} is its exploitable
+occurrence~\citep{cve}. A \emph{security requirement} constrains a functional
+requirement to protect an asset~\citep{haley2008,firesmith2003,sindre2005};
+a \emph{control} satisfies it at an \emph{enforcement
+point}~\citep{nist80053,saltzer1975,long2011} and is checked by
+\emph{verification}~\citep{asvs5,nist800218}.
+
+For a repository $R$ and a change $\Delta$, the \emph{security context}
+$\mathrm{SC}(R,\Delta)$ is the set of typed statements given to the
+generator before generation, each grounded in inspected source or marked
+prospective: the assets and entry points $\Delta$ touches, the boundaries it
+crosses, the applicable weakness types, requirements with enforcement points,
+proposed controls, verification hints and unknowns. It is neither security
+feedback (test outcomes on generated code) nor generic secure-coding
+instruction~\citep{tony2025}, which carries no repository evidence. Prior
+work evaluates code-model security in isolated
+scenarios~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
+model~\citep{he2023} or varies generic prompt wording~\citep{tony2025};
+assistance without security cues degrades security in user
+studies~\citep{perry2023}. Here the context is derived from the repository
+in a corpus where flaws propagate by clone-and-own
+reuse~\citep{krueger2018,dubinsky2013}. The ten issue checks of this study
+probe weakness types, not vulnerabilities (Table~\ref{tab:mapping}).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Evaluation categories of the Highscore study in standard terms.}
+\label{tab:mapping}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Category & Weakness type & Property & Requirement source \\
+\midrule
+Input policy & CWE-20, CWE-1284 & Integrity & Contract; ASVS validation; CERT IDS \\
+Retention policy & CWE-770 & Availability & Contract \\
+Parser robustness & CWE-755, CWE-20 & Availability & CERT ERR \\
+Resource stress & CWE-400, CWE-770, CWE-789 & Availability & CERT MSC, FIO \\
+Deserialization dispatch & CWE-502 & Integrity & CERT SER; ASVS \\
+\bottomrule
+\end{tabular}
+\end{table}

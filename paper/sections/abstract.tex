@@ -1,19 +1,15 @@
-% Evidence: sections/results.tex, sections/design.tex, sections/agent.tex.
+% Evidence: sections/results.tex, sections/method.tex, sections/setting.tex.
 \begin{abstract}
-Security context, typed statements on assets, trust boundaries, weakness
+Security context, typed statements on the assets, trust boundaries, weakness
 types, requirements and controls of a change, is appended to the prompt of a
-generator implementing a Java Highscore feature by generation and reuse, with
-functional feedback only; it is acquired under researcher-written security
-perspectives or by an agent from a snapshot and a one-line feature
-description. In rounds I07 and I09 every context arm has fewer failed issue
-checks than its control under every assignment of unresolved outcomes,
-without systematic functional loss; a one-sentence task-only instruction
-retains most of the reduction. Agent-acquired inserts remove more failures
-(to 2 and 3 of 50) but cost functional success: in 12 of 46 trajectories the
-only failing tests end a run on a player without a name, which one insert
-clause tells the hook to skip; without that clause the insert keeps the
-effect (36 to 2 of 50) with 4 of 5 functional.
-Limits: one task, one repository pair, five trajectories per arm sharing one
-insert, descriptive counts, unresolved large-record checks, single-pass
-review.
+generator implementing a Java Highscore feature by generation and by reuse,
+with functional feedback only. Researcher-written inserts lower failed issue
+checks in all 18 context arms of two rounds without functional loss. Inserts
+acquired by an agent from a repository snapshot and a one-line feature
+description lower them further (Reuse 29 to 2, Generation 37 to 3 of 50)
+but cost functional success (5 to 3 of 5). An audit of 124 final artifacts
+traces the cost to one agent-written clause, skip recording when the player
+name is unavailable; rendered without it, the effect stays (36 to 2 and 27
+to 4 of 50) with 4 of 5 functional. Limits: one task, one repository pair,
+five trajectories per arm, descriptive counts.
 \end{abstract}
