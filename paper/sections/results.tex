@@ -42,35 +42,18 @@ Total of 40 & 17 & 18 & 17 & 25 & 20 & 13 & 21 & 19 & 19 & 18 \\
 
 \begin{table}[t]
 \centering
-\scriptsize
+\footnotesize
 \setlength{\tabcolsep}{3pt}
-\caption{Every context strategy, pooled over the cells of its rounds. $N$: trajectories. Funct.: artifacts passing all sixteen functional tests within the budget. Failed / res.: failed security checks of the resolved ones (ten issue checks per artifact; a check is unresolved when the artifact was rejected, did not compile, or the check could not run). Clean: artifacts passing all five input-policy checks. Full: artifacts passing all sixteen tests and all eleven security checks. In, Out: generator (and judge) tokens per trajectory, in millions and thousands (output includes reasoning). Min: model-call minutes per trajectory. Controls are pooled over the rounds of a group.}
+\caption{Every security-context strategy under the same conditions: the version-13 documents, the cells Generation S and Reuse S+B, five artifacts per cell ($N = 10$), \texttt{gpt-5.6-luna} at reasoning effort high. Compiled: share of the $N$ artifacts that compile. Tests: mean share of the sixteen functional tests passed per compiled artifact. Checks: mean share of the ten security checks passed per compiled artifact (a check that could not run counts as not passed). All pass: share of the $N$ artifacts that pass all sixteen tests and all eleven security checks. Input: mean generator (and judge) input tokens per artifact, millions. Min: mean model-call minutes per artifact.}
 \label{tab:results}
-\begin{tabular}{@{}lrrrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
-Context strategy & $N$ & Funct. & Failed / res. & Clean & Full & In (M) & Out (k) & Min \\
+Security context & $N$ & Compiled & Tests & Checks & All pass & Input (M) & Min \\
 \midrule
-\multicolumn{9}{@{}l}{\emph{One response, no feedback (five cells)}} \\
-no context & 75 & 32 & 272 / 375 & 0 & 0 & 0.1 & 11 & 1.5 \\
-S1 high-level & 25 & 10 & 3 / 100 & 11 & 1 & 0.1 & 13 & 1.8 \\
-S2 full document & 25 & 12 & 17 / 139 & 13 & 0 & 0.1 & 12 & 1.7 \\
-S3 generic (no repo.) & 25 & 11 & 10 / 129 & 8 & 1 & 0.1 & 13 & 2.1 \\
-\multicolumn{9}{@{}l}{\emph{Up to five submissions with feedback (two to four cells)}} \\
-no context & 30 & 29 & 205 / 284 & 0 & 0 & 0.2 & 5 & 0.6 \\
-researcher-written & 60 & 55 & 166 / 553 & 11 & 0 & 0.3 & 6 & 0.7 \\
-agent doc. v10, compact & 10 & 10 & 18 / 93 & 8 & 1 & 0.2 & 5 & 0.7 \\
-\multicolumn{9}{@{}l}{\emph{Agentic: repository tools and feedback (two cells)}} \\
-no context & 40 & 39 & 215 / 353 & 0 & 0 & 0.9 & 14 & 1.9 \\
-S2 document (v10) & 10 & 10 & 12 / 92 & 8 & 0 & 1.1 & 16 & 2.2 \\
-S2 + code graph & 10 & 10 & 12 / 92 & 7 & 0 & 1.0 & 16 & 2.2 \\
-S2 + graph + guard & 10 & 10 & 9 / 93 & 9 & 0 & 1.4 & 26 & 3.0 \\
-S2 + graph + advisory & 10 & 9 & 14 / 95 & 8 & 0 & 1.5 & 19 & 2.5 \\
-doc. v11 (bounds, domains) & 10 & 10 & 10 / 95 & 0 & 0 & 1.0 & 14 & 1.9 \\
-doc. v11 + guard & 10 & 9 & 10 / 96 & 0 & 0 & 1.3 & 22 & 2.5 \\
-doc. v12 (text domains) & 10 & 10 & 4 / 97 & 10 & 4 & 0.9 & 13 & 1.6 \\
-doc. v12 + guard & 10 & 10 & 5 / 98 & 10 & 5 & 1.1 & 24 & 2.5 \\
-doc. v13 (bounded reads) & 10 & 9 & 5 / 92 & 10 & 0 & 1.0 & 16 & 2.1 \\
-doc. v13 + guard & 10 & 8 & 6 / 92 & 10 & 1 & 1.4 & 27 & 2.7 \\
+\multicolumn{8}{@{}l}{\emph{Agentic: repository tools, compiler and test feedback}} \\
+no security context & 10 & 100\% & 100\% & 33\% & 0\% & 0.8 & 1.8 \\
+S2 full document & 10 & 100\% & 97\% & 87\% & 0\% & 1.0 & 2.1 \\
+S2 full document + judge & 10 & 100\% & 96\% & 86\% & 10\% & 1.4 & 2.7 \\
 \bottomrule
 \end{tabular}
 \end{table}
