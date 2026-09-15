@@ -480,7 +480,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 
 
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
-    if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
+    if not 1 <= workers <= 8: raise ValueError('Use 1–8 workers')
     plan = validate(manifest)
     if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
