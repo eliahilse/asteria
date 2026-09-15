@@ -44,8 +44,8 @@ The model may search and read the repository through the same tool before
 submitting, under a budget of tool turns. A \emph{sidecar} can act on the
 trajectory: inject the statements relevant to the code just read or edited
 (adaptive), or judge a submission that edits an enforcement point and
-reject it, attach advice, or rewind the conversation (gate variants,
-Section~\ref{sec:results}).
+reject it, attach advice, or rewind the conversation (gate variants of
+the pilot rounds, in the repository).
 
 \paragraph{Guard sidecar (judge).}
 The sidecar used for the agentic rounds of the next series runs
@@ -122,7 +122,7 @@ parsed code and drops statements whose citations do not resolve, which
 validates that the cited code exists, not that the statement is right.
 Statements carry a one-line \emph{failure behaviour}, what the code should
 do when input is invalid; the agent's instructions were revised twice
-about it (versions 9 and 10, Section~\ref{sec:results}) and three times
+about it (versions 9 and 10; the study repository documents each revision) and three times
 about bounds (version 11: a bound is a concrete number kept by evicting
 or truncating what exceeds it, never by rejecting a valid input, and the
 domain of each validated value is stated; version 12: the domain of a
@@ -190,7 +190,7 @@ precondition was unmet (the million-record check needs a file format the
 generator can write). A safe and a deliberately weak reference
 implementation must produce the expected outcomes before every run.
 Beyond the checks, every final artifact's run-end method is audited for
-how it treats a player without a name (Section~\ref{sec:results}), and
+how it treats a player without a name, and
 every reviewer classification cites the lines it rests on.
 
 \subsection{Functional Evaluation}
