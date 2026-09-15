@@ -345,7 +345,10 @@ def flat_summary(entry: dict) -> dict:
 
 
 def write_workbook(path: Path, sheets: list[tuple]):
-    from openpyxl import Workbook
+    try:
+        from openpyxl import Workbook
+    except ImportError:  # optional: the CSV and JSON outputs are the record, the workbook is a convenience
+        print('openpyxl not installed; workbook skipped'); return
     from openpyxl.styles import Font
     book = Workbook(); book.remove(book.active)
     for name, header, rows in sheets:

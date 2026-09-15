@@ -31,6 +31,8 @@ jobs:
           node-version: '24'
           cache: npm
           cache-dependency-path: workbench/package-lock.json
+      - name: Install Python packages used by the exports
+        run: python3 -m pip install --quiet openpyxl
       - name: Verify evidence and experiment runner
         run: python3 -m unittest discover -s research -p 'test_*.py' -v
       - name: Validate security controls on this environment
