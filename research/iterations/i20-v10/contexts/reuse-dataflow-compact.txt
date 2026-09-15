@@ -1,0 +1,92 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---
+ApoIcarus provides a highscore model, sorting/display panel, and run-end submission flow, but its implementation persists through network endpoints. ApoMario already has menu/model/button navigation, level completion transitions, player points/team names, and elapsed-time state; the proposed feature should reuse the data model and panel structure while making the Path-backed store local, validated, and failure-reporting.
+
+[R1; requirement; task; tampering; CWE-20; V5.1.1] ApoMarioHighscore.storeRun must record one complete tuple of score, survival time, and player name, and the board accessors must expose aligned rows sorted by points descending.
+Task relevance: This is the required highscore data contract and ordering behavior.
+Failure behavior: Reject and report an invalid tuple; do not append a partial row or reorder mismatched parallel lists.
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:35-45 (org.apogames.help.ApoHighscore)
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean))
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)
+Suggested verification: Store multiple valid tuples in unsorted insertion order, reload them, and assert equal list lengths, tuple alignment, and non-increasing scores.
+Relations: mitigates X1
+
+[R2; requirement; task; tampering; CWE-345; V2.1.1] The run-end integration must call recordRunEnd(ApoMarioLevel) after the level has finalized clear/loss scoring, using the actual player score, player name, and elapsed survival time, and must make the result available to the dedicated menu panel.
+Task relevance: Ensures both clearing and losing a run produce a recorded result rather than only displaying transient analysis data.
+Failure behavior: If a level-derived name or time is missing/invalid at the integration point, substitute the stated safe default (for example, "Player" and 0 milliseconds) before invoking storeRun; do not suppress recording.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel#getPlayers())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Suggested verification: Run a one-player clear and loss, including a missing team name, and assert exactly one tuple per run with final score and elapsed time.
+Relations: mitigates X3
+
+[R3; requirement; task; information_disclosure; CWE-359; V9.1.1] The Path-backed store must persist valid records across process runs and reload a valid board for the dedicated highscore view without using a network endpoint.
+Task relevance: Persistence across runs and local desktop scope are explicit feature requirements.
+Failure behavior: Reject and report read/write failure or invalid serialized data; use an empty in-memory board for failed reads and retain the already-recorded in-memory tuple when a write fails.
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:214-228 (apoMario.game.ApoMarioPanel)
+Suggested verification: Write a tuple to a temporary Path, construct a fresh highscore instance, call persistAcrossRuns/load behavior, and assert the tuple remains while network monitoring shows no connection attempt.
+Relations: mitigates X2
+
+[R4; requirement; task; spoofing; CWE-20; V2.1.1] The new highscore panel must display names, points, and survival time in mm:ss, with the same tuple ordering as the sorted board, and be reachable from the existing menu/model navigation.
+Task relevance: Covers the dedicated view and displayed player identity requirements.
+Failure behavior: If a loaded row is invalid or inconsistent, omit that row only after parser rejection/fallback and display a safe empty-board state; never display a name detached from its score/time.
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-237 (apoJump.game.ApoJumpStateHighscore)
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHelp.java:231-242 (org.apogames.help.ApoHelp)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Render records with tied and descending scores, verify row alignment, descending order, escaped/bounded name rendering, and exact mm:ss formatting.
+Relations: mitigates X3
+
+[C1; control; reasoned; tampering; CWE-20; CWE-1284; CAPEC-153; V5.1.1] At ApoMarioHighscore.storeRun, validate score and survivalTime against nonnegative, bounded integer domains and validate playerName as a bounded, non-null string before appending all three values atomically; return false and report the rejection on violation.
+Task relevance: Protects the local board from user-tampered or integration-supplied tuple values while preserving valid run recording.
+Failure behavior: Reject and report the invalid tuple without partial mutation; the caller must normalize missing/invalid values before calling this operation.
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:35-45 (org.apogames.help.ApoHighscore)
+Suggested verification: Unit-test null, blank, overlong, control-character, negative, and extreme values, asserting false/reporting and unchanged lists.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-345; V2.1.1] At the run-end integration in ApoMarioLevel.setAnalysis/ApoMarioPanel.setAnalysis, select the finalized human player's score, derive elapsed time from the level, normalize a null/blank/overlong name to "Player" and invalid elapsed time to 0, then invoke recordRunEnd/storeRun exactly once per terminal transition.
+Task relevance: Preserves the primary run-recording effect even when tamperable in-game values are invalid.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Failure behavior: Normalize invalid integration values to the stated defaults before calling the rejecting store operation; report store rejection but retain the finalized analysis state and keep the highscore menu usable.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:166-172 (apoMario.entity.ApoMarioPlayer)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName())
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer)
+Suggested verification: Instrument recordRunEnd/storeRun and verify one invocation after final point adjustments for both bWin=true and bWin=false paths, including invalid names and timers.
+Relations: satisfies R2
+
+[C3; control; reasoned; information_disclosure; CWE-359; CWE-703; V9.1.1] At ApoMarioHighscore persistence, use only the constructor-supplied Path, serialize records through bounded local I/O, and publish a validated temporary replacement only after a successful complete write; never invoke the donor URLConnection branch.
+Task relevance: Prevents network disclosure and avoids exposing partially written or malformed board state.
+Failure behavior: Report local I/O failure, leave the in-memory records intact, and make the highscore panel fall back to those records or an empty board; do not send data remotely or silently discard the recorded run.
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)
+Suggested verification: Force a read-only/invalid Path and observe explicit reporting, unchanged in-memory data, and no network calls; inspect replacement-file behavior under interruption.
+Relations: satisfies R3
+
+[C4; control; reasoned; spoofing; CWE-20; V2.1.1] At highscore-panel load/render, retain records as tuples or atomically aligned lists, sort by integer points descending before rendering, format nonnegative elapsed milliseconds as mm:ss, and use a bounded display-safe player name.
+Task relevance: Maintains integrity of displayed rankings and prevents malformed names or times from corrupting the panel.
+Failure behavior: Reject the malformed row during load, report it, and render the remaining validated board or an empty board; do not substitute values inside the parser.
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean))
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)
+Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-237 (apoJump.game.ApoJumpStateHighscore)
+Inspected source: ApoIcarus/src/org/apogames/help/ApoHelp.java:231-242 (org.apogames.help.ApoHelp)
+Suggested verification: Property-test arbitrary valid tuples and assert score monotonicity, tuple alignment, bounded names, and mm:ss output without exceptions.
+Relations: satisfies R4
+
+Uncertainty and limits:
+- The requested ApoMarioHighscore class and recordRunEnd method do not exist in the inspected target sources, so their anchors are prospective symbol references with no source line range.
+- No build or tests were run because the workspace is read-only.
+- The intended store filename/path, retention limit, serialization format, player-selection policy, and replay/simulation inclusion policy remain unresolved.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
