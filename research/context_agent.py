@@ -21,8 +21,8 @@ from research import code_model
 from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import timestamp, write_atomic
 
-PROTOCOL = 'repository-security-context-v12-agent'  # v9: ground rule 6, fail safe without losing the change's effect; v10: the receiving operation rejects, the caller substitutes before calling it; v11: ground rule 7, bounds are numbers kept by eviction, value domains stated; v12: a text domain names presence, blankness and length
-PROTOCOLS = ('repository-security-context-v7-agent', 'repository-security-context-v8-agent', 'repository-security-context-v9-agent', 'repository-security-context-v10-agent', 'repository-security-context-v11-agent', PROTOCOL)  # v7 records validate under the v8 schema after kind normalization
+PROTOCOL = 'repository-security-context-v13-agent'  # v9: ground rule 6, fail safe without losing the change's effect; v10: the receiving operation rejects, the caller substitutes before calling it; v11: ground rule 7, bounds are numbers kept by eviction, value domains stated; v12: a text domain names presence, blankness and length; v13: each unit read from untrusted data is bounded
+PROTOCOLS = ('repository-security-context-v7-agent', 'repository-security-context-v8-agent', 'repository-security-context-v9-agent', 'repository-security-context-v10-agent', 'repository-security-context-v11-agent', 'repository-security-context-v12-agent', PROTOCOL)  # v7 records validate under the v8 schema after kind normalization
 LEGACY_KINDS = {'security_property': 'observation'}
 VALIDATOR = 'anchor-validation-v3'  # v2: wrong symbol with a verifiable file range keeps the range; v3: legacy kind security_property renamed to observation
 ANGLES = ('dataflow', 'requirements', 'catalog', 'highlevel', 'generic')  # highlevel: repository read, no anchors; generic: no repository at all
