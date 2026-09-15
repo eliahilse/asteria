@@ -356,6 +356,45 @@ the code graph again failed the fewest checks (1 of 30, against 4 for the
 insert alone and 17 without it). Round I28 confirms these arms at five
 trajectories per cell in Generation S and Reuse S+B.
 
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Time and tokens of the three one-response strategies (rounds I24a to I24c): the acquisition that wrote each document (shell commands, Codex usage of the run, minutes) and the generator calls of each arm summed over its 25 responses (input, output and reasoning tokens in thousands; minutes of call time). The agentic arms are in Table~\ref{tab:graph}.}
+\label{tab:cost}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}llrrrrr@{}}
+\toprule
+Strategy & What & Calls or commands & Input (k) & Output (k) & Reasoning (k) & Minutes \\
+\midrule
+S1 high-level & Generation acquisition & 12 & 290 & 4.0 & 0.7 & 1.4 \\
+S1 high-level & Reuse acquisition & 20 & 154 & 4.1 & 0.7 & 1.4 \\
+S2 full document & Generation acquisition & 48 & 388 & 13.2 & 1.2 & 4.2 \\
+S2 full document & Reuse acquisition & 22 & 697 & 10.4 & 1.2 & 3.6 \\
+S3 generic & Generation acquisition & 0 & 15 & 2.6 & 0.4 & 0.8 \\
+S3 generic & Reuse acquisition & 0 & 15 & 1.9 & 0.2 & 0.7 \\
+\midrule
+S1 high-level & control, 25 responses & 25 & 2750 & 194.5 & 80.7 & 33.6 \\
+S1 high-level & insert, 25 responses & 25 & 2787 & 245.1 & 90.1 & 44.3 \\
+S2 full document & control, 25 responses & 25 & 2750 & 202.6 & 78.6 & 35.6 \\
+S2 full document & insert, 25 responses & 25 & 2950 & 225.2 & 87.1 & 41.9 \\
+S3 generic & control, 25 responses & 25 & 2750 & 202.3 & 83.2 & 44.1 \\
+S3 generic & insert, 25 responses & 25 & 2786 & 239.3 & 97.0 & 52.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Cost.}
+Table~\ref{tab:cost} gives the time and tokens behind the one-response
+rounds. An acquisition is a single agent run of one to four minutes; the
+full document costs about three times the tokens of the high-level one,
+and the generic document, which runs no command, a twentieth. The
+generator's cost is dominated by the base context of the cell (the input
+tokens of a control and its insert arm differ by the insert alone); the
+insert arms answer with more output and reasoning tokens and take a third
+longer per call. The agentic arms of Table~\ref{tab:graph} cost about the
+same input per trajectory as one-response arms per five responses, and
+the cancelling guard doubles it.
+
 \paragraph{Step 7: one response, no feedback.}
 The prior study allowed one model response per prompt. Round I22 repeats the
 final design (the I20 inserts, byte-identical) under that budget, five
