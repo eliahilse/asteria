@@ -1,9 +1,9 @@
-"""The paper's results table: one row per context strategy, pooled over the cells of its round(s). No model calls.
+"""The paper's results table: one row per context strategy, all with the same document version, pooled over the same cells. No model calls.
 
-Columns per row: N trajectories; functional (all sixteen tests pass within the budget); failed security checks of the resolved ones (ten issue checks);
-artifacts passing all five input-policy checks; full hits (all sixteen tests and all eleven checks); generator input tokens per trajectory (millions),
-output plus reasoning tokens per trajectory (thousands), model-call minutes per trajectory. Judge calls are included in the guard arms.
-Sources: research/iterations/<round>/qualified-analysis.json, full-hits.csv, and research/iterations/cost-summary.csv.
+Every row: N artifacts; Compiled (% of N); Tests passed (mean % of the sixteen functional tests per compiled artifact); Checks passed (mean % of the
+ten security checks per compiled artifact; an unresolved check counts as not passed); All pass (% of N passing all sixteen tests and all eleven
+checks); Input (mean generator, and judge, input tokens per artifact, millions); Minutes (mean model-call minutes per artifact).
+Sources: research/iterations/<round>/qualified-results.json and research/iterations/cost-summary.csv.
 """
 from __future__ import annotations
 
@@ -12,72 +12,82 @@ import json
 
 from research.import_evidence import ROOT
 
+FUNCTIONAL_SUITES = ('unit', 'invoked', 'autonomous')
+SECURITY = ('rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName',
+            'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet')
 ends = lambda suffix: (lambda condition: condition.endswith('__' + suffix))
+# (group, [(row label, [(round, condition matcher)])]); every round uses the version-13 documents and the cells Generation S and Reuse S+B
 GROUPS = [
-    ('One response, no feedback (five cells)', [
-        ('no context', [('i24a-high', ends('none')), ('i24b-full', ends('none')), ('i24c-generic', ends('none'))]),
-        ('S1 high-level', [('i24a-high', ends('static'))]),
-        ('S2 full document', [('i24b-full', ends('static'))]),
-        ('S3 generic (no repo.)', [('i24c-generic', ends('static'))]),
+    ('One response, no feedback', [
+        ('no security context', [('i32b-s2', ends('none'))]),
+        ('S1 high-level guidance', [('i32a-s1', ends('static'))]),
+        ('S2 full document', [('i32b-s2', ends('static'))]),
+        ('S3 generic, no repository', [('i32c-s3', ends('static'))]),
     ]),
-    ('Up to five submissions with feedback (two to four cells)', [
-        ('no context', [('i07-operational-replication', ends('none')), ('i20-v10', ends('none'))]),
-        ('researcher-written', [('i07-operational-replication', lambda c: c.split('__')[-1] in ('operations', 'requirements', 'boundaries'))]),
-        ('agent doc. v10, compact', [('i20-v10', ends('static'))]),
-    ]),
-    ('Agentic: repository tools and feedback (two cells)', [
-        ('no context', [('i28-graph', ends('none')), ('i29-v11', ends('none')), ('i30-v12', ends('none')), ('i31-v13', ends('none'))]),
-        ('S2 document (v10)', [('i28-graph', ends('static'))]),
-        ('S2 + code graph', [('i28-graph', ends('static-ast'))]),
-        ('S2 + graph + guard', [('i28-graph', ends('static-ast-guard'))]),
-        ('S2 + graph + advisory', [('i28-graph', ends('static-ast-advise'))]),
-        ('doc. v11 (bounds, domains)', [('i29-v11', ends('static'))]),
-        ('doc. v11 + guard', [('i29-v11', ends('static-guard'))]),
-        ('doc. v12 (text domains)', [('i30-v12', ends('static'))]),
-        ('doc. v12 + guard', [('i30-v12', ends('static-guard'))]),
-        ('doc. v13 (bounded reads)', [('i31-v13', ends('static'))]),
-        ('doc. v13 + guard', [('i31-v13', ends('static-guard'))]),
+    ('Agentic: repository tools, compiler and test feedback', [
+        ('no security context', [('i31-v13', ends('none'))]),
+        ('S1 high-level guidance', [('i33-agentic', ends('static-s1'))]),
+        ('S2 full document', [('i31-v13', ends('static'))]),
+        ('S3 generic, no repository', [('i33-agentic', ends('static-s3'))]),
+        ('S2 full document + judge', [('i31-v13', ends('static-guard'))]),
     ]),
 ]
 
 
-def load(iteration: str):
-    analysis = {c['condition']: c for c in json.loads((ROOT / 'research/iterations' / iteration / 'qualified-analysis.json').read_text())['conditions']}
-    hits = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations' / iteration / 'full-hits.csv').open())}
-    return analysis, hits
+def runs(iteration: str) -> list[dict]:
+    data = json.loads((ROOT / 'research/iterations' / iteration / 'qualified-results.json').read_text())
+    return next(s for s in data['studies'] if s['plan']['id'] == iteration)['runs']
 
 
 def costs() -> dict:
     return {(r['round'], r['arm']): r for r in csv.DictReader((ROOT / 'research/iterations/cost-summary.csv').open())}
 
 
-def row(label: str, sources: list) -> dict:
-    cost = costs(); total = {'n': 0, 'functional': 0, 'failed': 0, 'resolved': 0, 'clean': 0, 'full': 0, 'input': 0, 'output': 0, 'minutes': 0.0}
+def measures(run: dict) -> dict:
+    compiled = run.get('mainCompilation') == 'pass'
+    functional = [c for c in run['checks'] if c['suite'] in FUNCTIONAL_SUITES]
+    security = {c['name']: c['status'] for c in run['checks'] if c['suite'] == 'security_v1'}
+    tests = sum(c['status'] == 'pass' for c in functional) / 16 if compiled else None
+    checks = sum(security.get(n) == 'pass' for n in SECURITY) / 10 if compiled else None
+    full = bool(run.get('functionalSuccess')) and all(security.get(n) == 'pass' for n in SECURITY + ('validRecordRoundTrip',))
+    return {'compiled': compiled, 'tests': tests, 'checks': checks, 'full': full}
+
+
+def row(label: str, sources: list) -> dict | None:
+    cost = costs(); items = []; tokens = 0; minutes = 0.0
     for iteration, match in sources:
-        analysis, hits = load(iteration)
-        for condition, c in analysis.items():
-            if not match(condition): continue
-            h = hits[condition]; k = cost[(iteration, condition)]
-            total['n'] += c['n']; total['functional'] += c['withinBudgetFull']; total['failed'] += c['issues']['failed']; total['resolved'] += c['issues']['evaluated']
-            total['clean'] += int(h['inputPolicyClean']); total['full'] += int(h['fullHits'])
-            total['input'] += int(float(k['inputTokens'])); total['output'] += int(float(k['outputTokens'])) + int(float(k['reasoningTokens'])); total['minutes'] += float(k['callSeconds']) / 60
-    return {'label': label, **total}
+        try: pool = runs(iteration)
+        except FileNotFoundError: return None
+        for run in pool:
+            if not match(run['condition']): continue
+            items.append(measures(run))
+        for (rnd, arm), k in cost.items():
+            if rnd == iteration and match(arm): tokens += int(float(k['inputTokens'])); minutes += float(k['callSeconds']) / 60
+    if not items: return None
+    n = len(items); compiled = [m for m in items if m['compiled']]
+    return {'label': label, 'n': n, 'compiled': 100 * len(compiled) / n,
+            'tests': 100 * sum(m['tests'] for m in compiled) / len(compiled) if compiled else None,
+            'checks': 100 * sum(m['checks'] for m in compiled) / len(compiled) if compiled else None,
+            'full': 100 * sum(m['full'] for m in items) / n, 'input': tokens / n / 1e6, 'minutes': minutes / n}
 
 
 def rows() -> list[tuple[str, list[dict]]]:
-    return [(group, [row(label, sources) for label, sources in items]) for group, items in GROUPS]
+    return [(group, [r for r in (row(label, sources) for label, sources in items) if r is not None]) for group, items in GROUPS]
+
+
+def pct(value) -> str:
+    return '--' if value is None else f'{value:.0f}\\%'
 
 
 def latex_row(r: dict) -> str:
-    n = r['n']
-    return (f"{r['label']} & {n} & {r['functional']} & {r['failed']} / {r['resolved']} & {r['clean']} & {r['full']} & "
-            f"{r['input'] / n / 1e6:.1f} & {r['output'] / n / 1e3:.0f} & {r['minutes'] / n:.1f} \\\\")
+    return f"{r['label']} & {r['n']} & {pct(r['compiled'])} & {pct(r['tests'])} & {pct(r['checks'])} & {pct(r['full'])} & {r['input']:.1f} & {r['minutes']:.1f} \\\\"
 
 
 def body() -> str:
     lines = []
     for group, items in rows():
-        lines.append(f"\\multicolumn{{9}}{{@{{}}l}}{{\\emph{{{group}}}}} \\\\")
+        if not items: continue
+        lines.append(f"\\multicolumn{{8}}{{@{{}}l}}{{\\emph{{{group}}}}} \\\\")
         lines += [latex_row(r) for r in items]
     return '\n'.join(lines)
 
