@@ -271,6 +271,17 @@ trajectories without a functional artifact, these 12 have no other failing
 check. The cost is a conflict between one insert clause and one fixture
 property the task contract leaves unstated, not a capability loss.
 
+\paragraph{Rendering without failure clauses.}
+I17 (Table~\ref{tab:i17}) repeats the Generation S cell with the same insert
+rendered without its eleven ``Failure behavior'' lines (15,408 characters).
+Failed checks fall from 36 to 2 of 50 (bound $-7.6$ to $-6.0$; seven checks
+decrease, none increases), the I16b range; no trajectory fails only the
+null-name tests, all five insert artifacts substitute a name, and functional
+success is 4 of 5. The remaining loss is a once-per-level guard reset in the
+wrong method. One artifact passes every functional test and all eleven
+security checks, the first in Generation S. Submissions still triple (18
+against 6).
+
 \begin{table}[t]
 \centering
 \footnotesize
@@ -298,6 +309,21 @@ Reuse S+B & 5; 29/4/17 & 3; 2/4/44 \\
 Cell & Single-shot, none & Single-shot, static \\
 \midrule
 Generation S & 5; 37/2/11 & 3; 3/5/42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{I17: compact insert rendered without failure-behaviour lines; full functional (of 5) and issue checks failed / unresolved / passed (of 50); single-shot delivery, Generation S.}
+\label{tab:i17}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Cell & Single-shot, none & Single-shot, static \\
+\midrule
+Generation S & 5; 36/4/10 & 4; 2/4/44 \\
 \bottomrule
 \end{tabular}
 \end{table}

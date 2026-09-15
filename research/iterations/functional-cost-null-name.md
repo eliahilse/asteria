@@ -81,7 +81,9 @@ skipping at the hook trades functionality in 12 of 46 trajectories. Second,
 the acquisition protocol should require failure behaviour that does not
 contradict the functional contract of the change (record every completed
 run), or the rendering should present requirements without failure clauses;
-I17 tests the rendering variant. Third, the evaluator's coupling tests define
+I17 tested the rendering variant: without the failure lines the same insert
+keeps 2 failed checks of 50 against 36, no trajectory fails only the null-name
+tests, and functional success is 4 of 5 ([I17 findings](i17-nofb/findings.md)). Third, the evaluator's coupling tests define
 "real player name" for a player that has none; the contract could state the
 expected fallback.
 
