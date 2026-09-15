@@ -1,0 +1,8 @@
+ANGLE: HIGH-LEVEL GUIDANCE (structure, no pinpoints)
+Inspect the repository to understand how the change fits the program: which existing operations it will call or extend, where data enters and leaves, what it persists, what the menu and game loop expect. Then write guidance a developer could follow without being pointed at lines.
+1. Name the parts of the change in the program's own terms (the store, the record of a finished run, the menu panel, the level end), not by symbol names or line numbers. Do not cite anchors; leave every `anchors` list empty and every `enforcement_point` null. Describe operations by their role ("the operation that receives a new record", "the code that runs when a level ends").
+2. State the assets the change creates and the property each must keep, and the trust boundaries it crosses, in one sentence each.
+3. Give requirements as general rules for this kind of feature in this kind of program: what must be validated, bounded, or kept, and where in the flow (at the operation that receives untrusted data, at the point where the feature does its work), without prescribing an implementation.
+4. Give controls as design guidance, not code: the class of mechanism (reject at the receiving operation, substitute a default before calling it, bound a collection, read with a size limit, avoid a dangerous facility), with a one-line failure behaviour each.
+5. Keep the document short: at most eight requirements and eight controls, no verification items, no unknowns unless something in the repository was contradictory.
+The goal is context that transfers to a similar feature in a similar program; if a statement only makes sense with a specific line of this repository in view, generalize it or drop it.

@@ -25,7 +25,7 @@ PROTOCOL = 'repository-security-context-v10-agent'  # v9: ground rule 6, fail sa
 PROTOCOLS = ('repository-security-context-v7-agent', 'repository-security-context-v8-agent', 'repository-security-context-v9-agent', PROTOCOL)  # v7 records validate under the v8 schema after kind normalization
 LEGACY_KINDS = {'security_property': 'observation'}
 VALIDATOR = 'anchor-validation-v3'  # v2: wrong symbol with a verifiable file range keeps the range; v3: legacy kind security_property renamed to observation
-ANGLES = ('dataflow', 'requirements', 'catalog')
+ANGLES = ('dataflow', 'requirements', 'catalog', 'highlevel', 'generic')  # highlevel: repository read, no anchors; generic: no repository at all
 ASSETS = ROOT / 'research/security/agent'
 SCHEMA = ROOT / 'research/security/context-schema.json'
 CATALOG = ROOT / 'research/security/cwe-top25-2025.json'
@@ -44,11 +44,13 @@ def tracked_files(game: str) -> list[tuple[Path, str]]:
     return [(ROOT / name, (ROOT / name).relative_to(base).as_posix()) for name in raw.split('\0') if name]
 
 
-def build_workspace(method: str, directory: Path) -> dict:
+def build_workspace(method: str, directory: Path, games: list[str] | None = None) -> dict:
+    """`games=[]` builds a workspace without any repository (the generic angle): vocabulary, schema and catalogue only."""
     if method not in GAMES: raise ValueError('Method must be Generation or Reuse')
+    games = GAMES[method] if games is None else games
     workspace = directory / 'workspace'; workspace.mkdir(parents=True, exist_ok=False)
     files, omitted = {}, []
-    for game in GAMES[method]:
+    for game in games:
         for path, relative in tracked_files(game):
             if path.is_symlink(): raise ValueError('Source links are not permitted')
             if path.suffix == '.jar':
@@ -71,7 +73,7 @@ def build_workspace(method: str, directory: Path) -> dict:
     (workspace / 'outline.md').write_text(code_model.outline(model))
     shutil.copy(SCHEMA, workspace / 'schema.json'); shutil.copy(ASSETS / 'ONTOLOGY.md', workspace / 'ONTOLOGY.md')
     shutil.copy(CATALOG, workspace / 'cwe-top25-2025.json')
-    return {'games': GAMES[method], 'files': files, 'omitted': omitted, 'fingerprint': digest(canonical(files)),
+    return {'games': games, 'files': files, 'omitted': omitted, 'fingerprint': digest(canonical(files)),
             'codeModelSha256': digest(canonical(model)), 'symbols': len(model['symbols']), 'sourceFiles': len(model['files'])}
 
 
@@ -79,6 +81,9 @@ def build_prompt(task: str, method: str, angle: str) -> str:
     if angle not in ANGLES: raise ValueError('Unknown angle')
     common = (ASSETS / 'common.md').read_text(); body = (ASSETS / f'{angle}.md').read_text().strip()
     donor = ' ApoIcarus is the donor whose existing implementation should be reused where possible.' if method == 'Reuse' else ''
+    if angle == 'generic':  # no repository: replace the workspace description, keep vocabulary, rules and output contract
+        head, rest = common.split('WORKSPACE\n', 1); rest = rest.split('GROUND RULES', 1)[1]
+        common = head + 'WORKSPACE\nNone. No repository is available; `ONTOLOGY.md` defines the vocabulary and `schema.json` your output.\n\nGROUND RULES' + rest
     return (common.replace('{{TASK}}', task.strip()).replace('{{GAMES}}', ', '.join(GAMES[method]))
             .replace('{{DONOR_NOTE}}', donor).replace('{{ANGLE}}', body).replace('{{ANGLE_ID}}', angle))
 
@@ -92,11 +97,11 @@ def generator_hashes(angle: str) -> dict:
 def prepare(method: str, angle: str, task: str, output: Path = OUTPUT, model: str = DEFAULT_MODEL, effort: str = DEFAULT_EFFORT, max_commands: int = 60):
     if not task.strip(): raise ValueError('A task is required')
     identifier = 'agent-' + uuid.uuid4().hex; directory = output / identifier; directory.mkdir(parents=True, exist_ok=False)
-    workspace = build_workspace(method, directory)
+    workspace = build_workspace(method, directory, games=[] if angle == 'generic' else None)
     prompt = build_prompt(task, method, angle).replace('{{MAX_COMMANDS}}', str(max_commands))
     (directory / 'prompt.md').write_text(prompt); shutil.copy(SCHEMA, directory / 'schema.json')
     record = {'schemaVersion': 7, 'protocol': PROTOCOL, 'id': identifier, 'status': 'prepared', 'startedAt': timestamp(),
-              'harness': 'codex-exec', 'method': method, 'repository': '+'.join(GAMES[method]), 'angle': angle, 'strategy': f'agent_{angle}',
+              'harness': 'codex-exec', 'method': method, 'repository': 'none' if angle == 'generic' else '+'.join(GAMES[method]), 'angle': angle, 'strategy': f'agent_{angle}',
               'task': task.strip(), 'model': model, 'settings': {'reasoning_effort': effort, 'sandbox': 'read-only', 'max_commands': max_commands},
               'workspace': workspace, 'snapshotFingerprint': workspace['fingerprint'], 'schemaSha256': digest(SCHEMA.read_bytes()),
               'initialPrompt': prompt, 'initialPromptSha256': digest(prompt.encode()), 'generatorHashes': generator_hashes(angle),
@@ -293,7 +298,7 @@ def revalidate(record: dict, directory: Path) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__); sub = parser.add_subparsers(dest='action', required=True)
     p = sub.add_parser('prepare'); p.add_argument('--method', choices=list(GAMES), required=True); p.add_argument('--angle', choices=ANGLES, required=True)
-    p.add_argument('--task', required=True); p.add_argument('--model', default=DEFAULT_MODEL); p.add_argument('--effort', default=DEFAULT_EFFORT)
+    p.add_argument('--task', required=True); p.add_argument('--max-commands', type=int, default=60); p.add_argument('--model', default=DEFAULT_MODEL); p.add_argument('--effort', default=DEFAULT_EFFORT)
     p.add_argument('--output', type=Path, default=OUTPUT); p.add_argument('--execute', action='store_true'); p.add_argument('--codex', default='codex')
     e = sub.add_parser('execute'); e.add_argument('--id', required=True); e.add_argument('--output', type=Path, default=OUTPUT); e.add_argument('--codex', default='codex'); e.add_argument('--timeout', type=int, default=3600)
     v = sub.add_parser('revalidate'); v.add_argument('--id', required=True); v.add_argument('--output', type=Path, default=OUTPUT)
@@ -302,7 +307,7 @@ def main():
         directory = args.output / args.id; record = revalidate(json.loads((directory / 'record.json').read_text()), directory)
         c = record['citationChecks']; print(json.dumps({'id': record['id'], 'status': record['status'], 'matched': c['matched'], 'total': c['total'], 'symbolCorrected': c['symbolCorrected'], 'items': len(record['output']['items'])}))
     elif args.action == 'prepare':
-        record, directory = prepare(args.method, args.angle, args.task, args.output, args.model, args.effort)
+        record, directory = prepare(args.method, args.angle, args.task, args.output, args.model, args.effort, max_commands=args.max_commands)
         print(json.dumps({'id': record['id'], 'workspaceFiles': len(record['workspace']['files']), 'symbols': record['workspace']['symbols']}), flush=True)
         if args.execute: record = execute(record, directory, args.codex); print(json.dumps({'id': record['id'], 'status': record['status'], 'items': len((record.get('output') or {}).get('items', []))}))
     else:
