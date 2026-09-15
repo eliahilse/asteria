@@ -262,8 +262,10 @@ against `maxSubmissions` (it never became a submission; `gate` rejections do).
 The turn is recorded with `status: cancelled_by_guard`.
 
 **What is recorded.** Each consultation is one `sidecarEvents[]` entry with
-`stage: guard`, written before the judge runs (`status: started`) and completed
-afterwards (`judged`, or `error` with `error`/`errorCategory`): `turn`, `action`,
+`stage: guard`, written before the judge runs (`status: started`), again by
+the judge before and after each of its adapter calls (through the view's
+`checkpoint`), and completed afterwards (`judged`, or `error` with
+`error`/`errorCategory`, the requests sent so far kept): `turn`, `action`,
 `requestId`, `requestIds`, `consulted`, `intervene`, `wouldIntervene`,
 `verdictIntervene`, `verdictStatus` (`verdict`, `identity_mismatch`,
 `settings_mismatch`, `incomplete_response`, `invalid_verdict`, `no_verdict`),
@@ -278,16 +280,19 @@ searches with counts or errors), `historyEntries`, `historyOmitted`,
 and the sidecar's `describe()` (judge turns, cap, shadow, graph, prompt and tool
 hashes, budgets) as `sidecarConfig`; the closing count is
 `record.guardInterventions`. `GuardSidecar` refuses an insert whose statement
-lines are not rendered from the frozen graph of the method (`sidecar_error`),
-so the cited statements always come from the insert the judge read.
+blocks are not, line for line, rendered from the frozen graph of the method
+(`sidecar_error` before any judge call), so the cited statements always come
+from the insert the judge read. Verdict fields are type-checked
+(`invalid_verdict` otherwise), never coerced.
 
-`summary()` adds, per condition and as counts: `guardConsultations`,
-`guardPositiveVerdicts`, `guardInterventions`, `guardCapped`,
+`summary()` adds, for guard conditions only and as counts: `guardConsultations`,
+`guardPositiveVerdicts`, `guardInterventions`, `guardCapped`, `guardErrors`,
 `guardCancelledReads`, `guardCancelledSearches`, `guardCancelledSubmissions`,
 `guardJudgeTurns`, `guardJudgeReads`, `guardJudgeSearches`,
 `trajectoriesWithIntervention` (k/N), plus `readsExecuted` and
 `searchesExecuted` (tool turns that returned a result; `reads` and `searches`
-keep counting turns, cancelled and failed ones included).
+keep counting turns, cancelled and failed ones included). Other conditions'
+summaries are unchanged.
 `research.graph_sidecar:GUARD` and `GUARD_SHADOW` construct the judge over the
 frozen I12 Generation graph; a round that adopts the guard should add its own
 factory pointing at its contexts.

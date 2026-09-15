@@ -76,7 +76,7 @@ class FakeGuard:
     def update(self, touched, shown_ids): return None, []
 
     def judge(self, view):
-        self.views.append({k: v for k, v in view.items() if k != 'repository'})
+        self.views.append({k: v for k, v in view.items() if not callable(v)})  # repository and checkpoint are callables
         verdict, actions, base = self.verdicts.pop(0), [], view['requestId']
         for n, request in enumerate(self.reads, 1):
             result = view['repository'](request); actions.append({'action': request['action'], 'result': result})
@@ -439,7 +439,8 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertEqual((guard['reads'], guard['readsExecuted'], guard['searchesExecuted'], guard['submissions'], guard['trajectoriesWithIntervention'], guard['fullWithinBudget']),
                              ({'total': 1, 'perTrajectory': [1]}, {'total': 0, 'perTrajectory': [0]}, {'total': 1, 'perTrajectory': [1]}, {'total': 1, 'perTrajectory': [1]}, {'count': 1, 'of': 1}, {'count': 1, 'of': 1}))
             self.assertEqual((shadow['guardConsultations']['total'], shadow['guardPositiveVerdicts']['total'], shadow['guardInterventions']['total'], shadow['trajectoriesWithIntervention']), (2, 2, 0, {'count': 0, 'of': 1}))
-            self.assertEqual(result['conditions']['generation_s__agentic__none']['guardConsultations'], {'total': 0, 'perTrajectory': []}); self.assertNotIn('%', json.dumps(result))
+            self.assertNotIn('guardConsultations', result['conditions']['generation_s__agentic__none']); self.assertNotIn('readsExecuted', result['conditions']['generation_s__agentic__adaptive'])
+            self.assertEqual((guard['guardErrors'], shadow['guardErrors']), ({'total': 0, 'perTrajectory': [0]}, {'total': 0, 'perTrajectory': [0]})); self.assertNotIn('%', json.dumps(result))
 
     def test_guard_request_ids_are_bounded_before_any_model_call_and_checked_after_the_judge(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -449,7 +450,11 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertFalse((fixture.root / 'runs').exists())
             run_id = 'fixture__generation_s__agentic__guard__r1'
             record, requests = fixture.run('agentic', 'guard', [act('search', query='name')], [], FakeGuard([{'intervene': False, 'reason': 'ok'}], request_ids=[run_id + '-g10k1']))
-            self.assertEqual((record['status'], len(requests), record['sidecarEvents'][0]['status']), ('sidecar_error', 1, 'error')); self.assertIn('request ids', record['errorDetail'])
+            event = record['sidecarEvents'][0]
+            self.assertEqual((record['status'], len(requests), event['status'], event['injected'], event['intervene'], event['consulted'], event['judgeTurns'], event['requestIds']), ('sidecar_error', 1, 'error', False, False, True, 1, [run_id + '-g10k1']))
+            self.assertIn('request ids', record['errorDetail']); self.assertEqual(record['guardInterventions'], 0)
+            errored = agentic.summary(fixture.root)['conditions']['generation_s__agentic__guard']  # an error event breaks no counter
+            self.assertEqual((errored['guardErrors'], errored['guardConsultations'], errored['sidecarInjections'], errored['statuses']), ({'total': 1, 'perTrajectory': [1]}, {'total': 1, 'perTrajectory': [1]}, {'total': 0, 'perTrajectory': [0]}, {'sidecar_error': 1}))
             self.assertTrue(all(len(f"{r['runId']}-g{fixture.plan['maxTurns']}k{agentic.GUARD_JUDGE_TURNS_LIMIT + 1}") <= agentic.REQUEST_ID_LIMIT for r in fixture.plan['schedule']))
 
     def test_prepare_freezes_guard_arms_with_the_insert_and_the_judge_request_id_suffix(self):
