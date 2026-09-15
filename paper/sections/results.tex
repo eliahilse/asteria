@@ -34,7 +34,7 @@ Reuse S+B & 5; 32/1/17 & 5; 8/5/37 & 5; 0/5/45 & 5; 19/2/29 \\
 
 \begin{table}[t]
 \centering
-\footnotesize
+\scriptsize
 \setlength{\tabcolsep}{4pt}
 \caption{I09: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
 \label{tab:i09}
@@ -116,11 +116,11 @@ contract leaves unstated, not a capability loss.
 \label{tab:hook}
 \begin{tabular}{@{}llrr@{}}
 \toprule
-Arm group & Rounds & Trajectories & Only null-name tests fail \\
+Arm group & Rounds & Traj. & Null-name only \\
 \midrule
-No security context & I09, I10, I11, I16, I16b & 48 & 0 \\
+No security context & I09 to I16b & 48 & 0 \\
 Researcher-written inserts & I09 & 30 & 0 \\
-Agent-acquired inserts and slices & I10, I11, I16, I16b & 46 & 12 \\
+Agent-acquired inserts, slices & I10 to I16b & 46 & 12 \\
 \bottomrule
 \end{tabular}
 \end{table}
