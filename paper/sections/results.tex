@@ -1,19 +1,6 @@
 \section{Results}
 \label{sec:results}
 
-\paragraph{Researcher-written context.}
-All 12 context arms of I07 and all 6 of I09 (Tables~\ref{tab:i07}
-and~\ref{tab:i09}) have fewer failed issue checks than their fresh control
-under every assignment of unresolved outcomes; the requirements arm has the
-fewest in every cell, and functionality is not traded (I09: 40 of 40).
-Review of all 79 delivered I07 artifacts: control artifacts normalise instead
-of reject, clamping negative times, substituting a default name and storing
-the record. Insert wording maps to code: every arm accepts negative scores
-except Reuse requirements, whose insert says ``reject negative scores''. Two
-checks never discriminate, since every artifact guards malformed stores and
-none uses Java object serialization. The one-sentence task-only instruction
-retains most of the effect (23 and 15 fewer failed checks than control).
-
 \begin{table*}[t]
 \centering
 \footnotesize
@@ -31,35 +18,6 @@ Reuse S+B & 5; 32/1/17 & 5; 8/5/37 & 5; 0/5/45 & 5; 19/2/29 \\
 \bottomrule
 \end{tabular}
 \end{table*}
-
-\begin{table}[t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\caption{I09: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
-\label{tab:i09}
-\begin{tabular}{@{}lllll@{}}
-\toprule
-Cell & None & Requirements & Task only & Catalogue \\
-\midrule
-Generation S & 5; 38/0/12 & 5; 12/2/36 & 5; 15/3/32 & 5; 25/3/22 \\
-Reuse S+B & 5; 31/2/17 & 5; 1/3/46 & 5; 16/1/33 & 5; 13/2/35 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Agent-acquired context.}
-Six acquisitions (three angles, two methods) finished within budget in 26 to
-60 commands, keeping 88 of 90 statements with 342 of 351 anchors verified.
-Table~\ref{tab:agent} reports the data-flow angle. Repository access alone
-leaves the counts unchanged (agentic, none) at three to five times the tool
-turns. The full graph insert (about 31,000 characters) gives 3 to 10 failed
-checks of 50 and, in Generation S, 1 and 2 of 5 functional. The compact
-insert (12,672 and 17,051 characters) removes more failures than the I09
-requirements insert (Reuse 29 to 2, Generation 37 to 3 of 50; bounds $-6.2$
-to $-4.6$ and $-7.2$ to $-5.8$ per trajectory; no check increases) but costs
-functional success, 5 to 3 of 5 in both cells, with submissions rising from
-7 to 18 in Generation.
 
 \begin{table*}[t]
 \centering
@@ -82,6 +40,65 @@ I18 & Reuse S+B & single-shot & compact, no failure lines & 5; 27/4/19 & 4; 4/5/
 \bottomrule
 \end{tabular}
 \end{table*}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{I09: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
+\label{tab:i09}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+Cell & None & Requirements & Task only & Catalogue \\
+\midrule
+Generation S & 5; 38/0/12 & 5; 12/2/36 & 5; 15/3/32 & 5; 25/3/22 \\
+Reuse S+B & 5; 31/2/17 & 5; 1/3/46 & 5; 16/1/33 & 5; 13/2/35 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Run-end hook audit, rounds I09 to I16b: completed trajectories whose only failing functional tests are the two that end a run on a player without a name.}
+\label{tab:hook}
+\begin{tabular}{@{}llrr@{}}
+\toprule
+Arm group & Rounds & Traj. & Null-name only \\
+\midrule
+No security context & I09 to I16b & 48 & 0 \\
+Researcher-written inserts & I09 & 30 & 0 \\
+Agent-acquired inserts, slices & I10 to I16b & 46 & 12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Researcher-written context.}
+All 12 context arms of I07 and all 6 of I09 (Tables~\ref{tab:i07}
+and~\ref{tab:i09}) have fewer failed issue checks than their fresh control
+under every assignment of unresolved outcomes; the requirements arm has the
+fewest in every cell, and functionality is not traded (I09: 40 of 40).
+Review of all 79 delivered I07 artifacts: control artifacts normalise instead
+of reject, clamping negative times, substituting a default name and storing
+the record. Insert wording maps to code: every arm accepts negative scores
+except Reuse requirements, whose insert says ``reject negative scores''. Two
+checks never discriminate, since every artifact guards malformed stores and
+none uses Java object serialization. The one-sentence task-only instruction
+retains most of the effect (23 and 15 fewer failed checks than control).
+
+\paragraph{Agent-acquired context.}
+Six acquisitions (three angles, two methods) finished within budget in 26 to
+60 commands, keeping 88 of 90 statements with 342 of 351 anchors verified.
+Table~\ref{tab:agent} reports the data-flow angle. Repository access alone
+leaves the counts unchanged (agentic, none) at three to five times the tool
+turns. The full graph insert (about 31,000 characters) gives 3 to 10 failed
+checks of 50 and, in Generation S, 1 and 2 of 5 functional. The compact
+insert (12,672 and 17,051 characters) removes more failures than the I09
+requirements insert (Reuse 29 to 2, Generation 37 to 3 of 50; bounds $-6.2$
+to $-4.6$ and $-7.2$ to $-5.8$ per trajectory; no check increases) but costs
+functional success, 5 to 3 of 5 in both cells, with submissions rising from
+7 to 18 in Generation.
 
 \paragraph{Sidecars ($N=3$ pilots).}
 Adaptive slicing changes when statements arrive, not how many, because a
@@ -107,23 +124,6 @@ agent-insert artifacts follow this literally, the run is not recorded, and
 exactly those two tests fail, with no other failing check. The cost is a
 conflict between one insert clause and one fixture property the task
 contract leaves unstated, not a capability loss.
-
-\begin{table}[t]
-\centering
-\scriptsize
-\setlength{\tabcolsep}{4pt}
-\caption{Run-end hook audit, rounds I09 to I16b: completed trajectories whose only failing functional tests are the two that end a run on a player without a name.}
-\label{tab:hook}
-\begin{tabular}{@{}llrr@{}}
-\toprule
-Arm group & Rounds & Traj. & Null-name only \\
-\midrule
-No security context & I09 to I16b & 48 & 0 \\
-Researcher-written inserts & I09 & 30 & 0 \\
-Agent-acquired inserts, slices & I10 to I16b & 46 & 12 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \paragraph{Rendering without failure clauses.}
 The same inserts rendered without their ``Failure behavior'' lines (I17,
