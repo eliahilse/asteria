@@ -39,6 +39,8 @@ I17 & Generation S & single-shot & compact, no failure lines & 5; 36/4/10 & 4; 2
 I18 & Reuse S+B & single-shot & compact, no failure lines & 5; 27/4/19 & 4; 4/5/41 \\
 I19 & Generation S & single-shot & compact, protocol v9 & 5; 37/2/11 & 5; 31/2/17 \\
 I19 & Reuse S+B & single-shot & compact, protocol v9 & 5; 35/1/14 & 4; 9/4/37 \\
+I20 & Generation S & single-shot & compact, protocol v10 & 5; 39/1/10 & 5; 11/5/34 \\
+I20 & Reuse S+B & single-shot & compact, protocol v10 & 5; 31/1/18 & 5; 7/2/41 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -151,8 +153,16 @@ the store (``use the stated fallback Player at storeRun''); all five
 artifacts clamp and normalize inside \texttt{storeRun}, as controls do, and
 failures fall only from 37 to 31 (bound $-1.6$ to $-0.8$). The effect of the
 earlier inserts was carried by the word ``reject'' at the store; a rule
-that lets substitution move into the boundary operation removes it. The
-next version binds substitution to the caller of the boundary.
+that lets substitution move into the boundary operation removes it.
+Protocol v10 binds the roles: the receiving operation rejects and never
+substitutes, the caller substitutes before calling it. With fresh
+acquisitions (I20, Table~\ref{tab:agent}) failures fall from 39 to 11 in
+Generation (bound $-5.8$ to $-4.6$) and from 31 to 7 in Reuse (bound $-5.0$
+to $-4.4$), every input-policy check passes in Reuse and 23 of 25 in
+Generation, functional success is 5 of 5 in every arm, no nameless run is
+lost, and submissions equal the controls' (10 and 10; 11 against 13). The
+remaining failures are resource checks; the Reuse retention bound worsens
+from 0 to 3 of 5.
 
 \paragraph{Limits.}
 One task, one repository pair, one acquisition per arm shared by five

@@ -89,7 +89,10 @@ skips and one resource check worsens ([I18 findings](i18-nofb-reuse/findings.md)
 Protocol v9 then fixed the clause at acquisition: no null-name loss in
 either cell, but the Generation agent moved the substitution into storeRun
 and the security effect went with it (37 → 31 of 50); Reuse kept the store
-rejecting (35 → 9) ([I19 findings](i19-v9/findings.md)). Third, the evaluator's coupling tests define
+rejecting (35 → 9) ([I19 findings](i19-v9/findings.md)). Protocol v10 binds
+rejection to the receiving operation and substitution to its caller: no
+null-name loss, 5 of 5 functional in both cells, Generation 39 → 11 and
+Reuse 31 → 7 of 50, at no attempt cost ([I20 findings](i20-v10/findings.md)). Third, the evaluator's coupling tests define
 "real player name" for a player that has none; the contract could state the
 expected fallback.
 

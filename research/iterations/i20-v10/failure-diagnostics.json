@@ -1,0 +1,1404 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__single_shot__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 9,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "input_rejection_policy": 2,
+      "issueChecksEvaluated": 45,
+      "issueChecksUnresolved": 5,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 4,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 6,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    }
+  ],
+  "failures": [
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r1/submission-2/evaluation/report.json",
+      "reportSha256": "72c6f2735fed09a123ea5ba988a776137d0154f1f7e08626a1d5c9dc3aa05007",
+      "responseSha256": "3d009e14c3636efd0cd23a1ae0956a0551873fae9e5b9824bd0bde79a5c40526",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "048627b8dfd69259c81dfde4f629f7cbf0a1edb8f286afa3ad0b3e6f959bad8a",
+      "responseSha256": "80a01306d34b850a6a4e16e3976437187d0e6c4b0e945fb565842f1f6cc6d146",
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/report.json",
+      "reportSha256": "1d8a626ff66513b7385408175ab4ac62072d6816b39766c667bee1f079f6f2fd",
+      "responseSha256": "ae6a4b2b31ad24bc69fb93b44ab569c0bc222e9387d6bd3b281790160e799b31",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r1/submission-3/evaluation/report.json",
+      "reportSha256": "cfdbb9201c3ad85eebb9e03b6426c2f190e55da13a25702253e31e5c373daf8b",
+      "responseSha256": "799e32ad581d99915fba8a34b7f47d796dfc81627bf45199a58596293c9b349c",
+      "runId": "i20-v10__generation_s__single_shot__static__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r1/submission-3/evaluation/report.json",
+      "reportSha256": "cfdbb9201c3ad85eebb9e03b6426c2f190e55da13a25702253e31e5c373daf8b",
+      "responseSha256": "799e32ad581d99915fba8a34b7f47d796dfc81627bf45199a58596293c9b349c",
+      "runId": "i20-v10__generation_s__single_shot__static__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r1/submission-3/evaluation/report.json",
+      "reportSha256": "cfdbb9201c3ad85eebb9e03b6426c2f190e55da13a25702253e31e5c373daf8b",
+      "responseSha256": "799e32ad581d99915fba8a34b7f47d796dfc81627bf45199a58596293c9b349c",
+      "runId": "i20-v10__generation_s__single_shot__static__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "0c30fba3de7e53e167522a532254a858a1c87c9a43efb40fbe4ac533121492a9",
+      "responseSha256": "cab9449b21cfd5c891a320bdb204fdaa5180d859e0533b6fabab80dacf923964",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "0c30fba3de7e53e167522a532254a858a1c87c9a43efb40fbe4ac533121492a9",
+      "responseSha256": "cab9449b21cfd5c891a320bdb204fdaa5180d859e0533b6fabab80dacf923964",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "0c30fba3de7e53e167522a532254a858a1c87c9a43efb40fbe4ac533121492a9",
+      "responseSha256": "cab9449b21cfd5c891a320bdb204fdaa5180d859e0533b6fabab80dacf923964",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "0c30fba3de7e53e167522a532254a858a1c87c9a43efb40fbe4ac533121492a9",
+      "responseSha256": "cab9449b21cfd5c891a320bdb204fdaa5180d859e0533b6fabab80dacf923964",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "0c30fba3de7e53e167522a532254a858a1c87c9a43efb40fbe4ac533121492a9",
+      "responseSha256": "cab9449b21cfd5c891a320bdb204fdaa5180d859e0533b6fabab80dacf923964",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/report.json",
+      "reportSha256": "77b85d1190655148656e3c14c42d963d136d08846797e143eb445da4cfe7ec1e",
+      "responseSha256": "9ff145fdfef72bf8fe6ed14f73124616a322208a67d3353596fab28d1be00b9b",
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r2/submission-1/evaluation/report.json",
+      "reportSha256": "d0883830728a46152139769ddbbb56afc0306afe749742c428e80328695e8e25",
+      "responseSha256": "9f66c227a687ee4b4375b475c4389732c5f4534ff2ca36220b425b25c97935df",
+      "runId": "i20-v10__generation_s__single_shot__static__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r2/submission-1/evaluation/report.json",
+      "reportSha256": "d0883830728a46152139769ddbbb56afc0306afe749742c428e80328695e8e25",
+      "responseSha256": "9f66c227a687ee4b4375b475c4389732c5f4534ff2ca36220b425b25c97935df",
+      "runId": "i20-v10__generation_s__single_shot__static__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r2/submission-1/evaluation/report.json",
+      "reportSha256": "d0883830728a46152139769ddbbb56afc0306afe749742c428e80328695e8e25",
+      "responseSha256": "9f66c227a687ee4b4375b475c4389732c5f4534ff2ca36220b425b25c97935df",
+      "runId": "i20-v10__generation_s__single_shot__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r3/submission-2/evaluation/report.json",
+      "reportSha256": "3539ef0bac23076f3df74425c1b5ea7fd09894a1e5dd155fd70a6ea4b317d39a",
+      "responseSha256": "3710f6c2d221992edd5711e50fdbb9a3fd148af6f540c85cf615b0aa68a3160a",
+      "runId": "i20-v10__generation_s__single_shot__static__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r3/submission-2/evaluation/report.json",
+      "reportSha256": "3539ef0bac23076f3df74425c1b5ea7fd09894a1e5dd155fd70a6ea4b317d39a",
+      "responseSha256": "3710f6c2d221992edd5711e50fdbb9a3fd148af6f540c85cf615b0aa68a3160a",
+      "runId": "i20-v10__generation_s__single_shot__static__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "046a973b5854ebf9d7b69fe5d6a06f3bf83ff82f65c3918e52d3bf2f81778b2d",
+      "responseSha256": "266e4f2e4c39e6955436c436c1f2bfd9679898687d5dcb525b79947879015837",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "046a973b5854ebf9d7b69fe5d6a06f3bf83ff82f65c3918e52d3bf2f81778b2d",
+      "responseSha256": "266e4f2e4c39e6955436c436c1f2bfd9679898687d5dcb525b79947879015837",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "046a973b5854ebf9d7b69fe5d6a06f3bf83ff82f65c3918e52d3bf2f81778b2d",
+      "responseSha256": "266e4f2e4c39e6955436c436c1f2bfd9679898687d5dcb525b79947879015837",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "046a973b5854ebf9d7b69fe5d6a06f3bf83ff82f65c3918e52d3bf2f81778b2d",
+      "responseSha256": "266e4f2e4c39e6955436c436c1f2bfd9679898687d5dcb525b79947879015837",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "046a973b5854ebf9d7b69fe5d6a06f3bf83ff82f65c3918e52d3bf2f81778b2d",
+      "responseSha256": "266e4f2e4c39e6955436c436c1f2bfd9679898687d5dcb525b79947879015837",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "9cab32b58dd4a650a45a18353ff9637657879a758b78254e970300d2795c4cdb",
+      "responseSha256": "b54c94f84a6b73f2f413d79db08f3924f98476d4fd0b467dc667d66a7e1350f9",
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "other_fixture_failure",
+      "condition": "generation_s__single_shot__static",
+      "detail": "AssertionError: Valid record rejected.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f25913149e6849567d94b77845b50ef1d56fbd646922d6155ffc4d66928a0b9b",
+      "responseSha256": "667747b9130a33ed9d12b26763d4d1b8cfef822dbb6995ff6e7b1aa756b33367",
+      "runId": "i20-v10__generation_s__single_shot__static__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r4/submission-1/evaluation/report.json",
+      "reportSha256": "f25913149e6849567d94b77845b50ef1d56fbd646922d6155ffc4d66928a0b9b",
+      "responseSha256": "667747b9130a33ed9d12b26763d4d1b8cfef822dbb6995ff6e7b1aa756b33367",
+      "runId": "i20-v10__generation_s__single_shot__static__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "bae16dcdc35d40eb26e6f5993bf432895fd44b27ed26a8ae46d4f886c4564242",
+      "responseSha256": "9e9f502c0f768ed5937bc04e596abf2c9813480119eed0ec9071f28e8918fa19",
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r4/submission-4/evaluation/report.json",
+      "reportSha256": "1bb0416c331e52c4778f90adb75ffddb3aac5bf49a4b74a2a0f17077b349a724",
+      "responseSha256": "06f5fce1454858c462d2e96e696358c34bde5663d504e2d2635639656ce29c24",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r4/submission-4/evaluation/report.json",
+      "reportSha256": "1bb0416c331e52c4778f90adb75ffddb3aac5bf49a4b74a2a0f17077b349a724",
+      "responseSha256": "06f5fce1454858c462d2e96e696358c34bde5663d504e2d2635639656ce29c24",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "AssertionError: Reload retained more than 100 records.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r4/submission-4/evaluation/report.json",
+      "reportSha256": "1bb0416c331e52c4778f90adb75ffddb3aac5bf49a4b74a2a0f17077b349a724",
+      "responseSha256": "06f5fce1454858c462d2e96e696358c34bde5663d504e2d2635639656ce29c24",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "c6be1f074f4e071aff9378c76b1b7c1016a1f3d0e23da6f99ab976635329b04f",
+      "responseSha256": "65464de62ef75b9d6b87b2bbc6b29591da724ab7295066e42e732fa21658946f",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__single_shot__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "7de8352b2a80671d1216b7c59deafeb812f7006fd3d61ee5c22792c9ff3bc26c",
+      "responseSha256": "ef89dc8c8749a9d3eb8413442de1b66362c4690b5c2203e3c5bf67df0d854a7d",
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r5/submission-2/evaluation/report.json",
+      "reportSha256": "cc5e540cd8cafe8555d80e7c555d0bdd8ae65f848e35afba79f19e3fe25e0127",
+      "responseSha256": "3bfae0826d001aa58193cbefe0fcd5ba723b7fb2c7178e99403875be70248529",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r5/submission-2/evaluation/report.json",
+      "reportSha256": "cc5e540cd8cafe8555d80e7c555d0bdd8ae65f848e35afba79f19e3fe25e0127",
+      "responseSha256": "3bfae0826d001aa58193cbefe0fcd5ba723b7fb2c7178e99403875be70248529",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r5/submission-2/evaluation/report.json",
+      "reportSha256": "cc5e540cd8cafe8555d80e7c555d0bdd8ae65f848e35afba79f19e3fe25e0127",
+      "responseSha256": "3bfae0826d001aa58193cbefe0fcd5ba723b7fb2c7178e99403875be70248529",
+      "runId": "i20-v10__reuse_sb__single_shot__static__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__single_shot__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/report.json",
+      "reportSha256": "8c323dd590533a22c8a281427948a13376c174a4907e416e6e3603997a93105e",
+      "responseSha256": "a5da923d9b5c7a6421642640c309e2b518e188fce8c90f5f51eda67990df01ce",
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__single_shot__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r5/submission-3/evaluation/report.json",
+      "reportSha256": "30828b72a40939f10e0445380693f314fed1e85cb8391d99a5b187f6c4c833e1",
+      "responseSha256": "38cb5209b67683182d0ff7434576c5b4309263f79e230b26874e8787e63c52f9",
+      "runId": "i20-v10__generation_s__single_shot__static__r5",
+      "test": "oversizedPhysicalLine"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i20-v10",
+  "manifestFingerprint": "427f85da9a84a032b7836bb8be42518b357f2c505ffba6583443ce41faa63f4d",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 48,
+          "text": "                || playerName.length() > MAX_NAME || !safeName(playerName)) {"
+        },
+        {
+          "line": 110,
+          "text": "                if (score < 0 || time < 0 || name.length() == 0 || name.length() > MAX_NAME || !safeName(name)) throw new IOException(\"invalid highscore row\");"
+        },
+        {
+          "line": 126,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME || !safeName(name)) name = \"Player\";"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__static__r1",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "67e392286feabc50296812d253892daad8c35ba1520e76eb391b82cfedd7c889"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 106,
+          "text": "                while ((line = in.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__none__r1",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a734fa36e7aba5d0dfe79b424e2e370dcd3a253297b1f47ea51f31db4067dad5"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 19,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 37,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 81,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__none__r1",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d2a47d068d108a9c933a6a0399e17f47d99023e871fde3b2fc470baa86fbe339"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 46,
+          "text": "        if (!valid(score, survivalTime, playerName) || entries.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 96,
+          "text": "        if (selected.getAi() != null && level.getPlayers().size() > 1 && level.getPlayers().get(1).getAi() == null) {"
+        },
+        {
+          "line": 108,
+          "text": "                && name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH;"
+        },
+        {
+          "line": 120,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 124,
+          "text": "            if (lines.size() - 1 > MAX_RECORDS) throw new IOException(\"invalid record count\");"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__static__r1",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "9c16d3aedabd8e25787206fcca0afe9f868092ffc3f2f7f48a31b0dedb2282ae"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 47,
+          "text": "        if (rows.size() > MAX_ROWS) rows.remove(rows.size() - 1);"
+        },
+        {
+          "line": 113,
+          "text": "        if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME) return false;"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__static__r2",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "3ca357fc7b80c6ebf98030bac0d7f7f6c06646c752bba282a35469cf668f1d58"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 30,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 55,
+          "text": "            if (count < 0 || count > MAX_ENTRIES) return;"
+        },
+        {
+          "line": 92,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__none__r2",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r2/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a8b3d8b1a5c79eccc2c586525f01b91f6816f6667791e9dd97d03870bf3a4c64"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 84,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__none__r2",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "01202905abfb4235a9a37ca3a3c2ec18257929f1584ddc660bc4d267704487bc"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 39,
+          "text": "        if (!valid(score, survivalTime, playerName) || names.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 107,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 109,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 116,
+          "text": "                    if (!valid(score, time, name) || n.size() >= MAX_RECORDS) throw new IOException(\"invalid record\");"
+        },
+        {
+          "line": 129,
+          "text": "            && name != null && name.trim().length() > 0 && name.length() <= MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__static__r2",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c7142bdc5984f1524ec3eb5d07411c85091a5415317d4f9e689114a3b4a8bfb1"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 64;"
+        },
+        {
+          "line": 38,
+          "text": "        if (!valid(score, survivalTime, playerName) || entries.size() >= MAX_RECORDS) return false;"
+        },
+        {
+          "line": 97,
+          "text": "            if (!HEADER.equals(reader.readLine())) return;"
+        },
+        {
+          "line": 99,
+          "text": "            while ((line = reader.readLine()) != null && count < MAX_RECORDS) {"
+        },
+        {
+          "line": 115,
+          "text": "                && name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__static__r3",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5f5df490f91dc7e7aaedc5a95c916d43a733ae2d9d9f12b86e5f60d649ef044d"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 45,
+          "text": "        while (playersNames.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 92,
+          "text": "            int count = Math.min(Math.max(0, in.readInt()), MAX_ENTRIES);"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__none__r3",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "e914deddd6408a0e0fa25cd57eab606025534f46e3e555095edef33652364d02"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 49,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__none__r3",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ba32cb30516cea1f44321c0b9bc6ddbd2bcda4a2d9607fc3bd199258868d5f4d"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 31,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 143,
+          "text": "        if (s.length() == 0 || s.length() > MAX_NAME) return false;"
+        },
+        {
+          "line": 149,
+          "text": "        while (runs.size() > MAX_ROWS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__static__r3",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fe2af0b3ad47c41e4c1331498a40de1f92e024ced90cbb034b536eebabbd7617"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 40,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME || entries.size() >= MAX_RECORDS) return false;"
+        },
+        {
+          "line": 75,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 76,
+          "text": "            if (lines.size() > MAX_RECORDS + 1 || lines.size() == 0 || !HEADER.equals(lines.get(0))) throw new IOException(\"invalid highscore format\");"
+        },
+        {
+          "line": 81,
+          "text": "                if (n.length() == 0 || n.length() > MAX_NAME || s < 0 || t < 0) throw new IOException(\"invalid highscore values\");"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__static__r4",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "272d570f22210568aeec9c3f25a8ddcbbf69b28d17134fd462af24b00d5c7156"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 93,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__none__r4",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "2939fdf96f3a09517a1c986edda6899918db2a75936075b536e591764cb74176"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 40;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 1000;"
+        },
+        {
+          "line": 48,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || !safe(name)) return false;"
+        },
+        {
+          "line": 51,
+          "text": "        if (entries.size() > MAX_ENTRIES) entries.subList(MAX_ENTRIES, entries.size()).clear();"
+        },
+        {
+          "line": 79,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH || !safe(name.trim())) name = \"Player\";"
+        },
+        {
+          "line": 127,
+          "text": "                while ((line = reader.readLine()) != null && entries.size() < MAX_ENTRIES) {"
+        },
+        {
+          "line": 133,
+          "text": "                        if (score >= 0 && time >= 0 && values[2].length() <= MAX_NAME_LENGTH && values[2].trim().length() > 0 && safe(values[2])) {"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__static__r4",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r4/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "8617aa7e65e92a73d37d217b9fae98861e53c395bf3ab11613ef18dd145d7c4b"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 44,
+          "text": "        while (names.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 79,
+          "text": "                while ((line = in.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__none__r4",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5909c316a70415c363e8abbae045142c56d0381a42c6a8ee58db4bb49d708b6b"
+    },
+    {
+      "condition": "generation_s__single_shot__none",
+      "excerpts": [
+        {
+          "line": 129,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__none__r5",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__none__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c07f30f51a1006ea4c79087ef6c9747d9307e8778550ffc7ae4eb308acce66ed"
+    },
+    {
+      "condition": "reuse_sb__single_shot__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME = 40;"
+        },
+        {
+          "line": 44,
+          "text": "                || playerName.length() > MAX_NAME || !isSafe(playerName)) {"
+        },
+        {
+          "line": 50,
+          "text": "        if (rows.size() > MAX_ROWS) rows.subList(MAX_ROWS, rows.size()).clear();"
+        },
+        {
+          "line": 69,
+          "text": "        if (name == null || name.trim().length() == 0 || name.length() > MAX_NAME || !isSafe(name)) name = \"Player\";"
+        },
+        {
+          "line": 100,
+          "text": "                while ((line = in.readLine()) != null) {"
+        },
+        {
+          "line": 104,
+          "text": "                    if (score >= 0 && time >= 0 && p[2].length() > 0 && p[2].length() <= MAX_NAME && isSafe(p[2])) rows.add(new Row(score, time, p[2]));"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__static__r5",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5788a127a9b5ff19b918ce1ab8912574f2dc112bd1226442bba11a770e935e87"
+    },
+    {
+      "condition": "reuse_sb__single_shot__none",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 41,
+          "text": "        while (names.size() > MAX_ENTRIES) { names.remove(names.size()-1); scores.remove(scores.size()-1); times.remove(times.size()-1); }"
+        },
+        {
+          "line": 59,
+          "text": "        try { BufferedReader r=Files.newBufferedReader(store, StandardCharsets.UTF_8); try { String line; while((line=r.readLine())!=null){ String[] p=line.split(\"\\\\t\",3); if(p.length==3){ scores.add(Integer.valueOf(p[0])); times.add(Integer.valueOf(p[1])); names.add(p[2]); } } } finally { r.close(); } sort(); } catch(Exception ignored) { names.clear(); scores.clear(); times.clear(); }"
+        }
+      ],
+      "runId": "i20-v10__reuse_sb__single_shot__none__r5",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__reuse_sb__single_shot__none__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "288ad58c8273c6209a38fa4ce7ce10cc2ecc3de6767966131d3836d8b4418e32"
+    },
+    {
+      "condition": "generation_s__single_shot__static",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_RECORDS = 100;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 48,
+          "text": "        if (entries.size() > MAX_RECORDS) entries.remove(entries.size() - 1);"
+        },
+        {
+          "line": 102,
+          "text": "        return name != null && name.trim().length() > 0 && name.trim().length() <= MAX_NAME_LENGTH;"
+        },
+        {
+          "line": 116,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 117,
+          "text": "            if (lines.isEmpty() || lines.size() > MAX_RECORDS + 1 || !\"APOMARIO_HIGHSCORE_1\".equals(lines.get(0))) throw new IOException(\"invalid header\");"
+        }
+      ],
+      "runId": "i20-v10__generation_s__single_shot__static__r5",
+      "source": ".local/iterations/i20-v10/runs/i20-v10__generation_s__single_shot__static__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "33b569cbbc2665fc6033bb9b91709074116a89e1bde09a1eb3d68b1d89c0e8bd"
+    }
+  ]
+}
