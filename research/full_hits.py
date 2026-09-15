@@ -60,7 +60,8 @@ def arm_rows(iteration: str, root: Path = ROOT) -> list[dict]:
                'compiled': sum(1 for r in runs if r.get('mainCompilation')), 'functionalFirst': sum(1 for r in runs if r.get('firstFunctionalSuccess')), 'functional': sum(1 for r in runs if r.get('functionalSuccess')),
                'inputPolicyClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in INPUT_POLICY)), 'securityClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in SECURITY)),
                'fullHits': sum(1 for r in runs if is_full_hit(r)),
-               'failed': sum(v == 'fail' for c in checks for v in c.values()), 'unresolved': sum(v not in ('pass', 'fail') for c in checks for v in c.values()), 'passed': sum(v == 'pass' for c in checks for v in c.values())}
+               'failed': sum(v == 'fail' for c in checks for v in c.values()), 'passed': sum(v == 'pass' for c in checks for v in c.values())}
+        row['unresolved'] = 11 * len(runs) - row['failed'] - row['passed']  # fixed denominator: a check absent from a rejected or non-compiling artifact is unresolved
         if recs:
             guard = [e for r in recs for e in r.get('sidecarEvents') or [] if e.get('stage') == 'guard']
             turns = [r.get('toolTurns') or len(r.get('turns') or []) for r in recs]; first = [t for t in (compiling_turn(r) for r in recs) if t is not None]

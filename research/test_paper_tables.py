@@ -102,5 +102,22 @@ class MatrixTableTests(unittest.TestCase):
         self.assertEqual(total, [sum(cell(m, c)[k] for c in contexts) for m in ('Generation', 'Reuse') for k in range(5)])
         self.assertEqual(total[:5], [17, 18, 17, 25, 20]); self.assertEqual(total[5:], [13, 21, 19, 19, 18])
 
+class StrategyTableTests(unittest.TestCase):
+    ROUNDS = {'S1 high-level (I24a)': 'i24a-high', 'S2 full document (I24b)': 'i24b-full', 'S3 generic (I24c)': 'i24c-generic'}
+
+    def test_strategy_totals_match_qualified_analyses(self):
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        header, body = parse_table(source, 'tab:strategies')
+        self.assertEqual(header, ['Arm', 'Compiled', 'Functional', 'Checks f / u / p'])
+        for label, (arm, compiled, functional, checks) in body:
+            conditions = [c for c in analysis(self.ROUNDS[label]).values() if c['condition'].endswith('__' + {'control': 'none', 'insert': 'static'}[arm])]
+            self.assertEqual(len(conditions), 5, label)
+            failed, unresolved, passed = map(int, checks.split('/'))
+            self.assertEqual((int(compiled), int(functional), failed, unresolved, passed),
+                             (sum(c['compiled'] for c in conditions), sum(c['withinBudgetFull'] for c in conditions), sum(c['issues']['failed'] for c in conditions),
+                              sum(c['issues']['unresolved'] for c in conditions), sum(c['issues']['evaluated'] - c['issues']['failed'] for c in conditions)), f'{label} {arm}')
+            self.assertEqual(failed + unresolved + passed, 250, label)
+
+
 if __name__ == '__main__':
     unittest.main()
