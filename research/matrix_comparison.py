@@ -39,12 +39,16 @@ def our_cells(iteration: str, root: Path = ROOT) -> dict[str, dict]:
     runs = root / '.local/iterations' / iteration / 'runs'
     for record_path in sorted(runs.glob('*/record.json')):
         r = json.loads(record_path.read_text()); cell = r['condition'].split('__')[0]
+        if r.get('status') in (None, 'started'): continue  # still collecting
         a = out.setdefault(cell, {'n': 0, 'delivered': 0, 'compiled': 0, 'functional': 0, 'unit': 0, 'invoked': 0, 'autonomous': 0})
         a['n'] += 1; a['functional'] += bool(r.get('functionalSuccess'))
         subs = [s for s in r.get('submissions', []) if s.get('status') == 'evaluated']
         if not subs: continue
         a['delivered'] += 1; s = subs[-1]; a['compiled'] += s.get('compilation') == 'pass'
-        for c in (s.get('feedback') or {}).get('functionalChecks') or []:
+        checks = (s.get('feedback') or {}).get('functionalChecks') or []
+        if not checks and r.get('finalEvaluation') and (record_path.parent / r['finalEvaluation']).exists():
+            checks = json.loads((record_path.parent / r['finalEvaluation']).read_text()).get('checks') or []
+        for c in checks:
             if c.get('status') == 'pass' and c.get('suite') in a: a[c['suite']] += 1
     analysis = root / 'research/iterations' / iteration / 'qualified-analysis.json'
     if analysis.exists():
