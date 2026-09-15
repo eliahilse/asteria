@@ -10,7 +10,7 @@ from research.import_evidence import ROOT
 CELLS = {'Generation S': 'generation_s', 'Generation S+F+B': 'generation_sfb', 'Reuse B': 'reuse_b', 'Reuse S+B': 'reuse_sb'}
 ARMS = {'None': 'none', 'Operations': 'operations', 'Requirements': 'requirements', 'Boundaries': 'boundaries', 'Task only': 'task_only', 'Catalogue': 'catalog',
         'Single-shot, none': 'single_shot__none', 'Single-shot, static': 'single_shot__static', 'Agentic, none': 'agentic__none', 'Agentic, static': 'agentic__static', 'Agentic, adaptive': 'agentic__adaptive', 'Agentic, gate': 'agentic__gate', 'Agentic, gate (shadow)': 'agentic__gate', 'Agentic, coach': 'agentic__coach', 'Agentic, gate once': 'agentic__gate_once', 'Agentic, rewind': 'agentic__rewind'}
-TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition', 'tab:i10': 'i10-agentic-delivery', 'tab:i11': 'i11-symbol-sidecar', 'tab:i12': 'i12-gate-sidecar', 'tab:i13': 'i13-shadow-gate', 'tab:i14': 'i14-coach-gate', 'tab:i15': 'i15-rewind', 'tab:i16': 'i16-compact-confirmation', 'tab:i16b': 'i16b-gen-compact', 'tab:i17': 'i17-nofb'}
+TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition', 'tab:i10': 'i10-agentic-delivery', 'tab:i11': 'i11-symbol-sidecar', 'tab:i12': 'i12-gate-sidecar', 'tab:i13': 'i13-shadow-gate', 'tab:i14': 'i14-coach-gate', 'tab:i15': 'i15-rewind', 'tab:i16': 'i16-compact-confirmation', 'tab:i16b': 'i16b-gen-compact', 'tab:i17': 'i17-nofb', 'tab:i18': 'i18-nofb-reuse'}
 
 
 def parse_table(source: str, label: str) -> tuple[list[str], list[tuple[str, list[str]]]]:
