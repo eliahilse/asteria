@@ -139,5 +139,29 @@ class GraphTableTests(unittest.TestCase):
             self.assertEqual((int(calls), tokens), (int(k['calls']), f"{int(k['inputTokens'])/1e6:.2f}"), label)
 
 
+class CostTableTests(unittest.TestCase):
+    ROUNDS = {'S1 high-level': 'i24a-high', 'S2 full document': 'i24b-full', 'S3 generic': 'i24c-generic'}
+
+    def test_cost_table_matches_cost_summaries(self):
+        import csv, glob
+        source = (ROOT / 'paper/sections/results.tex').read_text()
+        header, body = parse_table(source, 'tab:cost')
+        self.assertEqual(header, ['What', 'Calls or commands', 'Input (k)', 'Output (k)', 'Reasoning (k)', 'Minutes'])
+        acquisitions = {r['record']: r for r in csv.DictReader((ROOT / 'research/iterations/cost-acquisitions.csv').open())}
+        arms = list(csv.DictReader((ROOT / 'research/iterations/cost-summary.csv').open()))
+        for label, (what, calls, inp, out, reasoning, minutes) in body:
+            rnd = self.ROUNDS[label]
+            if what.endswith('acquisition'):
+                method = what.split()[0].lower(); path = [f for f in glob.glob(str(ROOT / f'research/iterations/{rnd}/contexts/{method}-*record-id.txt')) if 'code-graph' not in f][0]
+                a = acquisitions[Path(path).read_text().strip()]
+                self.assertEqual((calls, inp, out, reasoning, minutes), (a['commands'], f"{int(a['inputTokens'])/1e3:.0f}", f"{int(a['outputTokens'])/1e3:.1f}", f"{int(a['reasoningTokens'])/1e3:.1f}", f"{float(a['minutes']):.1f}"), f'{label} {what}')
+            else:
+                arm = 'none' if what.startswith('control') else 'static'
+                sub = [r for r in arms if r['round'] == rnd and r['arm'].endswith('__' + arm)]
+                self.assertEqual(len(sub), 5, f'{label} {what}')
+                total = {k: sum(float(r[k]) for r in sub) for k in ('calls', 'inputTokens', 'outputTokens', 'reasoningTokens', 'callSeconds')}
+                self.assertEqual((int(calls), inp, out, reasoning, minutes), (int(total['calls']), f"{total['inputTokens']/1e3:.0f}", f"{total['outputTokens']/1e3:.1f}", f"{total['reasoningTokens']/1e3:.1f}", f"{total['callSeconds']/60:.1f}"), f'{label} {what}')
+
+
 if __name__ == '__main__':
     unittest.main()
