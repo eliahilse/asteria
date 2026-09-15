@@ -3,7 +3,11 @@ import type { MatrixData } from './experiment-types';
 import { PERCENT_MIN_N, combinationRows, fractionText, percentAllowed, percentText, statColumns, type CombinationRow, type SecurityIssues, type StatColumn } from './combination-stats';
 export type * from './experiment-types';
 
-const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only', catalog: 'CWE catalog' };
+const securityNames: Record<string, string> = { none: 'None', overview: 'Overview', task: 'Task-focused', flows: 'Data-flow', requirements: 'Requirements', boundaries: 'Trust boundaries', operations: 'Operational guards', task_only: 'Task only', catalog: 'CWE catalog',
+  'single_shot+static': 'Agent insert', 'agentic+none': 'Agentic, no context', 'agentic+static': 'Agentic + insert', 'agentic+adaptive': 'Agentic + adaptive sidecar', 'agentic+gate': 'Agentic + gate', 'agentic+coach': 'Agentic + coach', 'agentic+gate_once': 'Agentic + gate once', 'agentic+rewind': 'Agentic + rewind' };
+// Rounds in natural order (i9 < i16 < i16b < i21a); the newest round is the default view.
+const roundKey = (id: string) => { const m = /^i(\d+)([a-z]?)/.exec(id); return m ? [Number(m[1]), m[2]] as const : [Number.MAX_SAFE_INTEGER, id] as const; };
+const byRound = (a: string, b: string) => { const [x, y] = [roundKey(a), roundKey(b)]; return x[0] - y[0] || String(x[1]).localeCompare(String(y[1])); };
 // Counts first (docs/REPORTING.md): every rate cell reads k/N; the percentage is confined to the tooltip.
 const cellText = (r: CombinationRow, column: StatColumn) => column.format === 'count' ? String(r.attempts) : fractionText(r.stats[column.key]) ?? '—';
 const cellTitle = (r: CombinationRow, column: StatColumn, unit: string) => {
@@ -25,7 +29,7 @@ function IssueCount({ issues: s }: { issues: SecurityIssues }) {
 async function json(url: string) { const r = await fetch(url); if (!r.ok || !r.headers.get('content-type')?.includes('application/json')) throw new Error('Experiment data unavailable'); const d = await r.json(); if (d.error) throw new Error(d.error); return d; }
 
 export function Experiment() {
-  const [data, setData] = useState<MatrixData>(), [error, setError] = useState(''), [busy, setBusy] = useState(false);
+  const [data, setData] = useState<MatrixData>(), [error, setError] = useState(''), [busy, setBusy] = useState(false), [round, setRound] = useState<string>();
   useEffect(() => {
     let current = true;
     const refresh = async () => {
@@ -41,12 +45,16 @@ export function Experiment() {
     return () => { current = false; clearInterval(timer); };
   }, []);
   if (!data) return <p role={error ? 'alert' : 'status'}>{error || 'Loading results…'}</p>;
-  const rows = combinationRows(data);
+  // Several rounds in one file: default to the newest round, with a selector for the others. A replay-plus-follow-up pair stays as one view.
+  const studyIds = data.studies.filter(s => s.plan.phase !== 'screening').map(s => s.plan.id).sort(byRound), latest = studyIds[studyIds.length - 1], selectable = studyIds.length > 1, selected = round ?? (selectable ? latest : 'all');
+  const labels = Object.fromEntries(data.studies.map(s => [s.plan.id, s.plan.label ?? s.plan.id]));
+  const rows = combinationRows(data).filter(r => selected === 'all' || r.study === selected);
   const unit = data.studies.some(s => s.plan.observationUnit === 'trajectory') ? 'trajectories' : 'attempts';
   const budget = Math.max(...data.studies.map(s => s.plan.maxSubmissions ?? 1));
   const download = async (kind: 'json' | 'xlsx' | 'report') => { setBusy(true); try { const { exportExperiment } = await import('./experiment-export'); await exportExperiment(data, kind); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
   return <section aria-label="Context combinations">
-    <div className="combination-tools"><p className="note">{rows.length} combinations · Cells are k/N counts on all N {unit}: compiled / N, unit checks / 7N, live checks / 5N, full / N. Percentages appear only in cell tooltips.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('report')}>Export report XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
+    <div className="combination-tools">{selectable && <label className="round-select">Round <select aria-label="Round" value={selected} onChange={e => setRound(e.target.value)}>
+      {[...studyIds].reverse().map(id => <option key={id} value={id}>{labels[id]} · {id}{id === latest ? ' (latest)' : ''}</option>)}<option value="all">All rounds</option></select></label>}<p className="note">{rows.length} combinations · Cells are k/N counts on all N {unit}: compiled / N, unit checks / 7N, live checks / 5N, full / N. Percentages appear only in cell tooltips.{budget > 1 && ` Up to ${budget} submissions each.`}</p><div className="exports"><button disabled={busy} onClick={() => download('xlsx')}>Export XLSX</button><button disabled={busy} onClick={() => download('report')}>Export report XLSX</button><button disabled={busy} onClick={() => download('json')}>Export JSON</button></div></div>
     {!data.local && rows.every(r => !r.attempts) && <p className="note">Public plans only. No observations in this snapshot.</p>}
     {error && <p role="alert">{error}</p>}
     {data.studies.filter(s => s.plan.evaluationNote).map(s => <p className="note" key={s.plan.id}>{s.plan.evaluationNote}</p>)}

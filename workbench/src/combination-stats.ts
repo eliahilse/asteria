@@ -57,8 +57,10 @@ export function securityIssues(summary: Summary, control?: Summary): SecurityIss
 
 function row(study: MatrixStudy, condition: MatrixCondition): CombinationRow {
   const summary = study.summary.conditions.find(r => r.id === condition.id)!;
-  const controlCondition = study.plan.phase === 'security_followup' && condition.parentCondition && condition.securityStrategy !== 'none' &&
-    study.plan.conditions.find(c => c.parentCondition === condition.parentCondition && c.securityStrategy === 'none');
+  // Fresh control of the same round and cell: 'none' for single-shot arms, '<mode>+none' for agentic arms (agentic-delivery plans label arms '<mode>+<sidecar>').
+  const strategy = condition.securityStrategy, controlStrategy = strategy.includes('+') && !strategy.startsWith('single_shot') ? `${strategy.split('+')[0]}+none` : 'none';
+  const controlCondition = (study.plan.phase === 'security_followup' || study.plan.phase === 'agentic_delivery') && condition.parentCondition && strategy !== controlStrategy &&
+    study.plan.conditions.find(c => c.parentCondition === condition.parentCondition && c.securityStrategy === controlStrategy);
   const control = controlCondition ? study.summary.conditions.find(c => c.id === controlCondition.id) : undefined;
   // Fixed denominators: N observations for compiled and full, 7 × N unit checks and 5 × N live checks.
   const stats: CombinationRow['stats'] = { compiled: fraction(summary.compiled, summary.attempts), full: fraction(summary.fullFunctional, summary.attempts) };
