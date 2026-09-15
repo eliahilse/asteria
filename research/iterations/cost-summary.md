@@ -226,6 +226,12 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i28-graph | reuse_sb__agentic__static-ast-guard | 5 | 94 | 8,994,452 | 0 | 98,195 | 32,374 | 15.6 | 20.9 |
 | i28-graph | reuse_sb__agentic__static-ast | 5 | 36 | 5,565,211 | 299,440 | 53,018 | 19,615 | 10.1 | 11.0 |
 | i28-graph | reuse_sb__agentic__static | 5 | 42 | 6,519,219 | 149,688 | 71,470 | 21,594 | 12.7 | 13.7 |
+| i29-v11 | generation_s__agentic__none | 5 | 39 | 3,624,915 | 0 | 57,758 | 21,955 | 10.2 | 11.0 |
+| i29-v11 | generation_s__agentic__static-guard | 5 | 75 | 4,700,836 | 0 | 80,856 | 23,565 | 11.9 | 15.7 |
+| i29-v11 | generation_s__agentic__static | 5 | 41 | 4,075,738 | 0 | 49,068 | 17,399 | 9.4 | 10.2 |
+| i29-v11 | reuse_sb__agentic__none | 5 | 38 | 5,615,641 | 0 | 54,682 | 18,979 | 10.3 | 10.9 |
+| i29-v11 | reuse_sb__agentic__static-guard | 5 | 76 | 7,812,807 | 0 | 84,929 | 29,702 | 13.1 | 16.9 |
+| i29-v11 | reuse_sb__agentic__static | 5 | 35 | 5,679,865 | 0 | 52,221 | 20,994 | 9.5 | 10.2 |
 
 ## Acquisitions (context agent)
 
@@ -249,3 +255,7 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | agent-ba5f719f07b04f5f8bf4a60b5940c952 | v10 | generic | Reuse | 0 | 0.7 | 15,234 | 0 | 1,945 | 186 | 11 |
 | agent-dd37ed97a93f4235bde112027430d551 | v10 | highlevel | Generation | 12 | 1.4 | 289,544 | 216,576 | 3,950 | 693 | 12 |
 | agent-e07d85e25a6341ce91a97a0255f8570e | v10 | highlevel | Reuse | 20 | 1.4 | 153,571 | 100,352 | 4,136 | 686 | 13 |
+| agent-f1703bc4372f4d4fa0b1f7c95230555d | v11 | dataflow | Generation | 24 | 4.0 | 482,573 | 407,552 | 11,390 | 1,380 | 20 |
+| agent-da3b9e79e63c4e318a1de1c345c482d2 | v11 | dataflow | Reuse | 20 | 3.4 | 631,583 | 528,896 | 10,272 | 1,400 | 15 |
+| agent-d747acce46b24ff9829ee60331499780 | v12 | dataflow | Generation | 20 | 3.5 | 495,512 | 415,232 | 10,388 | 1,004 | 18 |
+| agent-9ac24a9788654c35b906e5c160b7f5bf | v12 | dataflow | Reuse | 22 | 3.4 | 528,495 | 438,528 | 9,499 | 1,341 | 17 |
