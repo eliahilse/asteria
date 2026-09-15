@@ -1,26 +1,21 @@
-% Evidence: sections/results.tex, sections/design.tex, sections/introduction.tex.
+% Evidence: sections/results.tex, sections/design.tex.
 \begin{abstract}
-When LLMs (Large Language Models) generate code, the security of the
-output depends on what the model knows about the existing program. This
-paper studies \emph{security context}: assets, trust boundaries, weakness
-types, requirements and controls that a planned change touches, written
-by an agent from the repository and a one-line feature description and
-passed in the prompt before the model writes. The task is a Highscore
-feature for a Java game, implemented from scratch (Generation) or by
-reusing a sibling game's implementation (Reuse), by OpenAI's
-\texttt{gpt-5.6-luna} at reasoning effort high; ten security checks and
-sixteen functional tests score every artifact against a control collected
-alongside it. Three strategies for writing the document (high-level
-guidance from the repository, a full document anchored to code, a generic
-document written without any repository) are compared under one response
-and under agentic delivery with repository tools and feedback. Compiled
+We ask whether a repository-specific \emph{security context}, a document
+of assets, trust boundaries, weakness types, requirements and controls
+written by an agent from the repository and a one-line feature
+description, makes LLM-generated code more secure, and what it costs.
+Task: a Highscore feature for a Java game, implemented from scratch
+(Generation) or by reusing a sibling game's implementation (Reuse) by
+OpenAI's \texttt{gpt-5.6-luna} at reasoning effort high, scored by ten
+security checks and sixteen functional tests against a control collected
+alongside. Three ways of writing the document (high-level guidance from
+the repository, a full document anchored to code, a generic document
+written without any repository) are compared under one response and
+under agentic delivery with repository tools and feedback. Compiled
 artifacts without context pass 22\% (one response) and 33\% (agentic) of
-the security checks; with any of the three documents they pass 82 to
-90\%, within five points of each other, while functionality stays where
-it is. A judge that cancels violating submissions and a code graph of
-what the model reads add nothing measurable at higher cost. What the
-artifacts still fail follows the document's wording: three revisions of
-the agent's instructions, about bounds and value domains, each removed
-the failures the previous wording had left open. One task, one pair of
-games and ten artifacts per arm limit what the rates can claim.
+the security checks; with any of the three documents 82 to 90\%, within
+five points of each other in each mode, at unchanged test pass rates. A
+judge that cancels violating submissions adds nothing at 1.4 times the
+tokens. One task, one pair of games and ten artifacts per arm limit what
+the rates can claim.
 \end{abstract}
