@@ -1,0 +1,88 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Add a local, persistent highscore store, a finished-run recording step, and a dedicated menu panel. Reuse ApoIcarus’s record model, sorting, formatting, and panel-navigation concepts while adapting persistence to the supplied file path and ApoMario’s level lifecycle.
+
+Assets:
+- Highscore records and ranking [integrity]
+- Player names associated with completed runs [authenticity]
+- Persisted highscore file [availability]
+- Highscore menu presentation [integrity]
+
+Trust boundaries:
+- Local highscore file [entry point]: User-editable bytes representing stored names, scores, and survival times from The file supplied to the highscore store to Highscore parsing and in-memory record construction
+- Finished level state [entry point]: Score, player identity, and elapsed time derived from a level affected by local or shared level content and cheating from The level-end recording integration to The operation that receives a completed run
+- Player-name input [entry point]: A locally entered or edited display name from The run-completion name-entry flow to The operation that receives a new highscore record
+
+[X1; change_risk; reasoned; tampering; CWE-20] A malformed or tampered local record, name, score, or time could corrupt ranking, misrepresent a player, or prevent the menu from loading.
+Task relevance: The feature introduces a persistent file and accepts locally editable performance data.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R1; requirement; task; tampering] The finished-run operation must record the actual completed level score, player name, and elapsed survival time for both clearing and losing, with survival time represented consistently for mm:ss display.
+Task relevance: This is the primary feature behavior at level end.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R2; requirement; task; tampering; CWE-20] The record-receiving operation must validate score, survival time, and player name before adding a record; invalid values must be rejected rather than substituted or clamped.
+Task relevance: Prevents malformed or cheated input from entering the ranking.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R3; requirement; reasoned; tampering; CWE-20] The caller at run completion must normalize or supply explicit safe defaults for missing or invalid level-derived values before invoking the record-receiving operation, so recording the finished run still occurs.
+Task relevance: Preserves the required recording effect when level state is incomplete.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R4; requirement; task; tampering] The in-memory records and their parallel name, score, and survival-time views must remain aligned, and records must be ordered by score descending for every public view and menu presentation.
+Task relevance: Ensures rankings and displayed fields describe the same run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R5; requirement; task; tampering; CWE-20] The store must persist accepted records to the supplied file and reload them across process runs without allowing malformed file content to create partial or misaligned records.
+Task relevance: Provides persistence while protecting the ranking from file corruption.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R6; requirement; task; information_disclosure] The dedicated menu panel must display player names, descending scores, and survival times formatted as mm:ss, and must provide a normal route back to the existing menu flow.
+Task relevance: Integrates the highscore board into the desktop game’s navigation and presentation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[C1; control; reasoned; denial_of_service; CWE-20] At the file-reading operation, parse a bounded record count and bounded field sizes, validate each field and record shape, and reject the invalid input with a reported load error.
+Task relevance: Limits resource consumption and prevents malformed persisted data from entering memory.
+Failure behavior: Reject the invalid file and report the rejection; do not clamp, partially accept, or substitute records.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2, satisfies R5
+
+[C2; control; reasoned; tampering; CWE-20] At the operation that receives a new record, enforce nonnegative bounded numeric values and a bounded, display-safe player name before insertion.
+Task relevance: Protects the ranking and rendering path from invalid run data.
+Failure behavior: Reject the record and report the rejection without changing stored records.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; tampering; CWE-20] At the level-end integration point, choose explicit safe defaults or normalized values for missing or invalid level-derived score, name, or elapsed time before calling the record operation.
+Task relevance: Ensures the primary record-run effect occurs even when game state is incomplete.
+Failure behavior: Use the stated defaults or normalization and continue recording; do not skip the finished run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1, satisfies R3
+
+[C4; control; reasoned; tampering] Use one bounded record collection or an equivalent coordinated update mechanism so names, scores, and survival times are inserted, sorted, exposed, and persisted together.
+Task relevance: Prevents field misalignment and inconsistent rankings.
+Failure behavior: Reject the whole update if the fields cannot remain aligned; retain the prior valid collection.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; tampering] At persistence, write validated records using a deterministic format and replace or commit the target file atomically where practical, avoiding executable or object-deserialization facilities.
+Task relevance: Reduces corruption and avoids dangerous interpretation of user-editable files.
+Failure behavior: Report the write failure and retain the in-memory accepted record for the current run without treating uncommitted data as persisted.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C6; control; reasoned; denial_of_service] At panel initialization and rendering, consume only validated bounded records, format elapsed seconds as mm:ss, and reuse ApoIcarus’s ranking and paging presentation pattern adapted to ApoMario’s menu model.
+Task relevance: Provides a safe dedicated view while maximizing donor implementation reuse.
+Failure behavior: Show an empty or safely truncated board and report invalid data rather than failing the entire menu.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4, satisfies R6
+
+Uncertainty and limits:
+- The requested angle value highlevel is not accepted by the supplied schema; requirements is used as the schema-compatible equivalent.
+- Guidance is intentionally unanchored and generalized because the task explicitly requires empty anchors and no symbol or line pinpoints.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

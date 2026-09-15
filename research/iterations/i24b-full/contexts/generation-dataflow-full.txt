@@ -1,0 +1,276 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---
+ApoMario currently computes player points and run completion in ApoMarioLevel#setAnalysis, exposes player names/points and elapsed-time state through ApoMarioLevel, initializes menu/game panels in ApoMarioPanel, and renders menu player data in ApoMarioMenu. Existing file-backed level/replay/property loading accepts local file data at several boundaries. The requested highscore feature introduces a new local persistence store, run-end recording flow, and dedicated menu view; those new operations are not present in the inspected source.
+
+Assets:
+- Recorded highscore entries: player name, score, and survival time [integrity] @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:166-176 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName()); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer)
+- Highscore ordering and displayed leaderboard [integrity] @ ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu)
+- Highscore persistence across application runs [availability] @ ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init()); ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+- Run completion transition and analysis state [accountability] @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel#setAnalysis()); ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel)
+
+Trust boundaries:
+- Local highscore store to leaderboard state [entry point]: User-editable highscore file contents, including names, scores, times, record count, and malformed bytes from The Path supplied to ApoMarioHighscore(Path) and bytes read by the future highscore loader to ApoMarioHighscore internal entry lists, getPlayersNames(), getPlayersScores(), getSurvivalTimes(), and ApoMarioMenu leaderboard rendering @ ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+- Finished run state to highscore record [entry point]: Mutable in-game score, player/team name, elapsed-time state, replay/AI state, and local tampering with those values from ApoMarioLevel#setAnalysis(boolean) reads player points, player/team state, bWin, and remaining time after the run ends to ApoMarioHighscore.storeRun(score, survivalTime, playerName) and subsequent persisted leaderboard data @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:166-176 (apoMario.entity.ApoMarioPlayer)
+- Local level/replay file decoding to live level and run state [entry point]: User-editable level/replay file bytes, dimensions, entity types, timing fields, and referenced level names from ApoMarioPanel#loadEditorLevel(), ApoMarioPanel#loadReplay(), and ApoMarioEditorIO#readLevel(DataInputStream) to Allocated levelEntities arrays, enemies/entities, finish/player objects, and later score/time values consumed by ApoMarioLevel#setAnalysis(boolean) @ ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel#loadEditorLevel()); ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel); ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel#loadReplay()); ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel); ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream)); ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+
+[O1; observation; observed] ApoMarioLevel#setAnalysis(boolean) is the run-completion aggregation point: it computes time/difficulty/width bonus, changes player points for wins or losses, sets the win flag, and transitions to the analysis panel.
+Task relevance: The highscore record must be taken after the final score mutation and before the run state is replaced or reset.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Suggested verification: Exercise both bWin paths and verify the stored score equals the final post-bonus player score.
+
+[O2; observation; observed] The human player's displayed name is currently the literal “human”; AI/team names come from ApoMarioPlayer#getTeamName(), while points are exposed by ApoMarioPlayer#getPoints().
+Task relevance: The integration must define which player is recorded and must not silently use an unrelated display value.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName())
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:166-176 (apoMario.entity.ApoMarioPlayer)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Run with a human player and with an AI player and verify the recorded/displayed names match the selected player identity.
+
+[O3; observation; observed] ApoMarioLevel#getPassedTime() derives elapsed time as randomLevel.getTime() minus the current time, while ApoMarioLevel#getTime() is decremented by thinkTime(int); the inspected code does not establish that randomLevel is non-null for every level source.
+Task relevance: Survival-time recording must handle editor/custom/replay levels without dereferencing unavailable timing state.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel#thinkTime(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel)
+Suggested verification: Record runs from random, editor, and replay/custom levels and verify elapsed time is finite and non-negative.
+Relations: related U3
+
+[X1; existing_risk; observed; denial_of_service; CWE-789; CWE-770; CAPEC-130; V5.1.1] The binary level decoder reads width and height from local file data and immediately allocates new ApoMarioEntity[height][width] without visible bounds checks; a crafted file can cause excessive allocation or failures before the catch block.
+Task relevance: The highscore feature consumes run state produced by this decoder, so malformed level inputs can deny service or create invalid timing/score state before recording.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO)
+Failure behavior: Reject the decoded level and report the rejection; do not allocate arrays for non-positive or over-limit dimensions.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel#loadEditorLevel())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel)
+Suggested verification: Supply zero, negative, and oversized dimensions and verify rejection occurs before allocation and the caller reports the failed load.
+Relations: related R5, related C5
+
+[X2; existing_risk; observed; tampering; CWE-20; CAPEC-153; V5.1.1] The level decoder dispatches on file-controlled entity types and fields, catches broad exceptions, prints a stack trace, and returns false; malformed input is not visibly normalized before entity construction.
+Task relevance: A future run recorder must not treat partially decoded levels or invalid timing/entity state as authoritative highscore input.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Failure behavior: Reject invalid records and report the rejection; the caller must use a stated safe level-load fallback while preserving the requested load operation's effect.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Suggested verification: Corrupt each entity-type and field encoding and verify the decoder reports rejection rather than exposing a partial level as valid.
+Relations: related R5, related C5
+
+[X3; existing_risk; observed; elevation_of_privilege; CWE-470; CWE-829; CAPEC-242; V14.2.1] Local player loading derives a class name/path from a user-selected file and passes it to ApoMarioClassLoader, which loads class bytes from a file and defines the class.
+Task relevance: If leaderboard identity reuses AI/team names, the name source can be controlled by a local file and must not be treated as trusted identity.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1069-1099 (apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1069-1099 (apoMario.level.ApoMarioLevel)
+Failure behavior: Reject unsafe or invalid player class input and report the rejection; the integration falls back to the human/default player identity while preserving game startup.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1069-1099 (apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1069-1099 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/ApoMarioClassLoader.java:59-104 (apoMario.ApoMarioClassLoader#loadClass(String))
+Inspected source: ApoMario/src/apoMario/ApoMarioClassLoader.java:59-104 (apoMario.ApoMarioClassLoader)
+Suggested verification: Attempt to load a class from an invalid or hostile local path and verify rejection does not prevent the game from starting with a default identity.
+Relations: related R3, related C3
+
+[X4; change_risk; reasoned; tampering; CWE-20; CWE-400; CWE-770; CAPEC-153; CAPEC-130; V5.1.1; V5.3.2] A user-editable highscore file could inject malformed, extreme, duplicate, or reordered entries; accepting it directly could corrupt leaderboard integrity, consume memory, or render attacker-controlled text.
+Task relevance: The new ApoMarioHighscore(Path) persistence API is the primary file trust boundary introduced by the feature.
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Failure behavior: The highscore parser rejects and reports each invalid file/record; panel initialization uses an empty bounded board so menu operation continues.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Use malformed encodings, invalid numeric ranges, oversized names, and excessive record counts; verify rejection is reported and rendering remains bounded.
+Relations: related R1, related R2
+
+[X5; change_risk; reasoned; tampering; CWE-20; CWE-840; CAPEC-153; V3.2.1] Recording before ApoMarioLevel#setAnalysis finishes its score mutations, or recording a mutable/incorrect player and time source, could persist a score that does not represent the completed run.
+Task relevance: The task explicitly requires the real score, player name, and survival time on both clearing and losing.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Failure behavior: The integration normalizes missing/invalid name and elapsed time before storeRun, then records once after final score calculation; it does not suppress run completion if persistence fails.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Suggested verification: Test win, timeout, death, replay, and loss paths; assert one record per completed run with final score, selected player name, and non-negative elapsed time.
+Relations: related R3
+
+[X6; change_risk; reasoned; denial_of_service; CWE-400; CWE-770; CAPEC-130; V5.3.2] Persisting unlimited records or displaying unbounded names can cause memory, file-size, or UI denial of service.
+Task relevance: The leaderboard is a persistent menu view and therefore must bound both storage and rendering work.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Failure behavior: The store rejects records exceeding configured count/name/field limits; the menu renders only the bounded validated list and substitutes a safe display string for missing data.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Insert more than the configured maximum and names at/over the maximum length; verify rejected entries are reported and rendering remains within fixed bounds.
+Relations: related R1, related R4
+
+[R1; requirement; task; tampering; CWE-20; CWE-400; CWE-770; CAPEC-153; CAPEC-130; V5.1.1; V5.3.2] ApoMarioHighscore#storeRun must validate score, survivalTime, and playerName, enforce finite ranges and bounded name/record sizes, and preserve entries sorted by score descending; invalid input must be rejected and reported rather than substituted or clamped.
+Task relevance: Protects leaderboard integrity and availability at the operation that receives run data.
+Failure behavior: storeRun returns false or otherwise reports rejection and does not add the invalid entry; the run-end caller supplies a stated default/normalized value before calling it so the primary recording effect still occurs.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Suggested verification: Unit-test negative/overflow scores, negative/overflow times, null/blank/oversized names, duplicate scores, and ordering after multiple valid inserts.
+Relations: mitigates X4, mitigates X6
+
+[R2; requirement; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; V5.1.1; V5.3.2] The highscore store loader used by ApoMarioHighscore(Path) and persistAcrossRuns must parse a bounded, explicit record format, reject malformed or extra-invalid records with a reported rejection, and expose only validated aligned name/score/time lists.
+Task relevance: Protects persisted leaderboard integrity and prevents malformed local files from poisoning menu state.
+Failure behavior: Invalid file data is rejected and reported; the panel falls back to an empty validated board before menu rendering, preserving menu availability.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Construct ApoMarioHighscore with nonexistent, truncated, malformed, oversized, and valid stores; verify reported rejection, empty fallback, and aligned validated getters.
+Relations: mitigates X4
+
+[R3; requirement; task; tampering; CWE-20; CWE-840; CAPEC-153; V3.2.1] The run-end integration must call recordRunEnd(level) only after final score changes for both clearing and losing, read the selected player's actual points and name, derive elapsed survival time from the finished level, and submit one record per run.
+Task relevance: Implements the requested real score/name/mm:ss tracking behavior at the completion boundary.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Failure behavior: Before storeRun, the caller substitutes a documented safe default for null/blank name and a non-negative bounded fallback for unavailable/invalid elapsed time; it reports persistence failure but still completes the analysis/menu transition.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel#getPlayers())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Suggested verification: Run win, timeout, death, one-player, two-player, AI, replay, and custom-level scenarios; verify exactly one aligned record and final score/time values.
+Relations: mitigates X5, related U3
+
+[R4; requirement; task; tampering; CWE-20; CWE-400; CAPEC-153; V5.1.1; V5.3.2] The highscore store must persist validated entries across application runs and the dedicated menu view must display the validated name/score/survival-time tuples in descending score order without allowing persisted text to alter control flow.
+Task relevance: Provides the requested persistent dedicated leaderboard panel/view.
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Failure behavior: Persistence or rendering errors are reported; the caller retains the in-memory validated board and continues to the menu using bounded fallback rendering.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Persist entries, construct a fresh highscore instance against the same file, and verify tuple equality and descending score order in the dedicated menu view.
+Relations: mitigates X4, mitigates X6
+
+[R5; requirement; reasoned; denial_of_service; CWE-20; CWE-789; CWE-770; CAPEC-130; CAPEC-153; V5.1.1; V5.3.2] The level/replay decoder feeding run completion must validate dimensions, entity discriminators, field ranges, and record completeness before allocation or live-level mutation.
+Task relevance: Prevents local level/replay tampering from creating invalid or resource-exhausting run state that is later recorded as a highscore.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Failure behavior: The decoder rejects and reports invalid input without allocating or partially installing a level; the caller uses a stated safe fallback and preserves the requested game/menu operation.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel#loadReplay())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel)
+Suggested verification: Fuzz dimensions, entity types, truncated streams, and timing fields; verify rejection precedes allocation/mutation and the caller reports failure.
+Relations: mitigates X1, mitigates X2
+
+[C1; control; reasoned; tampering; CWE-20; CWE-400; CWE-770; CAPEC-153; CAPEC-130; V5.1.1; V5.3.2] At ApoMarioHighscore#storeRun, reject null/blank/oversized names, out-of-range scores, invalid survival times, and records beyond a fixed maximum; sort accepted entries by score descending and keep aligned fields together.
+Task relevance: Enforces R1 at the store operation receiving run data.
+Failure behavior: Return false/report the rejection and leave the validated board unchanged; recordRunEnd normalizes missing values before this call.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Suggested verification: Property-test accepted entries for bounds, alignment, rejection, and descending ordering.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; V5.1.1] At highscore loading and persistence, use an explicit bounded format, reject malformed records before adding them, write only validated entries, and report I/O or parse failures.
+Task relevance: Enforces R2 and supports R4 without allowing user-editable store data to become trusted state.
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Enforcement point: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Failure behavior: Use an empty in-memory validated board when loading fails and retain the current validated board when writing fails; report the failure and keep the menu available.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Suggested verification: Use missing, unreadable, malformed, and concurrent-write stores; verify no partial invalid state is exposed and the menu remains usable.
+Relations: satisfies R2, satisfies R4
+
+[C3; control; reasoned; tampering; CWE-20; CWE-840; CAPEC-153; V3.2.1] At recordRunEnd(level) invoked from the ApoMarioLevel#setAnalysis completion path, select the intended human/player record after final point calculation, use the player's actual points and team name or the documented human fallback, compute bounded non-negative elapsed time, and call storeRun once.
+Task relevance: Enforces R3 while preserving the run-completion effect when optional identity/time data is unavailable.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Failure behavior: Normalize missing/invalid name and time before storeRun, report store failure, and continue to set analysis/menu state; never skip the primary run-completion transition.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:166-176 (apoMario.entity.ApoMarioPlayer)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName())
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer)
+Suggested verification: Instrument storeRun and assert one call after final setPoints in each completion path, with fallback identity/time for invalid values.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400; CWE-770; CAPEC-130; V5.3.2] At the dedicated leaderboard menu view, render only the bounded validated getter lists, preserve name/score/time index alignment, format survival time as mm:ss, and render a safe fallback string for absent names.
+Task relevance: Enforces R4 and prevents persisted or tampered text from causing unbounded UI work.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Failure behavior: Skip only invalid display rows after validated loading, substitute a safe label, and keep the menu/panel responsive; do not discard the validated store as a whole.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Render empty, maximum-size, long-name, equal-score, and malformed-input-derived boards and verify fixed work and mm:ss formatting.
+Relations: satisfies R4, mitigates X6
+
+[C5; control; reasoned; denial_of_service; CWE-20; CWE-789; CWE-770; CAPEC-130; CAPEC-153; V5.1.1] At ApoMarioEditorIO#readLevel(DataInputStream), validate dimensions and all file-controlled fields before allocation/entity construction; at the panel caller, report rejection and use a safe fallback level/menu state.
+Task relevance: Enforces R5 at the existing local-file decoding boundary that can feed highscore recording.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-58 (apoMario.game.panels.ApoMarioEditorIO)
+Failure behavior: Reject and report invalid input before allocation or partial mutation; caller falls back to a safe existing level/menu state while preserving the load operation's user-visible completion.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel#loadEditorLevel())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel)
+Suggested verification: Fuzz and boundary-test all dimensions, counts, discriminators, and numeric fields; verify no allocation or live-state mutation occurs before validation.
+Relations: satisfies R5
+
+[V1; verification; reasoned] Verify highscore API behavior with a temporary Path: store valid runs, reload with a new instance, call persistAcrossRuns(), and compare aligned names/scores/times sorted descending by score.
+Task relevance: Covers store, persistence, sorting, and getter contracts.
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants)
+Suggested verification: Automated integration test over a temporary file path.
+Relations: verifies R1, verifies R2, verifies R4
+
+[V2; verification; reasoned] Verify run-end integration by driving level completion and loss paths and asserting recordRunEnd/storeRun receives final points, the intended player name, and elapsed time exactly once per run.
+Task relevance: Covers the primary feature flow and prevents pre-final or duplicate recording.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Suggested verification: Instrumented or black-box test over win, timeout, death, human, AI, replay, and custom-level cases.
+Relations: verifies R3
+
+[V3; verification; reasoned] Verify the dedicated menu view renders validated entries in descending score order with player name and mm:ss survival time, and remains bounded with empty or maximum-size data.
+Task relevance: Covers the requested display panel/view and UI resilience.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Render-based test with representative valid and invalid datasets.
+Relations: verifies R4
+
+[U1; unknown; observed] No ApoMarioHighscore type or the required highscore methods are present in the inspected source/model, so the exact store format, limits, persistence location, and parser operations are unresolved.
+Task relevance: The implementation must introduce these APIs and define their enforcement points and failure reporting.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Suggested verification: Reinspect after implementation and test the public API contract.
+Relations: related R1, related R2, related R4
+
+[U2; unknown; observed] The inspected repository exposes local file choosers and binary level/replay loaders but no shared level-server/network client path; the exact shared-server content source named by the threat model could not be resolved.
+Task relevance: Server-originated level validation and trust-boundary integration remain incomplete until the server/client code is identified.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel#loadEditorLevel())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:251-262 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:51-132 (apoMario.game.panels.ApoMarioEditorIO)
+Suggested verification: Search for the shared-level client/protocol and add a boundary-specific decoder requirement when found.
+Relations: related R5
+
+[U3; unknown; observed; denial_of_service; CWE-476; CAPEC-226] The inspected code does not establish whether ApoMarioLevel#getPassedTime() is safe for every custom/editor/replay level, because it directly dereferences randomLevel while editor loading can install a custom level.
+Task relevance: The implementation must resolve the authoritative elapsed-time source before recordRunEnd is finalized.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Failure behavior: Unknown until tested; recordRunEnd must use a bounded fallback at its caller if elapsed time is unavailable.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:125-127 (apoMario.game.panels.ApoMarioEditorIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java:125-127 (apoMario.game.panels.ApoMarioEditorIO)
+Suggested verification: Construct and finish custom/editor/replay levels and observe whether randomLevel and elapsed-time state are initialized.
+Relations: related R3, related C3
+
+Uncertainty and limits:
+- The requested ApoMarioHighscore class and public methods do not yet exist in the inspected repository, so their exact symbol anchors and implementation-specific parser/store sinks cannot be resolved.
+- No shared level-server/client implementation was found in the inspected source listing; only local file chooser, replay, property, and binary level-loading paths were traced.
+- The inspection did not establish a safe elapsed-time source for every editor/custom/replay level; ApoMarioLevel#getPassedTime() directly dereferences randomLevel and requires implementation/test confirmation.
+- The output identifies existing decoder risks and proposed controls but does not implement or modify the feature.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

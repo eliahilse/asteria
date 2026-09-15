@@ -1,0 +1,76 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Security context for a Java desktop game's local highscore persistence and menu display.
+
+Assets:
+- Stored highscore records [integrity]
+- Game availability during highscore loading and saving [availability]
+- Highscore data and game process [resistance]
+
+Trust boundaries:
+- Running game to highscore recorder [entry point]: score, survival time, and player name produced or supplied by the running game from running game state to highscore recording operation
+- Local highscore file [entry point]: user-editable persisted highscore contents from local file to highscore parser/store
+- External game content [entry point]: content loaded from outside the program, including shared level data from external content source to game and highscore integration
+
+[R1; requirement; task; tampering; CWE-20; CAPEC-20] The operation receiving a run result must accept only valid score, survival-time, and player-name values, reject and report invalid input, and never substitute or clamp values.
+Task relevance: Protects the integrity of records at run completion.
+Failure behavior: Reject and report the invalid input without substituting or clamping it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R2; requirement; task; tampering; CWE-20; CAPEC-20] The caller integrating run completion must normalize missing or invalid run values to stated safe defaults before invoking the recording operation, so recording still occurs.
+Task relevance: Preserves the primary highscore effect when game state is incomplete or malformed.
+Failure behavior: Use the stated defaults or normalized values and continue the recording operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R3; requirement; task; elevation_of_privilege; CWE-502; CWE-20; CAPEC-586] The highscore store must treat the local file as untrusted data, parse it without Java object deserialization, and reject malformed records while reporting the rejection.
+Task relevance: Prevents crafted local files from altering parser behavior or executing code.
+Failure behavior: Reject and report malformed or unsupported file data without deserializing objects.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R4; requirement; task; denial_of_service; CWE-400; CWE-770; CAPEC-125] Reads of the highscore file must enforce limits on file size, record count, field lengths, and numeric ranges before retaining or displaying data.
+Task relevance: Bounds resource use from a user-editable persistence file.
+Failure behavior: Reject and report data exceeding any configured limit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R5; requirement; task; denial_of_service; CWE-770; CAPEC-125] The highscore collection must retain no more than a configured maximum number of records and must sort retained names by validated points in descending order.
+Task relevance: Keeps displayed and persisted highscore data bounded and consistent.
+Failure behavior: Reject and report an insertion that violates collection bounds rather than growing without limit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R6; requirement; task; denial_of_service; CWE-248; CAPEC-693] Malformed or unavailable highscore data must not prevent the game or menu from running; the caller must use an empty or otherwise stated safe in-memory board before continuing the display or recording effect.
+Task relevance: Maintains game availability when persistence is damaged.
+Failure behavior: Report the persistence failure and continue with the stated safe in-memory default.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-153] A strict validation routine at the receiving recording and parsing operations rejects invalid values and emits an actionable error result or diagnostic.
+Task relevance: Implements R1 and R3.
+Failure behavior: The receiving operation rejects and reports the invalid input.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1, satisfies R3
+
+[C2; control; reasoned; tampering; CWE-20; CAPEC-20] A run-end integration adapter normalizes missing or invalid score, time, and name values to explicit safe defaults before calling the recorder.
+Task relevance: Implements R2 while preserving recording.
+Failure behavior: The caller substitutes the stated defaults and calls the recording operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; elevation_of_privilege; CWE-502; CWE-400; CAPEC-586; CAPEC-125] A bounded streaming or size-limited reader parses a simple data format and excludes Java object deserialization.
+Task relevance: Implements R3 and R4.
+Failure behavior: The reader rejects and reports malformed, oversized, or overlong input.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3, satisfies R4
+
+[C4; control; reasoned; denial_of_service; CWE-770; CAPEC-125] A bounded collection enforces a maximum retained record count and orders validated records by descending score.
+Task relevance: Implements R5.
+Failure behavior: The collection rejects and reports entries beyond its configured bound.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C5; control; reasoned; denial_of_service; CWE-248; CAPEC-693] A persistence failure boundary catches parse, I/O, and validation failures and initializes a safe empty board before menu display or run recording continues.
+Task relevance: Implements R6.
+Failure behavior: The caller reports the failure, substitutes an empty board, and continues the primary feature effect.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R6
+
+Uncertainty and limits:
+- No repository was available or inspected; this context is based only on the described Java desktop game and feature.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

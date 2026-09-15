@@ -1,0 +1,86 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+High-level guidance for integrating a bounded, validated, persistent highscore store with ApoMario’s level-end flow and menu-panel navigation.
+
+Assets:
+- Finished-run result [integrity]
+- Player identity and survival time [authenticity]
+- Persistent highscore board [integrity]
+- Highscore menu view [availability]
+
+Trust boundaries:
+- Highscore store file [entry point]: Locally editable highscore records from Desktop filesystem to Highscore store parser and in-memory ranking
+- Level content [entry point]: Locally edited or shared-server level data from Level file or shared level source to Level decoder and run state
+- Player name input [entry point]: Local player-provided name text from Game UI or configured player identity to Finished-run record and highscore display
+
+[X1; change_risk; reasoned; tampering; CWE-20] A malformed or tampered highscore file could corrupt ranking data, expose unsafe resource usage, or prevent the menu from displaying the board.
+Task relevance: The feature adds a persistent store that is read across runs.
+Failure behavior: The store rejects and reports invalid records or storage failures while the menu remains usable with an empty or previously valid in-memory board.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[X2; change_risk; reasoned; tampering; CWE-20] Recording before the level-end score calculation or after the level is reset could publish an inaccurate score, name, or elapsed time.
+Task relevance: The requested record must reflect the actual completed or lost run.
+Failure behavior: The integration records once at the level-end transition, using finalized run state; missing values are normalized before submission.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R1; requirement; task; tampering; CWE-20] The operation that records a finished run must capture the finalized player points, player name, and elapsed survival time for both level clearing and loss, before run state is discarded or restarted.
+Task relevance: Preserves the feature’s definition of a real run result.
+Failure behavior: If a source value is missing or invalid at the integration point, use a stated safe default or normalized representation before calling the receiving operation, while still recording the run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R2; requirement; task; tampering; CWE-20] The operation that receives a new highscore record must validate the score, survival time, and player name, including numeric ranges, name length and character constraints, and the mm:ss representation derived from the bounded elapsed time.
+Task relevance: Prevents local input or corrupted state from creating invalid displayed records.
+Failure behavior: Reject and report the invalid record without substituting, clamping, or partially inserting it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R3; requirement; task; tampering; CWE-20] The highscore store must keep player name, score, and survival time as one record and sort records by score descending without allowing parallel lists to become misaligned.
+Task relevance: Maintains correct identity-to-result association and the requested ranking order.
+Failure behavior: Reject malformed or inconsistent records and preserve the last valid collection state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R4; requirement; task; denial_of_service; CWE-400] The store must impose a finite maximum number of records and a finite input size when loading persisted data, so a locally edited file cannot cause unbounded memory or rendering work.
+Task relevance: Keeps the desktop game responsive while loading and displaying the board.
+Failure behavior: Reject and report records or input exceeding the configured limits; retain valid records already loaded and keep the menu operational.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R5; requirement; task; information_disclosure] The menu must expose the highscore board through a dedicated panel or view, render names together with descending scores and survival times, and load persisted data before the view is displayed.
+Task relevance: Provides the requested user-visible menu integration and cross-run behavior.
+Failure behavior: If loading fails, display an empty or last valid board with a clear failure indication rather than crashing or blocking normal menu navigation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[C1; control; reasoned; tampering; CWE-20] At the receiving operation for a new record, use strict validation for null names, name size and characters, nonnegative bounded scores, and nonnegative bounded elapsed times; report rejection explicitly.
+Task relevance: Implements R2 at the store boundary.
+Failure behavior: Return failure and leave the board unchanged; do not clamp or invent a value.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C2; control; reasoned; tampering; CWE-20] At the level-end integration point, normalize a missing player name to a defined local default and normalize missing or invalid elapsed-time presentation before invoking the record operation.
+Task relevance: Implements R1 while preserving the primary recording effect.
+Failure behavior: The run is still submitted with the stated defaults; the receiving operation remains strict and may report other invalid input.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C3; control; reasoned; tampering; CWE-20] At the store boundary, represent each result as an atomic record and update ranking through one bounded collection so name, score, and survival time are inserted, sorted, and exposed together.
+Task relevance: Implements R3 without relying on independently mutable lists.
+Failure behavior: Reject inconsistent persisted records and preserve the prior valid collection.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400; CWE-502] At persistence loading, read through a bounded-size mechanism, cap the number of decoded entries, and avoid unsafe deserialization or executable content facilities.
+Task relevance: Implements R4 for the locally editable store file.
+Failure behavior: Stop processing the offending input, report the rejection, and retain valid entries already accepted.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; tampering; CWE-20] At menu-panel initialization and level-end integration, load or refresh the store before rendering, and invoke recording exactly once for each terminal clear-or-loss transition before any restart or menu navigation.
+Task relevance: Implements R1 and R5 across the game loop and menu flow.
+Failure behavior: Report persistence or refresh failure, keep the current valid board available, and continue normal game or menu navigation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1, satisfies R5
+
+Uncertainty and limits:
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

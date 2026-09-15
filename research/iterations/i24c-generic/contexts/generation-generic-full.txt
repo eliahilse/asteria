@@ -1,0 +1,82 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Generic security context for a Java desktop game's persisted highscore feature; no repository inspection was performed.
+
+Assets:
+- Persisted highscore records [integrity]
+- Game availability during highscore loading and display [availability]
+- Program execution and code integrity [integrity]
+
+Trust boundaries:
+- Running-game values [entry point]: Score, survival time, and player name produced or supplied by the running game from Finished run/level state and player identity input to Highscore run-recording operation
+- Local highscore file [entry point]: Existing file contents that the user or local tampering may edit from Local filesystem to Highscore parser/store and menu display
+- External game content [entry point]: Values loaded from outside the program, including shared level content from Outside-program level/content loader to Running game state and eventual highscore recording
+
+[R1; requirement; task; tampering; CWE-20; CAPEC-20; V5.1.1] The highscore run-recording operation must accept only valid score, survival-time, and player-name values, reject and report invalid input, and must not substitute or clamp values inside that operation.
+Task relevance: Protects the integrity of the real score, player name, and mm:ss survival time recorded at run completion.
+Failure behavior: Reject the invalid run and report the validation failure to the caller.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R2; requirement; task; tampering; CWE-20; CAPEC-20] The run-end integration point must normalize missing or invalid score, survival time, and player-name values to stated safe defaults before calling the highscore recording operation, so completing a run still produces a record.
+Task relevance: Preserves the feature's primary effect when level or player data is malformed.
+Failure behavior: Use the defined defaults or normalized values, then perform the recording operation; do not skip recording.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R3; requirement; task; elevation_of_privilege; CWE-502; CWE-20; CAPEC-586; CAPEC-20; V5.5.2] The highscore store must parse the local file strictly as data, avoid Java object deserialization, and reject and report malformed, unexpected, or executable-looking content.
+Task relevance: Prevents a user-editable persistence file from becoming a code-execution or record-tampering channel.
+Failure behavior: Reject and report the malformed file contents without executing or interpreting them as objects or code.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R4; requirement; task; denial_of_service; CWE-400; CWE-789; CAPEC-125; CAPEC-130; V12.1.1] Highscore file reads must be bounded by explicit limits on file size, record count, field lengths, and numeric ranges before parsing or retaining data.
+Task relevance: Prevents malformed or hostile local files from consuming excessive memory or processing time.
+Failure behavior: Reject and report input exceeding any read or field limit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R5; requirement; task; denial_of_service; CWE-400; CAPEC-125] The retained highscore collection must have a fixed maximum size and retain only records satisfying the store's validation rules, with ordering by descending score and deterministic handling of ties.
+Task relevance: Bounds persistent state and ensures the displayed board reflects the required ranking.
+Failure behavior: Reject and report an incoming record that cannot be retained under the bound; do not grow the collection beyond the limit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R6; requirement; task; denial_of_service; CWE-20; CWE-400; CAPEC-153; CAPEC-125; V14.2.1] Malformed or unavailable highscore data must not prevent the game menu or running game from continuing; the caller must use an empty or otherwise stated safe board default while reporting the load failure.
+Task relevance: Maintains game availability while preserving the highscore feature's display effect.
+Failure behavior: Report the load failure, substitute the safe board default, and continue rendering or running the game.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-20; V5.1.1] Use a strict validation gate in the run-recording operation for score, survival time, and player name, returning an explicit rejection result or error for invalid values.
+Task relevance: Enforces R1 at the operation receiving running-game input.
+Failure behavior: Reject and report invalid input; never clamp or substitute it in the receiving operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-20; CAPEC-20] Normalize absent or invalid run-end values at the integration caller using explicit safe defaults before invoking the recording operation.
+Task relevance: Enforces R2 while ensuring run completion still records a result.
+Failure behavior: Call the recording operation with normalized defaults and continue the record effect.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; elevation_of_privilege; CWE-502; CWE-20; CAPEC-586; CAPEC-20; V5.5.2] Implement a dedicated non-object-deserialization parser for the highscore file using an allowlisted data format and explicit field validation.
+Task relevance: Enforces R3 for user-editable persistence data.
+Failure behavior: Reject and report malformed or disallowed data without executing it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400; CWE-789; CAPEC-125; CAPEC-130; V12.1.1] Read the store through a bounded stream or bounded byte/character buffer, enforcing file, field, record, and numeric limits before allocation or parsing.
+Task relevance: Enforces R4 against oversized or resource-exhausting local files.
+Failure behavior: Reject and report the first exceeded limit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Use a bounded highscore collection that validates each record, sorts by descending score, applies deterministic tie ordering, and caps retained entries.
+Task relevance: Enforces R5 for both newly recorded and loaded entries.
+Failure behavior: Reject and report an entry that violates validation or retention bounds; never exceed the cap.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C6; control; reasoned; denial_of_service; CWE-400; CWE-20; CAPEC-125; CAPEC-153; V14.2.1] Wrap store loading and menu-board preparation with explicit failure handling that reports errors and supplies an empty bounded board default.
+Task relevance: Enforces R6 at the game integration point.
+Failure behavior: Keep the game available, display the safe default board, and report the load failure.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R6
+
+Uncertainty and limits:
+- No repository was available and no source files were inspected, so no implementation-specific anchors or verification items are provided.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
