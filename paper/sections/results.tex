@@ -353,8 +353,29 @@ one quoting the submission verbatim, but the judge still returned a
 positive verdict on all eight submissions it saw, none of them about the
 store's score validation where the residual failures are; the insert with
 the code graph again failed the fewest checks (1 of 30, against 4 for the
-insert alone and 17 without it). Round I28 confirms these arms at five
-trajectories per cell in Generation S and Reuse S+B.
+insert alone and 17 without it). Round I28 runs these arms at five
+trajectories per cell in Generation S and Reuse S+B
+(Table~\ref{tab:i28}; ten trajectories stopped by a served-identity
+mismatch were collected again under a rule declared during the round).
+The document does the work: 57 failed checks of 100 without it, 12 with
+it, in both cells alike, and the input-policy checks go from 0 clean
+artifacts of 10 to 8. The code graph changes nothing measurable (12
+failed; the same tool turns and the same turn of the first compiling
+submission), although the generator later read a path an injection named
+in 21 of the 30 trajectories that received one. The cancelling guard is
+the lowest arm in Reuse (4 failed, 5 of 5 policy clean) and tied lowest
+in Generation (5, 4 of 5), at about twice the calls; it cancelled once per
+trajectory, every time with a verbatim quote, while 9 of its 26 positive
+verdicts cited only change-risk statements and were not acted on. The
+advisory guard delivered 15 verdicts on executed submissions; its
+generators submitted 20 and 22 times against 11 to 14 elsewhere and
+ended with 14 failed checks, no better than the insert alone. No arm
+reaches a full hit: the retention bound fails in 28 of the 40 S2
+artifacts (the Reuse document never names a bound, the Generation one
+says ``reject records beyond a fixed maximum''), and the million-record
+check is unresolved in 32 of 50. The judge never cancelled for the checks
+the artifacts fail; its cancellations concern run-end timing and the
+elapsed-time source.
 
 \begin{table}[t]
 \centering
@@ -379,6 +400,30 @@ S2 full document & control, 25 responses & 25 & 2750 & 202.6 & 78.6 & 35.6 \\
 S2 full document & insert, 25 responses & 25 & 2950 & 225.2 & 87.1 & 41.9 \\
 S3 generic & control, 25 responses & 25 & 2750 & 202.3 & 83.2 & 44.1 \\
 S3 generic & insert, 25 responses & 25 & 2786 & 239.3 & 97.0 & 52.5 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Round I28, agentic delivery with five trajectories per cell and arm: functional and input-policy clean (all five rejection checks pass) of 5, the ten issue checks failed / unresolved / passed of 50, the median number of tool turns, the submissions of the arm, guard consultations / cancellations (or advisory verdicts), and the model calls and input tokens of the arm (generator and judge together). ``+ guard'' and ``+ advisory'' add the judge to insert + graph. No artifact of any arm passes all eleven checks (Section~\ref{sec:results}, Step~9).}
+\label{tab:i28}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}llrrlrrlrr@{}}
+\toprule
+Cell & Arm & Functional & Policy clean & Checks f / u / p & Turns & Submissions & Guard & Calls & Input (M) \\
+\midrule
+Generation S & none & 5 & 0 & 29 / 5 / 16 & 10 & 12 & -- & 46 & 4.3 \\
+Generation S & insert & 5 & 3 & 6 / 5 / 39 & 8 & 12 & -- & 41 & 4.3 \\
+Generation S & insert + graph & 5 & 3 & 5 / 5 / 40 & 8 & 14 & -- & 41 & 4.3 \\
+Generation S & + guard & 5 & 4 & 5 / 5 / 40 & 7 & 14 & 12 / 5 & 88 & 5.0 \\
+Generation S & + advisory & 4 & 4 & 8 / 4 / 38 & 10 & 22 & 14 / adv & 90 & 5.7 \\
+Reuse S+B & none & 5 & 0 & 28 / 4 / 18 & 8 & 11 & -- & 41 & 6.0 \\
+Reuse S+B & insert & 5 & 5 & 6 / 3 / 41 & 9 & 14 & -- & 42 & 6.5 \\
+Reuse S+B & insert + graph & 5 & 4 & 7 / 3 / 40 & 6 & 11 & -- & 36 & 5.6 \\
+Reuse S+B & + guard & 5 & 5 & 4 / 2 / 44 & 8 & 14 & 14 / 6 & 94 & 9.0 \\
+Reuse S+B & + advisory & 5 & 4 & 6 / 1 / 43 & 11 & 20 & 11 / adv & 77 & 9.7 \\
 \bottomrule
 \end{tabular}}
 \end{table}
