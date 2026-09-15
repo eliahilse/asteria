@@ -85,19 +85,22 @@ class PaperTableTests(unittest.TestCase):
 
 
 class MatrixTableTests(unittest.TestCase):
-    def test_matrix_table_matches_prior_data_and_i23(self):
+    def test_matrix_table_matches_prior_data_i23_and_i25(self):
         from research.matrix_comparison import rows as comparison_rows
         source = (ROOT / 'paper/sections/results.tex').read_text()
         header, body = parse_table(source, 'tab:matrix')
-        table = {(r['method'], r['context']): r for r in comparison_rows('i23-matrix')}
+        strict = {(r['method'], r['context']): r for r in comparison_rows('i23-matrix')}
+        lenient = {(r['method'], r['context']): r for r in comparison_rows('i25-lenient')}
         contexts = ['None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B']
         rows_by_label = {label: [int(v) for v in values] for label, values in body if label in contexts}
+        def cell(method, context):
+            s, l = strict[(method, context)], lenient[(method, context)]
+            return [s['priorCompiled'], s['compiled'], s['functional'], l['compiled'], l['functional']]
         for context in contexts:
-            g, r = table[('Generation', context)], table[('Reuse', context)]
-            self.assertEqual(rows_by_label[context], [g['priorCompiled'], g['compiled'], g['functional'], r['priorCompiled'], r['compiled'], r['functional']], context)
+            self.assertEqual(rows_by_label[context], cell('Generation', context) + cell('Reuse', context), context)
         total = [int(v) for label, values in body if label == 'Total of 40' for v in values]
-        self.assertEqual(total, [sum(table[(m, c)][k] for c in contexts) for m in ('Generation', 'Reuse') for k in ('priorCompiled', 'compiled', 'functional')])
-
+        self.assertEqual(total, [sum(cell(m, c)[k] for c in contexts) for m in ('Generation', 'Reuse') for k in range(5)])
+        self.assertEqual(total[:5], [17, 18, 17, 25, 20]); self.assertEqual(total[5:], [13, 21, 19, 19, 18])
 
 if __name__ == '__main__':
     unittest.main()

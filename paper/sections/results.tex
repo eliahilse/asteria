@@ -89,41 +89,53 @@ Agent-acquired context & I10 to I16b & 46 & 12 \\
 \begin{table}[t]
 \centering
 \footnotesize
-\setlength{\tabcolsep}{5pt}
-\caption{The prior study's Highscore matrix and its rerun with our generator (round I23), one response per prompt, no security context, five trajectories per cell. ``Prior'' is the number compiled in the prior study; all counts are out of 5; functional means all sixteen tests pass. The prior study's pipeline repairs imports and file placement before compiling; ours rejects a malformed delivery, which happened to 35 of the 80 responses.}
+\setlength{\tabcolsep}{4pt}
+\caption{The prior study's Highscore matrix and its reruns with our generator, one response per prompt, no security context, five trajectories per cell. ``Prior'' is the number compiled in the prior study; C is compiled and F functional (all sixteen tests pass), each of 5, under strict delivery (round I23: a returned file that names an existing file is rejected) and under lenient delivery (round I25: it replaces the file). The prior study's pipeline repairs imports and file placement before compiling; ours rejected 35 of 80 responses under the strict rule and 27 of 80 under the lenient rule.}
 \label{tab:matrix}
-\begin{tabular}{@{}lrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
 \toprule
- & \multicolumn{3}{c}{Generation} & \multicolumn{3}{c}{Reuse} \\
-\cmidrule(lr){2-4} \cmidrule(lr){5-7}
-Base context & Prior & Compiled & Functional & Prior & Compiled & Functional \\
+ & \multicolumn{5}{c}{Generation} & \multicolumn{5}{c}{Reuse} \\
+\cmidrule(lr){2-6} \cmidrule(lr){7-11}
+ & & \multicolumn{2}{c}{Strict} & \multicolumn{2}{c}{Lenient} & & \multicolumn{2}{c}{Strict} & \multicolumn{2}{c}{Lenient} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){8-9} \cmidrule(lr){10-11}
+Base context & Prior & C & F & C & F & Prior & C & F & C & F \\
 \midrule
-None & 1 & 3 & 3 & 1 & 0 & 0 \\
-S & 3 & 3 & 3 & 3 & 3 & 3 \\
-F & 3 & 2 & 2 & 1 & 4 & 4 \\
-B & 2 & 0 & 0 & 1 & 2 & 2 \\
-S+F & 2 & 3 & 2 & 1 & 3 & 3 \\
-S+B & 2 & 2 & 2 & 4 & 3 & 3 \\
-F+B & 4 & 2 & 2 & 0 & 2 & 1 \\
-S+F+B & 0 & 3 & 3 & 2 & 4 & 3 \\
-Total of 40 & 17 & 18 & 17 & 13 & 21 & 19 \\
+None & 1 & 3 & 3 & 1 & 0 & 1 & 0 & 0 & 1 & 1 \\
+S & 3 & 3 & 3 & 5 & 3 & 3 & 3 & 3 & 2 & 2 \\
+F & 3 & 2 & 2 & 4 & 3 & 1 & 4 & 4 & 1 & 1 \\
+B & 2 & 0 & 0 & 2 & 2 & 1 & 2 & 2 & 3 & 3 \\
+S+F & 2 & 3 & 2 & 3 & 3 & 1 & 3 & 3 & 3 & 3 \\
+S+B & 2 & 2 & 2 & 4 & 3 & 4 & 3 & 3 & 2 & 2 \\
+F+B & 4 & 2 & 2 & 4 & 4 & 0 & 2 & 1 & 3 & 3 \\
+S+F+B & 0 & 3 & 3 & 2 & 2 & 2 & 4 & 3 & 4 & 3 \\
+Total of 40 & 17 & 18 & 17 & 25 & 20 & 13 & 21 & 19 & 19 & 18 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Step 0: the baseline without security context.}
-Before any security context, round I23 reran the prior study's sixteen
-Highscore cells with our generator under the prior study's protocol, one
-response per prompt (Table~\ref{tab:matrix}). Compiled counts are at the
-prior study's level in Generation (18 against 17 of 40) and above it in
-Reuse (21 against 13), with 17 and 19 of 40 artifacts passing all sixteen
-tests. What separates the two studies is delivery: 35 of our 80 responses
-were rejected before compilation, mostly for returning a target file whole
-instead of as an edit; of the 45 that were delivered, 39 compiled. The
-cells with the most functional artifacts on one response (Generation None,
-S and S+F+B; Reuse F and S+F+B) are the cells the later one-response
-rounds use. All rounds before I22 allowed up to five submissions with
-feedback, under which every control cell reaches 4 or 5 of 5 functional.
+Before any security context, rounds I23 and I25 reran the prior study's
+sixteen Highscore cells with our generator, one response per prompt, under
+strict and under lenient delivery (Table~\ref{tab:matrix}). Compiled counts
+are at or above the prior study's under either rule: Generation 18 and 25
+against 17 of 40, Reuse 21 and 19 against 13, with 17 and 20 (Generation)
+and 19 and 18 (Reuse) of 40 artifacts passing all sixteen tests. Delivery
+separates the two studies more than compilation does. Under the strict rule
+35 of 80 responses were rejected, 25 of them for returning a target file
+whole. Under the lenient rule 27 were still rejected: 11 left a required
+integration file untouched, 8 used an edit anchor that does not occur in
+the file, 6 returned a target file whole and then edits anchored on the
+original text, and 2 returned an empty file; four Reuse trajectories were
+served by a different model and stopped before delivery. Of the delivered
+responses, 39 of 45 and 44 of 49 compiled. The two reruns differ only in
+the delivery rule, yet a cell's compiled count moves by up to three of
+five between them (Reuse F 4 to 1, Generation None 3 to 1, Generation S 3
+to 5). The cells of the later one-response rounds, Generation None, S and
+S+F+B and Reuse F and S+F+B, are the most functional cells of I23; the
+choice is a choice made on one rerun, not a property of the cells, which
+is why every round carries its own fresh control. All rounds before I22
+allowed up to five submissions with feedback, under which every control
+cell reaches 4 or 5 of 5 functional.
 
 \paragraph{Step 1: does context help at all?}
 Round I07 (Table~\ref{tab:i07}) compares, in four cells, no security
