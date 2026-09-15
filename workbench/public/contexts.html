@@ -38,7 +38,12 @@ input#q{width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid var(--
 <li><a href="#i28-graph">i28-graph</a> <span class="dim">2</span></li>
 <li><a href="#i29-v11">i29-v11</a> <span class="dim">2</span></li>
 <li><a href="#i30-v12">i30-v12</a> <span class="dim">2</span></li>
-<li><a href="#i31-v13">i31-v13</a> <span class="dim">2</span></li></ul></nav><main>
+<li><a href="#i31-v13">i31-v13</a> <span class="dim">2</span></li>
+<li><a href="#i32a-s1">i32a-s1</a> <span class="dim">2</span></li>
+<li><a href="#i32b-s2">i32b-s2</a> <span class="dim">2</span></li>
+<li><a href="#i32c-s3">i32c-s3</a> <span class="dim">2</span></li>
+<li><a href="#i33a-s1">i33a-s1</a> <span class="dim">2</span></li>
+<li><a href="#i33b-s3">i33b-s3</a> <span class="dim">2</span></li></ul></nav><main>
 <h1>Security context inserts, every round</h1>
 <div class="intro"><p class="dim">Each insert is shown exactly as appended after the task. Blue lines are statement headers ([id; kind; basis; threat; catalogue ids]); highlighted lines are the failure-behaviour clauses; grey lines are anchors and verification hints. Counts beside each insert are the round's own: functional artifacts of N, and issue checks failed / unresolved / passed of 10N, for the arms that received the insert and for the round's fresh control.</p>
 <p><b>Agent instruction versions.</b> v7 and v8 (rounds I10 to I18): no rule about failure behaviour. v9 (I19) adds rule 6:</p><div class="rule">6. Fail safe without losing the change&#x27;s effect. Rejection belongs at the boundary where untrusted data enters (parser, decoder, store). At the integration point where the change produces its primary effect, a missing or invalid value is substituted by a stated default or normalized so that the effect still occurs; never propose skipping or suppressing the primary effect as failure behavior.</div><p>v10 (I20, I21a, I21b) replaces it with:</p><div class="rule">6. Fail safe without losing the change&#x27;s effect. The operation that receives untrusted data (parser, decoder, store) rejects invalid input and reports the rejection; it never substitutes or clamps. The caller at the integration point, where the change produces its primary effect, substitutes a stated default or normalizes a missing or invalid value before it calls that operation, so the effect still occurs; never propose skipping or suppressing the primary effect as failure behavior.</div>
@@ -8264,6 +8269,1158 @@ input#q{width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid var(--
 <div>- The requested ApoMarioHighscore class and recordRunEnd method do not yet exist in the inspected target, so their exact symbols and file anchors cannot be cited.</div>
 <div>- The existing code exposes AI teamName and displays a human fallback, but no dedicated human-name input was established; the final implementation must choose and test the intended source.</div>
 <div>- No build or runtime tests were run because the workspace is read-only.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details></section><section id="i32a-s1"><h2>i32a-s1 <span class="dim">i32a-s1: One response, the v13 high-level document (S1), Generation S and Reuse S+B, N = 5</span></h2><details class="insert" id="i32a-s1-0"><summary><b>Generation: generation highlevel full</b> <span class="dim">16 statements · 16 failure lines · 10,082 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32a-s1/contexts/generation-highlevel-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>generation_s__single_shot__static: functional 2 of 5; failed / unresolved / passed 4 / 21 / 25 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>High-level security guidance for adding a persistent, sorted highscore store, recording runs at level end, and exposing a bounded menu view in a desktop game.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Highscore records [integrity]</div>
+<div>- Player performance data [accountability]</div>
+<div>- Highscore menu view [availability]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Highscore persistence boundary [entry point]: User-editable local highscore file contents from Local file reader and parser to Retained highscore records and menu display</div>
+<div>- Level-content boundary [entry point]: Locally edited or shared-server level content that influences gameplay from Level loader and game loop to Finished-run score and elapsed-time recording</div>
+<div>- Player-input boundary [entry point]: Locally tampered player name or gameplay state from Name input and level-end integration to New highscore record</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; change_risk; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; CAPEC-230; V5.1.1; V12.1.1] Malformed or oversized persisted records could corrupt the leaderboard, inject misleading display text, or consume excessive resources.</div>
+<div class="meta">Task relevance: The feature introduces a new local persistence format and reads it for a menu view.</div>
+<div class="fail">Failure behavior: Invalid persisted data must be rejected and reported without being retained or displayed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; tampering; CWE-345; CWE-348; CAPEC-153; V2.1.1] Recording the wrong player, score, or elapsed time at a level transition could make the leaderboard misleading and allow local cheating to affect retained results.</div>
+<div class="meta">Task relevance: The feature must connect the actual level-end state to the new highscore record.</div>
+<div class="fail">Failure behavior: The integration must normalize missing or invalid values before submitting the run so the recording effect still occurs.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-345; CAPEC-153; V2.1.1] At the operation that handles a finished level, record exactly one run for each eligible human run end, whether the level is cleared or lost, using the final score, the player&#x27;s name, and elapsed survival time; exclude replay, simulation, and editor-only flows unless explicitly treated as runs.</div>
+<div class="meta">Task relevance: Ensures the feature captures the player&#x27;s real performance at the required level-end events.</div>
+<div class="fail">Failure behavior: If the source values are missing or invalid, the integration supplies stated safe defaults or normalized values before recording; it does not skip the run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153; V5.1.1] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming player name of at most 32 characters.</div>
+<div class="meta">Task relevance: Defines the input contract for storing and displaying highscore data.</div>
+<div class="fail">Failure behavior: Values outside these domains are rejected and reported; valid values are not clamped or substituted at the receiving operation.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] At the persistence reader, bound every physical line, record, and field before retaining it: use at most 256 bytes per line, at most 64 records, and at most 32 characters for a name.</div>
+<div class="meta">Task relevance: Keeps the local store proportional to what a leaderboard view needs and limits parser resource use.</div>
+<div class="fail">Failure behavior: Oversized lines, records, or fields are rejected and reported rather than truncated into a different value.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; tampering; CWE-345; CAPEC-153; V5.1.1] Keep each retained name, score, and survival duration as one aligned record, and order the records by score descending whenever they are stored, returned, or rendered.</div>
+<div class="meta">Task relevance: Preserves correct player-to-score-to-time relationships and implements the requested leaderboard ordering.</div>
+<div class="fail">Failure behavior: Malformed or inconsistent records are rejected and reported; valid records are retained with their fields aligned and sorted.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Bound the retained leaderboard to 64 records, evicting only the lowest-ranked excess records after a valid run is accepted so that a valid input that fits is never rejected.</div>
+<div class="meta">Task relevance: Provides a concrete storage and display bound suitable for a dedicated leaderboard panel.</div>
+<div class="fail">Failure behavior: Excess lower-ranked records are evicted after acceptance and the operation reports the resulting bounded state.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; task; tampering; CWE-663; CAPEC-153; V12.1.1] Persist accepted records to the configured store so that a newly created highscore view in a later process observes the same bounded, score-descending records.</div>
+<div class="meta">Task relevance: Implements persistence across application runs.</div>
+<div class="fail">Failure behavior: A persistence failure is reported while the in-memory accepted record remains available for the current run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; task; information_disclosure; CWE-20; CAPEC-153; V5.1.1] Expose the leaderboard through a dedicated menu panel that renders the player&#x27;s name, score, and survival time in mm:ss, limiting displayed rows to the bounded leaderboard size.</div>
+<div class="meta">Task relevance: Connects the stored data to the requested menu presentation without unbounded rendering.</div>
+<div class="fail">Failure behavior: Missing or invalid display values are normalized before rendering, and invalid persisted rows are not displayed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153; V5.1.1] Reject and report invalid values in the record-receiving operation, including negative scores or durations, blank names, and names longer than 32 characters.</div>
+<div class="meta">Task relevance: Protects the store&#x27;s record contract at its receiving operation.</div>
+<div class="fail">Failure behavior: The invalid submission is rejected and reported without clamping or partial insertion.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20; CWE-345; CAPEC-153; V2.1.1; V5.1.1] Before invoking the record operation at level end, normalize a missing or invalid score or duration to a stated non-negative default and normalize a missing or invalid name to a stated non-blank default.</div>
+<div class="meta">Task relevance: Keeps the primary recording effect active while preserving strict validation at the receiving operation.</div>
+<div class="fail">Failure behavior: The integration reports the normalization and still submits one complete run record.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] Use a bounded reader and parser for the local store, enforcing 256 bytes per line, 64 records, and 32 characters per name before data is retained.</div>
+<div class="meta">Task relevance: Prevents malformed or oversized local persistence data from reaching the leaderboard state.</div>
+<div class="fail">Failure behavior: The offending line or record is rejected and reported; it is not truncated or retained.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; tampering; CWE-345; CAPEC-153; V5.1.1] Represent leaderboard entries as one atomic record and sort copies or the collection by non-negative score descending before getters and rendering expose them.</div>
+<div class="meta">Task relevance: Prevents field misalignment and ordering mistakes in the board.</div>
+<div class="fail">Failure behavior: Inconsistent entries are rejected and reported, while valid entries remain aligned and ordered.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Maintain the 64-record bound by evicting the lowest-ranked entries after insertion and before persistence or display.</div>
+<div class="meta">Task relevance: Controls memory, file growth, and panel rendering for the leaderboard.</div>
+<div class="fail">Failure behavior: Only excess lower-ranked records are evicted; a valid record that fits is preserved.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; denial_of_service; CWE-703; CAPEC-154; V12.1.1] Write the bounded, validated store through a failure-aware persistence mechanism that keeps the accepted in-memory state when file output fails.</div>
+<div class="meta">Task relevance: Provides persistence without suppressing the current run&#x27;s highscore effect.</div>
+<div class="fail">Failure behavior: Report the write failure and retain the accepted current-process leaderboard state.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; task; tampering; CWE-20; CAPEC-153; V5.1.1] Have the dedicated menu panel read only the bounded getter results and format each non-negative elapsed duration as mm:ss using the corresponding player&#x27;s name and score.</div>
+<div class="meta">Task relevance: Ensures the requested board is readable and cannot expand beyond the store&#x27;s display bound.</div>
+<div class="fail">Failure behavior: Invalid rows are omitted from rendering and reported by the reader; the panel continues displaying valid rows.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R7</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details><details class="insert" id="i32a-s1-1"><summary><b>Reuse: reuse highlevel full</b> <span class="dim">16 statements · 7 failure lines · 9,845 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32a-s1/contexts/reuse-highlevel-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>reuse_sb__single_shot__static: functional 3 of 5; failed / unresolved / passed 0 / 14 / 36 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Add a local persistent highscore store, a finished-run recording path, and a menu panel. Reuse ApoIcarus’s parallel record model and descending-score presentation while replacing its remote service dependency with bounded local-file persistence.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Finished-run record containing actual score, player name, and survival time [integrity]</div>
+<div>- Persistent leaderboard and its score ordering [integrity]</div>
+<div>- Highscore menu panel and its displayed records [availability]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Level-end recording [entry point]: Player name and mutable level/player state at a cleared or lost level from The running game and local player-controlled or tampered game state to The operation that receives a new highscore record</div>
+<div>- Leaderboard persistence [entry point]: Stored leaderboard bytes, including records and fields from The user-editable local store file to The highscore store’s parser and in-memory records</div>
+<div>- Menu presentation: Records loaded from the local store from The highscore store to The dedicated menu highscore panel and its renderer</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; change_risk; reasoned; tampering; CWE-20; CAPEC-153] A tampered local game state or player name could create a false finished-run record if the level-end integration records values without domain validation.</div>
+<div class="meta">Task relevance: Protects the requirement that the board reflects the run’s actual non-negative score, player name, and elapsed time.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-230] Malformed or oversized local store content could corrupt the leaderboard, consume excessive resources, or make the menu unusable if persistence input is read without bounds and structural validation.</div>
+<div class="meta">Task relevance: Protects persistence across runs and continued availability of the menu panel.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering] At the level-end integration point, record exactly one finished run for both level clearing and losing, using the level’s final player score, player name, and elapsed survival time rather than a preview, default, or remote value.</div>
+<div class="meta">Task relevance: Provides the feature’s primary effect: recording the real result of every completed run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival time, and a name that is non-null, non-blank after trimming, and at most 32 characters; display the accepted duration as mm:ss.</div>
+<div class="meta">Task relevance: Defines the input contract for storeRun and prevents invalid values from entering the leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; tampering; CWE-922] Keep accepted records in the supplied local file so that a later highscore-store construction restores the same leaderboard records and their score, name, and survival-time association.</div>
+<div class="meta">Task relevance: Satisfies persistence across application runs without assuming a web endpoint.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; tampering; CWE-20] When records are retained or exposed to the panel, sort complete records by score descending while moving each name and survival time with its score.</div>
+<div class="meta">Task relevance: Satisfies the required leaderboard ordering and prevents mismatched displayed fields.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service] Expose the leaderboard through a dedicated menu panel that displays each retained player name, score, and survival time and can be reached from the game menu.</div>
+<div class="meta">Task relevance: Integrates the highscore board into the game’s existing menu/view flow.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230] Bound the leaderboard to 10 displayed records, bound each stored name to 32 characters, and bound each serialized record to 256 bytes; retain valid records by evicting records beyond the display capacity rather than rejecting a valid record that fits the input contract.</div>
+<div class="meta">Task relevance: Keeps the local store and menu sized to the feature while preserving valid run recording.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Use a local, explicitly structured persistence format for the Path-backed store and do not introduce network submission or general object deserialization for highscore records.</div>
+<div class="meta">Task relevance: Fits the desktop-game threat model and limits the attack surface while reusing the donor’s record and presentation concepts.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153] At the receiving record operation, reject and report a null/blank/overlong name or a negative score or duration; before calling it, the level-end integration trims the name and substitutes a stated safe default name for missing or invalid player-name data so the run is still recorded.</div>
+<div class="meta">Task relevance: Enforces R1 and R2 while preserving the level-end recording effect.</div>
+<div class="fail">Failure behavior: The store rejects invalid input and reports the rejection; the caller normalizes or defaults missing name data before invoking it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1, satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering] Make the level-end path idempotent for a finished run and invoke it from the common clear/loss transition after final scoring and elapsed-time calculation.</div>
+<div class="meta">Task relevance: Ensures R1 records the actual final result exactly once for either end condition.</div>
+<div class="fail">Failure behavior: A repeated transition does not create duplicate records, while the first valid transition still records the run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; tampering; CWE-20; CAPEC-153] Parse the local store with an explicit format, reject malformed records, and report parse failures without coercing, clamping, or partially accepting invalid fields.</div>
+<div class="meta">Task relevance: Enforces R3 and R7 against edited or corrupted store content.</div>
+<div class="fail">Failure behavior: The parser rejects and reports the invalid record; the caller uses an empty valid in-memory leaderboard so the menu remains available.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3, satisfies R7</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-230] Apply a byte limit before reading each serialized record and field, and stop reading beyond the configured store budget instead of allocating from unbounded input.</div>
+<div class="meta">Task relevance: Enforces R6 against oversized local-file input.</div>
+<div class="fail">Failure behavior: Oversized input is rejected and reported; existing valid records remain usable and the panel still opens.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; tampering] Maintain at most 10 retained records by evicting the lowest-ranked records after insertion, then expose aligned name, score, and survival-time collections in descending score order.</div>
+<div class="meta">Task relevance: Enforces R4 and R6 without costing a valid run that fits the record contract.</div>
+<div class="fail">Failure behavior: Only excess low-ranked records are evicted; the newly accepted valid record is not rejected solely because the board is full.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4, satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Persist through a bounded local-file writer using an explicit text or primitive-value format and atomic replacement where supported, rather than a general object deserializer or remote request.</div>
+<div class="meta">Task relevance: Enforces R3 and R7 while adapting the donor implementation to the Path-backed desktop feature.</div>
+<div class="fail">Failure behavior: A write failure is reported and the in-memory accepted record remains available for the current panel; no remote submission or unsafe deserialization is attempted.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3, satisfies R7</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; reasoned; tampering; CWE-20; CAPEC-153] Have the menu panel render only the bounded, validated store view and format survival time from non-negative seconds as mm:ss without reinterpreting or reordering fields during drawing.</div>
+<div class="meta">Task relevance: Enforces R4, R5, and R6 at the display boundary.</div>
+<div class="fail">Failure behavior: Invalid or unavailable rows are omitted from the rendered view while the dedicated panel remains navigable and displays the remaining valid rows.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4, satisfies R5, satisfies R6</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- The requested angle name highlevel is not permitted by the supplied schema.json, whose allowed values are dataflow, requirements, and catalog; requirements is used to remain schema-valid.</div>
+<div>- The guidance is intentionally unanchored per the task’s high-level-angle instructions; repository-specific symbol and line evidence is therefore not included.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details></section><section id="i32b-s2"><h2>i32b-s2 <span class="dim">I32b: one response, the v13 full document (S2), Generation S and Reuse S+B, N = 5</span></h2><details class="insert" id="i32b-s2-0"><summary><b>Generation: generation dataflow full</b> <span class="dim">18 statements · 11 failure lines · 25,857 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i31-v13/contexts/generation-dataflow-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>generation_s__single_shot__static: functional 3 of 5; failed / unresolved / passed 2 / 23 / 25 of 50</li></ul><b>Fresh control</b><ul><li class="dim">generation_s__single_shot__none: functional 2 of 5; failed / unresolved / passed 14 / 32 / 4 of 50</li></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---</div>
+<div>The feature will connect mutable run state and player names to a new file-backed leaderboard, then expose persisted records through a menu view. Existing code calculates elapsed time and score at level completion, transitions to analysis, and already has file persistence patterns, but no highscore implementation is present in the inspected source.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Recorded highscore entries: player name, score, and survival time [integrity] @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints()); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)</div>
+<div>- Persisted leaderboard file [availability] @ ApoMario/src/apoMario/ApoMarioConstants.java:55-79 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants)</div>
+<div>- Leaderboard display and ordering [authenticity] @ ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu); ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel#setMenu()); ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel)</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Leaderboard store file to highscore parser and menu [entry point]: A user-editable local leaderboard file supplied as the Path store argument from The future ApoMarioHighscore(Path) implementation reads the supplied file during construction or persistence loading. to ApoMarioHighscore storage records and getPlayersNames(), getPlayersScores(), getSurvivalTimes() values rendered by the dedicated menu view. @ ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)</div>
+<div>- Level file/server content to run state [entry point]: Binary level dimensions, time, tile values, enemy counts, and entity parameters from a local file or shared level server from ApoMarioLevelIO.readLevel(DataInputStream) consumes the level stream and constructs level state. to ApoMarioLevel time, entities, players, and finish later read by recordRunEnd(ApoMarioLevel). @ ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO); ApoMario/src/apoMario/level/ApoMarioLevel.java:358-360 (apoMario.level.ApoMarioLevel#setTime(int)); ApoMario/src/apoMario/level/ApoMarioLevel.java:358-360 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:426-428 (apoMario.level.ApoMarioLevel#makePlayer(float,float)); ApoMario/src/apoMario/level/ApoMarioLevel.java:426-428 (apoMario.level.ApoMarioLevel)</div>
+<div>- Mutable run state to leaderboard record [entry point]: Locally tampered score, elapsed-time state, player visibility/status, or AI-provided player name from The running level exposes mutable player points and time; player AI is loaded from a selected path/class and can affect the run. to recordRunEnd(ApoMarioLevel) and then ApoMarioHighscore.storeRun(score, survivalTime, playerName). @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:174-176 (apoMario.entity.ApoMarioPlayer#setPoints(int)); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:174-176 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:1058-1104 (apoMario.level.ApoMarioLevel)</div>
+<div>&nbsp;</div>
+<div class="stmt">[O1; observation; observed] On a one-player win, ApoMarioLevel#setAnalysis(boolean) adds finish, time, difficulty, and width-derived points to playerOne; on a loss it can award points to the remaining visible player. The method then transitions the panel to analysis.</div>
+<div class="meta">Task relevance: recordRunEnd must execute after this score mutation and before or as part of the completion transition so it records the actual final score.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Trace the implementation and test both win and loss paths, asserting the stored score equals the post-award player points.</div>
+<div>&nbsp;</div>
+<div class="stmt">[O2; observation; observed] The level stores a countdown time, initializes levelStartTime, exposes getTime(), and computes elapsed time as randomLevel.getTime() minus time through getPassedTime().</div>
+<div class="meta">Task relevance: The integration must derive survival time from the finished level state and convert it to the required mm:ss display representation without confusing remaining time with elapsed time.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel#getTime())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel#thinkTime(int))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Run a controlled level for a known duration and assert the recorded integer duration and rendered mm:ss are consistent.</div>
+<div>&nbsp;</div>
+<div class="stmt">[O3; observation; observed] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.</div>
+<div class="meta">Task relevance: The dedicated highscore panel/view must be integrated into this menu-model and button/state transition architecture.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel#setMenu())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java:40-54 (apoMario.game.panels.ApoMarioModelMenu)</div>
+<div class="meta">Suggested verification: Exercise menu navigation and assert the highscore view is reachable, renders records, and returns to the main menu without losing state.</div>
+<div>&nbsp;</div>
+<div class="stmt">[O4; observation; observed] Existing persistence uses a caller-selected fixed properties filename, FileInputStream/FileOutputStream, Properties parsing, and catches malformed numeric properties by substituting defaults or clamping application size.</div>
+<div class="meta">Task relevance: The highscore persistence can follow the desktop file-backed pattern, but its parser must define stricter record validation and bounded allocation for user-editable data.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:55-79 (apoMario.ApoMarioConstants)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants)</div>
+<div class="meta">Suggested verification: Inspect the new store implementation for explicit parse failures, bounded reads, and error reporting rather than inherited silent behavior.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; change_risk; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-153] A malformed or oversized user-edited leaderboard record could cause invalid score/time/name state, excessive allocation, parser exceptions, or denial of service before the board is displayed.</div>
+<div class="meta">Task relevance: The new Path-backed highscore parser is a direct attack surface under the fixed desktop threat model.</div>
+<div class="fail">Failure behavior: Reject the invalid record, report the rejection, and continue loading other valid records without substituting an unbounded value.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants)</div>
+<div class="meta">Suggested verification: Feed missing, malformed, negative, oversized, and very large-count records to the constructor and assert bounded memory use, explicit rejection reporting, and retention of valid records.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; tampering; CWE-345; CWE-472; CAPEC-153] A user can tamper with stored scores, names, durations, or ordering and thereby spoof leaderboard identity or alter leaderboard integrity.</div>
+<div class="meta">Task relevance: The persisted leaderboard is explicitly required to survive runs, so local file tampering directly affects the displayed result.</div>
+<div class="fail">Failure behavior: Reject values outside the storeRun domain and report the rejection; do not silently accept altered records or clamp invalid values.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Store valid and invalid records, reopen the store, and assert only valid records are retained and sorted by score descending.</div>
+<div class="meta">Relations: related R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[X3; change_risk; reasoned; repudiation; CWE-778] If completion recording is attached to only one transition or occurs before score calculation, wins, losses, timeout, and restart paths can be omitted or recorded with stale values.</div>
+<div class="meta">Task relevance: The task requires recording on clearing a level or losing, while existing completion and restart transitions are separate operations.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: At the completion integration point, normalize missing/invalid run values to stated safe defaults and still invoke the primary store operation exactly once for each finished run.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:454-462 (apoMario.game.ApoMarioPanel#restartLevel(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:454-462 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Suggested verification: Test win, loss, timeout, duplicate completion calls, and restart-before-completion scenarios; assert one record per finished run with final score and elapsed time.</div>
+<div class="meta">Relations: related R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20; CAPEC-153] ApoMarioHighscore#storeRun must accept only a non-negative integer score, a non-negative integer survivalTime, and a non-null, non-blank-after-trimming playerName of at most 32 characters; it must retain accepted records in descending score order and expose aligned names, scores, and durations.</div>
+<div class="meta">Task relevance: This is the core integrity contract for the requested persisted leaderboard.</div>
+<div class="fail">Failure behavior: For any invalid argument, return false, report the rejection, and leave the existing valid leaderboard unchanged; never substitute or clamp at this receiving operation.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545 (apoMario.game.panels.ApoMarioMenu)</div>
+<div class="meta">Suggested verification: Unit-test null, blank, 33-character, negative, and maximum valid values; assert return values, unchanged state on rejection, alignment, and descending score order.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; repudiation; CWE-778] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level&#x27;s actual elapsed duration, and persist the accepted run across process restarts.</div>
+<div class="meta">Task relevance: The feature’s primary effect is recording the real finished run rather than a preview or remaining-time value.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name &quot;human&quot;, score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel#setAnalysis())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Suggested verification: Integration-test clear, death, and timeout paths, including invalid/tampered state, then instantiate a new highscore object against the same file and assert the record remains available.</div>
+<div class="meta">Relations: mitigates X3</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; information_disclosure; CWE-20] The highscore view must display player name, score, and survival time in mm:ss, with records in descending score order, and must limit displayed/retained records to the view’s capacity, such as 10 entries.</div>
+<div class="meta">Task relevance: This implements the dedicated menu panel and prevents unbounded display or retention growth.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)</div>
+<div class="fail">Failure behavior: The view truncates excess valid records by evicting records beyond 10; it does not reject a valid run that fits the input domain. Invalid loaded records are rejected and reported before rendering.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioGame.java:318-371 (apoMario.game.panels.ApoMarioGame#renderStatistics(Graphics2D))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioGame.java:318-371 (apoMario.game.panels.ApoMarioGame)</div>
+<div class="meta">Suggested verification: Render more than 10 records and assert only the top 10 by score are shown, names and durations stay aligned, and duration formatting is exactly mm:ss.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; denial_of_service; CWE-20; CWE-400; CAPEC-153] The level-file reader must bound every untrusted allocation and numeric collection before construction: width and height must be positive and within the game’s needed bounds, time must be a non-negative integer, and enemy/entity counts must be non-negative and capped to the level’s supported capacity.</div>
+<div class="meta">Task relevance: recordRunEnd consumes state originating from level content, so malformed shared or local level data must not create uncontrolled state before recording.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO)</div>
+<div class="fail">Failure behavior: Reject the invalid level input, report the rejection, and do not allocate or construct the invalid level; the caller may retain the prior valid game state.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:228-260 (apoMario.level.ApoMarioLevel#makeEmptyLevel(int,int,int))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:228-260 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Use truncated, negative, zero, oversized, and excessive-count level streams; assert rejection is reported before allocation and valid levels still load.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153; IDS00-J] At ApoMarioHighscore#storeRun, validate score and survivalTime as non-negative integers and playerName as non-null, non-blank after trimming, and at most 32 characters; keep at most 10 aligned records by evicting the lowest-scoring excess entry, then sort by score descending.</div>
+<div class="meta">Task relevance: This directly enforces the leaderboard input and retention contract.</div>
+<div class="fail">Failure behavior: Return false and report invalid input without changing valid state; evict only valid records beyond 10 and never reject a valid record merely because the bounded leaderboard is full.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Suggested verification: Property-test boundary values, whitespace names, duplicate scores, and 11 valid records; assert exact validation, alignment, descending order, and bounded count.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-153] At the Path-backed highscore reader, bound each input line to 256 bytes, each parsed field to its declared domain, and the total records read to 10; reject malformed records with a reported error and continue only with independently valid records.</div>
+<div class="meta">Task relevance: The store file is user-editable local input and must not control parser allocation or leaderboard size.</div>
+<div class="fail">Failure behavior: Reject and report invalid lines/records; do not substitute, clamp, or allocate based on unbounded input.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants)</div>
+<div class="meta">Suggested verification: Provide a file with a 257-byte line, malformed numeric fields, invalid names, more than 10 records, and valid records; assert bounded reads and preservation of valid entries.</div>
+<div class="meta">Relations: satisfies R1, satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; repudiation; CWE-778; CWE-20] At the completion integration in ApoMarioLevel#setAnalysis(boolean), read the post-calculation player points and getPassedTime(), choose the human/default name when the source name is missing or invalid, normalize invalid score or duration to 0, and invoke storeRun once before entering analysis.</div>
+<div class="meta">Task relevance: This preserves the primary recording effect while preventing mutable or tampered run state from bypassing input validation.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: Fallback occurs at this caller integration point, so the run is still recorded; storeRun remains strict and reports any unexpected rejection or persistence failure.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel#getPassedTime())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Instrument storeRun and test win, death, timeout, missing name, negative duration, and repeated setAnalysis calls; assert one normalized call per completion.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-153] At ApoMarioLevelIO#readLevel(DataInputStream), validate dimensions, time, tile/enemy counts, and each field before allocating arrays or constructing entities; cap each count to the level’s supported capacity and report rejected input.</div>
+<div class="meta">Task relevance: This bounds untrusted level content before it reaches the run state consumed by the highscore integration.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO)</div>
+<div class="fail">Failure behavior: Reject invalid data before allocation/entity construction and report the rejection; do not substitute or clamp malformed level fields.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO)</div>
+<div class="meta">Suggested verification: Fuzz the binary reader with invalid dimensions, counts, truncation, and oversized parameters; assert no uncontrolled allocation and clear rejection reporting.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[V1; verification; reasoned] Verify the end-to-end flow by completing and losing runs, reopening ApoMarioHighscore with the same Path, and comparing the getters with the recorded name, final score, survival duration, and descending order.</div>
+<div class="meta">Task relevance: Confirms recording, ordering, and persistence across runs together.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Automated integration test covering clear, loss, restart, persistence, and getter alignment.</div>
+<div class="meta">Relations: verifies R1, verifies R2, verifies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[V2; verification; reasoned] Verify the file boundary with malformed and adversarial leaderboard files and level streams, checking rejection reporting, bounded line/record/allocation limits, and retention of valid data.</div>
+<div class="meta">Task relevance: Confirms the new readers fail safely while preserving valid feature effects.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:31-112 (apoMario.level.ApoMarioLevelIO)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:81-110 (apoMario.ApoMarioConstants)</div>
+<div class="meta">Suggested verification: Parser fuzz and resource-bound tests for invalid numeric ranges, oversized text, truncation, excessive records, and invalid entity counts.</div>
+<div class="meta">Relations: verifies R1, verifies R4, verifies C2, verifies C4</div>
+<div>&nbsp;</div>
+<div class="stmt">[U1; unknown; observed] The inspected repository does not establish the future storage format, default highscore Path, player-name source for human runs, or whether simulations/replays should create leaderboard entries.</div>
+<div class="meta">Task relevance: These unresolved edges affect persistence compatibility, identity semantics, and which completion flows invoke recordRunEnd.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel#loadReplay())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:274-283 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:452-456 (apoMario.level.ApoMarioLevel#setNames())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:452-456 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Resolve by inspecting the implementation contract/tests and explicitly deciding store location, human-name input, and replay/simulation eligibility.</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- ApoMarioHighscore and recordRunEnd do not exist in the inspected repository, so their implementation symbols and line anchors cannot be resolved yet; proposed enforcement points reference the required public API with null line values.</div>
+<div>- The inspected code does not show a dedicated highscore button/view, a player-name input mechanism, or a highscore file format.</div>
+<div>- No implementation or tests were changed because the workspace is read-only and the task requests security context only.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details><details class="insert" id="i32b-s2-1"><summary><b>Reuse: reuse dataflow full</b> <span class="dim">17 statements · 12 failure lines · 25,892 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i31-v13/contexts/reuse-dataflow-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>reuse_sb__single_shot__static: functional 2 of 5; failed / unresolved / passed 2 / 32 / 16 of 50</li></ul><b>Fresh control</b><ul><li class="dim">reuse_sb__single_shot__none: functional 2 of 5; failed / unresolved / passed 13 / 32 / 5 of 50</li></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---</div>
+<div>ApoIcarus provides reusable highscore storage and rendering patterns, but its storage is network-oriented and parses unvalidated integers. ApoMario already exposes terminal score/time state through ApoMarioLevel and player state, and routes both completion and loss through setAnalysis(boolean). The proposed feature should add a bounded, validated local-file store, record the terminal player state exactly once before analysis navigation, and add a menu panel rendering aligned records sorted by descending score.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Persisted highscore records: player name, score, survival time [integrity] @ ApoIcarus/src/org/apogames/help/ApoHighscore.java:14-151 (org.apogames.help.ApoHighscore)</div>
+<div>- Player score and terminal elapsed time [accountability] @ ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints()); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/level/ApoMarioLevel.java:393-395 (apoMario.level.ApoMarioLevel#getStartTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:393-395 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel#getTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel)</div>
+<div>- Dedicated highscore menu view [availability] @ ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel#setMenu()); ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel); ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore#render(Graphics2D)); ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore)</div>
+<div>- Player identity shown in leaderboard [authenticity] @ ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName()); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/game/panels/ApoMarioGame.java:390-433 (apoMario.game.panels.ApoMarioGame)</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Local highscore file to leaderboard store [entry point]: A user-editable local highscore file containing records, fields, and names from The Path supplied to ApoMarioHighscore(Path) and its persisted bytes to ApoMarioHighscore load/store logic, getters, sorting, and highscore panel rendering @ ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load()); ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore); ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String)); ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore); ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean)); ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)</div>
+<div>- Tamperable run state to recorded highscore [entry point]: Locally tampered or externally influenced level/player score, player identity, and remaining-time values from ApoMarioLevel players and terminal state read during setAnalysis(boolean) to ApoMarioHighscore.recordRunEnd(ApoMarioLevel) and storeRun(int,int,String) @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:487-542 (apoMario.entity.ApoMarioPlayer)</div>
+<div>- Shared level content to score calculation [entry point]: Level content or level-derived values obtained from a shared or user-controlled level source from ApoMarioLevel state used to calculate finish and time/difficulty/width score components to Player points and terminal highscore recording @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel#thinkTime(int)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel)</div>
+<div>&nbsp;</div>
+<div class="stmt">[O1; observation; observed] The donor stores names, times, and points in parallel lists; save() sends them to a network endpoint, while load() parses every third line as an integer point or time and otherwise stores a name.</div>
+<div class="meta">Task relevance: Reuse the data model only after replacing the network transport with the requested Path-backed local store and adding validation.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:14-20 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Review the implementation and test a valid file plus malformed, oversized, and mismatched records.</div>
+<div>&nbsp;</div>
+<div class="stmt">[O2; observation; observed] ApoMarioPlayer stores points and an optional teamName; the HUD displays the teamName or the literal human label and displays the player&#x27;s points.</div>
+<div class="meta">Task relevance: Use the existing player score and identity state when recordRunEnd reads the finished run.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer#getTeamName())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:116-118 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioGame.java:390-433 (apoMario.game.panels.ApoMarioGame)</div>
+<div class="meta">Suggested verification: Construct a run with a known player name and score and assert the stored record contains those values.</div>
+<div>&nbsp;</div>
+<div class="stmt">[O3; observation; observed] A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel.</div>
+<div class="meta">Task relevance: The recording hook must run from this common terminal path so both clearing and losing are recorded.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:487-542 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel#setAnalysis())</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Suggested verification: Exercise both finish collision and player death and assert exactly one record is added for each run.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; existing_risk; observed; tampering; CWE-20; CWE-789; CWE-400; CAPEC-153] The donor load operation converts untrusted lines directly with Integer.valueOf and appends them to parallel lists without visible bounds or record-consistency checks; malformed data reaches parsing exceptions and oversized input can allocate unbounded list contents.</div>
+<div class="meta">Task relevance: Blindly copying this parser into ApoMario would make the local highscore file a tampering and denial-of-service surface.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: Observed code returns false only for MalformedURLException or IOException; numeric parsing and list-size failure behavior is not established.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Feed malformed numeric lines, mismatched triples, and more records than the view displays to the donor-style parser.</div>
+<div class="meta">Relations: related R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; tampering; CWE-20; CWE-789; CWE-400; CAPEC-153] A Path-backed highscore store will accept locally editable names, scores, durations, and record counts; without validation, tampering can corrupt leaderboard ordering or cause excessive allocation during load.</div>
+<div class="meta">Task relevance: This is the primary trust boundary introduced by the requested persistence feature.</div>
+<div class="fail">Failure behavior: If invalid data is accepted, the leaderboard can display false identity/score/time data or become unavailable.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore#render(Graphics2D))</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="meta">Suggested verification: Use a hand-edited store containing negative values, blank/overlong names, oversized fields, malformed records, and excess records.</div>
+<div class="meta">Relations: related R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[X3; change_risk; reasoned; repudiation; CWE-691; V4.1.1] If recording is attached only to the finish path, or occurs before terminal scoring, losing runs and final score adjustments will be omitted, producing incomplete or false accountability data.</div>
+<div class="meta">Task relevance: The task explicitly requires recording on clearing and losing and requires the player&#x27;s real score.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: A missed hook silently loses the run record or records an intermediate score.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:487-542 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Suggested verification: Instrument the terminal method and assert exactly one call for both boolean outcomes and no duplicate call on repeated callbacks.</div>
+<div class="meta">Relations: related R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[X4; change_risk; reasoned; denial_of_service; CWE-73; CWE-755] A persistence failure or non-atomic rewrite can make the leaderboard unavailable or partially written across runs, causing loss of otherwise valid highscore records.</div>
+<div class="meta">Task relevance: The feature requires persistence across runs, so write failure behavior is part of the change&#x27;s availability contract.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: A failed write must not clear memory or suppress display of the current leaderboard.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Interrupt or fail writes and reopen the store; verify defined error reporting and no in-memory data loss.</div>
+<div class="meta">Relations: related R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20; CWE-789; CWE-400; CAPEC-153; V5.1.1] ApoMarioHighscore&#x27;s file-reading and storeRun operations must accept only complete records with a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming name of at most 32 characters; each input record must be limited to 256 bytes, and the retained leaderboard must be limited to 10 records by evicting the lowest-ranked entries after insertion. Invalid records must be rejected and reported, never substituted or clamped by the store operation.</div>
+<div class="meta">Task relevance: Protects persisted leaderboard integrity and availability while retaining every valid record that fits the view.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: Reject and report the invalid record; preserve valid retained records and do not replace the rejected value with a guessed or clamped value.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Unit-test storeRun and file loading with boundary values, negative values, blank names, 32/33-character names, 256/257-byte records, malformed records, and 11 valid records; assert rejection/reporting and eviction behavior.</div>
+<div class="meta">Relations: mitigates X1, mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; repudiation; CWE-20; CWE-691; V4.1.1] The terminal integration must call recordRunEnd once for every completed or lost run, after ApoMarioLevel has applied the terminal score adjustments and before the panel transition; it must derive elapsed time from getStartTime() minus getTime(), preserve valid non-negative values, and select the actual finished player&#x27;s score and displayed identity.</div>
+<div class="meta">Task relevance: Ensures the leaderboard records the real terminal result rather than an intermediate HUD value or a replay/menu state.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: If a missing or invalid name, score, or elapsed time reaches the integration point, substitute a stated safe default there before calling recordRunEnd; do not skip recording the run.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:487-542 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Suggested verification: Test finish and loss paths, repeated terminal callbacks, time expiry, human and AI names, and score adjustments; assert one record with terminal values per run.</div>
+<div class="meta">Relations: mitigates X3</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; denial_of_service; CWE-703; CWE-755] persistAcrossRuns must write the validated bounded leaderboard to the supplied Path and preserve the in-memory record if the file cannot be written; persistence errors must be reported without dropping the newly recorded run.</div>
+<div class="meta">Task relevance: Provides persistence across process runs without making a local filesystem failure erase the current run&#x27;s primary effect.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: Report the write failure and leave the validated in-memory leaderboard available for the current view; do not discard the run.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Use a writable temporary file and an unwritable/missing-parent Path; assert the run remains available and the error is observable.</div>
+<div class="meta">Relations: mitigates X4</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; tampering; CWE-20; CWE-116] The dedicated highscore panel must display aligned name, score, and survival-time fields in descending score order, format survival time as mm:ss, and render no more than the 10 retained records.</div>
+<div class="meta">Task relevance: Satisfies the requested menu presentation while preventing malformed or excessive persisted data from reaching rendering allocation and output.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore#render(Graphics2D))</div>
+<div class="meta">Enforcement point: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="fail">Failure behavior: Render only validated aligned records; malformed records must already have been rejected by the store, and an empty valid list renders an empty board rather than throwing.</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean))</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore#render(Graphics2D))</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="meta">Suggested verification: Assert descending order, parallel-field alignment, mm:ss output, 10-record maximum, and empty-board rendering.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CWE-789; CWE-400; CAPEC-153; V5.1.1] At the new ApoMarioHighscore file parser and storeRun boundary, validate the complete record before appending it: score and survival time must be integers in [0,Integer.MAX_VALUE], name must be trimmed, non-blank, non-null, and at most 32 characters, and each line/record must be at most 256 bytes. Reject and report invalid records; retain valid records and evict records beyond the 10-record display capacity instead of rejecting a valid fitting record.</div>
+<div class="meta">Task relevance: Implements R1 at the first operation receiving user-editable persistence data.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: Report and discard only the invalid record; do not clamp or substitute its fields, and keep valid records within the 10-record bound.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore#load())</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:99-150 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Property-test parser inputs around numeric, name, byte-length, malformed-record, and record-count boundaries.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; repudiation; CWE-20; CWE-691; V4.1.1] At the terminal integration in ApoMarioLevel.setAnalysis(boolean), guard recording so it executes once after terminal point adjustments and before setAnalysis() changes the panel; compute elapsed time as startTime minus remaining time, and use the existing displayed identity, defaulting a missing/blank name to &quot;human&quot; and an invalid score or duration to 0 before calling storeRun.</div>
+<div class="meta">Task relevance: Implements R2 while preserving the primary record effect when tamperable or missing values are encountered.</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="fail">Failure behavior: Normalize only at this integration point, then always invoke recordRunEnd/storeRun; never suppress a terminal record because one field is invalid.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:487-542 (apoMario.entity.ApoMarioPlayer)</div>
+<div class="meta">Suggested verification: Run deterministic finish/loss tests with duplicate callbacks, invalid names, negative/overflow elapsed calculations, and both one-/two-player configurations.</div>
+<div class="meta">Relations: satisfies R2, mitigates X3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; denial_of_service; CWE-73; CWE-755] At persistAcrossRuns, serialize only the validated, at-most-10-record state, use a temporary sibling file followed by an atomic replace when supported, and report any failure while retaining the in-memory state for the current panel.</div>
+<div class="meta">Task relevance: Implements R3 at the persistence sink.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Enforcement point: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="fail">Failure behavior: On any write or replace failure, report it and leave the current validated list intact.</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore#save(int,int,String))</div>
+<div class="meta">Inspected source: ApoIcarus/src/org/apogames/help/ApoHighscore.java:54-97 (org.apogames.help.ApoHighscore)</div>
+<div class="meta">Suggested verification: Test successful persistence, replacement failure, process restart, and preservation of the in-memory list after failure.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; tampering; CWE-20; CWE-116] At the highscore panel&#x27;s view-model/render boundary, sort records by score descending while moving name and duration with the same record, cap the displayed collection at 10, and format each validated duration as mm:ss before drawing it.</div>
+<div class="meta">Task relevance: Implements R4 by reusing the donor&#x27;s sort and rendering structure without exposing unvalidated file fields.</div>
+<div class="meta">Enforcement point: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean))</div>
+<div class="meta">Enforcement point: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="fail">Failure behavior: Exclude only records already rejected by the store; render an empty or partial valid board without throwing when no valid records remain.</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore#sortList(boolean))</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:106-134 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore#render(Graphics2D))</div>
+<div class="meta">Inspected source: ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java:189-235 (apoJump.game.ApoJumpStateHighscore)</div>
+<div class="meta">Suggested verification: Test ties, descending scores, aligned names/times, 10/11 records, and durations crossing minute boundaries.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[V1; verification; reasoned] Integration verification should start a run, finish it, inspect the public getters, reopen a new ApoMarioHighscore on the same Path, call persistAcrossRuns, and assert the record survives with the same name, score, and duration.</div>
+<div class="meta">Task relevance: Checks the requested public API and persistence behavior together.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)</div>
+<div class="meta">Suggested verification: Automated integration test using a temporary Path and deterministic level/player state.</div>
+<div class="meta">Relations: verifies R1, verifies R2, verifies R3, verifies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[U1; unknown; observed] Inspection did not establish an existing ApoMario highscore store, a human-player name input model, or a current menu button/state dedicated to highscore; the target implementation must define the store location and deterministic player-name selection.</div>
+<div class="meta">Task relevance: These unresolved integration choices affect persistence wiring, menu navigation, and the name passed to recordRunEnd.</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:36-699 (apoMario.game.ApoMarioPanel)</div>
+<div class="meta">Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:28-553 (apoMario.game.panels.ApoMarioMenu)</div>
+<div class="meta">Suggested verification: Resolve by inspecting the final diff and asserting that initialization, menu navigation, name selection, and store Path are explicit and tested.</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- The requested ApoMarioHighscore class and recordRunEnd method do not yet exist in the inspected target, so their exact symbols and file anchors cannot be cited.</div>
+<div>- The existing code exposes AI teamName and displays a human fallback, but no dedicated human-name input was established; the final implementation must choose and test the intended source.</div>
+<div>- No build or runtime tests were run because the workspace is read-only.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details></section><section id="i32c-s3"><h2>i32c-s3 <span class="dim">i32c-s3: One response, the v13 generic document (S3, no repository), Generation S and Reuse S+B, N = 5</span></h2><details class="insert" id="i32c-s3-0"><summary><b>Generation: generation generic full</b> <span class="dim">14 statements · 14 failure lines · 8,532 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32c-s3/contexts/generation-generic-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>generation_s__single_shot__static: functional 2 of 5; failed / unresolved / passed 1 / 32 / 17 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Security context for a Java desktop game&#x27;s local highscore persistence and menu display.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Highscore records [integrity]</div>
+<div>- Game availability [availability]</div>
+<div>- Game process and runtime data [integrity]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Running game to highscore recorder [entry point]: Score, survival time, and player name produced or affected by local game state from Running game state and local tampering to cheat to Run-recording operation</div>
+<div>- Local highscore file to loader [entry point]: Persisted records, fields, and file structure editable by the user from Local highscore store file to Highscore parser and in-memory leaderboard</div>
+<div>- External level content to game [entry point]: Level data loaded from a shared level server or other external source from Shared level content to Level decoder and running game state</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20; CAPEC-153] The run-recording operation shall accept only a score and survival time that are non-negative integers in the supported integer range, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report every value outside those domains.</div>
+<div class="meta">Task relevance: Protects the integrity of records created when a run ends.</div>
+<div class="fail">Failure behavior: The receiving operation rejects the invalid value and reports the rejection.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153] The run-end integration point shall obtain the actual finished-run score, player name, and elapsed survival time, normalize missing or invalid values to score 0, survival time 0, and name &quot;Player&quot;, and then call the run-recording operation so recording still occurs.</div>
+<div class="meta">Task relevance: Ensures clearing or losing a run produces a usable highscore entry despite bad runtime state.</div>
+<div class="fail">Failure behavior: The integration point supplies the stated defaults before calling the recording operation; it does not skip the primary recording effect.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; tampering; CWE-20; CWE-502; CAPEC-153] The highscore loader shall treat the local store as untrusted structured data, avoid Java object deserialization, and accept only records whose score and survival time are non-negative integers in the supported integer range and whose name is non-null, non-blank after trimming, and at most 32 characters.</div>
+<div class="meta">Task relevance: Prevents edited persistence data from corrupting the leaderboard or triggering unsafe deserialization.</div>
+<div class="fail">Failure behavior: Malformed or out-of-domain records are rejected and reported as load rejections.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; denial_of_service; CWE-400; CAPEC-125] The highscore read operation shall cap the complete store at 64 KiB, each line or record at 256 bytes, each name field at 128 bytes, and each numeric field at 32 bytes before retaining or parsing it.</div>
+<div class="meta">Task relevance: Limits resource consumption from a user-edited persistence file.</div>
+<div class="fail">Failure behavior: The read operation rejects and reports input exceeding a stated limit.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service; CWE-400; CAPEC-125] The in-memory leaderboard and menu view shall retain and display at most 10 records, sorted by score descending, while evicting excess records rather than rejecting a valid record that fits the input bounds.</div>
+<div class="meta">Task relevance: Keeps the highscore board available and aligned with the requested ranking behavior.</div>
+<div class="fail">Failure behavior: Records beyond the display capacity are evicted after ordering; the game continues with the bounded leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; task; denial_of_service; CWE-23; CWE-400; CAPEC-125] The highscore load and save integration shall report malformed, oversized, or inaccessible store failures and continue the game with an empty leaderboard when loading fails, while still attempting the run-end recording effect through the caller defaults.</div>
+<div class="meta">Task relevance: Preserves game availability when persistence is damaged or unavailable.</div>
+<div class="fail">Failure behavior: The failure is reported, the menu uses an empty leaderboard, and run-end recording is not suppressed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; task; tampering; CWE-94; CWE-502; CAPEC-153] The persistence operation shall write only validated, bounded highscore records in the defined primitive/text format and shall not interpret names or other stored fields as executable code.</div>
+<div class="meta">Task relevance: Protects record integrity and the game process when displaying persisted names.</div>
+<div class="fail">Failure behavior: Unsupported or invalid data is rejected and reported before writing or displaying it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153] Use centralized input validation at the run-recording operation for score, survival time, and player name.</div>
+<div class="meta">Task relevance: Enforces R1 at the operation receiving runtime values.</div>
+<div class="fail">Failure behavior: Invalid input is rejected and reported; the operation does not substitute or clamp it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20; CAPEC-153] Apply caller-side normalization immediately before run recording, with defaults score 0, survival time 0, and name &quot;Player&quot;.</div>
+<div class="meta">Task relevance: Enforces R2 while preserving run-end recording.</div>
+<div class="fail">Failure behavior: Missing or invalid runtime values are replaced by the stated defaults and the recording call proceeds.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; tampering; CWE-20; CWE-502; CAPEC-153] Implement an explicit primitive/text format parser with field validation and no Java object deserialization.</div>
+<div class="meta">Task relevance: Enforces R3 for the editable local store.</div>
+<div class="fail">Failure behavior: The parser rejects and reports invalid records without executing data or accepting them into memory.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Use bounded file, record, and field readers that enforce 64 KiB total, 256-byte record, 128-byte name, and 32-byte numeric limits.</div>
+<div class="meta">Task relevance: Enforces R4 before untrusted content is retained.</div>
+<div class="fail">Failure behavior: Oversized input is rejected and reported by the reader; valid smaller input remains processable.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Use a bounded collection of 10 validated records and sort it by descending score before persistence and display.</div>
+<div class="meta">Task relevance: Enforces R5 at retention and presentation.</div>
+<div class="fail">Failure behavior: The lowest-priority excess records are evicted; no valid record within capacity is rejected.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Isolate persistence I/O and parser failures behind a reported error boundary with an empty in-memory fallback.</div>
+<div class="meta">Task relevance: Enforces R6 without taking down the desktop game.</div>
+<div class="fail">Failure behavior: I/O or parsing failure is reported and the menu continues with zero records; the primary run-end action proceeds.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; reasoned; tampering; CWE-94; CWE-502; CAPEC-153] Use fixed-schema serialization with escaping or safe encoding for text fields and render names strictly as data.</div>
+<div class="meta">Task relevance: Enforces R7 for persistence and menu rendering.</div>
+<div class="fail">Failure behavior: Unsafe or invalid field content is rejected and reported; no stored value is executed or treated as a command.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R7</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- No repository was available, so no code symbols, files, line ranges, existing controls, or implementation-specific verification could be inspected.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details><details class="insert" id="i32c-s3-1"><summary><b>Reuse: reuse generic full</b> <span class="dim">10 statements · 10 failure lines · 6,277 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32c-s3/contexts/reuse-generic-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>reuse_sb__single_shot__static: functional 4 of 5; failed / unresolved / passed 2 / 14 / 34 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Generic security context for a Java desktop game&#x27;s local highscore feature. No repository was available for inspection, so no code anchors apply.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Persisted highscore records [integrity]</div>
+<div>- Game availability during highscore loading [availability]</div>
+<div>- Highscore data as inert data [resistance]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Running game to highscore recorder [entry point]: Score, survival time, and player name produced or supplied by the running game from Running game state to Highscore recording operation</div>
+<div>- Local highscore file [entry point]: User-editable persisted records, fields, and file size from Local filesystem to Highscore file parser and loader</div>
+<div>- Externally loaded game content [entry point]: Content originating from a shared level server or other external source from External content loader to Game state and highscore integration</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20] The run-recording operation shall accept only a non-negative integer score, a non-negative integer survival time, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report values outside those domains.</div>
+<div class="meta">Task relevance: Protects the integrity of the player&#x27;s recorded score, name, and mm:ss duration.</div>
+<div class="fail">Failure behavior: The receiving operation rejects and reports invalid values without storing them.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20] The integration point shall normalize a missing or invalid score, survival time, or player name to stated safe defaults before invoking the recording operation, so finishing a run still records its primary result.</div>
+<div class="meta">Task relevance: Preserves run-end recording when game state is incomplete or locally tampered with.</div>
+<div class="fail">Failure behavior: The caller substitutes safe defaults before the recording call; it does not skip or suppress run-end recording.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; information_disclosure; CWE-502; CWE-400] The file reader shall treat the local highscore file as untrusted text data, avoid Java object deserialization, and impose limits of 4096 bytes per line, 4096 characters per field, and 100 records before retaining data.</div>
+<div class="meta">Task relevance: Prevents malicious or corrupted local files from causing code execution, excessive memory use, or parser instability.</div>
+<div class="fail">Failure behavior: Malformed, oversized, or unsupported records are rejected and reported; no object deserialization occurs.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; denial_of_service; CWE-400] The retained leaderboard shall be bounded to 100 records, sorted by non-negative points in descending order, and evict records beyond the bound without rejecting a valid record that fits.</div>
+<div class="meta">Task relevance: Keeps the menu view responsive while preserving the highest-scoring entries.</div>
+<div class="fail">Failure behavior: Entries exceeding the retention bound are evicted after ordering; valid fitting entries remain available.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service; CWE-400] Malformed or unreadable highscore storage shall not prevent the game menu or run-end recording from functioning; loading shall fall back to an empty leaderboard and report the rejection.</div>
+<div class="meta">Task relevance: Maintains game availability when the persisted file is corrupted, truncated, or inaccessible.</div>
+<div class="fail">Failure behavior: The loader reports the failure and uses an empty in-memory leaderboard; the game continues.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20] Use explicit numeric-domain and trimmed-name validation at the run-recording operation, with rejection diagnostics.</div>
+<div class="meta">Task relevance: Implements R1 at the untrusted-data receiving operation.</div>
+<div class="fail">Failure behavior: Reject and report invalid score, duration, or name; do not store it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20] Use run-end integration normalization that converts missing or invalid values to safe stated defaults before calling the recorder.</div>
+<div class="meta">Task relevance: Implements R2 while preserving the primary run-end recording effect.</div>
+<div class="fail">Failure behavior: Substitute defaults and invoke recording; never suppress the recording operation.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; information_disclosure; CWE-502; CWE-400] Use a bounded text parser with fixed byte and character limits and a format containing only primitive fields; do not use Java object deserialization.</div>
+<div class="meta">Task relevance: Implements R3 for the user-editable store.</div>
+<div class="fail">Failure behavior: Reject and report malformed or oversized input without deserializing it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400] Use a bounded, score-descending collection that retains at most 100 records and evicts lower-priority excess entries.</div>
+<div class="meta">Task relevance: Implements R4 for storage and menu display.</div>
+<div class="fail">Failure behavior: Evict entries beyond the bound after sorting; do not reject a valid fitting record.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400] Wrap highscore loading and persistence failures with reporting and an empty in-memory fallback, keeping menu construction and run-end recording operational.</div>
+<div class="meta">Task relevance: Implements R5 for availability under malformed or inaccessible storage.</div>
+<div class="fail">Failure behavior: Report the storage failure and continue with an empty leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- No repository or donor source was available, so implementation-specific symbols, files, line anchors, and existing controls could not be inspected.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details></section><section id="i33a-s1"><h2>i33a-s1 <span class="dim">i33a-s1: Agentic delivery, the v13 high-level document (S1), Generation S and Reuse S+B, N = 5</span></h2><details class="insert" id="i33a-s1-0"><summary><b>Generation: generation highlevel full</b> <span class="dim">16 statements · 16 failure lines · 10,082 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32a-s1/contexts/generation-highlevel-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>generation_s__agentic__static: functional 5 of 5; failed / unresolved / passed 4 / 1 / 45 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>High-level security guidance for adding a persistent, sorted highscore store, recording runs at level end, and exposing a bounded menu view in a desktop game.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Highscore records [integrity]</div>
+<div>- Player performance data [accountability]</div>
+<div>- Highscore menu view [availability]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Highscore persistence boundary [entry point]: User-editable local highscore file contents from Local file reader and parser to Retained highscore records and menu display</div>
+<div>- Level-content boundary [entry point]: Locally edited or shared-server level content that influences gameplay from Level loader and game loop to Finished-run score and elapsed-time recording</div>
+<div>- Player-input boundary [entry point]: Locally tampered player name or gameplay state from Name input and level-end integration to New highscore record</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; change_risk; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; CAPEC-230; V5.1.1; V12.1.1] Malformed or oversized persisted records could corrupt the leaderboard, inject misleading display text, or consume excessive resources.</div>
+<div class="meta">Task relevance: The feature introduces a new local persistence format and reads it for a menu view.</div>
+<div class="fail">Failure behavior: Invalid persisted data must be rejected and reported without being retained or displayed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; tampering; CWE-345; CWE-348; CAPEC-153; V2.1.1] Recording the wrong player, score, or elapsed time at a level transition could make the leaderboard misleading and allow local cheating to affect retained results.</div>
+<div class="meta">Task relevance: The feature must connect the actual level-end state to the new highscore record.</div>
+<div class="fail">Failure behavior: The integration must normalize missing or invalid values before submitting the run so the recording effect still occurs.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-345; CAPEC-153; V2.1.1] At the operation that handles a finished level, record exactly one run for each eligible human run end, whether the level is cleared or lost, using the final score, the player&#x27;s name, and elapsed survival time; exclude replay, simulation, and editor-only flows unless explicitly treated as runs.</div>
+<div class="meta">Task relevance: Ensures the feature captures the player&#x27;s real performance at the required level-end events.</div>
+<div class="fail">Failure behavior: If the source values are missing or invalid, the integration supplies stated safe defaults or normalized values before recording; it does not skip the run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153; V5.1.1] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming player name of at most 32 characters.</div>
+<div class="meta">Task relevance: Defines the input contract for storing and displaying highscore data.</div>
+<div class="fail">Failure behavior: Values outside these domains are rejected and reported; valid values are not clamped or substituted at the receiving operation.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] At the persistence reader, bound every physical line, record, and field before retaining it: use at most 256 bytes per line, at most 64 records, and at most 32 characters for a name.</div>
+<div class="meta">Task relevance: Keeps the local store proportional to what a leaderboard view needs and limits parser resource use.</div>
+<div class="fail">Failure behavior: Oversized lines, records, or fields are rejected and reported rather than truncated into a different value.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; tampering; CWE-345; CAPEC-153; V5.1.1] Keep each retained name, score, and survival duration as one aligned record, and order the records by score descending whenever they are stored, returned, or rendered.</div>
+<div class="meta">Task relevance: Preserves correct player-to-score-to-time relationships and implements the requested leaderboard ordering.</div>
+<div class="fail">Failure behavior: Malformed or inconsistent records are rejected and reported; valid records are retained with their fields aligned and sorted.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Bound the retained leaderboard to 64 records, evicting only the lowest-ranked excess records after a valid run is accepted so that a valid input that fits is never rejected.</div>
+<div class="meta">Task relevance: Provides a concrete storage and display bound suitable for a dedicated leaderboard panel.</div>
+<div class="fail">Failure behavior: Excess lower-ranked records are evicted after acceptance and the operation reports the resulting bounded state.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; task; tampering; CWE-663; CAPEC-153; V12.1.1] Persist accepted records to the configured store so that a newly created highscore view in a later process observes the same bounded, score-descending records.</div>
+<div class="meta">Task relevance: Implements persistence across application runs.</div>
+<div class="fail">Failure behavior: A persistence failure is reported while the in-memory accepted record remains available for the current run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; task; information_disclosure; CWE-20; CAPEC-153; V5.1.1] Expose the leaderboard through a dedicated menu panel that renders the player&#x27;s name, score, and survival time in mm:ss, limiting displayed rows to the bounded leaderboard size.</div>
+<div class="meta">Task relevance: Connects the stored data to the requested menu presentation without unbounded rendering.</div>
+<div class="fail">Failure behavior: Missing or invalid display values are normalized before rendering, and invalid persisted rows are not displayed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153; V5.1.1] Reject and report invalid values in the record-receiving operation, including negative scores or durations, blank names, and names longer than 32 characters.</div>
+<div class="meta">Task relevance: Protects the store&#x27;s record contract at its receiving operation.</div>
+<div class="fail">Failure behavior: The invalid submission is rejected and reported without clamping or partial insertion.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20; CWE-345; CAPEC-153; V2.1.1; V5.1.1] Before invoking the record operation at level end, normalize a missing or invalid score or duration to a stated non-negative default and normalize a missing or invalid name to a stated non-blank default.</div>
+<div class="meta">Task relevance: Keeps the primary recording effect active while preserving strict validation at the receiving operation.</div>
+<div class="fail">Failure behavior: The integration reports the normalization and still submits one complete run record.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; denial_of_service; CWE-400; CWE-1284; CAPEC-230; V12.1.1] Use a bounded reader and parser for the local store, enforcing 256 bytes per line, 64 records, and 32 characters per name before data is retained.</div>
+<div class="meta">Task relevance: Prevents malformed or oversized local persistence data from reaching the leaderboard state.</div>
+<div class="fail">Failure behavior: The offending line or record is rejected and reported; it is not truncated or retained.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; tampering; CWE-345; CAPEC-153; V5.1.1] Represent leaderboard entries as one atomic record and sort copies or the collection by non-negative score descending before getters and rendering expose them.</div>
+<div class="meta">Task relevance: Prevents field misalignment and ordering mistakes in the board.</div>
+<div class="fail">Failure behavior: Inconsistent entries are rejected and reported, while valid entries remain aligned and ordered.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-230; V12.1.1] Maintain the 64-record bound by evicting the lowest-ranked entries after insertion and before persistence or display.</div>
+<div class="meta">Task relevance: Controls memory, file growth, and panel rendering for the leaderboard.</div>
+<div class="fail">Failure behavior: Only excess lower-ranked records are evicted; a valid record that fits is preserved.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; denial_of_service; CWE-703; CAPEC-154; V12.1.1] Write the bounded, validated store through a failure-aware persistence mechanism that keeps the accepted in-memory state when file output fails.</div>
+<div class="meta">Task relevance: Provides persistence without suppressing the current run&#x27;s highscore effect.</div>
+<div class="fail">Failure behavior: Report the write failure and retain the accepted current-process leaderboard state.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; task; tampering; CWE-20; CAPEC-153; V5.1.1] Have the dedicated menu panel read only the bounded getter results and format each non-negative elapsed duration as mm:ss using the corresponding player&#x27;s name and score.</div>
+<div class="meta">Task relevance: Ensures the requested board is readable and cannot expand beyond the store&#x27;s display bound.</div>
+<div class="fail">Failure behavior: Invalid rows are omitted from rendering and reported by the reader; the panel continues displaying valid rows.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R7</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details><details class="insert" id="i33a-s1-1"><summary><b>Reuse: reuse highlevel full</b> <span class="dim">16 statements · 7 failure lines · 9,845 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32a-s1/contexts/reuse-highlevel-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>reuse_sb__agentic__static: functional 5 of 5; failed / unresolved / passed 0 / 5 / 45 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Add a local persistent highscore store, a finished-run recording path, and a menu panel. Reuse ApoIcarus’s parallel record model and descending-score presentation while replacing its remote service dependency with bounded local-file persistence.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Finished-run record containing actual score, player name, and survival time [integrity]</div>
+<div>- Persistent leaderboard and its score ordering [integrity]</div>
+<div>- Highscore menu panel and its displayed records [availability]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Level-end recording [entry point]: Player name and mutable level/player state at a cleared or lost level from The running game and local player-controlled or tampered game state to The operation that receives a new highscore record</div>
+<div>- Leaderboard persistence [entry point]: Stored leaderboard bytes, including records and fields from The user-editable local store file to The highscore store’s parser and in-memory records</div>
+<div>- Menu presentation: Records loaded from the local store from The highscore store to The dedicated menu highscore panel and its renderer</div>
+<div>&nbsp;</div>
+<div class="stmt">[X1; change_risk; reasoned; tampering; CWE-20; CAPEC-153] A tampered local game state or player name could create a false finished-run record if the level-end integration records values without domain validation.</div>
+<div class="meta">Task relevance: Protects the requirement that the board reflects the run’s actual non-negative score, player name, and elapsed time.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[X2; change_risk; reasoned; denial_of_service; CWE-20; CWE-400; CAPEC-230] Malformed or oversized local store content could corrupt the leaderboard, consume excessive resources, or make the menu unusable if persistence input is read without bounds and structural validation.</div>
+<div class="meta">Task relevance: Protects persistence across runs and continued availability of the menu panel.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering] At the level-end integration point, record exactly one finished run for both level clearing and losing, using the level’s final player score, player name, and elapsed survival time rather than a preview, default, or remote value.</div>
+<div class="meta">Task relevance: Provides the feature’s primary effect: recording the real result of every completed run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153] At the operation that receives a new record, accept only a non-negative integer score, a non-negative integer survival time, and a name that is non-null, non-blank after trimming, and at most 32 characters; display the accepted duration as mm:ss.</div>
+<div class="meta">Task relevance: Defines the input contract for storeRun and prevents invalid values from entering the leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; tampering; CWE-922] Keep accepted records in the supplied local file so that a later highscore-store construction restores the same leaderboard records and their score, name, and survival-time association.</div>
+<div class="meta">Task relevance: Satisfies persistence across application runs without assuming a web endpoint.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; tampering; CWE-20] When records are retained or exposed to the panel, sort complete records by score descending while moving each name and survival time with its score.</div>
+<div class="meta">Task relevance: Satisfies the required leaderboard ordering and prevents mismatched displayed fields.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X1</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service] Expose the leaderboard through a dedicated menu panel that displays each retained player name, score, and survival time and can be reached from the game menu.</div>
+<div class="meta">Task relevance: Integrates the highscore board into the game’s existing menu/view flow.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; reasoned; denial_of_service; CWE-400; CAPEC-230] Bound the leaderboard to 10 displayed records, bound each stored name to 32 characters, and bound each serialized record to 256 bytes; retain valid records by evicting records beyond the display capacity rather than rejecting a valid record that fits the input contract.</div>
+<div class="meta">Task relevance: Keeps the local store and menu sized to the feature while preserving valid run recording.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Use a local, explicitly structured persistence format for the Path-backed store and do not introduce network submission or general object deserialization for highscore records.</div>
+<div class="meta">Task relevance: Fits the desktop-game threat model and limits the attack surface while reusing the donor’s record and presentation concepts.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: mitigates X2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153] At the receiving record operation, reject and report a null/blank/overlong name or a negative score or duration; before calling it, the level-end integration trims the name and substitutes a stated safe default name for missing or invalid player-name data so the run is still recorded.</div>
+<div class="meta">Task relevance: Enforces R1 and R2 while preserving the level-end recording effect.</div>
+<div class="fail">Failure behavior: The store rejects invalid input and reports the rejection; the caller normalizes or defaults missing name data before invoking it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1, satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering] Make the level-end path idempotent for a finished run and invoke it from the common clear/loss transition after final scoring and elapsed-time calculation.</div>
+<div class="meta">Task relevance: Ensures R1 records the actual final result exactly once for either end condition.</div>
+<div class="fail">Failure behavior: A repeated transition does not create duplicate records, while the first valid transition still records the run.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; tampering; CWE-20; CAPEC-153] Parse the local store with an explicit format, reject malformed records, and report parse failures without coercing, clamping, or partially accepting invalid fields.</div>
+<div class="meta">Task relevance: Enforces R3 and R7 against edited or corrupted store content.</div>
+<div class="fail">Failure behavior: The parser rejects and reports the invalid record; the caller uses an empty valid in-memory leaderboard so the menu remains available.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3, satisfies R7</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-230] Apply a byte limit before reading each serialized record and field, and stop reading beyond the configured store budget instead of allocating from unbounded input.</div>
+<div class="meta">Task relevance: Enforces R6 against oversized local-file input.</div>
+<div class="fail">Failure behavior: Oversized input is rejected and reported; existing valid records remain usable and the panel still opens.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; tampering] Maintain at most 10 retained records by evicting the lowest-ranked records after insertion, then expose aligned name, score, and survival-time collections in descending score order.</div>
+<div class="meta">Task relevance: Enforces R4 and R6 without costing a valid run that fits the record contract.</div>
+<div class="fail">Failure behavior: Only excess low-ranked records are evicted; the newly accepted valid record is not rejected solely because the board is full.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4, satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; elevation_of_privilege; CWE-502; CAPEC-586] Persist through a bounded local-file writer using an explicit text or primitive-value format and atomic replacement where supported, rather than a general object deserializer or remote request.</div>
+<div class="meta">Task relevance: Enforces R3 and R7 while adapting the donor implementation to the Path-backed desktop feature.</div>
+<div class="fail">Failure behavior: A write failure is reported and the in-memory accepted record remains available for the current panel; no remote submission or unsafe deserialization is attempted.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3, satisfies R7</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; reasoned; tampering; CWE-20; CAPEC-153] Have the menu panel render only the bounded, validated store view and format survival time from non-negative seconds as mm:ss without reinterpreting or reordering fields during drawing.</div>
+<div class="meta">Task relevance: Enforces R4, R5, and R6 at the display boundary.</div>
+<div class="fail">Failure behavior: Invalid or unavailable rows are omitted from the rendered view while the dedicated panel remains navigable and displays the remaining valid rows.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4, satisfies R5, satisfies R6</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- The requested angle name highlevel is not permitted by the supplied schema.json, whose allowed values are dataflow, requirements, and catalog; requirements is used to remain schema-valid.</div>
+<div>- The guidance is intentionally unanchored per the task’s high-level-angle instructions; repository-specific symbol and line evidence is therefore not included.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details></section><section id="i33b-s3"><h2>i33b-s3 <span class="dim">i33b-s3: Agentic delivery, the v13 generic document (S3, no repository), Generation S and Reuse S+B, N = 5</span></h2><details class="insert" id="i33b-s3-0"><summary><b>Generation: generation generic full</b> <span class="dim">14 statements · 14 failure lines · 8,532 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32c-s3/contexts/generation-generic-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>generation_s__agentic__static: functional 5 of 5; failed / unresolved / passed 0 / 5 / 45 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Security context for a Java desktop game&#x27;s local highscore persistence and menu display.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Highscore records [integrity]</div>
+<div>- Game availability [availability]</div>
+<div>- Game process and runtime data [integrity]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Running game to highscore recorder [entry point]: Score, survival time, and player name produced or affected by local game state from Running game state and local tampering to cheat to Run-recording operation</div>
+<div>- Local highscore file to loader [entry point]: Persisted records, fields, and file structure editable by the user from Local highscore store file to Highscore parser and in-memory leaderboard</div>
+<div>- External level content to game [entry point]: Level data loaded from a shared level server or other external source from Shared level content to Level decoder and running game state</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20; CAPEC-153] The run-recording operation shall accept only a score and survival time that are non-negative integers in the supported integer range, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report every value outside those domains.</div>
+<div class="meta">Task relevance: Protects the integrity of records created when a run ends.</div>
+<div class="fail">Failure behavior: The receiving operation rejects the invalid value and reports the rejection.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20; CAPEC-153] The run-end integration point shall obtain the actual finished-run score, player name, and elapsed survival time, normalize missing or invalid values to score 0, survival time 0, and name &quot;Player&quot;, and then call the run-recording operation so recording still occurs.</div>
+<div class="meta">Task relevance: Ensures clearing or losing a run produces a usable highscore entry despite bad runtime state.</div>
+<div class="fail">Failure behavior: The integration point supplies the stated defaults before calling the recording operation; it does not skip the primary recording effect.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; tampering; CWE-20; CWE-502; CAPEC-153] The highscore loader shall treat the local store as untrusted structured data, avoid Java object deserialization, and accept only records whose score and survival time are non-negative integers in the supported integer range and whose name is non-null, non-blank after trimming, and at most 32 characters.</div>
+<div class="meta">Task relevance: Prevents edited persistence data from corrupting the leaderboard or triggering unsafe deserialization.</div>
+<div class="fail">Failure behavior: Malformed or out-of-domain records are rejected and reported as load rejections.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; denial_of_service; CWE-400; CAPEC-125] The highscore read operation shall cap the complete store at 64 KiB, each line or record at 256 bytes, each name field at 128 bytes, and each numeric field at 32 bytes before retaining or parsing it.</div>
+<div class="meta">Task relevance: Limits resource consumption from a user-edited persistence file.</div>
+<div class="fail">Failure behavior: The read operation rejects and reports input exceeding a stated limit.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service; CWE-400; CAPEC-125] The in-memory leaderboard and menu view shall retain and display at most 10 records, sorted by score descending, while evicting excess records rather than rejecting a valid record that fits the input bounds.</div>
+<div class="meta">Task relevance: Keeps the highscore board available and aligned with the requested ranking behavior.</div>
+<div class="fail">Failure behavior: Records beyond the display capacity are evicted after ordering; the game continues with the bounded leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R6; requirement; task; denial_of_service; CWE-23; CWE-400; CAPEC-125] The highscore load and save integration shall report malformed, oversized, or inaccessible store failures and continue the game with an empty leaderboard when loading fails, while still attempting the run-end recording effect through the caller defaults.</div>
+<div class="meta">Task relevance: Preserves game availability when persistence is damaged or unavailable.</div>
+<div class="fail">Failure behavior: The failure is reported, the menu uses an empty leaderboard, and run-end recording is not suppressed.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R7; requirement; task; tampering; CWE-94; CWE-502; CAPEC-153] The persistence operation shall write only validated, bounded highscore records in the defined primitive/text format and shall not interpret names or other stored fields as executable code.</div>
+<div class="meta">Task relevance: Protects record integrity and the game process when displaying persisted names.</div>
+<div class="fail">Failure behavior: Unsupported or invalid data is rejected and reported before writing or displaying it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20; CAPEC-153] Use centralized input validation at the run-recording operation for score, survival time, and player name.</div>
+<div class="meta">Task relevance: Enforces R1 at the operation receiving runtime values.</div>
+<div class="fail">Failure behavior: Invalid input is rejected and reported; the operation does not substitute or clamp it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20; CAPEC-153] Apply caller-side normalization immediately before run recording, with defaults score 0, survival time 0, and name &quot;Player&quot;.</div>
+<div class="meta">Task relevance: Enforces R2 while preserving run-end recording.</div>
+<div class="fail">Failure behavior: Missing or invalid runtime values are replaced by the stated defaults and the recording call proceeds.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; tampering; CWE-20; CWE-502; CAPEC-153] Implement an explicit primitive/text format parser with field validation and no Java object deserialization.</div>
+<div class="meta">Task relevance: Enforces R3 for the editable local store.</div>
+<div class="fail">Failure behavior: The parser rejects and reports invalid records without executing data or accepting them into memory.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Use bounded file, record, and field readers that enforce 64 KiB total, 256-byte record, 128-byte name, and 32-byte numeric limits.</div>
+<div class="meta">Task relevance: Enforces R4 before untrusted content is retained.</div>
+<div class="fail">Failure behavior: Oversized input is rejected and reported by the reader; valid smaller input remains processable.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Use a bounded collection of 10 validated records and sort it by descending score before persistence and display.</div>
+<div class="meta">Task relevance: Enforces R5 at retention and presentation.</div>
+<div class="fail">Failure behavior: The lowest-priority excess records are evicted; no valid record within capacity is rejected.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div class="stmt">[C6; control; reasoned; denial_of_service; CWE-400; CAPEC-125] Isolate persistence I/O and parser failures behind a reported error boundary with an empty in-memory fallback.</div>
+<div class="meta">Task relevance: Enforces R6 without taking down the desktop game.</div>
+<div class="fail">Failure behavior: I/O or parsing failure is reported and the menu continues with zero records; the primary run-end action proceeds.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R6</div>
+<div>&nbsp;</div>
+<div class="stmt">[C7; control; reasoned; tampering; CWE-94; CWE-502; CAPEC-153] Use fixed-schema serialization with escaping or safe encoding for text fields and render names strictly as data.</div>
+<div class="meta">Task relevance: Enforces R7 for persistence and menu rendering.</div>
+<div class="fail">Failure behavior: Unsafe or invalid field content is rejected and reported; no stored value is executed or treated as a command.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R7</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- No repository was available, so no code symbols, files, line ranges, existing controls, or implementation-specific verification could be inspected.</div>
+<div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
+<div>&nbsp;</div></pre></details><details class="insert" id="i33b-s3-1"><summary><b>Reuse: reuse generic full</b> <span class="dim">10 statements · 10 failure lines · 6,277 characters</span></summary>
+<p class="meta-line">agent-acquired · <code>research/iterations/i32c-s3/contexts/reuse-generic-full.txt</code></p>
+<div class="counts"><b>Arms that received it</b><ul><li>reuse_sb__agentic__static: functional 5 of 5; failed / unresolved / passed 5 / 3 / 42 of 50</li></ul><b>Fresh control</b><ul></ul></div>
+<pre class="text"><div>--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---</div>
+<div>Generic security context for a Java desktop game&#x27;s local highscore feature. No repository was available for inspection, so no code anchors apply.</div>
+<div>&nbsp;</div>
+<div>Assets:</div>
+<div>- Persisted highscore records [integrity]</div>
+<div>- Game availability during highscore loading [availability]</div>
+<div>- Highscore data as inert data [resistance]</div>
+<div>&nbsp;</div>
+<div>Trust boundaries:</div>
+<div>- Running game to highscore recorder [entry point]: Score, survival time, and player name produced or supplied by the running game from Running game state to Highscore recording operation</div>
+<div>- Local highscore file [entry point]: User-editable persisted records, fields, and file size from Local filesystem to Highscore file parser and loader</div>
+<div>- Externally loaded game content [entry point]: Content originating from a shared level server or other external source from External content loader to Game state and highscore integration</div>
+<div>&nbsp;</div>
+<div class="stmt">[R1; requirement; task; tampering; CWE-20] The run-recording operation shall accept only a non-negative integer score, a non-negative integer survival time, and a player name that is non-null, non-blank after trimming, and at most 32 characters; it shall reject and report values outside those domains.</div>
+<div class="meta">Task relevance: Protects the integrity of the player&#x27;s recorded score, name, and mm:ss duration.</div>
+<div class="fail">Failure behavior: The receiving operation rejects and reports invalid values without storing them.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R2; requirement; task; tampering; CWE-20] The integration point shall normalize a missing or invalid score, survival time, or player name to stated safe defaults before invoking the recording operation, so finishing a run still records its primary result.</div>
+<div class="meta">Task relevance: Preserves run-end recording when game state is incomplete or locally tampered with.</div>
+<div class="fail">Failure behavior: The caller substitutes safe defaults before the recording call; it does not skip or suppress run-end recording.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R3; requirement; task; information_disclosure; CWE-502; CWE-400] The file reader shall treat the local highscore file as untrusted text data, avoid Java object deserialization, and impose limits of 4096 bytes per line, 4096 characters per field, and 100 records before retaining data.</div>
+<div class="meta">Task relevance: Prevents malicious or corrupted local files from causing code execution, excessive memory use, or parser instability.</div>
+<div class="fail">Failure behavior: Malformed, oversized, or unsupported records are rejected and reported; no object deserialization occurs.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R4; requirement; task; denial_of_service; CWE-400] The retained leaderboard shall be bounded to 100 records, sorted by non-negative points in descending order, and evict records beyond the bound without rejecting a valid record that fits.</div>
+<div class="meta">Task relevance: Keeps the menu view responsive while preserving the highest-scoring entries.</div>
+<div class="fail">Failure behavior: Entries exceeding the retention bound are evicted after ordering; valid fitting entries remain available.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[R5; requirement; task; denial_of_service; CWE-400] Malformed or unreadable highscore storage shall not prevent the game menu or run-end recording from functioning; loading shall fall back to an empty leaderboard and report the rejection.</div>
+<div class="meta">Task relevance: Maintains game availability when the persisted file is corrupted, truncated, or inaccessible.</div>
+<div class="fail">Failure behavior: The loader reports the failure and uses an empty in-memory leaderboard; the game continues.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div>&nbsp;</div>
+<div class="stmt">[C1; control; reasoned; tampering; CWE-20] Use explicit numeric-domain and trimmed-name validation at the run-recording operation, with rejection diagnostics.</div>
+<div class="meta">Task relevance: Implements R1 at the untrusted-data receiving operation.</div>
+<div class="fail">Failure behavior: Reject and report invalid score, duration, or name; do not store it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R1</div>
+<div>&nbsp;</div>
+<div class="stmt">[C2; control; reasoned; tampering; CWE-20] Use run-end integration normalization that converts missing or invalid values to safe stated defaults before calling the recorder.</div>
+<div class="meta">Task relevance: Implements R2 while preserving the primary run-end recording effect.</div>
+<div class="fail">Failure behavior: Substitute defaults and invoke recording; never suppress the recording operation.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R2</div>
+<div>&nbsp;</div>
+<div class="stmt">[C3; control; reasoned; information_disclosure; CWE-502; CWE-400] Use a bounded text parser with fixed byte and character limits and a format containing only primitive fields; do not use Java object deserialization.</div>
+<div class="meta">Task relevance: Implements R3 for the user-editable store.</div>
+<div class="fail">Failure behavior: Reject and report malformed or oversized input without deserializing it.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R3</div>
+<div>&nbsp;</div>
+<div class="stmt">[C4; control; reasoned; denial_of_service; CWE-400] Use a bounded, score-descending collection that retains at most 100 records and evicts lower-priority excess entries.</div>
+<div class="meta">Task relevance: Implements R4 for storage and menu display.</div>
+<div class="fail">Failure behavior: Evict entries beyond the bound after sorting; do not reject a valid fitting record.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R4</div>
+<div>&nbsp;</div>
+<div class="stmt">[C5; control; reasoned; denial_of_service; CWE-400] Wrap highscore loading and persistence failures with reporting and an empty in-memory fallback, keeping menu construction and run-end recording operational.</div>
+<div class="meta">Task relevance: Implements R5 for availability under malformed or inaccessible storage.</div>
+<div class="fail">Failure behavior: Report the storage failure and continue with an empty leaderboard.</div>
+<div class="meta">Basis: prospective task requirement or reasoning; not an implemented safeguard.</div>
+<div class="meta">Relations: satisfies R5</div>
+<div>&nbsp;</div>
+<div>Uncertainty and limits:</div>
+<div>- No repository or donor source was available, so implementation-specific symbols, files, line anchors, and existing controls could not be inspected.</div>
 <div>--- END REPOSITORY-DERIVED SECURITY CONTEXT ---</div>
 <div>&nbsp;</div></pre></details></section>
 </main></div>
