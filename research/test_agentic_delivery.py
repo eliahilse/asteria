@@ -410,7 +410,7 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertNotIn('REPOSITORY FILE INDEX', views[0]['task'])
             self.assertEqual((views[0]['turn'], views[0]['turnsRemaining'], views[0]['submissionsRemaining'], views[0]['interventions'], views[1]['interventions']), (2, 22, 5, 0, 1))
             self.assertEqual(views[0]['history'], [{'turn': 1, 'action': 'read', 'error': 'Path is not in the source snapshot'}])
-            self.assertEqual(views[1]['history'][1], {'turn': 2, 'action': 'read', 'status': 'cancelled_by_guard', 'guard': {'wouldIntervene': True, 'intervene': True, 'reason': 'reading the store before the bound'}})
+            self.assertEqual(views[1]['history'][1], {'turn': 2, 'action': 'read', 'status': 'cancelled_by_guard', 'guard': {'wouldIntervene': True, 'intervene': True, 'reason': 'reading the store before the bound', 'ids': ['item:C1']}})
             self.assertEqual(views[2]['history'][2], {'turn': 3, 'action': 'read', 'files': [f'{SCORE_PATH}:1-3'], 'guard': {'wouldIntervene': False, 'intervene': False, 'reason': 'fine'}})
             self.assertEqual(views[0]['working'], {name: {'sha256': digest(text.encode()), 'lines': 3, 'state': 'unchanged'} for name, text in SOURCES.items()})
             self.assertEqual((views[0]['requestId'], views[0]['model'], views[0]['settings'], views[0]['runId']), (run_id + '-g2', MODEL, SETTINGS, run_id))

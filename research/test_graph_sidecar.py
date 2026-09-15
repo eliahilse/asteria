@@ -300,5 +300,24 @@ class GraphSidecarTests(unittest.TestCase):
         self.assertEqual(graph_sidecar.statement_blocks(insert)['R1'].splitlines()[0][:16], '[R1; requirement')
 
 
+class GuardRuleTests(unittest.TestCase):
+    def test_quoted_verbatim_strips_wrapping_quotes_and_collapses_whitespace(self):
+        from research.graph_sidecar import quoted_verbatim, statement_kind
+        submitted = 'if (!isValidScore(score)) {\n            score = 0;\n        }'
+        self.assertTrue(quoted_verbatim('"score = 0;"', submitted)); self.assertTrue(quoted_verbatim('if (!isValidScore(score)) { score = 0; }', submitted))
+        self.assertFalse(quoted_verbatim('score = 1;', submitted)); self.assertFalse(quoted_verbatim('""', submitted))
+        self.assertEqual(statement_kind('[C1; control; reasoned; tampering] At storeRun ...'), 'control'); self.assertEqual(statement_kind('[X5; change_risk; reasoned] ...'), 'change_risk'); self.assertIsNone(statement_kind('plain'))
+
+    def test_guard_v2_rules_and_consultation_policy(self):
+        from research.graph_sidecar import GUARD_SYSTEM_V2, GuardSidecar
+        with self.assertRaises(ValueError): GuardSidecar(Path('/nonexistent'), consult_on=('submit',))
+        described = GuardSidecar(Path('/nonexistent'), consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True).describe()
+        self.assertEqual((described['consultOn'], described['requireQuote'], described['maxCited'], described['normativeOnly'], described['oncePerStatement']), (['submit_feature_changes'], True, 2, True, True))
+        self.assertNotEqual(described['guardSystemSha256'], GuardSidecar(Path('/nonexistent')).describe()['guardSystemSha256'])
+        guard = GuardSidecar(Path('/nonexistent'), consult_on=('submit_feature_changes',))
+        verdict = guard.judge({'action': 'read', 'transcript': [], 'method': 'Generation'})
+        self.assertEqual((verdict['consulted'], verdict['intervene'], verdict['verdictStatus'], verdict['judgeTurns']), (False, False, 'not_consulted', 0))
+
+
 if __name__ == '__main__':
     unittest.main()

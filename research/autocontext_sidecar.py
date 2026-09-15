@@ -4,9 +4,9 @@ A frozen *code graph* per method (`<method>-code-graph.json` under an
 iteration's contexts/ folder) is the compact form of the tree-sitter code
 model of the repository snapshot (research.code_model): one entry per class,
 constructor and method with its file and line range, and the resolved call
-edges between them. After each read (and before a submission, for the code
+edges between them. After each read or search (and before a submission, for the code
 the generator edited) the sidecar takes the symbols whose line ranges overlap
-what was read, and hands back, for each one not shown before, its callers and
+what was shown, and hands back, for each one not shown before, its callers and
 callees with the file path and line range the generator can read next. No
 security statements, no model calls; the same lines are never injected
 twice. `Composite` joins this sidecar with a guard judge on one arm.
@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 import re
 
-from research.graph_sidecar import GuardSidecar, normalize
+from research.graph_sidecar import GUARD_SYSTEM_V2, GuardSidecar, normalize
 from research.import_evidence import ROOT, digest
 
 GRAPH_KINDS = ('class', 'interface', 'constructor', 'method')
@@ -95,7 +95,9 @@ class AutoContextSidecar:
     def update(self, touched: dict, shown_ids: set[str]):
         """(text, ids) for the symbols overlapping the touched ranges that were not shown before; (None, []) when nothing new overlaps."""
         method = touched.get('method'); index = self.graph_for(method)
-        ranges = {normalize(path): [tuple(r) for r in spans] for path, spans in (touched.get('ranges') or {}).items()}
+        ranges = {}
+        for source in ('ranges', 'searchRanges'):  # reads and edits, and the excerpts returned by searches: everything that entered the viewport
+            for path, spans in (touched.get(source) or {}).items(): ranges.setdefault(normalize(path), []).extend(tuple(r) for r in spans)
         candidates = []
         for file, spans in ranges.items():
             for s in index['byFile'].get(file, []):
@@ -146,6 +148,13 @@ def I26():
     """I26: the S2 data-flow graph of I24b as the guard's insert, the code graph of the same acquisition workspace for autocontext; three judge reads, three cancellations per trajectory."""
     contexts = ROOT / 'research/iterations/i26-graph/contexts'
     return Composite(AutoContextSidecar(contexts, snapshot_path_maps()), GuardSidecar(contexts, kinds=None))
+
+
+def I27():
+    """I27: the I26 contexts with guard v2: submissions only, at most two requirement/control citations, a verbatim quote required, prompt v2; three judge reads, three cancellations per trajectory."""
+    contexts = ROOT / 'research/iterations/i26-graph/contexts'
+    guard = GuardSidecar(contexts, kinds=None, consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True)
+    return Composite(AutoContextSidecar(contexts, snapshot_path_maps()), guard)
 
 
 def main():

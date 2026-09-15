@@ -34,15 +34,15 @@ from research.security_followup import acquisition_task, repository_input
 PROTOCOL = 'agentic-delivery-v1'
 EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow')
+SIDECARS = ('none', 'static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
 GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
-GUARD_KINDS = ('guard', 'guard_shadow')  # kinds served by the pre-tool-call judge hook; guard_shadow records verdicts and never cancels
+GUARD_KINDS = ('guard', 'guard_shadow', 'advise')  # kinds served by the pre-tool-call judge hook; guard_shadow records verdicts and never cancels; advise never cancels but appends a positive verdict's advice to the submission's feedback
 GUARD_JUDGE_TURNS_LIMIT = 9  # bound on a guard sidecar's judge_turns; one consultation sends at most judge_turns + 1 judge requests, ids <runId>-g<turn>k<n>
 MESSAGE_TEXT_NOTE = 'not available: adapter protocol v1 returns the forced tool call arguments only'
 ACTIONS = ('search', 'read', 'submit_feature_changes')
 REQUEST_ID_LIMIT = 64  # the private adapter forwards request ids as the provider's `user` field, capped at 64 characters
 INJECT_KINDS = ('adaptive', 'ast')  # kinds served by the injection hook (update after reads and before submissions): security statements, or the code graph of what was read (ast: AST autocontext)
-KIND_ORDER = ('static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow')
+KIND_ORDER = ('static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
 DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS and sidecar not in GUARD_KINDS and sidecar != 'ast']  # judge and autocontext arms are requested explicitly
 
 
@@ -285,7 +285,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     path = directory / 'record.json'; write_atomic(path, record)
     by_name = {}
     for source in snap['files']: by_name.setdefault(source['path'].rsplit('/', 1)[-1], []).append(source['path'])
-    touched = {'files': set(), 'symbols': set(), 'queries': [], 'ranges': {}}
+    touched = {'files': set(), 'symbols': set(), 'queries': [], 'ranges': {}, 'searchRanges': {}}  # searchRanges: excerpts returned by searches, for the code-graph sidecar only
     shown, evidence = set(), {}
     turn_number = submission_number = interventions = 0
     turn = submission = {}
@@ -295,6 +295,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         if not inject or not (touched['files'] or touched['symbols'] or touched['queries']): return None
         view = {'files': set(touched['files']), 'symbols': set(touched['symbols']), 'queries': list(touched['queries']), 'stage': stage,
                 'ranges': {path: [list(span) for span in spans] for path, spans in touched['ranges'].items()},
+                'searchRanges': {path: [list(span) for span in spans] for path, spans in touched['searchRanges'].items()},
                 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'method': condition.get('strategy')}
         outcome = call_sidecar(sidecar.update, view, set(shown))
         if not isinstance(outcome, tuple) or len(outcome) != 2: raise SidecarError('update must return (text, ids)')
@@ -362,7 +363,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     def remember(entry: dict, verdict=None):
         """Guard kinds: keep a compact entry for the completed turn; None values are dropped and a judged turn carries its verdict."""
         if guard_kind is None: return
-        if verdict is not None: entry['guard'] = {'wouldIntervene': bool(verdict.get('wouldIntervene')), 'intervene': bool(verdict.get('intervene')), 'reason': verdict.get('reason')}
+        if verdict is not None: entry['guard'] = {'wouldIntervene': bool(verdict.get('wouldIntervene')), 'intervene': bool(verdict.get('intervene')), 'reason': verdict.get('reason'), **({'ids': list(verdict.get('ids') or [])} if verdict.get('intervene') else {})}
         history.append({k: v for k, v in entry.items() if v is not None})
 
     def guard(action: str, arguments: dict):
@@ -420,7 +421,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             turn_number += 1
             # Conversation and working state before this turn's request; a rewind restores one of these.
             checkpoints[turn_number] = {'messages': list(messages), 'files': dict(files), 'touched': {'files': set(touched['files']), 'symbols': set(touched['symbols']),
-                                        'queries': list(touched['queries']), 'ranges': {k: [list(s) for s in v] for k, v in touched['ranges'].items()}}}
+                                        'queries': list(touched['queries']), 'ranges': {k: [list(s) for s in v] for k, v in touched['ranges'].items()},
+                                        'searchRanges': {k: [list(s) for s in v] for k, v in touched['searchRanges'].items()}}}
             if mode == 'single_shot':
                 submission_number += 1
                 request_id, tools, name = f'{run_id}-s{submission_number}', [TOOL], 'submit_feature_changes'
@@ -448,7 +450,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                     if not isinstance(payload, dict) or payload.get('action') not in ACTIONS: raise ValueError('Choose action search, read or submit_feature_changes')
                     action = payload['action']
                 except ValueError as error: action, payload = 'invalid', {'error': str(error)}
-            turn['action'] = action; judged = None
+            turn['action'] = action; judged = None; guard_advice = None
             if action != 'invalid' and guard_kind:
                 # Guard: a pending call that would execute is judged first; malformed calls take the usual error path unjudged (apply_changes and operate are pure).
                 try:
@@ -460,6 +462,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                         operate(snap, {'action': action, 'query': payload.get('query'), 'paths': payload.get('paths'), 'files': payload.get('files')})
                 except (ValueError, KeyError, TypeError, AttributeError): arguments = None
                 judged = guard(action, arguments) if arguments is not None else None
+                if judged is not None and guard_kind == 'advise' and judged.get('wouldIntervene') and judged.get('text') and action == 'submit_feature_changes':
+                    guard_advice = judged['text']  # advisory guard: the submission executes; the verdict rides on its feedback, recorded on the guard event below
                 if judged is not None and judged['intervene']:
                     interventions += 1
                     result = {'cancelled': action, 'securityGuard': judged.get('text') or ''}
@@ -486,6 +490,9 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                         result['excerpts'] = shown_excerpts
                         if action == 'search':
                             touched['queries'].append(payload['query'])
+                            for excerpt in result.get('excerpts', []):
+                                spans = touched['searchRanges'].setdefault(excerpt['path'], [])
+                                if [excerpt['start_line'], excerpt['end_line']] not in spans: spans.append([excerpt['start_line'], excerpt['end_line']])
                             record['searches'].append({'turn': turn_number, 'query': payload['query'], 'paths': payload.get('paths'), 'totalMatches': result.get('totalMatches'), 'returned': len(shown_excerpts)})
                     except (ValueError, TypeError, AttributeError) as error: result = {'error': str(error)}
                 turn['toolResult'] = result
@@ -512,7 +519,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             except (ValueError, KeyError, TypeError) as error:
                 submission['status'] = 'invalid_changes'; feedback = {'deliveryError': str(error), 'applied': False}
             else:
-                verdict = gate(changes, pre_edit); advice = None
+                verdict = gate(changes, pre_edit); advice = guard_advice
                 if verdict is not None and not verdict['intervene']: advice = verdict.get('advice') or None
                 if verdict is not None and verdict.get('rewind'):
                     # Rewind: discard the offending submission and the `rewind` tool turns before it, restore that state, and inject the verdict there.
@@ -523,6 +530,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                     messages[:] = checkpoint['messages']; files = dict(checkpoint['files'])
                     touched['files'], touched['symbols'], touched['queries'] = set(checkpoint['touched']['files']), set(checkpoint['touched']['symbols']), list(checkpoint['touched']['queries'])
                     touched['ranges'] = {k: [list(s) for s in v] for k, v in checkpoint['touched']['ranges'].items()}
+                    touched['searchRanges'] = {k: [list(s) for s in v] for k, v in checkpoint['touched'].get('searchRanges', {}).items()}
                     text = (verdict.get('text') or '') + f'\n{max_submissions - submission_number} submissions remain. {max_turns - turn_number} tool turns remain.'
                     messages.append({'role': 'user', 'content': text})
                     record['rewinds'].append({'submission': submission_number, 'fromTurn': turn_number, 'toTurn': target, 'discardedTurns': list(range(target, turn_number + 1)), 'characters': len(text), 'sha256': digest(text.encode())})
@@ -561,8 +569,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             if advice:
                 content += '\n\n' + advice
                 for event in reversed(record['sidecarEvents']):
-                    if event.get('stage') == 'gate' and event.get('submission') == submission_number:
-                        event.update(injected=True, sha256=digest(advice.encode()), characters=len(advice)); break
+                    if (event.get('stage') == 'gate' and event.get('submission') == submission_number) or (event.get('stage') == 'guard' and event.get('turn') == turn_number):
+                        event.update(injected=True, advised=event.get('stage') == 'guard', sha256=digest(advice.encode()), characters=len(advice)); break
             messages.append({'role': 'user', 'content': content})
             pending = 'before_submit'
             write_atomic(path, record)
@@ -574,7 +582,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     except BaseException:
         record['status'] = 'evaluation_error' if submission.get('status') == 'evaluating' else 'interrupted'; raise
     finally:
-        record.update(finishedAt=timestamp(), touchedFiles=sorted(touched['files']), touchedRanges=touched['ranges'], evidenceIndex=evidence,
+        record.update(finishedAt=timestamp(), touchedFiles=sorted(touched['files']), touchedRanges=touched['ranges'], searchRanges=touched['searchRanges'], evidenceIndex=evidence,
                       toolTurns=turn_number, sidecarInjections=sum(e.get('injected', False) for e in record['sidecarEvents']))
         if guard_kind: record['guardInterventions'] = interventions
         write_atomic(path, record)
