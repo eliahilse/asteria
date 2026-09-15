@@ -1,0 +1,582 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__agentic__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 4,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 45,
+      "issueChecksUnresolved": 5,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r1/submission-2/evaluation/report.json",
+      "reportSha256": "76396af92254a7b4d9e29a75f28cb76ca5c8b24f0e4acf589205472d4b2f5173",
+      "responseSha256": "4180b92dd061b66417242bb27b8b80a7ad72344139e50f9961fe1fb3a58ff75b",
+      "runId": "i33a-s1__generation_s__agentic__static__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r2/submission-3/evaluation/report.json",
+      "reportSha256": "25157150e35a3da1a41143d42dcbba4c8ea68dee0b7a9cabefc951bda2c4b8d1",
+      "responseSha256": "558d14ba66fcef0d57d8507052605a3e9bf26168a28d5730d9be922bcee060d1",
+      "runId": "i33a-s1__generation_s__agentic__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r2/submission-3/evaluation/report.json",
+      "reportSha256": "25157150e35a3da1a41143d42dcbba4c8ea68dee0b7a9cabefc951bda2c4b8d1",
+      "responseSha256": "558d14ba66fcef0d57d8507052605a3e9bf26168a28d5730d9be922bcee060d1",
+      "runId": "i33a-s1__generation_s__agentic__static__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r4/submission-5/evaluation/report.json",
+      "reportSha256": "11f773a43e9308f1215f09801ad7743eada6427c70b9c231e345a85246ac1d01",
+      "responseSha256": "ea842631d6267436d03ad38ffa227577b245443f61dff71e02e176f3e77899d1",
+      "runId": "i33a-s1__generation_s__agentic__static__r4",
+      "test": "oversizedPhysicalLine"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i33a-s1",
+  "manifestFingerprint": "ee136ec2b10aabb019cc0c12f80386a60d0494add4548368e1c2fc0fd428562e",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 55,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || hasControlCharacter(name)) {"
+        },
+        {
+          "line": 132,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || hasControlCharacter(name)) {"
+        },
+        {
+          "line": 199,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 200,
+          "text": "                    if (line.getBytes(StandardCharsets.UTF_8).length > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 204,
+          "text": "                    if (records >= MAX_RECORDS) {"
+        },
+        {
+          "line": 217,
+          "text": "                        if (score < 0 || survivalTime < 0 || name.trim().length() == 0 || name.length() > MAX_NAME_LENGTH || hasControlCharacter(name)) {"
+        },
+        {
+          "line": 241,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i33a-s1__generation_s__agentic__static__r1",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "9c9fe76a5ba558ce6c64f95323dff38c8cc9e263e246d41dd1628e419a3a61a8"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 31,
+          "text": "    private static final int MAX_STORE_BYTES = 65536;"
+        },
+        {
+          "line": 65,
+          "text": "        return name.length() == 0 || name.length() > MAX_NAME_LENGTH ? null : name;"
+        },
+        {
+          "line": 114,
+          "text": "            if (bytes.length > MAX_STORE_BYTES) return;"
+        },
+        {
+          "line": 125,
+          "text": "            if (!Files.exists(absolute) || Files.size(absolute) > MAX_STORE_BYTES) return;"
+        },
+        {
+          "line": 126,
+          "text": "            String text = new String(Files.readAllBytes(absolute), StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 130,
+          "text": "                if (runs.size() >= MAX_RECORDS || lines[i].length() == 0) continue;"
+        },
+        {
+          "line": 155,
+          "text": "        while (runs.size() > MAX_RECORDS) runs.remove(runs.size() - 1);"
+        }
+      ],
+      "runId": "i33a-s1__reuse_sb__agentic__static__r1",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__reuse_sb__agentic__static__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d990e135aefce6f103d831af4df00514a1e75522617b2531cf098e6bb82e3f89"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 39,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 40,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 42,
+          "text": "    private static final int MAX_STORE_BYTES = 8192;"
+        },
+        {
+          "line": 80,
+          "text": "        return trimmed.length() > 0 && trimmed.length() <= MAX_NAME_LENGTH;"
+        },
+        {
+          "line": 112,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 226,
+          "text": "                if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 230,
+          "text": "                byte[] data = Files.readAllBytes(this.store);"
+        },
+        {
+          "line": 291,
+          "text": "            if (data.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 371,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i33a-s1__reuse_sb__agentic__static__r2",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__reuse_sb__agentic__static__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "4b58940eca2af85da1671b9f7a8978d6341c7944dcd638022bbfd50d689d3b7d"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 119,
+          "text": "            if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 120,
+          "text": "                name = name.substring(0, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 165,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 166,
+          "text": "                    if (line.getBytes(StandardCharsets.UTF_8).length > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 197,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 215,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i33a-s1__generation_s__agentic__static__r2",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "da030020c141bf0d86cab6b58f943782b6c5257c636b5d998038d40ac139ab87"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 31,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 59,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.indexOf('\\t') >= 0"
+        },
+        {
+          "line": 183,
+          "text": "        int limit = Math.min(MAX_RECORDS, this.entries.size());"
+        },
+        {
+          "line": 213,
+          "text": "                while (this.entries.size() < MAX_RECORDS) {"
+        },
+        {
+          "line": 218,
+          "text": "                    if (line.getBytes(StandardCharsets.UTF_8).length > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 232,
+          "text": "                                || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 240,
+          "text": "                if (this.entries.size() >= MAX_RECORDS && reader.read() != -1) {"
+        },
+        {
+          "line": 261,
+          "text": "                if (line.length() > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 279,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i33a-s1__generation_s__agentic__static__r3",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "98f69a6a01ea1d591ed963d4fea350d16e0aee15d19b5c17f3602c9cb19688e1"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 27,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_STORE_BYTES = 8192;"
+        },
+        {
+          "line": 49,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 84,
+          "text": "        if (bytes.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 120,
+          "text": "            if (!Files.exists(store) || Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 123,
+          "text": "            byte[] bytes = Files.readAllBytes(store);"
+        },
+        {
+          "line": 129,
+          "text": "            for (int i = 1; i < lines.length && names.size() < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 144,
+          "text": "                            name.length() > MAX_NAME_LENGTH || nameBytes.length > MAX_RECORD_BYTES) {"
+        },
+        {
+          "line": 173,
+          "text": "        for (int i = 0; i < records.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 228,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i33a-s1__reuse_sb__agentic__static__r3",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__reuse_sb__agentic__static__r3/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "33acf949b993da257b1f06db6b1a2ea1058d541db22987eb449eccfdf0b931cb"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 62,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || hasUnsafeName(name)) {"
+        },
+        {
+          "line": 194,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 195,
+          "text": "                if (line.getBytes(StandardCharsets.UTF_8).length > MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 199,
+          "text": "                if (count >= MAX_RECORDS) {"
+        },
+        {
+          "line": 213,
+          "text": "                            name.length() > MAX_NAME_LENGTH || hasUnsafeName(name)) {"
+        },
+        {
+          "line": 236,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i33a-s1__generation_s__agentic__static__r4",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r4/submission-5/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b449193234a16a99e3e65fc287855af4ab4a0313f2d673c78af1a9fc5d436cca"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME = 32;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final long MAX_STORE_BYTES = 8192L;"
+        },
+        {
+          "line": 65,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME) {"
+        },
+        {
+          "line": 123,
+          "text": "            if (!Files.exists(store) || Files.size(store) > MAX_STORE_BYTES) return;"
+        },
+        {
+          "line": 124,
+          "text": "            List<String> lines = Files.readAllLines(store, UTF8);"
+        },
+        {
+          "line": 126,
+          "text": "            for (int i = 1; i < lines.size() && records.size() < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 135,
+          "text": "                    if (score >= 0 && survivalTime >= 0 && name.length() <= MAX_NAME"
+        },
+        {
+          "line": 154,
+          "text": "        while (records.size() > MAX_RECORDS) records.remove(records.size() - 1);"
+        },
+        {
+          "line": 168,
+          "text": "        if (name.length() > MAX_NAME) name = name.substring(0, MAX_NAME).trim();"
+        },
+        {
+          "line": 212,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i33a-s1__reuse_sb__agentic__static__r4",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__reuse_sb__agentic__static__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b5ae3e7928a780663de46c468285e6d97d47543476cfb5f56e3e1dbd36e5dc19"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 29,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 30,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 32,
+          "text": "    private static final long MAX_STORE_BYTES = 64L * 1024L;"
+        },
+        {
+          "line": 62,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 105,
+          "text": "            if (data.length > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 129,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 132,
+          "text": "            String[] lines = new String(Files.readAllBytes(this.store), StandardCharsets.UTF_8)"
+        },
+        {
+          "line": 138,
+          "text": "            if (count < 0 || count > MAX_RECORDS || lines.length < count + 2) {"
+        },
+        {
+          "line": 153,
+          "text": "                if (score < 0 || time < 0 || name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 188,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 221,
+          "text": "            if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 222,
+          "text": "                name = name.substring(0, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 276,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_RECORDS"
+        }
+      ],
+      "runId": "i33a-s1__reuse_sb__agentic__static__r5",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__reuse_sb__agentic__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "68a682b9ab7e87e9aea6084a0ff81ce40435a4559a25c8a31b081da2eef39d3b"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 31,
+          "text": "    private static final int MAX_RECORDS = 64;"
+        },
+        {
+          "line": 32,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 33,
+          "text": "    private static final int MAX_LINE_BYTES = 256;"
+        },
+        {
+          "line": 80,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 171,
+          "text": "        if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 172,
+          "text": "            name = name.substring(0, MAX_NAME_LENGTH).trim();"
+        },
+        {
+          "line": 198,
+          "text": "        for (int i = 0; i < this.entries.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 210,
+          "text": "        if (name == null || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 231,
+          "text": "                while ((line = readLine(input)) != null) {"
+        },
+        {
+          "line": 236,
+          "text": "                    if (recordCount >= MAX_RECORDS) {"
+        },
+        {
+          "line": 250,
+          "text": "        while (this.entries.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 292,
+          "text": "    private static LineResult readLine(InputStream input) throws IOException {"
+        },
+        {
+          "line": 302,
+          "text": "            if (bytes.size() < MAX_LINE_BYTES) {"
+        },
+        {
+          "line": 311,
+          "text": "        if (bytes.size() > 0 && bytes.toByteArray()[bytes.size() - 1] == '\\r') {"
+        }
+      ],
+      "runId": "i33a-s1__generation_s__agentic__static__r5",
+      "source": ".local/iterations/i33a-s1/runs/i33a-s1__generation_s__agentic__static__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "9aa1c483735c055bdb32243180590ababbae6ffa4aac971a8dd278274a1592d2"
+    }
+  ]
+}
