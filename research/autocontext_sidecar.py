@@ -164,6 +164,12 @@ def I28():
     return Composite(AutoContextSidecar(contexts, snapshot_path_maps()), guard)
 
 
+def I29():
+    """I29: guard v2 over the v11 data-flow graphs of both methods (no code graph); the harness uses judge() only, initial() and update() are the guard's own."""
+    contexts = ROOT / 'research/iterations/i29-v11/contexts'
+    return GuardSidecar(contexts, kinds=None, consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--freeze', nargs=2, metavar=('MODEL_JSON', 'OUT_JSON'), help='write the compact code graph of a code-model.json')
     args = parser.parse_args()
