@@ -14,7 +14,8 @@ GROUND RULES
 3. Prospective is labelled. Requirements and controls are proposals with basis `task` or `reasoned`; never claim they already exist.
 4. Absence is not proven by a search miss. Record it as an `unknown`.
 5. Fixed threat model: a desktop game; untrusted inputs are local files the user can edit, content from a shared level server, and local tampering to cheat. Do not assume a web endpoint.
-6. Precise, nonduplicated, task-relevant. Budget: at most {{MAX_COMMANDS}} shell commands; finish with the document even if inspection is incomplete, and say what is incomplete in `limitations`.
+6. Fail safe without losing the change's effect. Rejection belongs at the boundary where untrusted data enters (parser, decoder, store). At the integration point where the change produces its primary effect, a missing or invalid value is substituted by a stated default or normalized so that the effect still occurs; never propose skipping or suppressing the primary effect as failure behavior.
+7. Precise, nonduplicated, task-relevant. Budget: at most {{MAX_COMMANDS}} shell commands; finish with the document even if inspection is incomplete, and say what is incomplete in `limitations`.
 
 {{ANGLE}}
 
