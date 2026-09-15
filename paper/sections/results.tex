@@ -14,7 +14,7 @@ checks never discriminate, since every artifact guards malformed stores and
 none uses Java object serialization. The one-sentence task-only instruction
 retains most of the effect (23 and 15 fewer failed checks than control).
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -30,7 +30,7 @@ Reuse B & 4; 27/11/12 & 4; 5/14/31 & 5; 4/2/44 & 4; 19/3/28 \\
 Reuse S+B & 5; 32/1/17 & 5; 8/5/37 & 5; 0/5/45 & 5; 19/2/29 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table}[t]
 \centering
@@ -61,7 +61,7 @@ to $-4.6$ and $-7.2$ to $-5.8$ per trajectory; no check increases) but costs
 functional success, 5 to 3 of 5 in both cells, with submissions rising from
 7 to 18 in Generation.
 
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -81,7 +81,7 @@ I17 & Generation S & single-shot & compact, no failure lines & 5; 36/4/10 & 4; 2
 I18 & Reuse S+B & single-shot & compact, no failure lines & 5; 27/4/19 & 4; 4/5/41 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \paragraph{Sidecars ($N=3$ pilots).}
 Adaptive slicing changes when statements arrive, not how many, because a
@@ -133,7 +133,8 @@ $-3.6$; the oversized-line check increases from 2 to 4 of 5). Functional
 success is 4 of 5 in both cells. No Generation trajectory loses a nameless
 run; 1 of 5 in Reuse still does, because there the clause is part of the
 control statement itself. One Generation artifact passes every functional
-test and all eleven security checks, the first to do so. The clause must be
+test and all eleven security checks, the first in that cell (two Reuse
+artifacts did in I09). The clause must be
 fixed at acquisition, not at rendering; the next protocol version forbids
 failure behaviour that suppresses the change's primary effect.
 
