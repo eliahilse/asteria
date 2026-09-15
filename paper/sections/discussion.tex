@@ -1,0 +1,41 @@
+\section{Discussion}
+\label{sec:discussion}
+
+With the final instructions, agent-written security context reduced failed
+checks from 39 to 11 out of 50 in Generation and from 31 to 7 in Reuse with
+every artifact functional, and two further acquisitions per task variant
+reproduced the direction. The agent's context is followed literally: one
+sentence about failure behaviour cost functionality until the instructions
+said where rejection and where substitution belong, and an omitted record
+limit moved the counts the other way. Context given before the first
+attempt did better, in the pilots, than enforcement during the attempts.
+
+\paragraph{Threats to validity.}
+One task, one pair of games, one model as agent and generator. Each arm
+shares one acquired document across its three to five trajectories, so the
+trajectories measure generation variability given that document; only the
+final instructions were tried with three independent acquisitions. The
+five input-policy checks weigh heavily in the total of ten. The
+one-million-record check alone is unresolved in 43 of the 80 artifacts of
+round I07. Artifact reviews and hook classifications are single-pass model
+judgements with cited lines, adjudicated with a second model reader on 12
+rows, not human-annotated. Only the Highscore feature has been evaluated. The same model acts as acquisition agent and generator, and
+the agent's instructions were revised after we examined failures on this
+same task, so the final rounds show that the instructions work here, not
+that they transfer to another feature or repository unchanged.
+
+\section{Conclusions and Future Work}
+\label{sec:conclusions}
+
+Repository-specific security context, appended before the model writes,
+lowers the number of failed security checks in every comparison of this
+study, whether a researcher or an agent wrote it. An agent's context is
+followed literally, so its wording about failure behaviour decides whether
+the feature keeps working; a rule that binds rejection to the operation
+receiving untrusted data and substitution to its caller resolved that in
+this task, with the direction reproduced by three independent acquisitions
+per task variant. Next steps follow from what still fails: a required
+statement about retention limits when a change persists a growing
+collection, the two task cells not yet run with the final instructions, a
+second feature to test transfer, and a rerun of the sidecar pilots with the
+corrected context.

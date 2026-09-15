@@ -1,0 +1,21 @@
+\section{Introduction}
+\label{sec:introduction}
+
+A language model that adds a feature to an existing program can produce
+code that works and is still insecure: it accepts input that should be
+rejected, keeps data that should be bounded, trusts files that should be
+checked. We ask whether a short, repository-specific security description,
+given to the model before it writes, changes this, and what that
+description has to say.
+
+Real programs are too large to hand to a model in full; whatever subset is
+supplied embodies a choice about what matters for the task. Earlier work in
+this series compared context \emph{types} (structural, functional,
+behavioural descriptions of the program) for generation and reuse. Here we
+add one type with a specific purpose, security context, and ask three
+things in turn: does it lower the number of failed security checks at all;
+can an agent acquire it from the repository without a person who already
+knows the code; and what does it cost in functionality. The study is
+reported in the order it was run, because each round's result set the next
+round's question. Every result is a count over a fixed denominator, and
+every arm is compared with a control collected alongside it.

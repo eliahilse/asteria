@@ -1,0 +1,34 @@
+\section{Related Work and Terms}
+\label{sec:related}
+
+A \emph{security property} is something an asset must keep, such as
+integrity or availability~\citep{avizienis2004,iso25010}. A \emph{threat}
+is a potential violation of such a property~\citep{rfc4949}; STRIDE lists
+threat kinds per system element~\citep{shostack2014} and CAPEC catalogues
+attack patterns~\citep{capec}. A \emph{trust boundary} separates parts of a
+system that make different assumptions about the data they receive; the
+points where untrusted data enters form the attack
+surface~\citep{manadhata2011}. A \emph{weakness} is a type of flaw,
+catalogued by CWE~\citep{cwe}; a \emph{vulnerability} is a concrete,
+exploitable occurrence of one~\citep{cve}. A \emph{security requirement}
+says what a part of the feature must ensure~\citep{haley2008,firesmith2003,sindre2005};
+a \emph{control} is the mechanism intended to enforce it, and its
+\emph{enforcement point} is the operation where it must
+hold~\citep{nist80053,saltzer1975,long2011}; \emph{verification} is how
+one checks that it does~\citep{asvs5,nist800218}.
+
+For a repository and a planned change, the \emph{security context} is the
+set of statements handed to the model before it writes, each labelled by
+kind: the assets and entry points the change touches, the trust boundaries
+it crosses, the weakness types that apply, the requirements with their
+enforcement points, proposed controls, hints for verification, and open
+questions. Every statement either cites the source lines it was derived
+from or is marked as a proposal. Security context is not feedback from
+tests on generated code, and it is not a generic secure-coding
+instruction~\citep{tony2025}. Prior work measures code-model security on
+isolated snippets~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
+model~\citep{he2023} or varies generic prompt wording~\citep{tony2025};
+in a user study, people with an AI assistant wrote less secure code than
+people without~\citep{perry2023}. We work inside a real code base: a
+family of games maintained by copying one game into the
+next~\citep{krueger2018,dubinsky2013}.
