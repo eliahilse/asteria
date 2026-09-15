@@ -121,7 +121,10 @@ parsed code and drops statements whose citations do not resolve, which
 validates that the cited code exists, not that the statement is right.
 Statements carry a one-line \emph{failure behaviour}, what the code should
 do when input is invalid; the agent's instructions were revised twice
-about it (versions 9 and 10, Section~\ref{sec:results}). The document is
+about it (versions 9 and 10, Section~\ref{sec:results}) and once more
+about bounds (version 11: a bound is a concrete number kept by evicting
+or truncating what exceeds it, never by rejecting a valid input, and the
+domain of each validated value is stated). The document is
 rendered as text and appended once after the unchanged task, either in
 full (assets, trust boundaries, then every statement) or as a
 \emph{compact insert} of requirement and control statements only.
@@ -142,11 +145,10 @@ Three strategies are paired with the base contexts in the one-shot rounds:
 The earlier rounds also used researcher-written inserts (operations,
 requirements, trust boundaries), a one-sentence generic instruction, the
 flat CWE Top~25 list~\citep{cwetop25}, two further agent angles
-(requirements, catalogue) and the compact renderings. In the agentic
-rounds the same three strategies are injected statically, plus a fourth,
-S2 with its verification hints and an instruction to verify, and each is
-run again with the guard sidecar and with the code graph; the first
-agentic round (I26) calibrates the guard and the graph on S2 alone.
+(requirements, catalogue) and the compact renderings. The agentic rounds
+(I26 to I28) use S2 alone, with and without the code graph and the two
+judges; round I29 repeats the agentic comparison with a data-flow
+document acquired under the version 11 instructions.
 
 \begin{table}[t]
 \centering
