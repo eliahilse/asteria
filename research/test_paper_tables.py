@@ -62,12 +62,12 @@ class PaperTableTests(unittest.TestCase):
     def test_hook_table_matches_audits(self):
         source = (ROOT / 'paper/sections/results.tex').read_text()
         _, body = parse_table(source, 'tab:hook')
-        counts = {'No security context': [0, 0], 'Researcher-written inserts': [0, 0], 'Agent-acquired inserts, slices': [0, 0]}
+        counts = {'No security context': [0, 0], 'Researcher-written inserts': [0, 0], 'Agent-acquired context': [0, 0]}
         for iteration in HOOK_ROUNDS:
             for row in csv.DictReader((ROOT / 'research/iterations' / iteration / 'hook-audit.csv').open()):
                 if row['status'] not in ('completed', 'budget_exhausted'): continue
                 arm = row['condition'].split('__')[-1]
-                group = 'No security context' if arm == 'none' else ('Researcher-written inserts' if iteration == 'i09-generic-acquisition' else 'Agent-acquired inserts, slices')
+                group = 'No security context' if arm == 'none' else ('Researcher-written inserts' if iteration == 'i09-generic-acquisition' else 'Agent-acquired context')
                 failing = set(row['failingChecks'].split())
                 counts[group][0] += 1; counts[group][1] += bool(failing) and failing <= NULL_NAME_TESTS
         self.assertEqual({g: (int(v[1]), int(v[2])) for g, v in body}, {g: tuple(c) for g, c in counts.items()})

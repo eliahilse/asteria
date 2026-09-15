@@ -2,20 +2,25 @@
 \begin{abstract}
 When a language model adds a feature to an existing program, the security
 of its code depends on what it knows about that program. We study
-\emph{security context}: a short, typed description of the assets, trust
+\emph{security context}: a short description of the assets, trust
 boundaries, weakness types, requirements and controls that a planned change
-touches, appended to the model's prompt before it writes code. The task is
-a Highscore feature for a Java game, implemented either from scratch or by
-reusing a sibling game's implementation; ten security checks and sixteen
-functional tests score every delivered artifact. Context written by a
-researcher lowers the number of failed security checks in all 18 arms of
-two rounds at no cost in functionality. Context acquired by an agent that
-sees only the repository and a one-line feature description lowers it
-further but, at first, costs functionality. An audit of 124 artifacts
-traces that cost to a single sentence the agent wrote, and two revisions of
-the agent's instructions remove it: with the final instructions, failed
-checks fall from 39 to 11 and from 31 to 7 out of 50 while every artifact
-stays functional, and two further acquisitions reproduce the result. One
-task, one repository pair and five artifacts per arm limit what the counts
-can claim.
+touches, each statement labelled by kind, appended to the model's prompt
+before it writes code. The task is a Highscore feature for a Java game,
+implemented either from scratch (Generation) or by reusing a sibling game's
+implementation (Reuse); ten security checks and sixteen functional tests
+score every delivered artifact, and every arm is compared with a control
+collected alongside it. Context written by a researcher lowers the number
+of failed security checks in all 18 context arms of two rounds, with the
+number of functional artifacts within one of the control's in every arm.
+Context acquired by an agent that sees only the repository, a one-line
+feature description and a vocabulary lowers it further but at first loses
+two of five functional artifacts per cell. An audit of the 124 artifacts of
+five rounds traces that loss to one sentence the agent wrote about what to
+do when a player has no name. Two revisions of the agent's instructions
+remove the loss: with the final version, failed checks fall from 39 to 11
+out of 50 in Generation and from 31 to 7 out of 50 in Reuse while all five
+artifacts in every arm stay functional, and two further acquisitions per
+task variant, with three artifacts per arm, reproduce the direction. One
+task, one pair of games and three to five artifacts per arm limit what the
+counts can claim.
 \end{abstract}

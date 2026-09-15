@@ -6,65 +6,76 @@ The model receives the task, the relevant source files and, in a context
 arm, the security context appended after the task. It answers with new
 classes and exact edits to three existing files, delivered through a tool
 call. It then receives the compiler's diagnostics and the outcome of
-sixteen functional tests, and may resubmit up to five times. We call the
-whole conversation a \emph{trajectory} and its final code the
+sixteen functional tests, and may submit up to five times in total. We call
+the whole conversation a \emph{trajectory} and its final code the
 \emph{artifact}. An artifact is \emph{functional} when it passes all
-sixteen functional tests within the five submissions. The model never
-sees a security test result. In one round and in the sidecar pilots the
-model may also search and read the repository before submitting; we call
-that \emph{agentic} delivery, as opposed to \emph{single-shot}.
+sixteen functional tests within those five submissions; this single
+criterion replaces the earlier separate compile, unit and invoked counts.
+The model never sees a security test result. In one round and in the
+sidecar pilots the model may also search and read the repository before
+submitting; we call that \emph{agentic} delivery, and delivery without
+repository tools \emph{single-shot}. The same model (Luna) serves as
+acquisition agent and as generator; its served identity is recorded per
+response, and sampling settings are requested but not attested by the
+provider.
 
 \paragraph{Security evaluation.}
 Every final artifact runs the ten security checks of
-Table~\ref{tab:mapping}, plus a persistence round trip, in an isolated Java
-virtual machine with a 64~MiB heap and a 15~s limit. A check passes,
-fails, or is \emph{unresolved}: the artifact did not compile, the check
-could not run, or its precondition was not met (the large-record check,
-for example, needs a file format the test generator can write). A safe and
-a deliberately weak reference implementation must produce the expected
-outcomes before every run, so a check that could never fail would be
-caught.
+Table~\ref{tab:mapping} in an isolated Java virtual machine with a 64~MiB
+heap and a 15~s limit per check; a persistence round trip is run as well
+and reported separately, not counted among the ten. A check passes,
+fails, or is \emph{unresolved}: the artifact did not compile (then all ten
+are unresolved), the check could not run, or its precondition was not met
+(the one-million-record check needs a file format the test generator can
+write). A safe and a deliberately weak reference implementation must
+produce the expected outcomes before every run, so a check that could never
+fail would be caught.
 
 \paragraph{Arms, cells and controls.}
-An \emph{arm} is one security-context condition. A \emph{cell} is one task
-variant, Generation or Reuse, together with the base files the model gets
-about the game (structural, functional or behavioural descriptions, marked
-S, F, B). Every round contains a fresh \emph{control} arm without security
-context, collected at the same time with the same model and settings, and
-every comparison is against that control, never against an older round.
-Each round is declared and frozen before its first model call and completed
-regardless of direction; failed or degenerate acquisitions are kept and
-used, never regenerated.
+An \emph{arm} is one security-context condition within one cell. A
+\emph{cell} is one task variant, Generation or Reuse, together with the
+base files the model gets about the game: structural (S), functional (F)
+or behavioural (B) descriptions of it. Every round contains a fresh
+\emph{control} arm without security context, collected at the same time
+with the same model and settings, and every comparison is against that
+control, never against an older round. Each round is declared before its
+first model call and completed regardless of direction; failed or
+degenerate acquisitions are kept and used, never regenerated.
 
 \paragraph{Reporting.}
 We report counts, not percentages. For an arm with $N$ trajectories we give
 the number of functional artifacts out of $N$ and, for the ten security
 checks, the number failed, unresolved and passed out of $10N$. When we
-write that an insert removes between 4.6 and 5.8 failed checks per
-artifact, that range is the difference to the control under every way of
-counting the unresolved checks, from all-pass to all-fail; it is an
-identification bound, not a confidence interval. With three to five
-artifacts per arm we make no significance claims. Our replication is a
-second round with its own control that shows the same direction.
+write that an insert removes between 4.6 and 5.8 failed checks per artifact
+(round I20, Generation), that range is the smallest and the largest
+difference to the control obtainable by resolving each arm's unresolved
+checks as passes or as failures; it is an identification bound, not a
+confidence interval. With three to five artifacts per arm we make no
+significance claims; our replication is a further round with its own
+control that shows the same direction. Per-check outcomes for every arm,
+spreadsheets with every trajectory and check, and the artifact reviews are
+in the study repository.
 
 \paragraph{The acquisition agent.}
-The first rounds used context written by a researcher who knew the code.
-That is not a solution: a practitioner who can write it can write the
-guards. From round I10 on, an agent writes the context. It receives a
-read-only snapshot of the repository (for Reuse, of both games), the same
-one-line feature description the generator gets, and the vocabulary of
-Section~\ref{sec:setting} as an output schema with CWE, CAPEC and ASVS
-identifiers. It receives no test, no threshold, no earlier context and no
-generated code. It inspects the code with shell tools~\citep{yang2024}
-under a recorded command budget and writes one document along one of
-three angles: follow the data from where it enters to where it is stored
-(data flow), constrain every operation of the feature (requirements), or
-decide for each entry of the CWE Top~25 list~\citep{cwetop25} whether it
-applies (catalogue). Every statement cites a symbol of the parsed code or a
-range of lines; the harness checks that each citation exists, records its
-hash, and drops any statement whose citation does not resolve. The result is
-rendered as text after the unchanged task, either in full or as a
-\emph{compact insert} that keeps only the requirement and control
-statements. Each statement carries a one-line \emph{failure behaviour},
-what the code should do when the input is invalid; that line matters
-later.
+The first rounds used context written by a researcher who knew the code,
+which requires manual repository analysis. From round I10 on, an agent
+writes the context. It receives a read-only snapshot of the repository (for
+Reuse, of both games), the same one-line feature description the generator
+gets, and the vocabulary of Section~\ref{sec:setting} as an output schema
+with CWE, CAPEC and ASVS identifiers. It receives no test, no threshold, no
+earlier context and no generated code; the researchers revise its
+instructions between rounds after examining failures, and we say so where
+it happens. It inspects the code with shell tools~\citep{yang2024} under a
+recorded budget of at most 60 commands and writes one document along one
+of three angles: follow the data from where it enters to where it is
+stored (data flow), constrain every operation of the feature
+(requirements), or decide for each entry of the CWE Top~25
+list~\citep{cwetop25} whether it applies (catalogue). Every statement cites
+a symbol of the parsed code or a range of lines; the harness checks that
+each citation exists and drops any statement whose citation does not
+resolve, which validates that the cited code exists, not that the statement
+about it is right. The document is rendered as text after the unchanged
+task, either in full or as a \emph{compact insert} that keeps only the
+requirement and control statements. Each of those statements carries a
+one-line \emph{failure behaviour}: what the code should do when the input
+is invalid.

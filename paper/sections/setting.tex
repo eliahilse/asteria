@@ -8,58 +8,63 @@ checked. We ask whether a short, repository-specific security description,
 given to the model before it writes, changes this, and what that
 description has to say.
 
-We use standard terms. A \emph{security property} is something an asset
-must keep, such as integrity or availability~\citep{avizienis2004,iso25010}.
-A \emph{threat} is a way that property could be violated~\citep{rfc4949};
-STRIDE lists threat kinds per system element~\citep{shostack2014} and CAPEC
-catalogues attack patterns~\citep{capec}. A \emph{trust boundary} separates
-parts of a system that trust each other differently; the points where
-untrusted data enters form the attack surface~\citep{manadhata2011}. A
-\emph{weakness} is a type of flaw, catalogued by CWE~\citep{cwe}; a
-\emph{vulnerability} is a concrete, exploitable occurrence of
-one~\citep{cve}. A \emph{security requirement} says what a piece of the
-feature must guarantee~\citep{haley2008,firesmith2003,sindre2005}; a
-\emph{control} is the mechanism that guarantees it, and its
+A \emph{security property} is something an asset must keep, such as
+integrity or availability~\citep{avizienis2004,iso25010}. A \emph{threat}
+is a potential violation of such a property~\citep{rfc4949}; STRIDE lists
+threat kinds per system element~\citep{shostack2014} and CAPEC catalogues
+attack patterns~\citep{capec}. A \emph{trust boundary} separates parts of a
+system that make different assumptions about the data they receive; the
+points where untrusted data enters form the attack
+surface~\citep{manadhata2011}. A \emph{weakness} is a type of flaw,
+catalogued by CWE~\citep{cwe}; a \emph{vulnerability} is a concrete,
+exploitable occurrence of one~\citep{cve}. A \emph{security requirement}
+says what a part of the feature must ensure~\citep{haley2008,firesmith2003,sindre2005};
+a \emph{control} is the mechanism intended to enforce it, and its
 \emph{enforcement point} is the operation where it must
 hold~\citep{nist80053,saltzer1975,long2011}; \emph{verification} is how
 one checks that it does~\citep{asvs5,nist800218}.
 
 For a repository and a planned change, the \emph{security context} is the
-set of typed statements handed to the model before it writes: the assets
-and entry points the change touches, the trust boundaries it crosses, the
-weakness types that apply, the requirements with their enforcement points,
-proposed controls, hints for verification, and open questions. Every
-statement either cites the source lines it was derived from or is marked
-as a proposal. Security context is not feedback from tests on generated
-code, and it is not a generic secure-coding instruction~\citep{tony2025},
-which carries no knowledge of the repository. Prior work measures
-code-model security on isolated
-snippets~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
+set of statements handed to the model before it writes, each labelled by
+kind: the assets and entry points the change touches, the trust boundaries
+it crosses, the weakness types that apply, the requirements with their
+enforcement points, proposed controls, hints for verification, and open
+questions. Every statement either cites the source lines it was derived
+from or is marked as a proposal. Security context is not feedback from
+tests on generated code, and it is not a generic secure-coding
+instruction~\citep{tony2025}. Prior work measures code-model security on
+isolated snippets~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
 model~\citep{he2023} or varies generic prompt wording~\citep{tony2025};
-users assisted without security cues write less secure
-code~\citep{perry2023}. We work inside a real code base, a family of games maintained by copying
-one game into the next~\citep{krueger2018,dubinsky2013}, where flaws
-travel with the copies.
+in a user study, people with an AI assistant wrote less secure code than
+people without~\citep{perry2023}. We work inside a real code base, a family
+of games maintained by copying one game into the
+next~\citep{krueger2018,dubinsky2013}, where a flaw in one game can travel
+into the next.
 
 The task is a Highscore feature for the game ApoMario: record a finished
 run's score, player name and survival time, keep the records in a file
 across sessions, and show them sorted in a menu panel. In the
 \emph{Generation} variant the model sees only ApoMario; in the \emph{Reuse}
 variant it also sees the sibling game ApoIcarus, which has a Highscore
-feature, and is asked to reuse it. The ten security checks
-(Table~\ref{tab:mapping}) ask: does the store reject a negative score, a
-negative time, a missing name, a blank name and an over-long name (five
-checks); does it keep at most one hundred records; does a corrupted store
-file crash the game; does a single huge line or a store of one million
-records exhaust memory (two checks); and does the code deserialize Java
-objects, which would let a crafted file execute code. Each check probes a
-weakness type, not an exploit.
+feature, and is asked to reuse it. The threat model is a desktop game: the
+untrusted inputs are local files the user can edit, level content from a
+shared server, and in-game values a player can tamper with to cheat. The
+ten security checks (Table~\ref{tab:mapping}) ask: does the store reject a
+negative score, a negative time, a missing name, a blank name and an
+over-long name (five checks); does it keep at most one hundred records;
+does a corrupted store file crash the game; does a single huge line, or a
+store of one million records, exhaust memory (two checks); and does the
+code deserialize Java objects, a mechanism through which a crafted file can
+reach code paths it should not. Each check probes a weakness type, not an
+exploit. The feature contract fixes rejection as the policy for invalid
+input so that all arms are measured against one rule; normalising invalid
+input is a legitimate design elsewhere, and CWE-20 allows both.
 
 \begin{table*}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{The ten security checks by category, with the weakness type each probes (CWE), the property at stake, and where the requirement comes from (the feature contract, the OWASP ASVS verification standard, or the CERT Java secure coding rules).}
+\caption{The ten security checks by category, with the weakness type each probes (CWE), the property at stake, and where the requirement comes from (the feature contract, the OWASP Application Security Verification Standard, or the CERT Oracle Secure Coding Standard for Java, whose rule families are named by their prefixes).}
 \label{tab:mapping}
 \begin{tabular}{@{}llll@{}}
 \toprule
