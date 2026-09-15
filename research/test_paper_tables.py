@@ -189,16 +189,22 @@ class I28TableTests(unittest.TestCase):
 
 class I29TableTests(unittest.TestCase):
     CELLS = {'Generation S': 'generation_s', 'Reuse S+B': 'reuse_sb'}
-    ARMS = {'none': 'none', 'v11 document': 'static', 'v11 document + guard': 'static-guard'}
+    ARMS = {'none': 'none', 'v11 document': 'static', 'v11 document + guard': 'static-guard', 'v12 document': 'static', 'v12 document + guard': 'static-guard'}
+
+    def test_i30_table_matches_qualified_analysis_full_hits_and_cost(self):
+        self.check('tab:i30', 'i30-v12')
 
     def test_i29_table_matches_qualified_analysis_full_hits_and_cost(self):
+        self.check('tab:i29', 'i29-v11')
+
+    def check(self, label, iteration):
         import csv
         source = (ROOT / 'paper/sections/results.tex').read_text()
-        header, body = parse_table(source, 'tab:i29')
+        header, body = parse_table(source, label)
         self.assertEqual(header, ['Arm', 'Functional', 'Full hits', 'Checks f / u / p', 'Turns', 'Guard', 'Calls', 'Input (M)'])
-        conditions = analysis('i29-v11')
-        hits = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i29-v11/full-hits.csv').open())}
-        cost = {r['arm']: r for r in csv.DictReader((ROOT / 'research/iterations/i29-v11/cost.csv').open())}
+        conditions = analysis(iteration)
+        hits = {r['arm']: r for r in csv.DictReader((ROOT / f'research/iterations/{iteration}/full-hits.csv').open())}
+        cost = {r['arm']: r for r in csv.DictReader((ROOT / f'research/iterations/{iteration}/cost.csv').open())}
         self.assertEqual(len(body), 6)
         for cell, (label, functional, full, checks, turns, guard, calls, tokens) in body:
             kind = self.ARMS[label]; arm = f'{self.CELLS[cell]}__agentic__{kind}'; c = conditions[arm]; h = hits[arm]; k = cost[arm]

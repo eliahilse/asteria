@@ -1,0 +1,1687 @@
+{
+  "analysisSha256": "d01fe7bcdcf457fd8782e92335cca90d95fa4c7bac4f2f96c4a8e9a601d5df5d",
+  "conditions": [
+    {
+      "condition": "generation_s__agentic__none",
+      "input_rejection_policy": 11,
+      "issueChecksEvaluated": 45,
+      "issueChecksUnresolved": 5,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 5,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 5
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 3,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 49,
+      "issueChecksUnresolved": 1,
+      "n": 5,
+      "observed_heap_exhaustion": 5,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 3
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "input_rejection_policy": 25,
+      "issueChecksEvaluated": 48,
+      "issueChecksUnresolved": 2,
+      "n": 5,
+      "observed_heap_exhaustion": 2,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 4,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 1,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "input_rejection_policy": 0,
+      "issueChecksEvaluated": 50,
+      "issueChecksUnresolved": 0,
+      "n": 5,
+      "observed_heap_exhaustion": 0,
+      "other_fixture_failure": 0,
+      "process_time_budget": 0,
+      "retention_threshold": 0,
+      "test_canary_dispatch": 0,
+      "trajectoriesWithObservedHeapExhaustion": 0
+    }
+  ],
+  "failures": [
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4ffa7267ee4a7f385c2c1350a299cb47f0555078da40050455b8e03cf661f04b",
+      "responseSha256": "252329e5273cf77761261110eacdb2d68f0bc132008ba3aae879e0c5b4f27c50",
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4ffa7267ee4a7f385c2c1350a299cb47f0555078da40050455b8e03cf661f04b",
+      "responseSha256": "252329e5273cf77761261110eacdb2d68f0bc132008ba3aae879e0c5b4f27c50",
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4ffa7267ee4a7f385c2c1350a299cb47f0555078da40050455b8e03cf661f04b",
+      "responseSha256": "252329e5273cf77761261110eacdb2d68f0bc132008ba3aae879e0c5b4f27c50",
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4ffa7267ee4a7f385c2c1350a299cb47f0555078da40050455b8e03cf661f04b",
+      "responseSha256": "252329e5273cf77761261110eacdb2d68f0bc132008ba3aae879e0c5b4f27c50",
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/report.json",
+      "reportSha256": "4ffa7267ee4a7f385c2c1350a299cb47f0555078da40050455b8e03cf661f04b",
+      "responseSha256": "252329e5273cf77761261110eacdb2d68f0bc132008ba3aae879e0c5b4f27c50",
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r1/submission-3/evaluation/report.json",
+      "reportSha256": "41a5081ece3098189d28dfcd1d916b1c2a44d74eadfa42f8b1dd82eb276f9f97",
+      "responseSha256": "17efeb328a6300513d84f3ac2ba41b7fff811f8d7cea97cfbb890207eb7a291a",
+      "runId": "i30-v12__generation_s__agentic__static-guard__r1",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r1/submission-3/evaluation/report.json",
+      "reportSha256": "41a5081ece3098189d28dfcd1d916b1c2a44d74eadfa42f8b1dd82eb276f9f97",
+      "responseSha256": "17efeb328a6300513d84f3ac2ba41b7fff811f8d7cea97cfbb890207eb7a291a",
+      "runId": "i30-v12__generation_s__agentic__static-guard__r1",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/report.json",
+      "reportSha256": "6a1258cbc6ea1a50483b76abedf1a3a69ecdefd61809d27590d4da12c6316682",
+      "responseSha256": "a1344f9ed7ecf3f817a00872b4eafcc4dba2ba4cd7f1a592be801eadbd73716c",
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/report.json",
+      "reportSha256": "a4fb08adbf0ba85900121eb6d494e868d41919adc7d3a110eb1aae621042a973",
+      "responseSha256": "38cf516821f11712454fd6e05443587157ee50097e700ac652785428887213f6",
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r2/submission-1/evaluation/report.json",
+      "reportSha256": "970f07fbce046e816f1942b91854f4b28e94dab11b37b329dd477d88995515a4",
+      "responseSha256": "05182799517be180e86c3ef943ace444e5650ac731ab787e74150c25b5dab536",
+      "runId": "i30-v12__generation_s__agentic__static-guard__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r2/submission-1/evaluation/report.json",
+      "reportSha256": "970f07fbce046e816f1942b91854f4b28e94dab11b37b329dd477d88995515a4",
+      "responseSha256": "05182799517be180e86c3ef943ace444e5650ac731ab787e74150c25b5dab536",
+      "runId": "i30-v12__generation_s__agentic__static-guard__r2",
+      "test": "largePersistedRecordSet"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "bd21e56b8c35dad061a781dbf6935c9d4f16246067175f49ae54cdec674c7422",
+      "responseSha256": "d7d47cee37b6a71ecf229e151f07c1a6d5b26597e7827c9893f56e01f5c9f7c8",
+      "runId": "i30-v12__generation_s__agentic__none__r2",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "bd21e56b8c35dad061a781dbf6935c9d4f16246067175f49ae54cdec674c7422",
+      "responseSha256": "d7d47cee37b6a71ecf229e151f07c1a6d5b26597e7827c9893f56e01f5c9f7c8",
+      "runId": "i30-v12__generation_s__agentic__none__r2",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "bd21e56b8c35dad061a781dbf6935c9d4f16246067175f49ae54cdec674c7422",
+      "responseSha256": "d7d47cee37b6a71ecf229e151f07c1a6d5b26597e7827c9893f56e01f5c9f7c8",
+      "runId": "i30-v12__generation_s__agentic__none__r2",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r2/submission-4/evaluation/report.json",
+      "reportSha256": "bd21e56b8c35dad061a781dbf6935c9d4f16246067175f49ae54cdec674c7422",
+      "responseSha256": "d7d47cee37b6a71ecf229e151f07c1a6d5b26597e7827c9893f56e01f5c9f7c8",
+      "runId": "i30-v12__generation_s__agentic__none__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r2/submission-3/evaluation/report.json",
+      "reportSha256": "8c41cf19d403f632e8484ec86c98d5a441aaa60be04cbfdeef4ebbd3aa5cae64",
+      "responseSha256": "4d060116c0888238d0b30fba45b2f42551a09406d0740b035db022def8790849",
+      "runId": "i30-v12__generation_s__agentic__static__r2",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r3/submission-2/evaluation/report.json",
+      "reportSha256": "9cc0355a3a97df0a3dac35176597b616716796dcd6957e39589f1dfc1644af2c",
+      "responseSha256": "a1681f1e95bc982f7c9df7541eb6306fcb5a28594ff636a4c46164ae67ef0c58",
+      "runId": "i30-v12__generation_s__agentic__static__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/report.json",
+      "reportSha256": "df80e237be9b00be8ef6c6929e4f0caf0534e163e1b67dd71cf226ce7a477b97",
+      "responseSha256": "82eeba17d335ce07612f2cd0384393e262db9399b5a245bb1bd4072e5a5036db",
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "67a46640220ca5ab5ce344af5febb4f11864d44deb4274ab604604e61cc4d6d4",
+      "responseSha256": "bb0221ec013d9ff9da9cb5fd68f621db5a92b38cb1bfe3411ef2f088a81ec81e",
+      "runId": "i30-v12__generation_s__agentic__none__r3",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "67a46640220ca5ab5ce344af5febb4f11864d44deb4274ab604604e61cc4d6d4",
+      "responseSha256": "bb0221ec013d9ff9da9cb5fd68f621db5a92b38cb1bfe3411ef2f088a81ec81e",
+      "runId": "i30-v12__generation_s__agentic__none__r3",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "67a46640220ca5ab5ce344af5febb4f11864d44deb4274ab604604e61cc4d6d4",
+      "responseSha256": "bb0221ec013d9ff9da9cb5fd68f621db5a92b38cb1bfe3411ef2f088a81ec81e",
+      "runId": "i30-v12__generation_s__agentic__none__r3",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r3/submission-2/evaluation/report.json",
+      "reportSha256": "67a46640220ca5ab5ce344af5febb4f11864d44deb4274ab604604e61cc4d6d4",
+      "responseSha256": "bb0221ec013d9ff9da9cb5fd68f621db5a92b38cb1bfe3411ef2f088a81ec81e",
+      "runId": "i30-v12__generation_s__agentic__none__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r3/submission-1/evaluation/report.json",
+      "reportSha256": "1541d5144e7bb8481fe742a9caa1ead9f8c0fe0e1fb9f757a348f4e9617fb6eb",
+      "responseSha256": "02a0e6af8e1dca844800421baddcb8bb6f18838ae3ea02a234c6429839c5b8b9",
+      "runId": "i30-v12__reuse_sb__agentic__static__r3",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r4/submission-2/evaluation/report.json",
+      "reportSha256": "61cdb5b175ce49e12ac83657cd680bbc87041681e3bd75c9912460ac990ae2e7",
+      "responseSha256": "065aa846e9b33314cd4a7903d8f99369c412af4c17b756d5b558d6202af0c8c2",
+      "runId": "i30-v12__generation_s__agentic__static__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/report.json",
+      "reportSha256": "a7423c15d36b352fa48ed4be0e19bd886765dade59ed415a7ab3511346c680fa",
+      "responseSha256": "773f09563f14f7489e1349c7da19c8537c2a21bd84c2a0c7bc89f030f807f44b",
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ec7397f836ab2342c6a05b9f3333852733798e0112f6fb18e99b14b91812978c",
+      "responseSha256": "1c38ea865e1e08def4e0c3c6b61598eaf967a1cd67390cdf3210d60ac52b373a",
+      "runId": "i30-v12__generation_s__agentic__none__r4",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ec7397f836ab2342c6a05b9f3333852733798e0112f6fb18e99b14b91812978c",
+      "responseSha256": "1c38ea865e1e08def4e0c3c6b61598eaf967a1cd67390cdf3210d60ac52b373a",
+      "runId": "i30-v12__generation_s__agentic__none__r4",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ec7397f836ab2342c6a05b9f3333852733798e0112f6fb18e99b14b91812978c",
+      "responseSha256": "1c38ea865e1e08def4e0c3c6b61598eaf967a1cd67390cdf3210d60ac52b373a",
+      "runId": "i30-v12__generation_s__agentic__none__r4",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r4/submission-3/evaluation/report.json",
+      "reportSha256": "ec7397f836ab2342c6a05b9f3333852733798e0112f6fb18e99b14b91812978c",
+      "responseSha256": "1c38ea865e1e08def4e0c3c6b61598eaf967a1cd67390cdf3210d60ac52b373a",
+      "runId": "i30-v12__generation_s__agentic__none__r4",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "80cb2736604c6b23e3439f519f7e3b379d5f21fbed25f1d83bb368eb6e76d3c6",
+      "responseSha256": "4f3b7181184e8fef3afd8bfcd9e7ad0a771dc17a5c6c375efda95644bc99a9dd",
+      "runId": "i30-v12__generation_s__agentic__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "80cb2736604c6b23e3439f519f7e3b379d5f21fbed25f1d83bb368eb6e76d3c6",
+      "responseSha256": "4f3b7181184e8fef3afd8bfcd9e7ad0a771dc17a5c6c375efda95644bc99a9dd",
+      "runId": "i30-v12__generation_s__agentic__none__r5",
+      "test": "rejectsExcessiveName"
+    },
+    {
+      "category": "retention_threshold",
+      "condition": "generation_s__agentic__none",
+      "detail": "AssertionError: More than 100 entries retained.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "80cb2736604c6b23e3439f519f7e3b379d5f21fbed25f1d83bb368eb6e76d3c6",
+      "responseSha256": "4f3b7181184e8fef3afd8bfcd9e7ad0a771dc17a5c6c375efda95644bc99a9dd",
+      "runId": "i30-v12__generation_s__agentic__none__r5",
+      "test": "boundsRetainedEntries"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__none",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "80cb2736604c6b23e3439f519f7e3b379d5f21fbed25f1d83bb368eb6e76d3c6",
+      "responseSha256": "4f3b7181184e8fef3afd8bfcd9e7ad0a771dc17a5c6c375efda95644bc99a9dd",
+      "runId": "i30-v12__generation_s__agentic__none__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "observed_heap_exhaustion",
+      "condition": "generation_s__agentic__static-guard",
+      "detail": "OutOfMemoryError: Java heap space",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r5/submission-3/evaluation/report.json",
+      "reportSha256": "d4ed2480d51694bd72745b1f7d9d57dfb2cad17d67bfe79bd3a11ff858463aec",
+      "responseSha256": "358982e990769f6cfac7a15a90c92e19cbe1370e2c8556a11a799d10f5e3b426",
+      "runId": "i30-v12__generation_s__agentic__static-guard__r5",
+      "test": "oversizedPhysicalLine"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "27ca2b1eba95580e8dec23dd3123a5f675aac0ea2b0c20644c0f78affff97a36",
+      "responseSha256": "8b5adf580c703a48f518fca48340c70af734f27f3a6948274845bb15ed20602e",
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "test": "rejectsNegativeScore"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "27ca2b1eba95580e8dec23dd3123a5f675aac0ea2b0c20644c0f78affff97a36",
+      "responseSha256": "8b5adf580c703a48f518fca48340c70af734f27f3a6948274845bb15ed20602e",
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "test": "rejectsNegativeTime"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "27ca2b1eba95580e8dec23dd3123a5f675aac0ea2b0c20644c0f78affff97a36",
+      "responseSha256": "8b5adf580c703a48f518fca48340c70af734f27f3a6948274845bb15ed20602e",
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "test": "rejectsNullName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "27ca2b1eba95580e8dec23dd3123a5f675aac0ea2b0c20644c0f78affff97a36",
+      "responseSha256": "8b5adf580c703a48f518fca48340c70af734f27f3a6948274845bb15ed20602e",
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "test": "rejectsBlankName"
+    },
+    {
+      "category": "input_rejection_policy",
+      "condition": "reuse_sb__agentic__none",
+      "detail": "AssertionError: Invalid record was accepted by storeRun.",
+      "report": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/report.json",
+      "reportSha256": "27ca2b1eba95580e8dec23dd3123a5f675aac0ea2b0c20644c0f78affff97a36",
+      "responseSha256": "8b5adf580c703a48f518fca48340c70af734f27f3a6948274845bb15ed20602e",
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "test": "rejectsExcessiveName"
+    }
+  ],
+  "interpretation": "Failure categories describe actual diagnostics, retaining every frozen outcome. A retention threshold failure can occur in a finitely bounded implementation. Source excerpts only locate candidate guards/readers; their semantics require review. Unresolved checks establish neither a failure nor a pass.",
+  "iteration": "i30-v12",
+  "manifestFingerprint": "2fe7bc49ca359c345da3e32caf2513fafb0718b935f80ca239f1b4ca3963f505",
+  "sourceInspectionCandidates": [
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 165,
+          "text": "            if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 169,
+          "text": "            List<String> lines = Files.readAllLines(this.store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 214,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 224,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "12565e70c88f25d621ce5538b6269bd0a5ed49dee09f4bcfdba3704e9318732d"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 132,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__none__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r1/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6e269487c95ccc1ad596fb37a1bc06a950ef6242798a98ad4cbc979ed1150a76"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 155,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 197,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.indexOf('\\t') >= 0"
+        },
+        {
+          "line": 214,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static-guard__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "57a6cb4dd89448c83acd6b924cf508746577654852f054395d50edc7f16dd233"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 25,
+          "text": "    private static final int MAX_ENTRIES = 10000;"
+        },
+        {
+          "line": 175,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__none__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "279f45420c2755d8c15842b66ce90e35f65a6a1f2e60cbfbc45e147929017636"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 124,
+          "text": "        for (int i = 0; i < scores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 144,
+          "text": "            if (Files.size(store) > MAX_FILE_SIZE) throw new IOException(\"highscore file too large\");"
+        },
+        {
+          "line": 145,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 146,
+          "text": "            if (lines.size() > MAX_RECORDS * 3 || lines.size() % 3 != 0) throw new IOException(\"invalid record count\");"
+        },
+        {
+          "line": 182,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 196,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r1/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "96d2523b8bed3c05bccb0f3cf7000ee094e3b35f5cf926c20c4b6cda46f57bb9"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 42,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 102,
+          "text": "                if (candidate.length() > 0 && candidate.length() <= MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 156,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 179,
+          "text": "                if (Files.size(this.store) > MAX_FILE_SIZE) {"
+        },
+        {
+          "line": 187,
+          "text": "                    for (int i = 0; i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 193,
+          "text": "                        String nameLine = readBoundedLine(reader, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 200,
+          "text": "                        if (score < 0 || time < 0 || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static-guard__r1",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static-guard__r1/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c6ab5a3254a620d8b4ee6c4fc490339fa5d5f234e576d5dde3f2330f65e9f035"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 125,
+          "text": "            for (String line : Files.readAllLines(store, Charset.forName(\"UTF-8\"))) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__none__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "b305e53537489dd8a0dc859cd0c10fd5a40f26914f54516ded8712fa5763ce93"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final long MAX_STORE_BYTES = 65536L;"
+        },
+        {
+          "line": 45,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 143,
+          "text": "        if (name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 144,
+          "text": "            name = name.substring(0, MAX_NAME_LENGTH).trim();"
+        },
+        {
+          "line": 158,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 166,
+          "text": "                String countLine = reader.readLine();"
+        },
+        {
+          "line": 171,
+          "text": "                if (count < 0 || count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 175,
+          "text": "                    String scoreLine = reader.readLine();"
+        },
+        {
+          "line": 176,
+          "text": "                    String timeLine = reader.readLine();"
+        },
+        {
+          "line": 177,
+          "text": "                    String nameLine = reader.readLine();"
+        },
+        {
+          "line": 184,
+          "text": "                    if (score < 0 || time < 0 || name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 191,
+          "text": "                if (reader.readLine() != null) {"
+        },
+        {
+          "line": 230,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 263,
+          "text": "        for (int i = 0; i < this.playersScores.size() && i < MAX_ENTRIES; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5041c6c2501f1d7956c63901330c5e51fd0b4f3c19ef5ab2ff9d58821004954a"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 148,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 182,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.indexOf('\\t') >= 0"
+        },
+        {
+          "line": 199,
+          "text": "        while (this.runs.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static-guard__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r2/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "eef6165faaea31b19dd55631290c270621d9415407626c08d1d487facd958be1"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 142,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__none__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r2/submission-4/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "e5e40cb46f4d6f560d910cf5374bc6ea36bafaf64ba2565453918e14337fbed8"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final long MAX_STORE_BYTES = 65536L;"
+        },
+        {
+          "line": 73,
+          "text": "                for (int i = 0; i < this.playersScores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 139,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 148,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 149,
+          "text": "                    if (names.size() >= MAX_RECORDS) {"
+        },
+        {
+          "line": 207,
+          "text": "        return name.length() == 0 || name.length() > MAX_NAME_LENGTH ? null : name;"
+        },
+        {
+          "line": 223,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static-guard__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static-guard__r2/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6324d68a0a309f7af3345ddb2b91f1d6d48be40e73688f4eae07205abb458790"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_LINE_LENGTH = 512;"
+        },
+        {
+          "line": 148,
+          "text": "                while ((line = reader.readLine()) != null && lines < 1000) {"
+        },
+        {
+          "line": 150,
+          "text": "                    if (line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 185,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 195,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.indexOf('|') >= 0 || name.indexOf('\\n') >= 0 || name.indexOf('\\r') >= 0) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static__r2",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r2/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "fcce10fa52cd68d1477f8ebdad7b86c0899c2e5e96d25270657d60f11087a1a7"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 22,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_LINE_LENGTH = 256;"
+        },
+        {
+          "line": 148,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 150,
+          "text": "                if (line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 198,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 208,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5e1ec518fabd2695791b8e8847b7feca4a729d43c74b9afc52e2f706ad21793f"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [],
+      "runId": "i30-v12__reuse_sb__agentic__none__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "f45b12da56bf5a94664c08fff9193ffe9799ef1f5fbe9749fb452106aac44980"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 78,
+          "text": "            for (int i = 0; i < this.playersScores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 128,
+          "text": "                if (selected == null && players.size() > 0) {"
+        },
+        {
+          "line": 161,
+          "text": "            for (int i = 0; i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 167,
+          "text": "                String nameLine = readLimitedLine(reader, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 249,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 268,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static-guard__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static-guard__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "5a71179808a68838175b512dae8fe124f82f64ca02811175795090cdc1708a94"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 79,
+          "text": "        if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 157,
+          "text": "            if (Files.size(this.store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 164,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 165,
+          "text": "                    this.readLine(line);"
+        },
+        {
+          "line": 177,
+          "text": "    private void readLine(String line) {"
+        },
+        {
+          "line": 205,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH || name.indexOf('\\t') >= 0"
+        },
+        {
+          "line": 222,
+          "text": "        while (this.runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static-guard__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r3/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ca39cd6df160854f2c0cd02efdd69bbec29ebafce7c5cc77d5187bedb809c3a8"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 139,
+          "text": "                String line = reader.readLine();"
+        },
+        {
+          "line": 143,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__none__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r3/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a5ff3426f820f7e5b7d5cdb8a8edf3856cc35f9d0072400f6cd26b1e560cc5b3"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 45,
+          "text": "        while (playersScores.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 101,
+          "text": "                for (int i = 0; i < playersScores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 129,
+          "text": "                while ((scoreLine = reader.readLine()) != null) {"
+        },
+        {
+          "line": 130,
+          "text": "                    if (scores.size() >= MAX_RECORDS) throw new IOException(\"too many records\");"
+        },
+        {
+          "line": 131,
+          "text": "                    String timeLine = reader.readLine();"
+        },
+        {
+          "line": 132,
+          "text": "                    String nameLine = reader.readLine();"
+        },
+        {
+          "line": 162,
+          "text": "        if (value.length() == 0 || value.length() > MAX_NAME_LENGTH) return null;"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static__r3",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r3/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "ae143302269b0f04a18ad49bb815d6ea4c5c938d4c02011e67956ce1478bcc30"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final long MAX_STORE_BYTES = 4096L;"
+        },
+        {
+          "line": 43,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 127,
+          "text": "        if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 152,
+          "text": "        for (int i = 0; i < playersScores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 175,
+          "text": "            if (Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 178,
+          "text": "            List<String> lines = Files.readAllLines(store, Charset.forName(\"UTF-8\"));"
+        },
+        {
+          "line": 179,
+          "text": "            if (lines.size() > MAX_RECORDS * 3 || lines.size() % 3 != 0) {"
+        },
+        {
+          "line": 190,
+          "text": "                        || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 225,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "6ee06ec7e629c4f0afa22a737f7cc18a6b855c409bb98278d4ab57c148709623"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 158,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 199,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 214,
+          "text": "        while (runs.size() > MAX_RECORDS) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "2d6fb4e24f03bebac8f9958e7fa750308685f37401b921352f090b7e087fa030"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 28,
+          "text": "    private static final int MAX_RECORDS = 10;"
+        },
+        {
+          "line": 29,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 69,
+          "text": "        if (name.length() == 0 || name.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 80,
+          "text": "        while (this.playersScores.size() > MAX_RECORDS) {"
+        },
+        {
+          "line": 102,
+          "text": "                for (int i = 0; i < this.playersScores.size() && i < MAX_RECORDS; i++) {"
+        },
+        {
+          "line": 135,
+          "text": "                    if (selected == null && players.size() > 0) {"
+        },
+        {
+          "line": 145,
+          "text": "                        if (candidateName.length() > 0 && candidateName.length() <= MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 161,
+          "text": "            if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 171,
+          "text": "        if (name == null || name.trim().length() == 0 || name.trim().length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 193,
+          "text": "                if (count < 0 || count > MAX_RECORDS) {"
+        },
+        {
+          "line": 199,
+          "text": "                    String name = readBoundedLine(reader, MAX_NAME_LENGTH);"
+        },
+        {
+          "line": 207,
+          "text": "                            || cleanName.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 309,
+          "text": "        for (int i = 0; i < this.playersScores.size() && i < MAX_RECORDS; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static-guard__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static-guard__r4/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a13e4709527a9a69bd151245807eb2d74d63fea3bdfc65a970fc9d9496e339b5"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 118,
+          "text": "            while ((line = reader.readLine()) != null) {"
+        },
+        {
+          "line": 128,
+          "text": "                    if (playersScores.size() > playersNames.size()) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__none__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "01d18d0bb439e579c07ac41e0e6a11575a7d8239263507cc879abe961877f32c"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 21,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 22,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 23,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 131,
+          "text": "            if (!Files.exists(store) || Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 134,
+          "text": "            List<String> lines = Files.readAllLines(store, StandardCharsets.UTF_8);"
+        },
+        {
+          "line": 177,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH"
+        },
+        {
+          "line": 191,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static-guard__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r4/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "09b218f36313f8f236b641d8cdaf0ccee61feb0c4dcfb35f8068d5d0b10d2a67"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 153,
+          "text": "            for (String line : Files.readAllLines(store, StandardCharsets.UTF_8)) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__none__r4",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r4/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "77bc11eb8a8e221e470efbe5ba6417de59250f2c9dd885fb15533727a5f976e1"
+    },
+    {
+      "condition": "generation_s__agentic__none",
+      "excerpts": [
+        {
+          "line": 153,
+          "text": "                while ((line = reader.readLine()) != null) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__none__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__none__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "c5397689dc87ff3beb057f2a52db6662562af1c489ea96948060ba19ab7628e4"
+    },
+    {
+      "condition": "generation_s__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 24,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 26,
+          "text": "    private static final int MAX_LINE_LENGTH = 256;"
+        },
+        {
+          "line": 116,
+          "text": "            while ((line = reader.readLine()) != null && lineCount < 10000) {"
+        },
+        {
+          "line": 118,
+          "text": "                if (line.length() > MAX_LINE_LENGTH) {"
+        },
+        {
+          "line": 198,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        },
+        {
+          "line": 208,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH || trimmed.indexOf('\\t') >= 0"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static-guard__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static-guard__r5/submission-3/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "1cefdf44e44e073400425e2654493395d929c54709db0166bf7a00a908d2e20c"
+    },
+    {
+      "condition": "reuse_sb__agentic__static-guard",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 71,
+          "text": "                for (int i = 0; i < this.playersScores.size() && i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 170,
+          "text": "                            || TOO_LONG.equals(nameLine) || names.size() >= MAX_ENTRIES) {"
+        },
+        {
+          "line": 209,
+          "text": "                if (value.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 217,
+          "text": "            if (value.length() <= MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 220,
+          "text": "            if (value.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 230,
+          "text": "        return value.length() > MAX_NAME_LENGTH ? TOO_LONG : value.toString();"
+        },
+        {
+          "line": 238,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 259,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_ENTRIES; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static-guard__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static-guard__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "82f3ebd862f3108bacd0c2bccfdb3587fbbbb43c3f088966409fbc7ed0417e8e"
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "excerpts": [
+        {
+          "line": 26,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 27,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 28,
+          "text": "    private static final long MAX_STORE_BYTES = 8192L;"
+        },
+        {
+          "line": 156,
+          "text": "            if (Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 161,
+          "text": "                String countLine = reader.readLine();"
+        },
+        {
+          "line": 163,
+          "text": "                if (count > MAX_ENTRIES) {"
+        },
+        {
+          "line": 167,
+          "text": "                    int score = parseNonNegative(reader.readLine());"
+        },
+        {
+          "line": 168,
+          "text": "                    int time = parseNonNegative(reader.readLine());"
+        },
+        {
+          "line": 169,
+          "text": "                    String name = validName(reader.readLine());"
+        },
+        {
+          "line": 177,
+          "text": "                if (reader.readLine() != null) {"
+        },
+        {
+          "line": 215,
+          "text": "        if (result.length() == 0 || result.length() > MAX_NAME_LENGTH) {"
+        },
+        {
+          "line": 239,
+          "text": "        for (int i = 0; i < order.size() && i < MAX_ENTRIES; i++) {"
+        },
+        {
+          "line": 261,
+          "text": "        for (int i = 0; i < names.size() && i < MAX_ENTRIES; i++) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__static__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__static__r5/submission-2/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "d0f30f9995270e024871ad07492b7432b730232e97ca5f13e1a355251b7f79b2"
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "excerpts": [
+        {
+          "line": 23,
+          "text": "    private static final int MAX_ENTRIES = 10;"
+        },
+        {
+          "line": 24,
+          "text": "    private static final int MAX_NAME_LENGTH = 32;"
+        },
+        {
+          "line": 25,
+          "text": "    private static final long MAX_STORE_BYTES = 1024L * 1024L;"
+        },
+        {
+          "line": 162,
+          "text": "            if (Files.size(store) > MAX_STORE_BYTES) {"
+        },
+        {
+          "line": 169,
+          "text": "                while ((line = reader.readLine()) != null && lineNumber < 10000) {"
+        },
+        {
+          "line": 173,
+          "text": "                if (lineNumber >= 10000 && reader.readLine() != null) {"
+        },
+        {
+          "line": 210,
+          "text": "        if (trimmed.length() == 0 || trimmed.length() > MAX_NAME_LENGTH || trimmed.indexOf('\\t') >= 0 || trimmed.indexOf('\\n') >= 0 || trimmed.indexOf('\\r') >= 0) {"
+        },
+        {
+          "line": 222,
+          "text": "        while (entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__generation_s__agentic__static__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__generation_s__agentic__static__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "e25d4d0b438814debd9c023dfe11ad10063aa7e1bc6a6e103ed6ee88b8e4472d"
+    },
+    {
+      "condition": "reuse_sb__agentic__none",
+      "excerpts": [
+        {
+          "line": 30,
+          "text": "    private static final int MAX_ENTRIES = 100;"
+        },
+        {
+          "line": 163,
+          "text": "            if (version != VERSION || count < 0 || count > MAX_ENTRIES * 10) {"
+        },
+        {
+          "line": 208,
+          "text": "        while (this.entries.size() > MAX_ENTRIES) {"
+        }
+      ],
+      "runId": "i30-v12__reuse_sb__agentic__none__r5",
+      "source": ".local/iterations/i30-v12/runs/i30-v12__reuse_sb__agentic__none__r5/submission-1/evaluation/author-evidence/sanitized_generated/response/apoMario/game/panels/ApoMarioHighscore.java",
+      "sourceSha256": "a90f5d310a65baaca439b50a5c267b332d8a72a91a59317af9841c20ca09da4c"
+    }
+  ]
+}
