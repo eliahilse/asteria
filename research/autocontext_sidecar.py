@@ -157,6 +157,13 @@ def I27():
     return Composite(AutoContextSidecar(contexts, snapshot_path_maps()), guard)
 
 
+def I28():
+    """I28: both methods (Generation and Reuse graphs of the I24b acquisitions, code graphs of their workspaces) with guard v2 as in I27."""
+    contexts = ROOT / 'research/iterations/i28-graph/contexts'
+    guard = GuardSidecar(contexts, kinds=None, consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True)
+    return Composite(AutoContextSidecar(contexts, snapshot_path_maps()), guard)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--freeze', nargs=2, metavar=('MODEL_JSON', 'OUT_JSON'), help='write the compact code graph of a code-model.json')
     args = parser.parse_args()
