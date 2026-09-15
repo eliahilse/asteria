@@ -90,6 +90,21 @@ class FakeGuard:
 
 
 GUARD_ARMS = [{'mode': 'agentic', 'sidecar': 'guard'}, {'mode': 'agentic', 'sidecar': 'guard_shadow'}]
+COMBINED_ARMS = [{'mode': 'agentic', 'sidecar': 'static-ast-guard'}, {'mode': 'agentic', 'sidecar': 'ast'}]
+
+
+class FakeComposite:
+    """update from a FakeSidecar, judge from a FakeGuard, initial None: the shape of research.autocontext_sidecar.Composite."""
+
+    def __init__(self, injector, guard): self.injector, self.guard, self.judge_turns = injector, guard, guard.judge_turns
+
+    def describe(self): return {'module': 'fake-composite', 'judgeTurns': self.guard.judge_turns}
+
+    def initial(self, condition): return None
+
+    def update(self, touched, shown_ids): return self.injector.update(touched, shown_ids)
+
+    def judge(self, view): return self.guard.judge(view)
 
 
 class Fixture:
@@ -100,16 +115,18 @@ class Fixture:
         self.snap = snapshot(self.repo)
         index = agentic.repository_index(self.snap)
         (root / 'repository').mkdir(); (root / 'repository/generation-index.txt').write_text(index); (root / 'prompts').mkdir()
-        self.conditions, arms, guard_file = [], list(agentic.DEFAULT_ARMS), root / 'guard-insert.txt'
-        if guard_insert is not None: guard_file.write_text(guard_insert); arms += GUARD_ARMS
+        self.conditions, arms, guard_file, static_file = [], list(agentic.DEFAULT_ARMS), root / 'guard-insert.txt', root / 'static-insert.txt'
+        if guard_insert is not None: guard_file.write_text(guard_insert); arms += GUARD_ARMS + COMBINED_ARMS
+        static_file.write_text(INSERT)
         for arm in arms:
-            text = PROMPT + ('\n\n' + INSERT if arm['sidecar'] == 'static' else '')
+            parts = set(agentic.kind_parts(arm['sidecar'])); static = 'static' in parts
+            text = PROMPT + ('\n\n' + INSERT if static else '')
             sha = digest(text.encode()); (root / 'prompts' / f'{sha}.txt').write_text(text)
-            guard = arm['sidecar'] in agentic.GUARD_KINDS
+            guard = bool(parts & set(agentic.GUARD_KINDS))
             self.conditions.append({'id': f"generation_s__{arm['mode']}__{arm['sidecar']}", 'parentCondition': 'generation_s', 'strategy': 'Generation', 'repository': 'Generation', **arm,
                 'promptFile': f'prompts/{sha}.txt', 'promptSha256': sha, 'snapshotFingerprint': self.snap['fingerprint'], 'repositoryIndexFile': 'repository/generation-index.txt',
-                'repositoryIndexSha256': digest(index.encode()), 'contextInsertSha256': digest(INSERT.encode()) if arm['sidecar'] == 'static' else digest(guard_insert.encode()) if guard else None,
-                'contextInsertFile': str(guard_file) if guard else None})
+                'repositoryIndexSha256': digest(index.encode()), 'contextInsertSha256': digest(INSERT.encode()) if static else digest(guard_insert.encode()) if guard else None,
+                'contextInsertFile': str(static_file) if static and guard else str(guard_file) if guard else None})
         self.plan = {'id': 'fixture', 'protocol': agentic.PROTOCOL, 'fingerprint': 'fixture', 'model': MODEL, 'settings': SETTINGS, 'system': agentic.delivery_system(max_submissions),
                      'systemAgentic': agentic.agentic_system(max_turns, max_submissions), 'maxTurns': max_turns, 'maxSubmissions': max_submissions,
                      'parentIteration': {'id': 'fixture-parent'}, 'conditions': self.conditions,
@@ -481,6 +498,24 @@ class AgenticDeliveryTests(unittest.TestCase):
             self.assertTrue(all(len(f"{r['runId']}-g{first['maxTurns']}k{agentic.GUARD_JUDGE_TURNS_LIMIT + 1}") <= agentic.REQUEST_ID_LIMIT for r in first['schedule']))
             self.assertEqual(first['arms'], [{'mode': 'agentic', 'sidecar': s} for s in ('none', 'static', 'guard', 'guard_shadow')])
             self.assertNotIn({'mode': 'agentic', 'sidecar': 'guard'}, agentic.DEFAULT_ARMS)
+
+    def test_combined_kind_serves_the_static_insert_the_injection_hook_and_the_guard_on_one_arm(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=INSERT)
+            injector, guard = FakeSidecar(), FakeGuard([{'intervene': False, 'reason': 'read ok'}, {'intervene': True, 'reason': 'stores without validation', 'quoted': ['store(record)'], 'advice': 'validate first'}, {'intervene': False, 'reason': 'fixed'}])
+            actions = [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]), act('submit_feature_changes', **valid_changes()), act('submit_feature_changes', **valid_changes())]
+            record, requests = fixture.run('agentic', 'static-ast-guard', actions, reports=[report(True)], sidecar=FakeComposite(injector, guard))
+            self.assertEqual((record['sidecar'], record['status'], record['functionalSuccess'], record['guardInterventions']), ('static-ast-guard', 'completed', True, 1))
+            self.assertIn(INSERT, requests[0]['messages'][1]['content'])  # the static insert is in the prompt
+            stages = [(e['stage'], e.get('injected'), e.get('intervene')) for e in record['sidecarEvents']]
+            self.assertEqual(stages, [('guard', False, False), ('after_read', True, None), ('guard', True, True), ('guard', False, False)])
+            self.assertIn('SECURITY CONTEXT ctx-score', requests[1]['messages'][-1]['content'])  # the injection rides on the read result
+            self.assertEqual([v['sidecar'] for v in guard.views], ['guard', 'guard', 'guard'])  # the judge sees its own kind, not the combined string
+            self.assertEqual([t['status'] for t in record['turns']], ['tool_result', 'cancelled_by_guard', 'submitted'])
+            counts = agentic.summary(Path(temporary))['conditions']['generation_s__agentic__static-ast-guard']
+            self.assertIn('guardInterventions', counts); self.assertIn('guardCancelledSubmissions', counts); self.assertIn('sidecarInjections', counts)
+            plain, _ = fixture.run('agentic', 'ast', [act('read', files=[{'path': SCORE_PATH, 'start_line': 1, 'end_line': 3}]), act('submit_feature_changes', **valid_changes())], reports=[report(True)], sidecar=FakeComposite(FakeSidecar(), FakeGuard([])))
+            self.assertEqual([(e['stage'], e['injected']) for e in plain['sidecarEvents']], [('after_read', True)]); self.assertNotIn('guardInterventions', plain)
 
 
 if __name__ == '__main__': unittest.main()
