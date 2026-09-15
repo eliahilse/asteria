@@ -38,14 +38,12 @@ class ResultsTableTests(unittest.TestCase):
         from research.paper_results_table import body, rows
         source = (ROOT / 'paper/sections/results.tex').read_text()
         block = source.split('\\label{tab:results}', 1)[1].split('\\end{tabular}', 1)[0]
-        printed = [line.strip() for line in block.splitlines() if line.strip().endswith('\\\\') and 'Context strategy' not in line]
+        printed = [line.strip() for line in block.splitlines() if line.strip().endswith('\\\\') and 'Security context' not in line]
         self.assertEqual(printed, [line.strip() for line in body().splitlines()])
         for group, items in rows():
             for r in items:
-                self.assertGreater(r['n'], 0, r['label']); self.assertLessEqual(r['functional'], r['n']); self.assertLessEqual(r['full'], r['functional'], r['label'])
-                self.assertLessEqual(r['failed'], r['resolved']); self.assertLessEqual(r['resolved'], 10 * r['n'])
-        labels = [r['label'] for _, items in rows() for r in items]
-        self.assertEqual(labels.count('no context'), 3)
+                self.assertEqual(r['n'], 10, r['label']); self.assertLessEqual(r['full'], r['compiled'], r['label'])
+                for key in ('compiled', 'tests', 'checks', 'full'): self.assertTrue(r[key] is None or 0 <= r[key] <= 100, r['label'])
 
 
 if __name__ == '__main__':

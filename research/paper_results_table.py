@@ -26,9 +26,9 @@ GROUPS = [
     ]),
     ('Agentic: repository tools, compiler and test feedback', [
         ('no security context', [('i31-v13', ends('none'))]),
-        ('S1 high-level guidance', [('i33-agentic', ends('static-s1'))]),
+        ('S1 high-level guidance', [('i33a-s1', ends('static'))]),
         ('S2 full document', [('i31-v13', ends('static'))]),
-        ('S3 generic, no repository', [('i33-agentic', ends('static-s3'))]),
+        ('S3 generic, no repository', [('i33b-s3', ends('static'))]),
         ('S2 full document + judge', [('i31-v13', ends('static-guard'))]),
     ]),
 ]
