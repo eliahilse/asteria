@@ -266,6 +266,8 @@ class GraphSidecarTests(unittest.TestCase):
                  ('guard', plain, [guard_act(verdict=guard_verdict(ids=['Z9']))], (False, False, False, 'verdict')),  # uncited: not acted on
                  ('guard', plain, ['not json'], (False, False, False, 'invalid_verdict')),
                  ('guard', plain, [guard_act(action='fly')], (False, False, False, 'invalid_verdict')),
+                 ('guard', plain, [guard_act(verdict={**guard_verdict(), 'intervene': 'true'})], (False, False, False, 'invalid_verdict')),  # verdict fields are type-checked, never coerced
+                 ('guard', plain, [guard_act(verdict={**guard_verdict(), 'statement_ids': 5})], (False, False, False, 'invalid_verdict')),
                  ('guard', plain, [guard_act(action='read', files=[{'path': 'nowhere.java', 'start_line': 1, 'end_line': 1}])] + [guard_act(action='search', query='x')] * 2 + [guard_verdict(intervene=False, ids=[], reason='fine')], (False, False, False, 'verdict'))]  # three calls, then the forced verdict
         for kind, sidecar, script, expected in cases:
             with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=scripted(script)):
@@ -275,19 +277,25 @@ class GraphSidecarTests(unittest.TestCase):
             self.assertEqual((event['intervene'], event['wouldIntervene'], event['shadow'], event['verdictStatus']), expected, script)
             self.assertEqual((record['status'], record['submissions'][0]['status'], record['guardInterventions']), ('completed', 'evaluated', 0))
         self.assertEqual((event['judgeTurns'], [a.get('error') for a in event['judgeActions']][0], event['reason']), (4, 'Path is not in the source snapshot', 'fine'))  # a failed judge read costs a judge turn
-        # the insert must render from the frozen graph: a foreign statement stops the trajectory before the call executes
-        with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=scripted([])):
-            fixture = Fixture(Path(temporary), guard_insert=insert + '\n[C9; control; reasoned] Foreign control\nTask relevance: none\n')
-            record, requests = fixture.run('agentic', 'guard', submit, [report(True)], plain)
-        self.assertEqual((record['status'], len(requests), record['submissions'], record['sidecarEvents'][0]['status']), ('sidecar_error', 1, [], 'error')); self.assertIn('not in the frozen Generation graph', record['errorDetail'])
-        # an adapter failure on the judge's second call keeps the first call's transcript in the event
-        script = [guard_act(action='search', query='preserved'), AdapterFailure('transport_outcome_unknown')]
-        with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=scripted(script)):
-            fixture = Fixture(Path(temporary), guard_insert=insert)
-            record, _ = fixture.run('agentic', 'guard', submit, [report(True)], plain)
+        # the insert must render, line for line, from the frozen graph: a foreign statement or an edited failure-behavior line stops the trajectory before the call executes
+        for bad in (insert + '\n[C9; control; reasoned] Foreign control\nTask relevance: none\n', insert.replace('Failure behavior: reject', 'Failure behavior: accept')):
+            with tempfile.TemporaryDirectory() as temporary, patch.object(graph_sidecar, 'invoke', side_effect=scripted([])):
+                fixture = Fixture(Path(temporary), guard_insert=bad)
+                record, requests = fixture.run('agentic', 'guard', submit, [report(True)], plain)
+            self.assertEqual((record['status'], len(requests), record['submissions'], record['sidecarEvents'][0]['status'], record['sidecarEvents'][0]['consulted']), ('sidecar_error', 1, [], 'error', False)); self.assertIn('not in the frozen Generation graph', record['errorDetail'])
+        # every judge request reaches the record before the adapter runs and again with its response; an adapter failure on the second call keeps the first
+        script, on_disk = [guard_act(action='search', query='preserved'), AdapterFailure('transport_outcome_unknown')], []
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = Fixture(Path(temporary), guard_insert=insert); run_id = 'fixture__generation_s__agentic__guard__r1'
+            inner = scripted(script)
+            def observing(command, request, timeout):
+                saved = json.loads((fixture.root / 'runs' / run_id / 'record.json').read_text())['sidecarEvents'][-1]['transcript']
+                on_disk.append([(t['status'], t['request']['request_id'], 'response' in t) for t in saved]); return inner(command, request, timeout)
+            with patch.object(graph_sidecar, 'invoke', side_effect=observing): record, _ = fixture.run('agentic', 'guard', submit, [report(True)], plain)
+        self.assertEqual(on_disk, [[('started', run_id + '-g1k1', False)], [('received', run_id + '-g1k1', True), ('started', run_id + '-g1k2', False)]])
         event = record['sidecarEvents'][0]
-        self.assertEqual((record['status'], event['status'], event['errorCategory'], [t['status'] for t in event['transcript']]), ('sidecar_error', 'error', 'transport_outcome_unknown', ['received', 'adapter_error']))
-        self.assertEqual(event['transcript'][1]['request']['request_id'], record['runId'] + '-g1k2'); self.assertNotIn('response', event['transcript'][1])
+        self.assertEqual((record['status'], event['status'], event['errorCategory'], event['consulted'], event['judgeTurns'], [t['status'] for t in event['transcript']]), ('sidecar_error', 'error', 'transport_outcome_unknown', True, 2, ['received', 'adapter_error']))
+        self.assertEqual((event['requestIds'], event['injected'], event['intervene']), ([run_id + '-g1k1', run_id + '-g1k2'], False, False)); self.assertNotIn('response', event['transcript'][1])
         with self.assertRaisesRegex(ValueError, 'non-negative'): graph_sidecar.GuardSidecar(self.directory, judge_turns=-1)
         self.assertEqual(graph_sidecar.statement_blocks(insert)['R1'].splitlines()[0][:16], '[R1; requirement')
 

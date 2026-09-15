@@ -236,7 +236,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
     mode, kind = condition['mode'], condition['sidecar']
-    if (kind == 'adaptive' or kind in GATE_KINDS or kind in GUARD_KINDS) and sidecar is None: raise ValueError('Adaptive, gate and guard conditions need a sidecar object')
+    if (kind == 'adaptive' or kind in GATE_KINDS) and sidecar is None: raise ValueError('Adaptive and gate conditions need a sidecar object')
+    if kind in GUARD_KINDS and sidecar is None: raise ValueError('Guard conditions need a sidecar object')
     sidecar_config = call_sidecar(sidecar.describe) if sidecar is not None and callable(getattr(sidecar, 'describe', None)) else None
     if kind in GUARD_KINDS:  # the judge's request ids <runId>-g<turn>k<n> must fit the provider limit for every turn and judge call; checked before any model call
         judge_turns = (sidecar_config or {}).get('judgeTurns', GUARD_JUDGE_TURNS_LIMIT)
@@ -357,7 +358,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
         else: files_named, ranges = set(arguments.get('paths') or []), {}
         base = f'{run_id}-g{turn_number}'
         event = {'turn': turn_number, 'stage': 'guard', 'action': action, 'status': 'started', 'requestId': base, 'touchedFiles': sorted(files_named), 'historyEntries': len(history),
-                 'messageText': None, 'messageTextNote': MESSAGE_TEXT_NOTE, 'transcript': []}
+                 'consulted': False, 'intervene': False, 'injected': False, 'cancelled': None, 'messageText': None, 'messageTextNote': MESSAGE_TEXT_NOTE, 'transcript': []}
         record['sidecarEvents'].append(event); write_atomic(path, record)
         sources = [*snap['sources'], *({'path': name, 'text': content, 'lines': len(content.splitlines())} for name, content in files.items())]  # working files are read by name
         view = {'method': condition.get('strategy'), 'condition': condition['id'], 'cell': condition.get('parentCondition'), 'sidecar': kind, 'stage': 'before_tool_call',
@@ -366,7 +367,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                 'turnsRemaining': max_turns - turn_number, 'submissionsRemaining': max_submissions - submission_number,
                 'working': {name: {'sha256': digest(content.encode()), 'lines': len(content.splitlines()), 'state': 'new' if name not in original else 'changed' if content != original[name] else 'unchanged'} for name, content in files.items()},
                 'runId': run_id, 'requestId': base, 'model': plan['model'], 'settings': plan['settings'], 'transcript': event['transcript'],
-                'repository': lambda request: operate({'sources': sources}, request)}
+                'repository': lambda request: operate({'sources': sources}, request), 'checkpoint': lambda: write_atomic(path, record)}  # the judge persists each request before and after invoking
         try:
             verdict = call_sidecar(sidecar.judge, view)
             if not isinstance(verdict, dict) or not isinstance(verdict.get('intervene'), bool): raise SidecarError('judge must return a dict with a boolean intervene')
@@ -376,7 +377,9 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             ids = [(t.get('request') or {}).get('request_id') for t in transcript]
             if ids != [f'{base}k{n}' for n in range(1, len(ids) + 1)] or any(len(i) > REQUEST_ID_LIMIT for i in ids): raise SidecarError('judge request ids must be <runId>-g<turn>k<n> within the provider limit')
         except SidecarError as error:
-            event.update(status='error', error=str(error), errorCategory=getattr(error.__cause__, 'category', None)); raise
+            sent = event['transcript'] if isinstance(event['transcript'], list) else []
+            event.update(status='error', error=str(error), errorCategory=getattr(error.__cause__, 'category', None), consulted=bool(sent), judgeTurns=len(sent),
+                         requestIds=[(t.get('request') or {}).get('request_id') for t in sent if isinstance(t, dict)]); raise
         intervene = verdict['intervene'] and kind == 'guard'
         event.update(status='judged', consulted=bool(verdict.get('consulted')), intervene=intervene, injected=intervene and bool(text), ids=list(verdict.get('ids') or []),
                      reason=verdict.get('reason'), adviceText=verdict.get('advice') if isinstance(verdict.get('advice'), str) else None, transcript=transcript, requestIds=ids,
@@ -565,7 +568,8 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 4: raise ValueError('Use 1–4 workers')
     plan = validate(manifest)
-    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS or c['sidecar'] in GUARD_KINDS for c in plan['conditions']): raise ValueError('Adaptive, gate and guard conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(c['sidecar'] == 'adaptive' or c['sidecar'] in GATE_KINDS for c in plan['conditions']): raise ValueError('Adaptive and gate conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(c['sidecar'] in GUARD_KINDS for c in plan['conditions']): raise ValueError('Guard conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
     with (manifest.parent / '.iteration.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -598,28 +602,30 @@ def summary(manifest_dir: Path) -> dict:
             'reads': counts([sum(t.get('action') == 'read' for t in r['turns']) for r in records]),
             'searches': counts([sum(t.get('action') == 'search' for t in r['turns']) for r in records]),
             'submissions': counts([len(r['submissions']) for r in records]),
-            'sidecarInjections': counts([sum(e['injected'] for e in r['sidecarEvents']) for r in records]),
+            'sidecarInjections': counts([sum(e.get('injected', False) for e in r['sidecarEvents']) for r in records]),
             'gateConsultations': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('consulted')) for r in records]),
             'gateInterventions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('intervene')) for r in records]),
             'gatePositiveVerdicts': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('wouldIntervene')) for r in records]),
             'coachedSubmissions': counts([sum(1 for e in r['sidecarEvents'] if e.get('stage') == 'gate' and e.get('advice')) for r in records]),
             'rewinds': counts([len(r.get('rewinds') or []) for r in records]),
             'trajectoriesWithInjection': ratio(sum(any(e.get('injected', False) for e in r['sidecarEvents']) for r in records)),
-            # Guard kinds: consultations and verdicts per trajectory; cancelled calls cost a turn and never executed. reads/searches above count turns, including cancelled and failed ones.
-            'readsExecuted': counts([sum(t.get('action') == 'read' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
-            'searchesExecuted': counts([sum(t.get('action') == 'search' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
-            'guardConsultations': counts([guard(r, lambda e: e.get('consulted')) for r in records]),
-            'guardPositiveVerdicts': counts([guard(r, lambda e: e.get('wouldIntervene')) for r in records]),
-            'guardInterventions': counts([guard(r, lambda e: e.get('intervene')) for r in records]),
-            'guardCapped': counts([guard(r, lambda e: e.get('capped')) for r in records]),
-            'guardCancelledReads': counts([guard(r, lambda e: e.get('cancelled') == 'read') for r in records]),
-            'guardCancelledSearches': counts([guard(r, lambda e: e.get('cancelled') == 'search') for r in records]),
-            'guardCancelledSubmissions': counts([guard(r, lambda e: e.get('cancelled') == 'submit_feature_changes') for r in records]),
-            'guardJudgeTurns': counts([sum(e.get('judgeTurns') or 0 for e in r['sidecarEvents'] if e.get('stage') == 'guard') for r in records]),
-            'guardJudgeReads': counts([sum(a.get('action') == 'read' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
-            'guardJudgeSearches': counts([sum(a.get('action') == 'search' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
-            'trajectoriesWithIntervention': ratio(sum(guard(r, lambda e: e.get('intervene')) > 0 for r in records)),
             'statuses': statuses}
+        if condition['sidecar'] in GUARD_KINDS:  # consultations and verdicts per trajectory; cancelled calls cost a turn and never executed. reads/searches count turns, cancelled and failed ones included.
+            conditions[condition['id']].update({
+                'readsExecuted': counts([sum(t.get('action') == 'read' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
+                'searchesExecuted': counts([sum(t.get('action') == 'search' and t.get('status') == 'tool_result' and 'error' not in (t.get('toolResult') or {}) for t in r['turns']) for r in records]),
+                'guardConsultations': counts([guard(r, lambda e: e.get('consulted')) for r in records]),
+                'guardPositiveVerdicts': counts([guard(r, lambda e: e.get('wouldIntervene')) for r in records]),
+                'guardInterventions': counts([guard(r, lambda e: e.get('intervene')) for r in records]),
+                'guardCapped': counts([guard(r, lambda e: e.get('capped')) for r in records]),
+                'guardErrors': counts([guard(r, lambda e: e.get('status') == 'error') for r in records]),
+                'guardCancelledReads': counts([guard(r, lambda e: e.get('cancelled') == 'read') for r in records]),
+                'guardCancelledSearches': counts([guard(r, lambda e: e.get('cancelled') == 'search') for r in records]),
+                'guardCancelledSubmissions': counts([guard(r, lambda e: e.get('cancelled') == 'submit_feature_changes') for r in records]),
+                'guardJudgeTurns': counts([sum(e.get('judgeTurns') or 0 for e in r['sidecarEvents'] if e.get('stage') == 'guard') for r in records]),
+                'guardJudgeReads': counts([sum(a.get('action') == 'read' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
+                'guardJudgeSearches': counts([sum(a.get('action') == 'search' for e in r['sidecarEvents'] if e.get('stage') == 'guard' for a in e.get('judgeActions') or []) for r in records]),
+                'trajectoriesWithIntervention': ratio(sum(guard(r, lambda e: e.get('intervene')) > 0 for r in records))})
     return {'id': plan['id'], 'protocol': plan['protocol'], 'maxTurns': plan['maxTurns'], 'maxSubmissions': plan['maxSubmissions'],
             'planned': len(plan['schedule']), 'records': total, 'conditions': conditions,
             'note': 'Counts are k/N over available records. An incomplete schedule is incomplete, not an estimate.'}

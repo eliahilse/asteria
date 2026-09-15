@@ -266,21 +266,22 @@ class GuardSidecar(GraphSidecar):
         """One consultation: judge requests <requestId>k1.. with guard_act, the last one forced to guard_verdict; each request and response is appended to
         view['transcript'] with hashes and timestamps before/after invoke. The verdict acts only with cited statements present in the insert, never in shadow or past the cap."""
         graph = self.graph_for(view['method']); blocks = statement_blocks(view.get('insert') or '')
-        headers = {line for line in context_graph.render_items(graph) if line.startswith('[')}
-        foreign = [i for i, block in blocks.items() if block.splitlines()[0] not in headers]
+        rendered = set(context_graph.render_items(graph))  # every line of every statement block must be a line rendered from the frozen graph
+        foreign = [i for i, block in blocks.items() if any(line not in rendered for line in block.splitlines())]
         if not blocks or foreign: raise ValueError(f"Guard insert statements are not in the frozen {view['method']} graph: {foreign or 'no statements'}")
         prompt, omitted = guard_prompt(view, self.judge_turns)
         messages = [{'role': 'system', 'content': GUARD_SYSTEM}, {'role': 'user', 'content': prompt}]
         transcript = view['transcript'] if isinstance(view.get('transcript'), list) else []
+        checkpoint = view.get('checkpoint') if callable(view.get('checkpoint')) else (lambda: None)
         actions, outcome, verdict = [], None, None
         for n in range(1, self.judge_turns + 2):
             final = n > self.judge_turns; tool = GUARD_VERDICT if final else GUARD_ACT
             request = {'protocol_version': 1, 'request_id': f"{view['requestId']}k{n}", 'model': view['model'], 'settings': view['settings'], 'messages': list(messages),
                        'tools': [tool], 'tool_choice': {'type': 'function', 'function': {'name': tool['function']['name']}}, 'parallel_tool_calls': False}
-            entry = {'request': request, 'requestSha256': digest(canonical(request)), 'status': 'started', 'startedAt': timestamp()}; transcript.append(entry)
+            entry = {'request': request, 'requestSha256': digest(canonical(request)), 'status': 'started', 'startedAt': timestamp()}; transcript.append(entry); checkpoint()
             try: response = invoke(self.command or command_from_env(), request, self.timeout)
-            except AdapterFailure as error: entry.update(status='adapter_error', errorCategory=error.category); raise
-            entry.update(status='received', response=response, responseSha256=digest(canonical(response)), receivedAt=timestamp(), settingsVerified=response.get('settings') == view['settings'])
+            except AdapterFailure as error: entry.update(status='adapter_error', errorCategory=error.category); checkpoint(); raise
+            entry.update(status='received', response=response, responseSha256=digest(canonical(response)), receivedAt=timestamp(), settingsVerified=response.get('settings') == view['settings']); checkpoint()
             if response.get('model') != view['model'] or response.get('request_id') != request['request_id']: outcome = 'identity_mismatch'; break
             if response.get('settings') is not None and response['settings'] != view['settings']: outcome = 'settings_mismatch'; break
             if response.get('finish_reason') != 'stop': outcome = 'incomplete_response'; break
@@ -289,7 +290,8 @@ class GuardSidecar(GraphSidecar):
             if not isinstance(payload, dict): outcome = 'invalid_verdict'; break
             if final or payload.get('action') == 'verdict':
                 verdict = payload if final else payload.get('verdict')
-                if not isinstance(verdict, dict): outcome, verdict = 'invalid_verdict', None
+                if not isinstance(verdict, dict) or not isinstance(verdict.get('intervene'), bool) or not all(isinstance(verdict.get(k), str) for k in ('reason', 'advice')) \
+                        or not all(isinstance(verdict.get(k), list) for k in ('quoted', 'statement_ids')): outcome, verdict = 'invalid_verdict', None
                 break
             action = payload.get('action')
             if action not in ('search', 'read'): outcome = 'invalid_verdict'; break
@@ -307,10 +309,10 @@ class GuardSidecar(GraphSidecar):
             messages += [{'role': 'assistant', 'content': response['output_text']},
                          {'role': 'user', 'content': json.dumps(result, ensure_ascii=False) + f'\n{self.judge_turns - n} search or read calls remain; then the verdict is forced.'}]
         if verdict is None and outcome is None: outcome = 'no_verdict'
-        raw = bool(verdict.get('intervene')) if verdict else False
-        reason = outcome or str(verdict.get('reason') or ''); advice = str(verdict.get('advice') or '') if verdict else ''
-        cited = list(dict.fromkeys(s for s in ((verdict or {}).get('statement_ids') or []) if isinstance(s, str) and s in blocks))
-        quoted = [q.strip() for q in ((verdict or {}).get('quoted') or []) if isinstance(q, str) and q.strip()]
+        raw = verdict['intervene'] if verdict else False
+        reason = outcome or verdict['reason']; advice = verdict['advice'] if verdict else ''
+        cited = list(dict.fromkeys(s for s in (verdict['statement_ids'] if verdict else []) if isinstance(s, str) and s in blocks))
+        quoted = [q.strip() for q in (verdict['quoted'] if verdict else []) if isinstance(q, str) and q.strip()]
         unquoted = 0
         if view['action'] == 'submit_feature_changes':
             changes = view.get('arguments') or {}
