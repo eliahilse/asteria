@@ -1,69 +1,56 @@
 \section{Discussion}
 \label{sec:discussion}
 
-With the final instructions, agent-written security context reduced failed
-checks from 39 to 11 out of 50 in Generation and from 31 to 7 in Reuse with
-every artifact functional, and two further acquisitions per task variant
-reproduced the direction. The agent's context is followed literally: one
-sentence about failure behaviour cost functionality until the instructions
-said where rejection and where substitution belong, and an omitted record
-limit moved the counts the other way. Context given before the first
-attempt did better, in the pilots, than enforcement during the attempts,
-and the same holds for the guard judge of the agentic rounds, whose
-constrained cancellations still miss the checks the artifacts fail. Under
-one response the documents keep their direction in every cell with two
-compiled artifacts per arm, and the document written without the
-repository is not the weakest of the three; what the wording leaves open
-(the sign of a score, a record bound) is what the artifacts get wrong.
-The code graph, which carries no security statement, looked like the
-best addition in two small agentic rounds and is indistinguishable from
-the document alone at five trajectories per cell: two and three
-trajectories per arm do not rank arms in this study. The residual
-failures are the ones the wording leaves open, and each revision of the
-agent's rule removed the failures its predecessor had left: the record
-bound and the score sign (version 11), the blank name (version 12), so
-that the version-12 document arms pass every check but the resource pair
-in most artifacts and 4 of 10 artifacts pass everything. The revisions
-were made after examining failures on this task, so they show that the
-rule can be written, not that the current one transfers.
+The document is what matters. Any of the three agent-written documents
+takes the security checks passed by compiled artifacts from 22 to 33\% to
+82 to 90\%, in both delivery modes, with the three strategies within five
+points of each other; the one written without any repository does as well
+as the one anchored to code. Functionality does not pay for it: with
+feedback every artifact compiles and passes the tests with or without a
+document, and under one response the loss is delivery, which the document
+does not worsen. Neither addition to the agentic harness earned its cost:
+the judge, constrained to one cancellation per trajectory with a verbatim
+quote, leaves the rate where it is at 1.4 times the tokens, and the code
+graph of what the model reads (in the repository's rounds I26 to I28)
+changes nothing. What remains failed is the resource pair, and its
+history is the study's second finding: the agent follows its document
+literally, so the wording of one instruction to the acquisition agent
+decided in turn the record bound, the sign of a score, the blank name
+and, unsuccessfully, the length of a line (versions 11 to 13, each
+removing the failures its predecessor left open; the third named the
+bound and the artifacts applied it after the read). Rounds before
+version 13, including researcher-written context and the earlier
+instruction versions, are documented in the repository and are not
+pooled with these results.
 
 \paragraph{Threats to validity.}
-One task, one pair of games, one model as agent and generator. Each arm
-shares one acquired document across its three to five trajectories, so the
-trajectories measure generation variability given that document; only the
-final instructions were tried with three independent acquisitions. The
-five input-policy checks weigh heavily in the total of ten. The
-one-million-record check alone is unresolved in 43 of the 80 artifacts of
-round I07. Artifact reviews and hook classifications are single-pass model
-judgements with cited lines, adjudicated with a second model reader on 12
-rows, not human-annotated. Only the Highscore feature has been evaluated. The provider served a
-different model for some responses (3 of 50, 4 of 80, 3 of 15
-trajectories in three rounds); those trajectories stopped and count as
-lost, except in round I28 where a declared rule collects them again. The
-judge's verdicts are counted by citation and quotation, not against a
-labelled truth. The same model acts as acquisition agent and generator, and
-the agent's instructions were revised after we examined failures on this
-same task, so the final rounds show that the instructions work here, not
-that they transfer to another feature or repository unchanged.
+One task, one pair of games, one model as agent, generator and judge.
+Each arm shares one acquired document across its ten artifacts, so the
+artifacts measure generation variability given that document, not
+acquisition variability; the repository holds repeated acquisitions for
+an earlier instruction version. The five input-policy checks weigh
+heavily in the ten. The million-record check is unresolved when the
+audit cannot write the artifact's file format, and counts as not passed.
+The provider served a different model for some responses; those
+trajectories stopped before any evaluated submission and were collected
+again under a declared rule. Artifact reviews are single-pass model
+judgements with cited lines. The agent's instructions were revised after
+examining failures on this same task, so they show that the rule can be
+written, not that it transfers to another feature or repository.
 
 \section{Conclusions and Future Work}
 \label{sec:conclusions}
 
-Repository-specific security context, appended before the model writes,
-lowers the number of failed security checks in every comparison of this
-study, whether a researcher or an agent wrote it. An agent's context is
-followed literally, so its wording about failure behaviour decides whether
-the feature keeps working; a rule that binds rejection to the operation
-receiving untrusted data and substitution to its caller resolved that in
-this task, with the direction reproduced by three independent acquisitions
-per task variant. The agentic rounds add that delivery mode, a code graph and a judge
-change the outcome less than one word of the document: three revisions
-of the rule about bounds and value domains take the agentic arms of two
-cells from no artifact passing every check to 4 of 10, with every
-artifact functional. A third revision, about bounded reads, did not help: the
-documents named the bound and the artifacts checked it after reading.
-Next steps follow from that: a second feature and repository to test
-whether the rules transfer, an evaluation whose preconditions do not
-depend on the artifact's file format, and acquisitions repeated per task
+Repository-specific security context, written by an agent and given to
+the model before it writes, raises the share of security checks a
+compiled artifact passes from a quarter or a third to well over four
+fifths, without a functional cost, under one response and under agentic
+delivery alike; how the document is acquired matters less than that it
+states its bounds and domains as numbers, because the generator follows
+it literally. Enforcement during the attempts, by a judge or by extra
+code context, did not add to what the document achieves. Next steps
+follow from that: a second feature and repository to test whether the
+instructions transfer, an evaluation whose preconditions do not depend
+on the artifact's file format, and acquisitions repeated per task
 variant so that the document, not the draw, is what a comparison
 measures.
