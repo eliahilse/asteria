@@ -170,6 +170,12 @@ def I29():
     return GuardSidecar(contexts, kinds=None, consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True)
 
 
+def I30():
+    """I30: guard v2 over the v12 data-flow graphs of both methods (no code graph)."""
+    contexts = ROOT / 'research/iterations/i30-v12/contexts'
+    return GuardSidecar(contexts, kinds=None, consult_on=('submit_feature_changes',), require_quote=True, max_cited=2, normative_only=True, system=GUARD_SYSTEM_V2, once_per_statement=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--freeze', nargs=2, metavar=('MODEL_JSON', 'OUT_JSON'), help='write the compact code graph of a code-model.json')
     args = parser.parse_args()
