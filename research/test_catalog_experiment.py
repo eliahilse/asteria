@@ -7,6 +7,9 @@ from unittest.mock import patch
 from research import catalog_experiment
 from research.import_evidence import ROOT, digest
 
+LOCAL = ROOT / '.local'  # the code under test requires paths under the repository's local directory; absent on CI
+LOCAL.mkdir(exist_ok=True)
+
 
 def condition(cell, strategy, prompt_file, sha):
     return {'id': f'{cell}__{strategy}', 'parentCondition': cell, 'securityStrategy': strategy, 'strategy': 'Generation' if cell.startswith('generation') else 'Reuse',
@@ -15,7 +18,7 @@ def condition(cell, strategy, prompt_file, sha):
 
 class CatalogExperimentTests(unittest.TestCase):
     def test_conditions_reuse_parent_bytes_and_append_new_inserts(self):
-        with tempfile.TemporaryDirectory(dir=ROOT / '.local') as temporary:
+        with tempfile.TemporaryDirectory(dir=LOCAL) as temporary:
             root = Path(temporary); parent_dir = root / 'parent'; directory = root / 'child'
             (parent_dir / 'prompts').mkdir(parents=True); (directory / 'contexts').mkdir(parents=True)
             conditions, prompts = [], {}
@@ -52,7 +55,7 @@ class CatalogExperimentTests(unittest.TestCase):
             self.assertEqual(rows, catalog_experiment.schedule('i09-test', built))
 
     def test_tampered_insert_is_rejected(self):
-        with tempfile.TemporaryDirectory(dir=ROOT / '.local') as temporary:
+        with tempfile.TemporaryDirectory(dir=LOCAL) as temporary:
             root = Path(temporary); parent_dir = root / 'parent'; directory = root / 'child'
             (parent_dir / 'prompts').mkdir(parents=True); (directory / 'contexts').mkdir(parents=True)
             conditions = []
@@ -70,7 +73,7 @@ class CatalogExperimentTests(unittest.TestCase):
                 catalog_experiment.build_conditions({'conditions': conditions}, parent_dir, directory, additions, {})
 
     def test_acquisition_preparation_uses_both_generic_modules_without_model_calls(self):
-        with tempfile.TemporaryDirectory(dir=ROOT / '.local') as temporary:
+        with tempfile.TemporaryDirectory(dir=LOCAL) as temporary:
             directory = Path(temporary) / 'i09-test'
             prepared = []
 

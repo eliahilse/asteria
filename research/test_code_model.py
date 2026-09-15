@@ -8,6 +8,12 @@ from pathlib import Path
 from research.code_model import SINKS, build, callers, outline, resolve, sinks, symbol_text, validate_anchor
 from research.import_evidence import ROOT, canonical, digest
 
+try:
+    import tree_sitter_java  # noqa: F401
+    HAVE_TREE_SITTER = True
+except ImportError:
+    HAVE_TREE_SITTER = False
+
 STORE = "com/example/io/LevelStore.java"
 MAIN = "com/example/app/Main.java"
 BROKEN = "com/example/app/Broken.java"
@@ -114,6 +120,7 @@ def write_fixture(directory: Path) -> Path:
     return directory
 
 
+@unittest.skipUnless(HAVE_TREE_SITTER, 'tree-sitter not installed: pip install -r research/code-model-requirements.txt')
 class SyntheticTreeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -301,6 +308,7 @@ class SyntheticTreeTests(unittest.TestCase):
             self.assertIn('System.getProperty("user.home")', json.loads(text.stdout)["text"])
 
 
+@unittest.skipUnless(HAVE_TREE_SITTER, 'tree-sitter not installed: pip install -r research/code-model-requirements.txt')
 class ApoMarioTests(unittest.TestCase):
     ROOT = ROOT / "corpus/java/ApoMario/_from_jar_ApoMario"
 
