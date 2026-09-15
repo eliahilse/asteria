@@ -70,7 +70,7 @@ def acquisition_costs(root: Path = ROOT) -> list[dict]:
                     'commands': len(commands) if isinstance(commands, list) else (commands or 0), 'minutes': round(seconds(r.get('startedAt'), r.get('finishedAt')) / 60, 1),
                     'inputTokens': usage.get('input_tokens', 0), 'cachedInputTokens': usage.get('cached_input_tokens', 0), 'outputTokens': usage.get('output_tokens', 0),
                     'reasoningTokens': usage.get('reasoning_output_tokens', usage.get('reasoning_tokens', 0)), 'items': len((r.get('output') or {}).get('items', []))})
-    out.sort(key=lambda x: (x['version'], x['angle'] or '', x['method'] or '', x['record']))
+    out.sort(key=lambda x: (int(x['version'][1:]) if re.fullmatch(r'v\d+', str(x['version'])) else 0, x['angle'] or '', x['method'] or '', x['record']))
     return out
 
 
