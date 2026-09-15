@@ -1,21 +1,11 @@
 \section{Introduction}
 \label{sec:introduction}
 
-A language model that adds a feature to an existing program can produce
-code that works and is still insecure: it accepts input that should be
-rejected, keeps data that should be bounded, trusts files that should be
-checked. We ask whether a short, repository-specific security description,
-given to the model before it writes, changes this, and what that
-description has to say.
-
-Real programs are too large to hand to a model in full; whatever subset is
-supplied embodies a choice about what matters for the task. Earlier work in
-this series compared context \emph{types} (structural, functional,
-behavioural descriptions of the program) for generation and reuse. Here we
-add one type with a specific purpose, security context, written by an
-agent without a person who already knows the code, and ask of each way of
+A model that adds a feature to an existing program is given some
+description of that program; the earlier study in this series compared
+structural, functional and behavioural descriptions for generation and
+reuse. We add a description with one purpose, security, written by an
+agent rather than by a person who knows the code, and ask of each way of
 writing it: is the artifact functional, is it secure, and what does it
-cost in tokens and time. The results are rates per strategy under one set
-of conditions; every arm is compared with a control collected alongside
-it, and the round-by-round record that led to these conditions is in the
-study repository.
+cost in tokens and time. Table~\ref{tab:results} answers per strategy;
+Table~\ref{tab:matrix} is the baseline without security context.
