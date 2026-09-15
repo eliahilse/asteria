@@ -478,9 +478,18 @@ artifacts (the documents bound records and names, not the length of a
 line) and the million-record check in 2. The guard is within one artifact
 of the document alone in either direction (Reuse 0 failed and 4 full hits
 against 1 and 2, Generation 5 and 1 against 3 and 2) at twice the calls.
-Three revisions of one ground rule thus take the document arms of these
+Two revisions of one ground rule thus take the document arms of these
 cells from 12 failed checks of 100 and no full artifact (version 10) to 4
-and 4 of 10 (version 12), with every artifact functional throughout.
+and 4 of 10 (version 12), with every artifact functional throughout. A
+third revision, written against the oversized-line check (version 13:
+each unit read from untrusted data is bounded in bytes, Table~\ref{tab:i31}),
+does not help: both documents state a bound of 256 bytes per record, the
+artifacts apply it after reading the line, 10 of 20 still fail the check,
+and the bounded record formats the documents ask for are ones the
+qualification audit cannot write a million records in, so the check that
+decides a full hit is unresolved in 17 of 20 and the full hits fall to 1
+of 20. A rule can name a bound and still be implemented as read-then-check;
+the instruction line stops here.
 
 \begin{table}[t]
 \centering
@@ -498,6 +507,26 @@ Generation S & v12 document + guard & 5 & 1 & 5 / 1 / 44 & 11 & 7 / 2 & 78 & 5.5
 Reuse S+B & none & 5 & 0 & 31 / 5 / 14 & 8 & -- & 38 & 5.6 \\
 Reuse S+B & v12 document & 5 & 2 & 1 / 2 / 47 & 7 & -- & 36 & 5.5 \\
 Reuse S+B & v12 document + guard & 5 & 4 & 0 / 1 / 49 & 7 & 10 / 5 & 71 & 5.4 \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Round I31, the version-13 document in agentic delivery with five trajectories per cell and arm, columns as in Table~\ref{tab:i29}. The bound on what is read is applied after the read, and the bounded record formats leave the million-record check unresolved in 17 of 20 document artifacts.}
+\label{tab:i31}
+\resizebox{\textwidth}{!}{\begin{tabular}{@{}llrrlrlrr@{}}
+\toprule
+Cell & Arm & Functional & Full hits & Checks f / u / p & Turns & Guard & Calls & Input (M) \\
+\midrule
+Generation S & none & 5 & 0 & 26 / 5 / 19 & 8 & -- & 37 & 3.4 \\
+Generation S & v13 document & 5 & 0 & 3 / 5 / 42 & 7 & -- & 34 & 3.3 \\
+Generation S & v13 document + guard & 4 & 1 & 2 / 4 / 44 & 9 & 13 / 6 & 99 & 5.9 \\
+Reuse S+B & none & 5 & 0 & 31 / 5 / 14 & 7 & -- & 33 & 4.8 \\
+Reuse S+B & v13 document & 4 & 0 & 2 / 3 / 45 & 9 & -- & 44 & 7.0 \\
+Reuse S+B & v13 document + guard & 4 & 0 & 4 / 4 / 42 & 9 & 14 / 6 & 95 & 8.1 \\
 \bottomrule
 \end{tabular}}
 \end{table}

@@ -189,7 +189,10 @@ class I28TableTests(unittest.TestCase):
 
 class I29TableTests(unittest.TestCase):
     CELLS = {'Generation S': 'generation_s', 'Reuse S+B': 'reuse_sb'}
-    ARMS = {'none': 'none', 'v11 document': 'static', 'v11 document + guard': 'static-guard', 'v12 document': 'static', 'v12 document + guard': 'static-guard'}
+    ARMS = {'none': 'none', 'v11 document': 'static', 'v11 document + guard': 'static-guard', 'v12 document': 'static', 'v12 document + guard': 'static-guard', 'v13 document': 'static', 'v13 document + guard': 'static-guard'}
+
+    def test_i31_table_matches_qualified_analysis_full_hits_and_cost(self):
+        self.check('tab:i31', 'i31-v13')
 
     def test_i30_table_matches_qualified_analysis_full_hits_and_cost(self):
         self.check('tab:i30', 'i30-v12')
