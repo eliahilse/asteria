@@ -415,7 +415,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             if record['staticInsert']['sidecarConfirmed'] is False: raise SidecarError('initial() differs from the frozen static insert')
         pending = 'before_submit'; checkpoints = {}; record['rewinds'] = []
         while True:
-            if turn_number >= max_turns: record.update(status='budget_exhausted', budgetLimit='turns'); break
+            if turn_number >= max_turns: record.update(status='budget_exhausted' if not record['functionalSuccess'] else 'completed', budgetLimit='turns'); break
             if pending == 'before_submit':
                 text = consult('before_submit'); pending = None
                 if text: messages.append({'role': 'user', 'content': text})
@@ -558,13 +558,15 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                                 'functionalChecks': [c for c in report['checks'] if c['suite'] in ('unit', 'invoked', 'autonomous')],
                                 'compilerErrors': [(p.get('stderr') or '')[-18000:] for p in report.get('processes', []) if p.get('exitCode') and 'javac' in Path(p['command'][0]).name]}
                     if report['status'] != 'evaluated': record['status'] = 'evaluation_error'; break
-                    if report['functionalSuccess']:
+                    record['functionalSuccess'] = bool(report['functionalSuccess'])  # the last evaluated artifact's outcome
+                    if report['functionalSuccess'] and not (guard_kind == 'advise' and guard_advice):
                         record.update(status='completed', functionalSuccess=True); break
+                    # advisory guard: a functional submission with a positive verdict does not end the trajectory; the verdict rides on its feedback
             submission['feedback'] = feedback
             touch_changes(changes, pre_edit)
             remember({'turn': turn_number, 'action': action, 'submission': submission_number, 'files': sorted(change_ranges(changes)[0]), 'status': submission['status'],
                       'compilation': feedback.get('compilation'), 'functionalSuccess': feedback.get('functionalSuccess'), 'deliveryError': feedback.get('deliveryError')}, judged)
-            if submission_number >= max_submissions: record.update(status='budget_exhausted', budgetLimit='submissions'); break
+            if submission_number >= max_submissions: record.update(status='budget_exhausted' if not record['functionalSuccess'] else 'completed', budgetLimit='submissions'); break
             content = json.dumps(feedback) + f'\n{max_submissions - submission_number} submissions remain. Correct the current source using exact edits.'
             if mode == 'agentic': content += f' {max_turns - turn_number} tool turns remain.'
             if advice:
