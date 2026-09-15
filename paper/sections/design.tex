@@ -121,10 +121,12 @@ parsed code and drops statements whose citations do not resolve, which
 validates that the cited code exists, not that the statement is right.
 Statements carry a one-line \emph{failure behaviour}, what the code should
 do when input is invalid; the agent's instructions were revised twice
-about it (versions 9 and 10, Section~\ref{sec:results}) and once more
+about it (versions 9 and 10, Section~\ref{sec:results}) and three times
 about bounds (version 11: a bound is a concrete number kept by evicting
 or truncating what exceeds it, never by rejecting a valid input, and the
-domain of each validated value is stated). The document is
+domain of each validated value is stated; version 12: the domain of a
+text names presence, blankness after trimming and a length; version 13:
+each unit read from untrusted data is bounded in bytes or characters). The document is
 rendered as text and appended once after the unchanged task, either in
 full (assets, trust boundaries, then every statement) or as a
 \emph{compact insert} of requirement and control statements only.
@@ -147,8 +149,8 @@ requirements, trust boundaries), a one-sentence generic instruction, the
 flat CWE Top~25 list~\citep{cwetop25}, two further agent angles
 (requirements, catalogue) and the compact renderings. The agentic rounds
 (I26 to I28) use S2 alone, with and without the code graph and the two
-judges; round I29 repeats the agentic comparison with a data-flow
-document acquired under the version 11 instructions.
+judges; rounds I29 to I31 repeat the agentic comparison with data-flow
+documents acquired under the version 11, 12 and 13 instructions.
 
 \begin{table}[t]
 \centering
