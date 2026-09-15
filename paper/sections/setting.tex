@@ -1,42 +1,65 @@
-\section{Setting}
+\section{Question and setting}
 \label{sec:setting}
 
-A \emph{security property} is an attribute of an asset the system must
-preserve~\citep{avizienis2004,iso25010}; a \emph{threat} is a potential
-violation of it~\citep{rfc4949}, enumerated per element by
-STRIDE~\citep{shostack2014} and catalogued as attack patterns by
-CAPEC~\citep{capec}. A \emph{trust boundary} separates components of
-different trust; the entry points through which untrusted data reaches the
-system form the attack surface~\citep{manadhata2011}. A \emph{weakness} is
-a type of flaw (CWE~\citep{cwe}); a \emph{vulnerability} is its exploitable
-occurrence~\citep{cve}. A \emph{security requirement} constrains a functional
-requirement to protect an asset~\citep{haley2008,firesmith2003,sindre2005};
-a \emph{control} satisfies it at an \emph{enforcement
-point}~\citep{nist80053,saltzer1975,long2011} and is checked by
-\emph{verification}~\citep{asvs5,nist800218}.
+A language model that adds a feature to an existing program can produce
+code that works and is still insecure: it accepts input that should be
+rejected, keeps data that should be bounded, trusts files that should be
+checked. We ask whether a short, repository-specific security description,
+given to the model before it writes, changes this, and what that
+description has to say.
 
-For a repository $R$ and a change $\Delta$, the \emph{security context}
-$\mathrm{SC}(R,\Delta)$ is the set of typed statements given to the
-generator before generation, each grounded in inspected source or marked
-prospective: the assets and entry points $\Delta$ touches, the boundaries it
-crosses, the applicable weakness types, requirements with enforcement points,
-proposed controls, verification hints and unknowns. It is neither security
-feedback (test outcomes on generated code) nor generic secure-coding
-instruction~\citep{tony2025}, which carries no repository evidence. Prior
-work evaluates code-model security in isolated
-scenarios~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
+We use standard terms. A \emph{security property} is something an asset
+must keep, such as integrity or availability~\citep{avizienis2004,iso25010}.
+A \emph{threat} is a way that property could be violated~\citep{rfc4949};
+STRIDE lists threat kinds per system element~\citep{shostack2014} and CAPEC
+catalogues attack patterns~\citep{capec}. A \emph{trust boundary} separates
+parts of a system that trust each other differently; the points where
+untrusted data enters form the attack surface~\citep{manadhata2011}. A
+\emph{weakness} is a type of flaw, catalogued by CWE~\citep{cwe}; a
+\emph{vulnerability} is a concrete, exploitable occurrence of
+one~\citep{cve}. A \emph{security requirement} says what a piece of the
+feature must guarantee~\citep{haley2008,firesmith2003,sindre2005}; a
+\emph{control} is the mechanism that guarantees it, and its
+\emph{enforcement point} is the operation where it must
+hold~\citep{nist80053,saltzer1975,long2011}; \emph{verification} is how
+one checks that it does~\citep{asvs5,nist800218}.
+
+For a repository and a planned change, the \emph{security context} is the
+set of typed statements handed to the model before it writes: the assets
+and entry points the change touches, the trust boundaries it crosses, the
+weakness types that apply, the requirements with their enforcement points,
+proposed controls, hints for verification, and open questions. Every
+statement either cites the source lines it was derived from or is marked
+as a proposal. Security context is not feedback from tests on generated
+code, and it is not a generic secure-coding instruction~\citep{tony2025},
+which carries no knowledge of the repository. Prior work measures
+code-model security on isolated
+snippets~\citep{pearce2022,siddiq2022,hajipour2024}, hardens the
 model~\citep{he2023} or varies generic prompt wording~\citep{tony2025};
-assistance without security cues degrades security in user
-studies~\citep{perry2023}. Here the context is derived from the repository
-in a corpus where flaws propagate by clone-and-own
-reuse~\citep{krueger2018,dubinsky2013}. The ten issue checks of this study
-probe weakness types, not vulnerabilities (Table~\ref{tab:mapping}).
+users assisted without security cues write less secure
+code~\citep{perry2023}. We work inside a real code base, a family of games maintained by copying
+one game into the next~\citep{krueger2018,dubinsky2013}, where flaws
+travel with the copies.
+
+The task is a Highscore feature for the game ApoMario: record a finished
+run's score, player name and survival time, keep the records in a file
+across sessions, and show them sorted in a menu panel. In the
+\emph{Generation} variant the model sees only ApoMario; in the \emph{Reuse}
+variant it also sees the sibling game ApoIcarus, which has a Highscore
+feature, and is asked to reuse it. The ten security checks
+(Table~\ref{tab:mapping}) ask: does the store reject a negative score, a
+negative time, a missing name, a blank name and an over-long name (five
+checks); does it keep at most one hundred records; does a corrupted store
+file crash the game; does a single huge line or a store of one million
+records exhaust memory (two checks); and does the code deserialize Java
+objects, which would let a crafted file execute code. Each check probes a
+weakness type, not an exploit.
 
 \begin{table*}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Evaluation categories of the Highscore study in standard terms.}
+\caption{The ten security checks by category, with the weakness type each probes (CWE), the property at stake, and where the requirement comes from (the feature contract, the OWASP ASVS verification standard, or the CERT Java secure coding rules).}
 \label{tab:mapping}
 \begin{tabular}{@{}llll@{}}
 \toprule

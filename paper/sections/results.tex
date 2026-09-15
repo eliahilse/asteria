@@ -1,11 +1,11 @@
-\section{Results}
+\section{What we did, in order}
 \label{sec:results}
 
 \begin{table*}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{I07: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
+\caption{Round I07, researcher-written context, five trajectories per arm. Each cell reads: functional artifacts out of 5; then security checks failed / unresolved / passed out of 50.}
 \label{tab:i07}
 \begin{tabular}{@{}lllll@{}}
 \toprule
@@ -23,7 +23,7 @@ Reuse S+B & 5; 32/1/17 & 5; 8/5/37 & 5; 0/5/45 & 5; 19/2/29 \\
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Agent-acquired data-flow context against a fresh control in each round: full functional (of 5) and issue checks failed / unresolved / passed (of 50); I21a and I21b are of 3 and of 30.}
+\caption{Agent-acquired context, each round against its own fresh control. Each cell reads: functional artifacts out of 5; then security checks failed / unresolved / passed out of 50. Rounds I21a and I21b have three trajectories per arm, so their cells are out of 3 and out of 30.}
 \label{tab:agent}
 \begin{tabular}{@{}llllll@{}}
 \toprule
@@ -53,7 +53,7 @@ I21b & Reuse S+B & single-shot & v10, acquisition 3 & 3; 18/2/10 & 3; 4/1/25 \\
 \centering
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{I09: full functional (of 5) and issue checks failed / unresolved / passed (of 50).}
+\caption{Round I09, generic context, five trajectories per arm. Each cell reads: functional artifacts out of 5; then security checks failed / unresolved / passed out of 50.}
 \label{tab:i09}
 \begin{tabular}{@{}lllll@{}}
 \toprule
@@ -69,7 +69,7 @@ Reuse S+B & 5; 31/2/17 & 5; 1/3/46 & 5; 16/1/33 & 5; 13/2/35 \\
 \centering
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{Run-end hook audit, rounds I09 to I16b: completed trajectories whose only failing functional tests are the two that end a run on a player without a name.}
+\caption{Audit of the run-end hook in every artifact of rounds I09 to I16b: how many trajectories fail only the two functional tests that end a run for a player without a name.}
 \label{tab:hook}
 \begin{tabular}{@{}llrr@{}}
 \toprule
@@ -82,103 +82,134 @@ Agent-acquired inserts, slices & I10 to I16b & 46 & 12 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Researcher-written context.}
-All 12 context arms of I07 and all 6 of I09 (Tables~\ref{tab:i07}
-and~\ref{tab:i09}) have fewer failed issue checks than their fresh control
-under every assignment of unresolved outcomes; the requirements arm has the
-fewest in every cell, and functionality is not traded (I09: 40 of 40).
-Review of all 79 delivered I07 artifacts: control artifacts normalise instead
-of reject, clamping negative times, substituting a default name and storing
-the record. Insert wording maps to code: every arm accepts negative scores
-except Reuse requirements, whose insert says ``reject negative scores''. Two
-checks never discriminate, since every artifact guards malformed stores and
-none uses Java object serialization. The one-sentence task-only instruction
-retains most of the effect (23 and 15 fewer failed checks than control).
+\paragraph{Step 1: does context help at all?}
+Round I07 (Table~\ref{tab:i07}) compares, in four cells, no security
+context against three kinds written by a researcher: \emph{operations}
+(what each step of the feature must do to stay safe), \emph{requirements}
+(a constraint for each operation, with the operation named) and
+\emph{boundaries} (where untrusted data enters and what to do there). All
+twelve context arms fail fewer security checks than their control,
+whichever way the unresolved checks are counted; the requirements insert
+does best in every cell. Functionality is not traded away: the control
+arms have 4 or 5 functional artifacts out of 5, the context arms likewise.
+Reading all 79 delivered artifacts shows what the checks measure: control
+artifacts do not ignore bad input, they normalise it, clamping a negative
+time to zero or substituting a default name, and the contract counts that
+as a failure because it asks for rejection. Insert wording maps onto code:
+the only arm whose artifacts reject a negative score is the one whose
+insert says ``reject negative scores''. Two checks never separate arms,
+since every artifact survives a corrupted file and none deserializes Java
+objects. Round I09 (Table~\ref{tab:i09}) asks how much of the effect is
+knowledge of the code. A single generic sentence asking for a secure
+implementation removes 23 of the control's 38 failed checks in Generation
+and 15 of 31 in Reuse; the flat CWE Top~25 list, with no procedure behind
+it, removes 13 and 18. The specific requirements insert removes the most,
+26 and 30, but it was written by someone who knew the code.
 
-\paragraph{Agent-acquired context.}
-Six acquisitions (three angles, two methods) finished within budget in 26 to
-60 commands, keeping 88 of 90 statements with 342 of 351 anchors verified.
-Table~\ref{tab:agent} reports the data-flow angle. Repository access alone
-leaves the counts unchanged (agentic, none) at three to five times the tool
-turns. The full graph insert (about 31,000 characters) gives 3 to 10 failed
-checks of 50 and, in Generation S, 1 and 2 of 5 functional. The compact
-insert (12,672 and 17,051 characters) removes more failures than the I09
-requirements insert (Reuse 29 to 2, Generation 37 to 3 of 50; bounds $-6.2$
-to $-4.6$ and $-7.2$ to $-5.8$ per trajectory; no check increases) but costs
-functional success, 5 to 3 of 5 in both cells, with submissions rising from
-7 to 18 in Generation.
+\paragraph{Step 2: can an agent write it?}
+The acquisition agent of Section~\ref{sec:method} produced six documents,
+one per angle and task variant. Each finished within its budget, using 26 to 60 commands;
+the harness kept 88 of the 90 statements produced and verified 342 of the 351 code locations they cite.
+Table~\ref{tab:agent} follows the data-flow angle, which cites the most
+code. Round I10 separates two things. Letting the model read the
+repository on its own, without context, changes nothing: 32 and 35 failed
+checks out of 50 against 33 and 35 for single-shot controls, at three to
+five times the tool calls. The agent's full document as an insert, about
+31,000 characters, gives 3 to 10 failed checks out of 50, the fewest so
+far, but in Generation only 1 and 2 artifacts out of 5 are functional. The \emph{compact insert}, requirement and control
+statements only, is the working form (rounds I16 and I16b): failed checks
+fall from 29 to 2 in Reuse and from 37 to 3 in Generation, between 4.6 and
+7.2 fewer per artifact, with no check getting worse. The price is
+functionality: 3 functional artifacts out of 5 in each cell instead of 5,
+and 18 submissions instead of 7 in Generation. So the agent's context is
+stronger than the researcher's and costs something the researcher's did
+not.
 
-\paragraph{Sidecars ($N=3$ pilots).}
-Adaptive slicing changes when statements arrive, not how many, because a
-Highscore implementation edits the anchored methods (I11). A gate that
-rejects on every positive verdict evaluated no artifact (I12); in shadow mode
-the judge was right on all 6 judged first submissions (I13). Coaching after
-the first submission keeps 3 of 3 functional and moves failures from 19 to
-16 of 30 (I14); one rejection, or a two-turn rewind, reaches 3 failed of 30
-with 0 of 3 functional (I14, I15). Only the compact insert before the first
-attempt combines 3 failed of 30 with functional artifacts (I11): when
-context arrives matters more than how forcefully it is applied.
+\paragraph{Step 3: timing or force?}
+Before chasing the cost we tested delivery, with three trajectories per
+arm. A \emph{sidecar} watches an agentic trajectory and either injects the
+statements relevant to the code just read or edited, or asks a one-turn
+judge whether a submission violates a cited control and then rejects it,
+attaches advice, or rewinds the conversation two turns. Injecting on
+demand changes when statements arrive, not how many, because the feature
+touches the very methods they cite. Rejecting every flagged submission
+produced no evaluable artifact; the judge itself was right on all 6 first
+submissions it flagged. Advice keeps 3 of 3 artifacts functional but lowers
+failed checks only from 19 to 16 out of 30; one rejection, or one rewind,
+reaches 3 failed out of 30 with 0 of 3 functional. Only the compact insert
+given before the first attempt reaches 3 failed out of 30 with functional
+artifacts. When context arrives matters more than how hard it is enforced;
+the rest of the study is single-shot.
 
-\paragraph{The functional cost has one cause.}
-The coupling tests end a run on a player whose team name is null; two never
-set a name. An artifact passes them and \texttt{rejectsNullName} only if the
-run-end hook substitutes a name before calling the store. An audit of every
-final artifact's hook (Table~\ref{tab:hook}) shows that all control and all
-researcher-written-insert artifacts do (``reject or safely normalize null
-\ldots{} names''). The agent-written inserts say at the hook ``if the
-\ldots{} name \ldots{} is unavailable, skip recording'' (Generation) or
-``reject unavailable or inconsistent values'' (Reuse); 12 of 46
-agent-insert artifacts follow this literally, the run is not recorded, and
-exactly those two tests fail, with no other failing check. The cost is a
-conflict between one insert clause and one fixture property the task
-contract leaves unstated, not a capability loss.
+\paragraph{Step 4: where the cost comes from.}
+The functional tests include coupling tests that end a game run on the
+test driver's player, whose name is null because it has no AI, and two of
+them never set a name. The security contract asks the store to reject a
+null name. An artifact passes both only if the code at the run-end hook,
+the place where the game records a finished run, substitutes a name before
+calling the store. We audited that hook in every artifact of rounds I09 to
+I16b (Table~\ref{tab:hook}). All 48 control artifacts and all 30 artifacts
+under researcher-written inserts substitute a name; the researcher's insert
+said ``reject or safely normalize null names''. The agent's inserts said
+something else at the hook: ``if the name is unavailable, skip recording''
+in Generation and ``reject unavailable or inconsistent values'' in Reuse.
+In 12 of 46 agent-insert artifacts the code does exactly that, the run is
+not recorded, and precisely those two tests fail, with no other failure.
+A second, independent model reader checked 12 classified rows and the
+rule was refined until both agreed. The cost is one sentence the agent
+wrote colliding with one property of the test fixture, not a loss of
+capability.
 
-\paragraph{Rendering without failure clauses.}
-The same inserts rendered without their ``Failure behavior'' lines (I17,
-I18; Table~\ref{tab:agent}) keep the effect: Generation 36 to 2 of 50 (bound
-$-7.6$ to $-6.0$; no check increases), Reuse 27 to 4 (bound $-5.4$ to
-$-3.6$; the oversized-line check increases from 2 to 4 of 5). Functional
-success is 4 of 5 in both cells. No Generation trajectory loses a nameless
-run; 1 of 5 in Reuse still does, because there the clause is part of the
-control statement itself. One Generation artifact passes every functional
-test and all eleven security checks, the first in that cell (two Reuse
-artifacts did in I09).
+\paragraph{Step 5: removing the sentence.}
+Two routes. The first leaves the agent alone and renders its document
+without the failure-behaviour lines (rounds I17 and I18). In Generation
+this keeps the effect, 36 to 2 failed out of 50, and restores
+functionality to 4 of 5 with no nameless run lost; in Reuse, where the
+sentence sits inside the control statement rather than its failure line,
+1 of 5 artifacts still loses the run, and one resource check gets worse.
+Rendering cannot fix what the agent decided. The second route changes the
+agent's instructions. Version~9 adds one rule: reject at the boundary where
+untrusted data enters, substitute a default at the point where the feature
+does its work, never skip the feature's effect. With fresh acquisitions
+(round I19) no run is lost in either cell, but in Generation the agent
+placed the substitution inside the store (``use the fallback Player at
+storeRun''), the artifacts clamp and normalise inside the store as controls
+do, and the effect almost vanishes: 37 to 31 failed out of 50. Reuse, whose
+insert kept the store rejecting, goes from 35 to 9. The lesson is that the
+effect of every earlier insert was carried by the word ``reject'' at the
+store. Version~10 therefore binds the roles: the operation that receives
+untrusted data rejects and never substitutes; the caller substitutes before
+calling it. With fresh acquisitions (round I20) failed checks fall from 39
+to 11 in Generation and from 31 to 7 in Reuse, between 4.4 and 5.8 fewer
+per artifact; every artifact is functional in every arm; no run is lost;
+and the insert arms need no more submissions than their controls (10 and
+10; 11 and 13). Two more acquisitions per task variant, each against its own control
+with three trajectories per arm (rounds I21a and I21b), show the same
+direction in all four comparisons, 24 to 6 and 24 to 2 failed out of 30 in
+Generation, 17 to 3 and 18 to 4 in Reuse, with every artifact functional:
+the result belongs to the instructions, not to one lucky document. What
+still fails are resource checks, and which ones varies by acquisition. One
+moves the wrong way: under every version~10 Reuse insert, 2 or 3 artifacts
+out of 3 to 5 keep more than one hundred records where all controls bound
+them, and none of those inserts mentions a record limit while the earlier
+insert did.
 
-\paragraph{Fixing the clause at acquisition.}
-Protocol v9 adds one rule to the agent: reject at the boundary that
-receives untrusted data, substitute or normalize at the integration point,
-never skip the primary effect. Fresh acquisitions and 20 trajectories (I19,
-Table~\ref{tab:agent}): no trajectory in either cell loses a nameless run,
-functional success is 5 of 5 and 4 of 5. In Reuse the insert keeps the
-store rejecting (``reject an invalid tuple at storeRun, or normalize \ldots{}
-at the run-end integration point'') and failures fall from 35 to 9 of 50
-(bound $-5.4$ to $-4.4$). In Generation the agent placed the substitution in
-the store (``use the stated fallback Player at storeRun''); all five
-artifacts clamp and normalize inside \texttt{storeRun}, as controls do, and
-failures fall only from 37 to 31 (bound $-1.6$ to $-0.8$). The effect of the
-earlier inserts was carried by the word ``reject'' at the store; a rule
-that lets substitution move into the boundary operation removes it.
-Protocol v10 binds the roles: the receiving operation rejects and never
-substitutes, the caller substitutes before calling it. With fresh
-acquisitions (I20, Table~\ref{tab:agent}) failures fall from 39 to 11 in
-Generation (bound $-5.8$ to $-4.6$) and from 31 to 7 in Reuse (bound $-5.0$
-to $-4.4$), every input-policy check passes in Reuse and 23 of 25 in
-Generation, functional success is 5 of 5 in every arm, no nameless run is
-lost, and submissions equal the controls' (10 and 10; 11 against 13). The
-remaining failures are resource checks. Two further v10 acquisitions per
-method, each against its own fresh control (I21a, I21b; $N=3$), give the
-same direction in all four comparisons (Generation 24 to 6 and 24 to 2,
-Reuse 17 to 3 and 18 to 4 of 30), 3 of 3 functional in every arm and no
-nameless run lost: the result is a property of the protocol, not of one
-document. Which resource checks survive varies by acquisition, and the
-Reuse retention bound worsens under every v10 insert (3 of 5, 3 of 3, 2 of
-3 failed against 0 in controls); none of the three states a record-count
-limit where the earlier insert did.
+\paragraph{What this says.}
+Repository-specific security context removes most of the security
+failures a control produces, from about half with a generic sentence to
+nine in ten with the best inserts, whether a researcher or an agent writes
+it. An agent's context is stronger but every word of it is
+followed literally, so a single unsafe sentence about failure behaviour
+costs functionality, and the fix is a precise rule in the agent's
+instructions about where rejection and where substitution belong.
+Delivering the context before the first attempt beats policing the
+attempts afterwards.
 
 \paragraph{Limits.}
-One task, one repository pair, one acquisition per arm shared by its
-trajectories, three acquisitions per method only under v10; counts are
-descriptive. Large-record outcomes are often
-unresolved (43 of 80 in I07). Artifact review and hook classes are
-single-pass model judgements with cited lines; a second reader checked 12
-audit rows, and the hook rule was corrected until both agreed on all 12.
+One task, one pair of games, one model as agent and generator. Each arm
+shares one acquired document across its three to five trajectories; only
+the final instructions were tried with three independent acquisitions.
+Counts are descriptive. The large-record check is often unresolved (43 of
+80 artifacts in round I07). Artifact reviews and hook classifications are
+single-pass model judgements with cited lines, spot-checked by a second
+reader on 12 rows.

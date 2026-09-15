@@ -79,8 +79,9 @@ class PaperTableTests(unittest.TestCase):
         commands = sorted(int(r['commands']) for r in rows)
         kept, produced = sum(int(r['items']) for r in rows), sum(int(r['rawItems']) for r in rows)
         matched, total = sum(int(r['anchorsMatched']) for r in rows), sum(int(r['anchorsTotal']) for r in rows)
-        sentence = f'in {commands[0]} to\n{commands[-1]} commands, keeping {kept} of {produced} statements with {matched} of {total} anchors verified.'
-        self.assertIn(sentence, source)
+        text = ' '.join(source.split())
+        self.assertIn(f'using {commands[0]} to {commands[-1]} commands', text)
+        self.assertIn(f'kept {kept} of the {produced} statements produced and verified {matched} of the {total} code locations', text)
 
 
 if __name__ == '__main__':
