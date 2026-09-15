@@ -1,33 +1,25 @@
 % Evidence: sections/results.tex, sections/design.tex, sections/introduction.tex.
 \begin{abstract}
-When generating code with LLMs (Large Language Models), security of their output depends primarily on knowledge of the existing program.
-This paper focusses on \emph{security context}: description of assets, trust
-boundaries, weakness types, requirements and controls that a planned change
-touches - each statement labelled by kind, and passed via the model's prompt
-before it writes code. The task in this case is a Highscore feature for a Java game,
-implemented either from scratch (Generation) or by reusing a sibling game's
-implementation (Reuse); ten security checks and sixteen functional tests
-score every delivered artifact, and every arm is compared with a control
+When LLMs (Large Language Models) generate code, the security of the
+output depends on what the model knows about the existing program. This
+paper studies \emph{security context}: assets, trust boundaries, weakness
+types, requirements and controls that a planned change touches, passed in
+the prompt before the model writes. The task is a Highscore feature for a
+Java game, implemented from scratch (Generation) or by reusing a sibling
+game's implementation (Reuse); ten security checks and sixteen functional
+tests score every artifact, and every arm is compared with a control
 collected alongside it. Context written by a researcher lowers the number
-of failed security checks in all 18 context arms of two rounds, with the
-number of functional artifacts within one of the control's in every arm.
-Context acquired by an agent that sees only the repository, a one-line
-feature description and a vocabulary lowers it further but at first loses
-two of five functional artifacts per cell. An audit of the 124 artifacts of
-five rounds traces that loss to one sentence the agent wrote about what to
-do when a player has no name. Two revisions of the agent's instructions
-remove the loss: with the final version, failed checks fall from 39 to 11
-out of 50 in Generation and from 31 to 7 out of 50 in Reuse while all five
-artifacts in every arm stay functional, and two further acquisitions per
-task variant reproduce the direction. Under one response without feedback,
-the protocol of the prior study, three acquisition strategies (high-level
-guidance, a full anchored document, and a document written without any
-repository) fail 3, 17 and 10 checks of 250 against 101, 77 and 94 for
-their controls, and the five input-policy checks go from 199 failures in
-205 resolved control outcomes to 9 in 200. In agentic delivery a code
-graph of what the model reads, added to the document, is the arm with the
-fewest failed checks in two calibration rounds, while a judge that
-inspects every submission cancels more than it corrects. One task, one
-pair of games and two to five artifacts per arm limit what the counts can
-claim.
+of failed security checks in all 18 context arms of two rounds. Context
+acquired by an agent from the repository, a one-line feature description
+and a vocabulary lowers it further but at first costs functionality; an
+audit traces the loss to one sentence about a player without a name, and
+two revisions of the agent's instructions remove it: failed checks fall
+from 39 to 11 of 50 in Generation and from 31 to 7 in Reuse with every
+artifact functional, reproduced by two further acquisitions. Under one
+response without feedback, three acquisition strategies fail 3, 17 and 10
+checks of 250 against 101, 77 and 94 for their controls. In agentic
+delivery, a code graph of what the model reads, added to the document, is
+the arm with the fewest failed checks, while a judge that inspects every
+submission cancels more than it corrects. One task, one pair of games and
+two to five artifacts per arm limit what the counts can claim.
 \end{abstract}
