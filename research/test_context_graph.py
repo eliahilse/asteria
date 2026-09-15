@@ -52,6 +52,9 @@ class ContextGraphTests(unittest.TestCase):
         self.assertIn(f'Enforcement point: {FILE}:30-50 ({LOAD})', text); self.assertIn('Failure behavior: stop reading', text)
         self.assertIn('Relations: satisfies R1', text); self.assertIn('Uncited unknown; absence was not established.', text)
         self.assertTrue(text.endswith('--- END REPOSITORY-DERIVED SECURITY CONTEXT ---\n'))
+        ablated = context_graph.render(context_graph.build(DOCUMENT, MODEL), failure_behavior=False)
+        self.assertNotIn('Failure behavior:', ablated); self.assertIn('C1 statement', ablated); self.assertIn(f'Enforcement point: {FILE}:30-50 ({LOAD})', ablated)
+        self.assertEqual([l for l in text.split('\n') if not l.startswith('Failure behavior:')], ablated.split('\n'))  # the only difference is the dropped lines
 
     def test_slice_follows_touched_code_and_call_edges(self):
         graph = context_graph.build(DOCUMENT, MODEL)

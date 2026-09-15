@@ -108,7 +108,7 @@ touched so far. Repository access alone leaves the counts unchanged (agentic,
 none: 32 and 35 failed checks, 5 of 5 functional in both cells) at three to
 five times the tool turns. The static graph insert gives the fewest failed
 checks of any round (3 to 10 of 50) and, in Generation S, the fewest functional
-trajectories (1 and 2 of 5). The file-level adaptive sidecar injected 16 to 19
+trajectories (1 and 2 of 5; the cause is located below). The file-level adaptive sidecar injected 16 to 19
 of the 18 to 19 statements at the first submission, since edits touch the three
 target files where the statements are anchored; its counts lie between the
 static and none arms. Symbol-level slicing and a shortened insert are the next
@@ -255,6 +255,21 @@ with submissions rising from 7 to 18. The three remaining failures are blank
 names. Across both cells the compact insert removes more failures than the
 researcher-written requirements insert of I09 (12 and 1 failed of 50) but,
 unlike that insert, costs functional success.
+
+\paragraph{Where the functional cost comes from.}
+An audit of every final artifact's run-end hook (I09 to I16b) locates the
+cost. The coupling tests end a run on a player whose team name is null; two of
+them never set a name. An artifact passes them and \texttt{rejectsNullName}
+only if the hook substitutes a name before calling the store. All 48 control
+artifacts and all 30 under researcher-written inserts do (``reject or safely
+normalize null \ldots{} names''). The agent-acquired inserts say at the hook
+``if the \ldots{} name \ldots{} is unavailable, skip recording'' (Generation)
+or ``reject unavailable or inconsistent values'' (Reuse); in 12 of 46
+agent-insert trajectories the final artifact follows this literally, the run
+is not recorded, and exactly those two tests fail. Of the 19 agent-insert
+trajectories without a functional artifact, these 12 have no other failing
+check. The cost is a conflict between one insert clause and one fixture
+property the task contract leaves unstated, not a capability loss.
 
 \begin{table}[t]
 \centering

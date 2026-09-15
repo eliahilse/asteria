@@ -21,6 +21,13 @@ of 5, with no first-submission success (control: 4 of 5) and 17 calls against
 7. In I09 the same cell had 1 failed check of 50 with 5 of 5 functional under
 the researcher-written requirements insert (9,475 characters).
 
+The two non-functional insert trajectories fail exactly the two coupling tests
+that end a run on a player without a name; both final hooks return when
+`getTeamName()` is null ([hook audit](hook-audit.md)), following the insert's
+C2 clause "reject unavailable or inconsistent values". The functional insert
+artifacts and all controls substitute "Player". See
+[functional-cost-null-name.md](../functional-cost-null-name.md).
+
 ## Generation S: not measured
 
 All five trajectories of the compact-insert arm failed before their first

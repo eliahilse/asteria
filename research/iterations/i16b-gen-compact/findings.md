@@ -33,6 +33,14 @@ Within-budget functional success falls from 5 to 3 of 5; first-submission
 success from 3 to 1 of 5; submissions rise from 7 to 18. The two insert
 trajectories without a functional artifact exhausted the five-submission budget.
 
+Both fail exactly the two coupling tests that end a run on a player without a
+name, and both final artifacts return from the run-end hook when
+`getTeamName()` is null ([hook audit](hook-audit.md)); the insert's R2 failure
+clause says to skip recording when the name is unavailable. The three
+functional insert artifacts substitute "Player" at the hook, as all five
+control artifacts do. The cross-round account is in
+[functional-cost-null-name.md](../functional-cost-null-name.md).
+
 ## Comparison with earlier rounds
 
 Same cell, single-shot delivery:

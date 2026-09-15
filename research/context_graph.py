@@ -98,7 +98,8 @@ def _location(edge: dict) -> str:
     return f'{place} ({symbol})' if symbol and place else (symbol or place)
 
 
-def render_items(graph: dict, ids: list[str] | None = None, kinds: tuple[str, ...] | None = None) -> list[str]:
+def render_items(graph: dict, ids: list[str] | None = None, kinds: tuple[str, ...] | None = None, failure_behavior: bool = True) -> list[str]:
+    """`failure_behavior=False` omits the statements' failure-behavior lines (rendering ablation; the statements themselves are unchanged)."""
     nodes = {n['id']: n for n in graph['nodes']}; out = {}
     for edge in graph['edges']: out.setdefault(edge['from'], []).append(edge)
     lines = []
@@ -108,7 +109,7 @@ def render_items(graph: dict, ids: list[str] | None = None, kinds: tuple[str, ..
         lines += ['', f"[{'; '.join(tags)}] {node['label']}", 'Task relevance: ' + (node.get('task_relevance') or '')]
         for edge in out.get(node['id'], []):
             if edge['type'] == 'enforced_at': lines.append('Enforcement point: ' + _location(edge))
-        if node.get('failure_behavior'): lines.append('Failure behavior: ' + node['failure_behavior'])
+        if failure_behavior and node.get('failure_behavior'): lines.append('Failure behavior: ' + node['failure_behavior'])
         cited = [e for e in out.get(node['id'], []) if e['type'] == 'anchored_at']
         for edge in cited: lines.append('Inspected source: ' + _location(edge))
         if not cited: lines.append('Uncited unknown; absence was not established.' if node['kind'] == 'unknown' else 'Basis: prospective task requirement or reasoning; not an implemented safeguard.')
@@ -118,15 +119,15 @@ def render_items(graph: dict, ids: list[str] | None = None, kinds: tuple[str, ..
     return lines
 
 
-def render(graph: dict, kinds: tuple[str, ...] | None = None, header: bool = True) -> str:
-    """Static insert in graph order: assets, boundaries, then items by kind. `kinds` restricts the items (compact insert); `header=False` drops assets and boundaries."""
+def render(graph: dict, kinds: tuple[str, ...] | None = None, header: bool = True, failure_behavior: bool = True) -> str:
+    """Static insert in graph order: assets, boundaries, then items by kind. `kinds` restricts the items (compact insert); `header=False` drops assets and boundaries; `failure_behavior=False` drops the failure-behavior lines."""
     nodes = {n['id']: n for n in graph['nodes']}; out = {}
     for edge in graph['edges']: out.setdefault(edge['from'], []).append(edge)
     lines = [f"--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: {graph.get('angle')}) ---", graph.get('summary') or '']
     assets = [n for n in graph['nodes'] if n['kind'] == 'asset']; boundaries = [n for n in graph['nodes'] if n['kind'] == 'boundary']
     if assets and header: lines += ['', 'Assets:'] + [f"- {a['label']} [{a['property']}]" + (' @ ' + '; '.join(_location(e) for e in out.get(a['id'], [])) if out.get(a['id']) else '') for a in assets]
     if boundaries and header: lines += ['', 'Trust boundaries:'] + [f"- {b['label']}{' [entry point]' if b.get('entry_point') else ''}: {b['untrusted_input']} from {b['source']} to {b['sink']}" + (' @ ' + '; '.join(_location(e) for e in out.get(b['id'], [])) if out.get(b['id']) else '') for b in boundaries]
-    lines += render_items(graph, kinds=kinds)
+    lines += render_items(graph, kinds=kinds, failure_behavior=failure_behavior)
     lines += ['', 'Uncertainty and limits:', *['- ' + value for value in graph.get('limitations', [])], '--- END REPOSITORY-DERIVED SECURITY CONTEXT ---', '']
     return '\n'.join(lines)
 
