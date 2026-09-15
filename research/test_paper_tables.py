@@ -10,8 +10,8 @@ from research.import_evidence import ROOT
 CELLS = {'Generation S': 'generation_s', 'Generation S+F+B': 'generation_sfb', 'Reuse B': 'reuse_b', 'Reuse S+B': 'reuse_sb'}
 ARMS = {'None': 'none', 'Operations': 'operations', 'Requirements': 'requirements', 'Boundaries': 'boundaries', 'Task only': 'task_only', 'Catalogue': 'catalog'}
 TABLES = {'tab:i07': 'i07-operational-replication', 'tab:i09': 'i09-generic-acquisition'}
-ROUNDS = {'I10': 'i10-agentic-delivery', 'I16': 'i16-compact-confirmation', 'I16b': 'i16b-gen-compact', 'I17': 'i17-nofb', 'I18': 'i18-nofb-reuse', 'I19': 'i19-v9', 'I20': 'i20-v10', 'I21a': 'i21a-var', 'I21b': 'i21b-var'}
-MODES = {'single-shot': 'single_shot', 'agentic': 'agentic'}
+ROUNDS = {'I10': 'i10-agentic-delivery', 'I16': 'i16-compact-confirmation', 'I16b': 'i16b-gen-compact', 'I17': 'i17-nofb', 'I18': 'i18-nofb-reuse', 'I19': 'i19-v9', 'I20': 'i20-v10', 'I21a': 'i21a-var', 'I21b': 'i21b-var', 'I22': 'i22-oneshot'}
+MODES = {'single-shot': 'single_shot', 'agentic': 'agentic', 'one response': 'single_shot'}
 HOOK_ROUNDS = ('i09-generic-acquisition', 'i10-agentic-delivery', 'i11-symbol-sidecar', 'i16-compact-confirmation', 'i16b-gen-compact')
 NULL_NAME_TESTS = {'recordedSurvivalTimeIsTheRealElapsedTime', 'secondRunAlsoRecordedAndBoardSortedDescending'}
 CELL_VALUE = re.compile(r'(\d+); (\d+)/(\d+)/(\d+)')
@@ -53,7 +53,7 @@ class PaperTableTests(unittest.TestCase):
         source = (ROOT / 'paper/sections/results.tex').read_text()
         header, body = parse_table(source, 'tab:agent')
         self.assertEqual(header, ['Cell', 'Mode', 'Insert', 'None', 'Insert'])
-        self.assertEqual([r[0] for r in body], ['I10', 'I10', 'I10', 'I10', 'I16', 'I16b', 'I17', 'I18', 'I19', 'I19', 'I20', 'I20', 'I21a', 'I21a', 'I21b', 'I21b'])
+        self.assertEqual([r[0] for r in body], ['I10', 'I10', 'I10', 'I10', 'I16', 'I16b', 'I17', 'I18', 'I19', 'I19', 'I20', 'I20', 'I21a', 'I21a', 'I21b', 'I21b', 'I22', 'I22'])
         for round_name, (cell, mode, _insert, none, static) in body:
             conditions = analysis(ROUNDS[round_name]); prefix = f'{CELLS[cell]}__{MODES[mode]}'
             self.check_cell(conditions[f'{prefix}__none'], none, f'tab:agent {round_name} {cell} {mode} none')
