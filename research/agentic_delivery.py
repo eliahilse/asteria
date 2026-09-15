@@ -112,9 +112,19 @@ def normalize_arms(arms) -> list[dict]:
     return result
 
 
+EFFORTS = ('low', 'medium', 'high')
+
+
+def resolve_settings(reasoning_effort: str | None = None) -> dict:
+    """Generator settings for a round: the shared defaults, with the reasoning effort overridden per round when declared."""
+    if reasoning_effort is None: return dict(SETTINGS)
+    if reasoning_effort not in EFFORTS: raise ValueError(f'reasoning_effort must be one of {EFFORTS}')
+    return {**SETTINGS, 'reasoning_effort': reasoning_effort}
+
+
 def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_inserts: dict[str, Path] | None,
             parent: str | Path = 'i07-operational-replication', *, max_turns=DEFAULT_MAX_TURNS, max_submissions=DEFAULT_MAX_SUBMISSIONS,
-            directory: Path | None = None) -> dict:
+            directory: Path | None = None, reasoning_effort: str | None = None) -> dict:
     arms = normalize_arms(arms); context_inserts = dict(context_inserts or {})
     if not re.fullmatch(r'[a-z0-9][a-z0-9_-]+', identifier) or not cells or len(set(cells)) != len(cells) or not 1 <= repetitions <= 30: raise ValueError('Invalid iteration plan')
     if type(max_turns) is not int or type(max_submissions) is not int or not 1 <= max_submissions <= 5 or not max_submissions <= max_turns <= 60: raise ValueError('Invalid budget')
@@ -175,7 +185,7 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
         rng.shuffle(block); schedule.extend(block)
     system, single = agentic_system(max_turns, max_submissions), delivery_system(max_submissions, parent_plan)
     plan = {'id': identifier, 'phase': 'agentic_delivery', 'protocol': PROTOCOL, 'evaluationProtocol': EVALUATION_PROTOCOL, 'createdAt': timestamp(),
-        'model': MODEL, 'settings': SETTINGS, 'maxSubmissions': max_submissions, 'maxTurns': max_turns,
+        'model': MODEL, 'settings': resolve_settings(reasoning_effort), 'maxSubmissions': max_submissions, 'maxTurns': max_turns,
         'system': single, 'systemSha256': digest(single.encode()), 'systemAgentic': system, 'systemAgenticSha256': digest(system.encode()),
         'tools': {'single_shot': TOOL, 'agentic': ACT}, 'arms': arms, 'repositories': list(repositories.values()), 'conditions': conditions, 'schedule': schedule,
         'sourceHashes': sources, 'calibrationReportSha256': digest(CALIBRATION.read_bytes()),
@@ -532,11 +542,12 @@ if __name__ == '__main__':
     parser.add_argument('--parent', default='i07-operational-replication')
     parser.add_argument('--max-turns', type=int, default=DEFAULT_MAX_TURNS)
     parser.add_argument('--max-submissions', type=int, default=DEFAULT_MAX_SUBMISSIONS)
+    parser.add_argument('--reasoning-effort', choices=EFFORTS, help='generator reasoning effort for this round (default: the shared setting)')
     args = parser.parse_args()
     if args.prepare:
         inserts = {key: Path(value) for key, value in (item.split('=', 1) for item in args.insert)}
         plan = prepare(args.prepare, args.cells.split(','), args.arms.split(','), args.repetitions, inserts, args.parent,
-                       max_turns=args.max_turns, max_submissions=args.max_submissions)
+                       max_turns=args.max_turns, max_submissions=args.max_submissions, reasoning_effort=args.reasoning_effort)
         print(f"{plan['id']}: {len(plan['conditions'])} conditions; {len(plan['schedule'])} trajectories; {plan['fingerprint']}")
     elif not args.manifest: parser.error('--manifest is required')
     elif args.summary: print(json.dumps(summary(args.manifest.parent), indent=2))
