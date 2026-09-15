@@ -37,7 +37,11 @@ the researcher-written requirements insert did so.
 
 No insert trajectory reaches full functionality on the first submission
 (control: 4 of 5); submissions total 18 against 6. The insert still triples
-the number of attempts even when it no longer removes the null-name runs.
+the number of attempts even when it no longer removes the null-name runs. Four
+of the five insert first submissions were rejected by the harness before
+evaluation (two lacked a required integration edit, one edited a file it also
+delivered as new, one old-text anchor did not match); the control had none in
+this round, the I16 control had three ([delivery errors](delivery-errors.csv)).
 
 ## Limits
 
