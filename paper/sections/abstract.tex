@@ -3,24 +3,24 @@
 When LLMs (Large Language Models) generate code, the security of the
 output depends on what the model knows about the existing program. This
 paper studies \emph{security context}: assets, trust boundaries, weakness
-types, requirements and controls that a planned change touches, passed in
-the prompt before the model writes. The task is a Highscore feature for a
-Java game, implemented from scratch (Generation) or by reusing a sibling
-game's implementation (Reuse); ten security checks and sixteen functional
-tests score every artifact, and every arm is compared with a control
-collected alongside it. Context written by a researcher lowers the number
-of failed checks in all 18 context arms of two rounds. Context acquired by
-an agent from the repository, a one-line feature description and a
-vocabulary lowers it further but at first costs functionality; two
-revisions of the agent's instructions remove the loss. Under one response
-without feedback, three acquisition strategies fail 3, 17 and 10 checks
-of 250 against 101, 77 and 94 for their controls. In agentic delivery
-with feedback, a code graph of what the model reads adds nothing
-measurable and a judge that cancels violating submissions is within one
-artifact of the document alone at twice the calls; what decides the rest
-is the document's wording: two further revisions of one rule, about
-bounds and value domains, take the failures from 12 to 4 of 100 and make
-4 of 10 artifacts pass every test and every check; a third, about
-bounded reads, does not help. One task, one pair of
-games and two to five artifacts per arm limit what the counts can claim.
+types, requirements and controls that a planned change touches, written
+by an agent from the repository and a one-line feature description and
+passed in the prompt before the model writes. The task is a Highscore
+feature for a Java game, implemented from scratch (Generation) or by
+reusing a sibling game's implementation (Reuse), by OpenAI's
+\texttt{gpt-5.6-luna} at reasoning effort high; ten security checks and
+sixteen functional tests score every artifact against a control collected
+alongside it. Three strategies for writing the document (high-level
+guidance from the repository, a full document anchored to code, a generic
+document written without any repository) are compared under one response
+and under agentic delivery with repository tools and feedback. Compiled
+artifacts without context pass 22\% (one response) and 33\% (agentic) of
+the security checks; with any of the three documents they pass 82 to
+90\%, within five points of each other, while functionality stays where
+it is. A judge that cancels violating submissions and a code graph of
+what the model reads add nothing measurable at higher cost. What the
+artifacts still fail follows the document's wording: three revisions of
+the agent's instructions, about bounds and value domains, each removed
+the failures the previous wording had left open. One task, one pair of
+games and ten artifacts per arm limit what the rates can claim.
 \end{abstract}
