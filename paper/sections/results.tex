@@ -386,14 +386,15 @@ S3 generic & insert, 25 responses & 25 & 2786 & 239.3 & 97.0 & 52.5 \\
 \paragraph{Cost.}
 Table~\ref{tab:cost} gives the time and tokens behind the one-response
 rounds. An acquisition is a single agent run of one to four minutes; the
-full document costs about three times the tokens of the high-level one,
-and the generic document, which runs no command, a twentieth. The
+full document reads 1.3 (Generation) and 4.5 (Reuse) times the input of
+the high-level one and writes two and a half to three times its output,
+and the generic document, which runs no command, reads a twentieth. The
 generator's cost is dominated by the base context of the cell (the input
 tokens of a control and its insert arm differ by the insert alone); the
-insert arms answer with more output and reasoning tokens and take a third
-longer per call. The agentic arms of Table~\ref{tab:graph} cost about the
-same input per trajectory as one-response arms per five responses, and
-the cancelling guard doubles it.
+insert arms answer with more output and reasoning tokens and take a fifth
+to a third longer per call. An agentic trajectory of Table~\ref{tab:graph}
+reads about seven times the input of one response, and the cancelling
+guard doubles that.
 
 \paragraph{Step 7: one response, no feedback.}
 The prior study allowed one model response per prompt. Round I22 repeats the
