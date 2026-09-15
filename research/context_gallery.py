@@ -158,7 +158,7 @@ const q=document.getElementById('q');q.addEventListener('input',()=>{{const v=q.
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--output', type=Path, default=ROOT / 'docs/contexts.html'); args = parser.parse_args()
+    parser = argparse.ArgumentParser(description=__doc__); parser.add_argument('--output', type=Path, default=ROOT / 'workbench/public/contexts.html'); args = parser.parse_args()
     rule = next((l.strip() for l in (ROOT / 'research/security/agent/common.md').read_text().split('\n') if l.startswith('6.')), '')
     rounds = gather(); args.output.parent.mkdir(parents=True, exist_ok=True); args.output.write_text(render(rounds, rule))
     print(f'{len(rounds)} rounds, {sum(len(r["inserts"]) for r in rounds)} inserts -> {args.output}')
