@@ -9,8 +9,8 @@ call. It then receives the compiler's diagnostics and the outcome of
 sixteen functional tests, and may submit up to five times in total. We call
 the whole conversation a \emph{trajectory} and its final code the
 \emph{artifact}. An artifact is \emph{functional} when it passes all
-sixteen functional tests within those five submissions; this single
-criterion replaces the earlier separate compile, unit and invoked counts.
+sixteen functional tests within those five submissions; this one criterion
+replaces earlier separate compile and test counts.
 The model never sees a security test result. In one round and in the
 sidecar pilots the model may also search and read the repository before
 submitting; we call that \emph{agentic} delivery, and delivery without
@@ -63,9 +63,8 @@ writes the context. It receives a read-only snapshot of the repository (for
 Reuse, of both games), the same one-line feature description the generator
 gets, and the vocabulary of Section~\ref{sec:setting} as an output schema
 with CWE, CAPEC and ASVS identifiers. It receives no test, no threshold, no
-earlier context and no generated code; the researchers revise its
-instructions between rounds after examining failures, and we say so where
-it happens. It inspects the code with shell tools~\citep{yang2024} under a
+earlier context and no generated code; its instructions were revised twice
+between rounds after we examined failures, and Step 6 says how. It inspects the code with shell tools~\citep{yang2024} under a
 recorded budget of at most 60 commands and writes one document along one
 of three angles: follow the data from where it enters to where it is
 stored (data flow), constrain every operation of the feature

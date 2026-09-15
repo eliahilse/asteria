@@ -94,9 +94,9 @@ requirements insert has the fewest in every cell. Functional counts stay at
 4 or 5 out of 5 in every arm; in three of the twelve context arms one
 artifact fewer is functional than in the control. Reading all 79 delivered
 artifacts (one trajectory delivered nothing) shows what the checks measure:
-control artifacts do not ignore bad input, they normalise it, clamping a
-negative time to zero or substituting a default name, and the contract
-counts that as a failure because it asks for rejection. Insert wording
+control artifacts normalise bad input, clamping a negative time to zero or
+substituting a default name, and the contract counts that as a failure
+because it asks for rejection. Insert wording
 maps onto code: the only arm whose artifacts reject a negative score is the
 one whose insert says ``reject negative scores''. In this round two checks
 never separate arms, since every artifact survives a corrupted file and
@@ -126,15 +126,12 @@ in Generation, between 4.6 and 6.2 fewer per artifact in Reuse and between
 5.8 and 7.2 in Generation, with no individual check getting worse. The
 price is functionality: 3 functional artifacts out of 5 in each cell
 instead of 5, and in Generation 18 submissions over the five trajectories
-against 7 for the control. The agent's context lowers failures further than
-the researcher's requirements insert did in the same cells (Reuse 1,
-Generation 12 out of 50 in round I09), and costs functionality where the
-researcher's did not.
+against 7 for the control. In the same cells the researcher's requirements insert had left 1 and
+12 failed checks out of 50 (round I09) with every artifact functional.
 
 \paragraph{Step 3: timing or force?}
 Before diagnosing the cost we asked whether delivering the context
-differently would avoid it, with three trajectories per arm on Generation
-S. A \emph{sidecar} watches an agentic trajectory and either injects the
+differently would avoid it (three trajectories per arm, Generation S). A \emph{sidecar} watches an agentic trajectory and either injects the
 statements relevant to the code just read or edited, or asks a one-turn
 judge (the same model, shown the edit and the statements) whether a
 submission violates a cited control and then rejects it, attaches advice
@@ -170,9 +167,9 @@ code does exactly that, the run is not recorded, and precisely those two
 tests fail, with no other failure. Of the 19 agent-context artifacts that
 are not functional, these 12 are explained by this sentence; the other 7
 fail for other reasons, such as compile errors or a missing menu wiring. The
-classification is a model judgement over cited lines; a second, independent
-model reader checked 12 rows, the classification rule was corrected where
-they disagreed, and the corrected rule was reapplied to every row.
+classification is a model judgement over cited lines; a second model
+reader checked 12 rows, the rule was corrected where they disagreed and
+reapplied to every row.
 
 \paragraph{Step 5: removing the sentence by rendering.}
 The first route leaves the agent alone and renders its document without
@@ -217,13 +214,11 @@ three inserts mentions a record limit, while the earlier Reuse insert did.
 With the final instructions, agent-written security context reduced failed
 checks from 39 to 11 out of 50 in Generation and from 31 to 7 in Reuse with
 every artifact functional, and two further acquisitions per task variant
-reproduced the direction. The agent's context is followed literally, so a
-single sentence about failure behaviour cost functionality until the
-instructions said where rejection and where substitution belong. In the
-pilots, context given before the first attempt did better than enforcement
-during the attempts. The omitted record limit in the version 10 Reuse
-inserts shows that what the agent leaves out moves the counts as much as
-what it writes.
+reproduced the direction. The agent's context is followed literally: one
+sentence about failure behaviour cost functionality until the instructions
+said where rejection and where substitution belong, and an omitted record
+limit moved the counts the other way. Context given before the first
+attempt did better, in the pilots, than enforcement during the attempts.
 
 \paragraph{Limits.}
 One task, one pair of games, one model as agent and generator. Each arm
