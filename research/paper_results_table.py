@@ -92,5 +92,13 @@ def body() -> str:
     return '\n'.join(lines)
 
 
+def write(path=ROOT / 'paper/sections/results.tex') -> None:
+    """Replace the body of tab:results in the paper with the generated one."""
+    source = path.read_text(); a = source.index('\\label{tab:results}'); start = source.index('\\midrule\n', a) + len('\\midrule\n'); end = source.index('\\bottomrule', start)
+    path.write_text(source[:start] + body() + '\n' + source[end:])
+
+
 if __name__ == '__main__':
-    print(body())
+    import sys
+    if '--write' in sys.argv: write(); print('tab:results written')
+    else: print(body())
