@@ -37,6 +37,8 @@ I16 & Reuse S+B & single-shot & compact & 5; 29/4/17 & 3; 2/4/44 \\
 I16b & Generation S & single-shot & compact & 5; 37/2/11 & 3; 3/5/42 \\
 I17 & Generation S & single-shot & compact, no failure lines & 5; 36/4/10 & 4; 2/4/44 \\
 I18 & Reuse S+B & single-shot & compact, no failure lines & 5; 27/4/19 & 4; 4/5/41 \\
+I19 & Generation S & single-shot & compact, protocol v9 & 5; 37/2/11 & 5; 31/2/17 \\
+I19 & Reuse S+B & single-shot & compact, protocol v9 & 5; 35/1/14 & 4; 9/4/37 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -134,9 +136,23 @@ success is 4 of 5 in both cells. No Generation trajectory loses a nameless
 run; 1 of 5 in Reuse still does, because there the clause is part of the
 control statement itself. One Generation artifact passes every functional
 test and all eleven security checks, the first in that cell (two Reuse
-artifacts did in I09). The clause must be
-fixed at acquisition, not at rendering; the next protocol version forbids
-failure behaviour that suppresses the change's primary effect.
+artifacts did in I09).
+
+\paragraph{Fixing the clause at acquisition.}
+Protocol v9 adds one rule to the agent: reject at the boundary that
+receives untrusted data, substitute or normalize at the integration point,
+never skip the primary effect. Fresh acquisitions and 20 trajectories (I19,
+Table~\ref{tab:agent}): no trajectory in either cell loses a nameless run,
+functional success is 5 of 5 and 4 of 5. In Reuse the insert keeps the
+store rejecting (``reject an invalid tuple at storeRun, or normalize \ldots{}
+at the run-end integration point'') and failures fall from 35 to 9 of 50
+(bound $-5.4$ to $-4.4$). In Generation the agent placed the substitution in
+the store (``use the stated fallback Player at storeRun''); all five
+artifacts clamp and normalize inside \texttt{storeRun}, as controls do, and
+failures fall only from 37 to 31 (bound $-1.6$ to $-0.8$). The effect of the
+earlier inserts was carried by the word ``reject'' at the store; a rule
+that lets substitution move into the boundary operation removes it. The
+next version binds substitution to the caller of the boundary.
 
 \paragraph{Limits.}
 One task, one repository pair, one acquisition per arm shared by five

@@ -85,7 +85,11 @@ I17 tested the rendering variant: without the failure lines the same insert
 keeps 2 failed checks of 50 against 36, no trajectory fails only the null-name
 tests, and functional success is 4 of 5 ([I17 findings](i17-nofb/findings.md));
 on Reuse S+B, where the clause sits in the C2 statement body, 1 of 5 still
-skips and one resource check worsens ([I18 findings](i18-nofb-reuse/findings.md)). Third, the evaluator's coupling tests define
+skips and one resource check worsens ([I18 findings](i18-nofb-reuse/findings.md)).
+Protocol v9 then fixed the clause at acquisition: no null-name loss in
+either cell, but the Generation agent moved the substitution into storeRun
+and the security effect went with it (37 → 31 of 50); Reuse kept the store
+rejecting (35 → 9) ([I19 findings](i19-v9/findings.md)). Third, the evaluator's coupling tests define
 "real player name" for a player that has none; the contract could state the
 expected fallback.
 
