@@ -16,22 +16,22 @@ ends = lambda suffix: (lambda condition: condition.endswith('__' + suffix))
 GROUPS = [
     ('One response, no feedback (five cells)', [
         ('no context', [('i24a-high', ends('none')), ('i24b-full', ends('none')), ('i24c-generic', ends('none'))]),
-        ('S1 high-level guidance', [('i24a-high', ends('static'))]),
+        ('S1 high-level', [('i24a-high', ends('static'))]),
         ('S2 full document', [('i24b-full', ends('static'))]),
-        ('S3 generic, no repository', [('i24c-generic', ends('static'))]),
+        ('S3 generic (no repository)', [('i24c-generic', ends('static'))]),
     ]),
-    ('Up to five submissions with compiler and test feedback (two to four cells)', [
+    ('Up to five submissions with feedback (two to four cells)', [
         ('no context', [('i07-operational-replication', ends('none')), ('i20-v10', ends('none'))]),
         ('researcher-written', [('i07-operational-replication', lambda c: c.split('__')[-1] in ('operations', 'requirements', 'boundaries'))]),
-        ('agent document, compact (v10)', [('i20-v10', ends('static'))]),
+        ('agent document v10, compact', [('i20-v10', ends('static'))]),
     ]),
-    ('Agentic: repository search and read, feedback (two cells)', [
+    ('Agentic: repository tools and feedback (two cells)', [
         ('no context', [('i28-graph', ends('none')), ('i29-v11', ends('none')), ('i30-v12', ends('none')), ('i31-v13', ends('none'))]),
         ('S2 document (v10)', [('i28-graph', ends('static'))]),
         ('S2 + code graph', [('i28-graph', ends('static-ast'))]),
-        ('S2 + code graph + guard judge', [('i28-graph', ends('static-ast-guard'))]),
-        ('S2 + code graph + advisory judge', [('i28-graph', ends('static-ast-advise'))]),
-        ('document v11 (bounds, value domains)', [('i29-v11', ends('static'))]),
+        ('S2 + graph + guard judge', [('i28-graph', ends('static-ast-guard'))]),
+        ('S2 + graph + advisory judge', [('i28-graph', ends('static-ast-advise'))]),
+        ('document v11 (bounds, domains)', [('i29-v11', ends('static'))]),
         ('document v11 + guard judge', [('i29-v11', ends('static-guard'))]),
         ('document v12 (text domains)', [('i30-v12', ends('static'))]),
         ('document v12 + guard judge', [('i30-v12', ends('static-guard'))]),
