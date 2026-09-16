@@ -748,18 +748,16 @@ def configure_supplementary(gr):
     # declarations. Materialize correctly named local copies so javac and JUnit
     # execute the intended suites rather than reporting false compile failures.
     supplementary_dir = HERE / "supplementary_tests"
-    atomic_write_text(
-        supplementary_dir / "ApoMarioHighscoreWiringTest.java",
-        (ARTIFACT / "Tests/ApoMarioHighscoreAutonomousTest.java").read_text(
-            encoding="utf-8"
-        ),
-    )
-    atomic_write_text(
-        supplementary_dir / "ApoMarioHighscoreCouplingTest.java",
-        (ARTIFACT / "Tests/ApoMarioHighscoreInvokedTest.java").read_text(
-            encoding="utf-8"
-        ),
-    )
+    # Both tasks of the study; the Achievements suites follow the same naming (Autonomous -> WiringTest, Invoked -> CouplingTest).
+    for task_name in ("Highscore", "Achievements"):
+        atomic_write_text(
+            supplementary_dir / f"ApoMario{task_name}WiringTest.java",
+            (ARTIFACT / f"Tests/ApoMario{task_name}AutonomousTest.java").read_text(encoding="utf-8"),
+        )
+        atomic_write_text(
+            supplementary_dir / f"ApoMario{task_name}CouplingTest.java",
+            (ARTIFACT / f"Tests/ApoMario{task_name}InvokedTest.java").read_text(encoding="utf-8"),
+        )
     atomic_write_text(
         supplementary_dir / "IntegrationDriver.java",
         (ARTIFACT / "Tests/IntegrationDriver.java").read_text(encoding="utf-8"),
@@ -781,16 +779,17 @@ def configure_supplementary(gr):
     auto.TESTS_DIR = str(supplementary_dir)
     auto.LIB = str(LIB)
     auto.SEP = os.pathsep
-    auto.TASKS["Highscore"] = {
-        "game_root": str(find_mario_root()),
-        "game_name": "ApoMario",
-        "driver": str(supplementary_dir / "IntegrationDriver.java"),
-        "test": "ApoMarioHighscoreWiringTest",
-        "pkg_dir": "apoMario/game/panels",
-        "gen_pkg": "apoMario.game.panels",
-        "test_pkg": "apoMario.game.panels",
-        "subs": ("apoMario", "org", "test", "images", "levels", "META-INF"),
-    }
+    for task_name in ("Highscore", "Achievements"):
+        auto.TASKS[task_name] = {
+            "game_root": str(find_mario_root()),
+            "game_name": "ApoMario",
+            "driver": str(supplementary_dir / "IntegrationDriver.java"),
+            "test": f"ApoMario{task_name}WiringTest",
+            "pkg_dir": "apoMario/game/panels",
+            "gen_pkg": "apoMario.game.panels",
+            "test_pkg": "apoMario.game.panels",
+            "subs": ("apoMario", "org", "test", "images", "levels", "META-INF"),
+        }
 
     invoked = import_module_with_replacements(
         "vamos_invoked",
@@ -812,6 +811,7 @@ def configure_supplementary(gr):
     invoked.DRIVER = str(supplementary_dir / "IntegrationDriver.java")
     invoked.INVOKED_DIR = str(supplementary_dir)
     invoked.INVOKED["Highscore"] = "ApoMarioHighscoreCouplingTest"
+    invoked.INVOKED["Achievements"] = "ApoMarioAchievementsCouplingTest"
     invoked.LIB = str(LIB)
     invoked.SEP = os.pathsep
     return auto, invoked
