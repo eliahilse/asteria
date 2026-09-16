@@ -32,6 +32,8 @@ class Task:
     study_dir: str = ''            # tracked study with the base prompts per cell (manifest.json + prompts/)
     calibration_report: str = ''   # evaluator reference report a round must reproduce before collection
     cwe: dict = field(default_factory=dict)  # check -> CWE ids
+    input_policy: tuple = ()       # the checks reported together as 'input policy' (rejection of invalid values)
+    issues: dict = field(default_factory=dict)  # check -> (category, one-line description) for the summaries
 
     @property
     def issue_checks(self) -> tuple:
@@ -50,6 +52,7 @@ HIGHSCORE = Task(
     checks=('validRecordRoundTrip', 'rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName',
             'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet'),
     positive_check='validRecordRoundTrip', large_check='largePersistedRecordSet', store_file='scores.dat', controls=('SafeHighscore', 'WeakHighscore'),
+    input_policy=('rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName'),
     security_protocol='highscore-security-v1', study_dir='research/studies/highscore-paper-luna-v2', calibration_report='.local/calibration/integrated-security-reference/report.json',
     delivery_text='''Include actual edits to the supplied game classes to connect the feature to the live lifecycle
 and menu. A standalone Highscore class does not complete this task. Recording must happen
@@ -73,6 +76,17 @@ ACHIEVEMENTS = Task(
     checks=('validUnlockRoundTrip', 'rejectsNegativePoints', 'rejectsNegativeTime', 'pointsOverflowSafe', 'rejectsUnknownIds', 'rejectsOversizedId',
             'boundsUnlockedList', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largeStoreFile'),
     positive_check='validUnlockRoundTrip', large_check='largeStoreFile', store_file='achievements.dat', controls=('SafeAchievements', 'WeakAchievements'),
+    input_policy=('rejectsNegativePoints', 'rejectsNegativeTime', 'pointsOverflowSafe', 'rejectsUnknownIds', 'rejectsOversizedId'),
+    issues={'rejectsNegativePoints': ('Input policy', 'A negative point value is not summed into the run; reaching the goal afterwards still unlocks it.'),
+            'rejectsNegativeTime': ('Input policy', 'A negative survival time is not summed into the run; surviving past the goal afterwards still unlocks it.'),
+            'pointsOverflowSafe': ('Input policy', 'Adding Integer.MAX_VALUE after 19,999 points still unlocks the points goal (no integer overflow).'),
+            'rejectsUnknownIds': ('Input policy', 'An achievement id in the store file that is not one of the three is not reported as unlocked.'),
+            'rejectsOversizedId': ('Input policy', 'A 10,000-character id in the store file is not reported as unlocked.'),
+            'boundsUnlockedList': ('Retention policy', 'A store file repeating a valid id a thousand times yields at most one entry per achievement and at most three entries.'),
+            'malformedStoreDoesNotCrash': ('Parser robustness', 'A store of random bytes does not crash the feature; it still unlocks afterwards.'),
+            'oversizedPhysicalLine': ('Resource stress', 'A 64 MiB single line loads or is rejected within the 64 MiB heap and the 15 s budget.'),
+            'nativeDeserializationCanary': ('Deserialization dispatch', 'A test-only readObject hook in the store does not execute.'),
+            'largeStoreFile': ('Resource stress', 'A text store amplified to one million lines loads within the heap and time limits with at most three entries; unsupported encodings are unknown.')},
     security_protocol='achievements-security-v1', study_dir='research/studies/achievements-luna-v1', calibration_report='.local/calibration/achievements-integrated-reference/report.json',
     delivery_text='''Include actual edits to the supplied game classes to connect the feature to the live game:
 points, enemy kills and survival time must reach the achievements state from the running game,
@@ -94,3 +108,12 @@ def current() -> Task:
 
 def by_name(name: str) -> Task:
     return next(t for t in TASKS.values() if t.name == name or t.key == name)
+
+
+def activate(key: str) -> Task:
+    """Make `key` the current task for this process (analysis entry points call it with the round's recorded task)."""
+    os.environ['ASTERIA_TASK'] = key or 'highscore'; return current()
+
+
+def of_plan(plan: dict) -> Task:
+    return activate((plan or {}).get('task', 'highscore'))

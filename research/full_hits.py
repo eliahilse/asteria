@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 from statistics import median
 
+from research import tasks
 from research.import_evidence import ROOT
 
 SECURITY = ('validRecordRoundTrip', 'rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName',
@@ -25,13 +26,17 @@ SECURITY = ('validRecordRoundTrip', 'rejectsNegativeScore', 'rejectsNegativeTime
 INPUT_POLICY = SECURITY[1:6]
 
 
+def checks_of(task=None):
+    task = task or tasks.current(); return tuple(task.checks), tuple(task.input_policy)
+
+
 def outcomes(run: dict) -> dict[str, str]:
     return {c['name']: c['status'] for c in run.get('checks') or [] if c.get('suite') == 'security_v1'}
 
 
 def is_full_hit(run: dict) -> bool:
-    checks = outcomes(run)
-    return bool(run.get('functionalSuccess')) and all(checks.get(name) == 'pass' for name in SECURITY)
+    checks = outcomes(run); security, _ = checks_of()
+    return bool(run.get('functionalSuccess')) and all(checks.get(name) == 'pass' for name in security)
 
 
 def compiling_turn(record: dict) -> int | None:
@@ -48,7 +53,7 @@ def arm_rows(iteration: str, root: Path = ROOT) -> list[dict]:
     source = next((root / 'research/iterations' / iteration / name for name in ('qualified-results.json', 'results.json') if (root / 'research/iterations' / iteration / name).exists()), None)
     if source is None: raise FileNotFoundError(f'no results for {iteration}')
     results = json.loads(source.read_text())
-    study = next(s for s in results['studies'] if s['plan']['id'] == iteration)
+    study = next(s for s in results['studies'] if s['plan']['id'] == iteration); tasks.of_plan(study['plan']); security, input_policy = checks_of()
     records = {}
     for path in (root / '.local/iterations' / iteration / 'runs').glob('*/record.json'):
         try: r = json.loads(path.read_text()); records[r['runId']] = r
@@ -59,7 +64,7 @@ def arm_rows(iteration: str, root: Path = ROOT) -> list[dict]:
         checks = [outcomes(r) for r in runs]
         row = {'round': iteration, 'arm': condition, 'n': len(runs), 'source': source.name,
                'compiled': sum(1 for r in runs if r.get('mainCompilation')), 'functionalFirst': sum(1 for r in runs if r.get('firstFunctionalSuccess')), 'functional': sum(1 for r in runs if r.get('functionalSuccess')),
-               'inputPolicyClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in INPUT_POLICY)), 'securityClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in SECURITY)),
+               'inputPolicyClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in input_policy)), 'securityClean': sum(1 for c in checks if all(c.get(n) == 'pass' for n in security)),
                'fullHits': sum(1 for r in runs if is_full_hit(r)),
                'failed': sum(v == 'fail' for c in checks for v in c.values()), 'passed': sum(v == 'pass' for c in checks for v in c.values())}
         row['unresolved'] = 11 * len(runs) - row['failed'] - row['passed']  # fixed denominator: a check absent from a rejected or non-compiling artifact is unresolved

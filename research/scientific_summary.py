@@ -17,7 +17,7 @@ from research.iteration_results import read_study
 from research.report_matrix import PERCENT_MIN_N, count_delta, rate
 
 WILSON_SOURCE = 'https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm'
-ISSUES = {
+HIGHSCORE_ISSUES = {
     'rejectsNegativeScore': ('Input policy', 'Negative score rejected and not retained.'),
     'rejectsNegativeTime': ('Input policy', 'Negative time rejected and not retained.'),
     'rejectsNullName': ('Input policy', 'Null name rejected and not retained.'),
@@ -29,6 +29,15 @@ ISSUES = {
     'nativeDeserializationCanary': ('Deserialization dispatch', 'A test-only readObject hook does not execute before record validation; failure does not establish a production RCE chain.'),
     'largePersistedRecordSet': ('Resource stress', 'Supported seed formats are amplified to one million records; loading retains at most 100 within the declared heap/time limits. Unsupported encodings are unknown.'),
 }
+ISSUES = dict(HIGHSCORE_ISSUES)
+
+
+def refresh_issues():
+    """The current task's issue definitions (Highscore's stay the module default)."""
+    from research import tasks
+    global ISSUES
+    task = tasks.current(); ISSUES = dict(task.issues) if task.issues else dict(HIGHSCORE_ISSUES)
+    return ISSUES
 
 
 def wilson(successes: int, total: int):
@@ -123,6 +132,7 @@ def csv_bytes(rows):
 def save(identifier, qualified=False):
     directory = ROOT / 'research/iterations' / identifier
     study = read_study(ROOT / '.local/iterations' / identifier)
+    refresh_issues()
     metadata = None
     if qualified:
         from research.qualification import apply_available

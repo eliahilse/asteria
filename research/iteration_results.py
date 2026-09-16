@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 
+from research import tasks
 from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import timestamp
 from research.study_results import TESTS, STATUSES, index as original_index
@@ -24,7 +25,7 @@ def normalized_feedback(messages):
 
 
 def read_study(directory: Path):
-    plan = json.loads((directory / 'manifest.json').read_text())
+    plan = json.loads((directory / 'manifest.json').read_text()); tasks.of_plan(plan)
     if digest(canonical({k: v for k, v in plan.items() if k != 'fingerprint'})) != plan['fingerprint']: raise ValueError('Iteration fingerprint mismatch')
     runs, reports, records = [], {}, {}
     for row in plan['schedule']:
@@ -147,7 +148,7 @@ def save(identifier: str):
              '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |']
     if study['plan'].get('evaluationNote'): lines[4:4] = [study['plan']['evaluationNote'], '']
     for row in study['summary']['conditions']:
-        security = [c for c in row['checks'] if c['suite'] == 'security_v1' and c['name'] != 'validRecordRoundTrip']
+        security = [c for c in row['checks'] if c['suite'] == 'security_v1' and c['name'] != tasks.current().positive_check]
         fail, evaluated = sum(c['fail'] for c in security), sum(c['executed'] for c in security)
         lines += [f"| {row['id']} | {row['attempts']} | {row['firstFullFunctional']} | {row['fullFunctional']} | {row['compiled']} | {fail}/{evaluated} | {10 * row['attempts'] - evaluated} | {row['modelSubmissions']} |"]
     lines += ['', 'All per-test and trajectory observations are retained in results.json; exact requests, responses and intermediate evaluations are retained in the archived runtime directory. This is exploratory development, not a confirmatory significance claim.', '']

@@ -67,7 +67,11 @@ def calibrate(output):
 
 
 def audit(identifier, output):
+    from research import tasks
     study = read_study(ROOT / '.local/iterations' / identifier)
+    if tasks.current().key != 'highscore':
+        output.mkdir(parents=True, exist_ok=True); note = {'id': output.name, 'sourceIteration': identifier, 'results': [], 'note': 'no amplification audit for this task'}
+        write_atomic(output / 'results.json', note); write_atomic(ROOT / 'research/iterations' / identifier / 'amplification-audit.json', note); print(json.dumps({'audited': 0, 'task': tasks.current().key})); return
     if not study['summary']['complete']: raise ValueError('Wait for the fixed code schedule to complete')
     output.mkdir(parents=True, exist_ok=False)
     observations = []
