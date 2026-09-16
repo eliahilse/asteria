@@ -103,3 +103,21 @@ agentic ones do.
 One response reads 0.1 M input tokens in 1.2 to 1.9 minutes per artifact.
 An agentic trajectory reads 0.8 M without and 1.0 M with a document in
 about two minutes, 1.4 M in 2.7 minutes with the judge.
+
+\paragraph{The second task.}
+Achievements separates what Highscore did not
+(Table~\ref{tab:results-ach}). Under one response no artifact compiles,
+with or without a document: the feature touches five game classes, and
+an exact-edit response gets at least one of them wrong. With repository
+tools and feedback the control compiles 90\% and passes 78\% of the
+security checks, failing the points overflow and the oversized line in
+every compiled artifact; the full document takes the checks to 95\% and
+makes 5 of 10 artifacts pass everything, all five in Generation, while
+Reuse loses three functional artifacts; the high-level document is
+within a point on the checks at 3 of 10 all-pass. The judge, which
+changed little for Highscore, costs here: compilation falls to 60\%,
+functional artifacts to 4 of 10 and all-pass to 1, because a cancelled
+submission on a five-class integration leaves too few attempts to reach
+a compiling one. An Achievements trajectory reads 1.4 to 1.5 M input
+tokens in about three and a half minutes, 2.0 M in 4.5 minutes with the
+judge.
