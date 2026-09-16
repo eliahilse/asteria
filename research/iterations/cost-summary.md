@@ -276,6 +276,8 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | a03d-s3 | reuse_sb__agentic__static | 5 | 56 | 9,193,510 | 0 | 107,044 | 44,674 | 19.8 | 21.5 |
 | a03e-guard | generation_s__agentic__static-guard | 5 | 100 | 8,217,291 | 0 | 154,855 | 57,141 | 23.5 | 29.4 |
 | a03e-guard | reuse_sb__agentic__static-guard | 5 | 115 | 11,557,080 | 0 | 138,036 | 58,413 | 21.7 | 30.4 |
+| a04-reuse | reuse_sb__agentic__none | 5 | 43 | 6,965,085 | 0 | 99,070 | 37,360 | 17.0 | 19.1 |
+| a04-reuse | reuse_sb__agentic__static | 5 | 53 | 8,939,868 | 0 | 95,604 | 36,447 | 17.9 | 20.4 |
 
 ## Acquisitions (context agent)
 
