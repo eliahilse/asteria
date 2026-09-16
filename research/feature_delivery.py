@@ -54,6 +54,27 @@ No security context or security-test feedback is supplied in this delivery calib
 '''
 
 
+def targets() -> tuple:
+    """The attached target sources of the current task (feature_delivery.TARGETS is the Highscore constant)."""
+    from research import tasks
+    return tasks.current().targets
+
+
+def protocol_text() -> str:
+    """The delivery protocol of the current task: the shared paragraphs around the task's own integration paragraph; identical to PROTOCOL for Highscore."""
+    from research import tasks
+    task = tasks.current()
+    return PROTOCOL.replace('Highscore feature', f'{task.name} feature').replace(TASK_PARAGRAPH, task.delivery_text)
+
+
+TASK_PARAGRAPH = '''Include actual edits to the supplied game classes to connect the feature to the live lifecycle
+and menu. A standalone Highscore class does not complete this task. Recording must happen
+when the live game ends a run, using its real score, player name and elapsed survival time.
+Time units: storeRun's survivalTime and getSurvivalTimes() use milliseconds, matching
+ApoMarioLevel.getPassedTime(). Preserve that value when recording and persisting a run;
+convert milliseconds to mm:ss only when rendering the highscore board.'''
+
+
 def apply_changes(files: dict[str, str], action: dict, lenient: bool = False) -> dict[str, str]:
     """`lenient=True` (declared per round as delivery 'lenient'): a new file that names an existing file replaces it whole, as the prior study's pipeline does; edits stay exact."""
     if not isinstance(action, dict) or set(action) != {'new_files', 'edits'}: raise ValueError('Return new_files and edits')
@@ -82,7 +103,7 @@ def apply_changes(files: dict[str, str], action: dict, lenient: bool = False) ->
 
 def original_sources():
     files, origins = {}, {}
-    for name in TARGETS:
+    for name in targets():
         raw, origin = source_attachment('ApoMario.' + name.removesuffix('.java'))
         files[name] = raw.decode('utf-8', errors='replace').replace('\r\n', '\n')
         origins[name] = {**origin, 'sha256': digest(raw), 'normalizedSha256': digest(files[name].encode())}

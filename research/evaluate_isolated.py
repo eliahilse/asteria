@@ -13,6 +13,7 @@ import tempfile
 from unittest.mock import patch
 
 from research import evaluate_response as original
+from research import tasks
 from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import write_atomic
 
@@ -37,7 +38,7 @@ def evaluate_response(text: str, output: Path, identity=None):
             return run(actual, *args, **kwargs)
     with patch.object(subprocess, 'run', side_effect=isolated):
         report = original.evaluate_response(text, output, identity)
-    report['protocol'] = PROTOCOL
+    report['protocol'] = f'{tasks.current().key}-response-v2-isolated-home'
     report['inputHashes']['research/evaluate_isolated.py'] = digest(wrapper_source)
     (output / 'evaluator-wrapper.py').write_bytes(wrapper_source)
     report['environment']['jvmFilesystemIsolation'] = 'Fresh user.home, HOME and java.io.tmpdir for every functional and security-probe JVM; original working directories and test contracts retained.'

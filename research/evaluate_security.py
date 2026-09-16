@@ -10,6 +10,7 @@ import json
 import os
 import platform
 import re
+from research import tasks
 import shutil
 import subprocess
 import tempfile
@@ -39,9 +40,9 @@ def find_jdk() -> Path:
 
 
 def check(jdk: Path, classpath: str, target: str, name: str, timeout: int = 15) -> dict:
-    source = "research/security/SecurityProbe.java"
+    task = tasks.current(); source = f"research/security/{task.probe_source}"
     with tempfile.TemporaryDirectory(prefix="asteria-probe-") as directory:
-        command = [str(jdk / "java"), "-Xmx64m", "-Djava.awt.headless=true", "-cp", classpath, "research.security.SecurityProbe", target, name, str(Path(directory) / "scores.dat")]
+        command = [str(jdk / "java"), "-Xmx64m", "-Djava.awt.headless=true", "-cp", classpath, task.probe_main, target, name, str(Path(directory) / task.store_file)]
         try:
             result = subprocess.run(command, capture_output=True, text=True, cwd=directory, timeout=timeout,
                                     env={"PATH": str(jdk), "LANG": "en_US.UTF-8"})
@@ -49,7 +50,7 @@ def check(jdk: Path, classpath: str, target: str, name: str, timeout: int = 15) 
             matches = re.findall(r"^ASTERIA_RESULT\t(\w+)\t(.*)$", output, re.M)
             if matches:
                 status, detail = matches[-1]
-            elif result.returncode == 0 and name == "largePersistedRecordSet":
+            elif result.returncode == 0 and name == task.large_check:
                 status, detail = "pass", "One million valid persisted records were rejected or loaded within the declared heap/time and retained-record limits."
             else:
                 status, detail = "infrastructure_error", "Probe produced no structured result; inspect diagnostics."
@@ -72,16 +73,17 @@ def evaluate(output: Path, controls_only: bool = False) -> dict:
                    "javac": subprocess.check_output([str(jdk / "javac"), "-version"], stderr=subprocess.STDOUT, text=True).strip(),
                    "platform": platform.platform(), "heap": "64 MiB per check", "timeout": "15 seconds per check", "target_api": "Java 8", "compilation_scope": "Saved Highscore classes linked to original ApoMario.jar; UI integration results remain historical."}
     inputs = {str(p.relative_to(ROOT)): digest(p.read_bytes()) for p in [Path(__file__), JAR, *sorted(SOURCES.glob("*.java"))]}
-    report = {"schemaVersion": 1, "protocol": PROTOCOL, "evaluatedAt": datetime.now(timezone.utc).isoformat(), "environment": environment, "inputHashes": inputs, "controls": [], "runs": [],
+    task = tasks.current(); checks = list(task.checks)
+    report = {"schemaVersion": 1, "protocol": task.security_protocol, "evaluatedAt": datetime.now(timezone.utc).isoformat(), "environment": environment, "inputHashes": inputs, "controls": [], "runs": [],
               "limitations": ["Convenience sample of historically compiling outputs, evaluated after generation. Not a preregistered context-effect experiment.", "Input rejection checks are explicit requirements, not independently confirmed vulnerabilities.", "Canary uses a test-only classpath class; hook dispatch does not establish a production gadget chain or RCE.", "Resource checks establish behavior for finite fixtures under declared limits, not universal boundedness.", "Original model outputs and historical observations are preserved; no code repair or model generation occurs."]}
     with tempfile.TemporaryDirectory(prefix="asteria-security-") as directory:
         temporary = Path(directory)
         control_classes = temporary / "controls/classes"
         compiled = compile_sources(jdk, sorted(SOURCES.glob("*.java")), control_classes)
         if compiled.returncode: raise RuntimeError("Controls did not compile: " + compiled.stderr)
-        for target in ("SafeHighscore", "WeakHighscore"):
-            observations = [check(jdk, str(control_classes), f"research.security.{target}", name) for name in CHECKS]
-            expected = {name: "pass" if target == "SafeHighscore" or name == "validRecordRoundTrip" else "fail" for name in CHECKS}
+        for target in task.controls:
+            observations = [check(jdk, str(control_classes), f"research.security.{target}", name) for name in checks]
+            expected = {name: "pass" if target == task.controls[0] or name == task.positive_check else "fail" for name in checks}
             passed = all(t["status"] == expected[t["name"]] for t in observations)
             report["controls"].append({"target": target, "expected": expected, "validated": passed, "checks": observations})
             print(f"CONTROL {target}: {'validated' if passed else 'FAILED'}", flush=True)

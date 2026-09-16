@@ -14,7 +14,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from research.import_evidence import ROOT, TEST_NAMES, canonical, digest
+from research import tasks
+from research.import_evidence import ROOT, canonical, digest
 from research import evaluate_security as security
 from research.model_adapter import validate_response
 from research.run_experiment import frozen_manifest, timestamp, write_atomic
@@ -38,7 +39,7 @@ def stable_import_index(gr):
 
 def junit_checks(suite: str, output: str, exit_code: int | None) -> list[dict]:
     """Only infer unnamed passes after a consistent complete JUnit execution."""
-    names = TEST_NAMES[suite]
+    names = tasks.current().test_names[suite]
     ok = re.search(r'OK\s*\((\d+)\s+tests?\)', output)
     failure = re.search(r'Tests run:\s*(\d+),\s*Failures:\s*(\d+)', output)
     failures = dict(re.findall(r'^\d+\)\s+(\w+)\([^\n]+\)\n([^\n]*)', output, re.M))
@@ -78,18 +79,18 @@ def response_from_observation(path: Path, manifest_path: Path) -> tuple[str, dic
 
 def evaluate_response(text: str, output: Path, identity: dict | None = None) -> dict:
     # Output creation is exclusive, so even an interrupted report is preserved.
-    jdk = security.find_jdk()
+    jdk = security.find_jdk(); task = tasks.current(); TEST_NAMES = task.test_names
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     (output / 'response.txt').write_text(text)
-    report = {'schemaVersion': 1, 'protocol': 'highscore-response-v1', 'status': 'started',
+    report = {'schemaVersion': 1, 'protocol': f'{task.key}-response-v1', 'status': 'started', 'task': task.key,
               'startedAt': timestamp(), 'inputKind': 'response_file', **(identity or {}),
               'responseSha256': digest(text.encode()), 'checks': [], 'functionalSuccess': None,
               'security': None, 'jointSuccess': None}
     inputs = [Path(__file__).resolve(), ROOT / 'research/evaluate_security.py', security.JAR,
               Path(legacy.__file__).resolve(), *sorted(security.SOURCES.glob('*.java')),
               *[ROOT / 'vamos-artifact/Pipeline' / p for p in ['run.py', 'autonomous_runner.py', 'invoked_runner.py', 'Features.csv', 'Prompts.csv', 'task_config.json']],
-              *sorted((ROOT / 'vamos-artifact/Tests').glob('*Highscore*Test.java')),
+              *sorted((ROOT / 'vamos-artifact/Tests').glob(f'*{task.name}*Test.java')),
               ROOT / 'vamos-artifact/Tests/IntegrationDriver.java', *sorted(legacy.LIB.glob('*.jar'))]
     distribution = ROOT / 'apogames/Java/ApoMario'
     inputs += [p for directory in ('levels', 'replay') for p in sorted((distribution / directory).rglob('*')) if p.is_file()]
@@ -137,18 +138,18 @@ def evaluate_response(text: str, output: Path, identity: dict | None = None) -> 
                     missing = lambda suite, names: [{'suite': suite, 'name': name, 'status': 'not_run', 'detail': 'No complete Java files extracted from response.'} for name in names]
                     report.update(status='evaluated', mainCompilation='fail', parseStatus='no_java', functionalSuccess=False, jointSuccess=False,
                                   checks=[c for suite in ('unit', 'invoked', 'autonomous') for c in missing(suite, TEST_NAMES[suite])],
-                                  security={'protocol': security.PROTOCOL, 'status': 'not_run', 'checks': missing('security_v1', security.CHECKS), 'controls': None})
+                                  security={'protocol': task.security_protocol, 'status': 'not_run', 'checks': missing('security_v1', list(task.checks)), 'controls': None})
                     return report
                 if any(not re.fullmatch(r'[A-Za-z_$][\w$]*\.java', name) for name in files): raise ValueError('Unsafe generated filename')
                 sanitized = legacy.sanitize_and_persist(gr, files, 'response')
                 report['sanitizedHashes'] = {p: digest(code.encode()) for p, code in sanitized.items()}
-                main = gr.integrate_compile_test('Highscore', files, run_id='response')
+                main = gr.integrate_compile_test(task.name, files, run_id='response')
                 report['mainCompilation'] = 'pass' if main['compilation_success'] else 'fail'
                 report['authorResults'] = {'unit': main}
                 if main['compilation_success']:
-                    report['authorResults']['invoked'] = invoked.run_invoked(files, 'Highscore', 'response')
-                    report['authorResults']['autonomous'] = auto.run_autonomous(files, 'Highscore', 'response')
-                suite_classes = {'unit': 'ApoMarioHighscoreTest', 'invoked': 'ApoMarioHighscoreCouplingTest', 'autonomous': 'ApoMarioHighscoreWiringTest'}
+                    report['authorResults']['invoked'] = invoked.run_invoked(files, task.name, 'response')
+                    report['authorResults']['autonomous'] = auto.run_autonomous(files, task.name, 'response')
+                suite_classes = task.suite_classes
                 for suite, cls in suite_classes.items():
                     call = next((c for c in reversed(calls) if 'org.junit.runner.JUnitCore' in c['command'] and c['command'][-1].endswith('.' + cls)), None)
                     if call:
@@ -158,13 +159,13 @@ def evaluate_response(text: str, output: Path, identity: dict | None = None) -> 
                 report['functionalSuccess'] = report['mainCompilation'] == 'pass' and all(t['status'] == 'pass' for t in report['checks'])
                 controls = security.evaluate(work / 'controls.json', controls_only=True)
                 source_root = output / 'author-evidence/sanitized_generated/response'
-                sources = [p for p in source_root.rglob('ApoMarioHighscore*.java') if p.name != 'ApoMarioHighscorePanel.java']
-                compiled = security.compile_sources(jdk, [security.SOURCES / 'SecurityProbe.java', *sources], work / 'feature/classes')
-                observed = [security.check(jdk, str(work / 'feature/classes') + os.pathsep + str(security.JAR), 'apoMario.game.panels.ApoMarioHighscore', name) for name in security.CHECKS] if compiled.returncode == 0 and sources else []
+                sources = [p for p in source_root.rglob(task.feature_glob) if p.name not in task.feature_exclude]
+                compiled = security.compile_sources(jdk, [security.SOURCES / task.probe_source, *sources], work / 'feature/classes')
+                observed = [security.check(jdk, str(work / 'feature/classes') + os.pathsep + str(security.JAR), task.feature_class, name) for name in task.checks] if compiled.returncode == 0 and sources else []
                 if not observed:
-                    observed = [{'suite': 'security_v1', 'name': name, 'status': 'compile_error', 'detail': compiled.stderr or 'No Highscore class extracted'} for name in security.CHECKS]
+                    observed = [{'suite': 'security_v1', 'name': name, 'status': 'compile_error', 'detail': compiled.stderr or f'No {task.name} class extracted'} for name in task.checks]
                 statuses = {c['status'] for c in observed}
-                report['security'] = {'protocol': security.PROTOCOL, 'status': 'pass' if statuses == {'pass'} else ('fail' if 'fail' in statuses else 'unknown'), 'checks': observed, 'controls': controls}
+                report['security'] = {'protocol': task.security_protocol, 'status': 'pass' if statuses == {'pass'} else ('fail' if 'fail' in statuses else 'unknown'), 'checks': observed, 'controls': controls}
                 report['jointSuccess'] = report['functionalSuccess'] and report['security']['status'] == 'pass'
                 report['status'] = 'evaluated'
             (output / 'harness.log').write_text(log.getvalue())
