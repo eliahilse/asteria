@@ -35,6 +35,7 @@ def prior_cells(path: Path = PRIOR) -> dict[tuple[str, str], dict]:
 
 
 def our_cells(iteration: str, root: Path = ROOT) -> dict[str, dict]:
+    """Per cell: n, delivered, compiled, functional and per-suite pass counts from the local run records; without them (a clean checkout) the published qualified analysis supplies n, compiled and functional, the rest is None."""
     out: dict[str, dict] = {}
     runs = root / '.local/iterations' / iteration / 'runs'
     for record_path in sorted(runs.glob('*/record.json')):
@@ -54,7 +55,9 @@ def our_cells(iteration: str, root: Path = ROOT) -> dict[str, dict]:
     if analysis.exists():
         for c in json.loads(analysis.read_text())['conditions']:
             cell = c['condition'].split('__')[0]
-            if cell in out: out[cell]['issues'] = (c['issues']['failed'], c['issues']['unresolved'], c['issues']['evaluated'] - c['issues']['failed'], c['issues']['plannedChecks'])
+            if cell not in out:  # no local run records (a clean checkout, CI): the published analysis carries n, compiled and functional; the per-suite counts need the records
+                out[cell] = {'n': c['n'], 'delivered': None, 'compiled': c['compiled'], 'functional': c['withinBudgetFull'], 'unit': None, 'invoked': None, 'autonomous': None, 'fromAnalysis': True}
+            out[cell]['issues'] = (c['issues']['failed'], c['issues']['unresolved'], c['issues']['evaluated'] - c['issues']['failed'], c['issues']['plannedChecks'])
     return out
 
 

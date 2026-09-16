@@ -67,7 +67,9 @@ CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.js
 
 
 def calibration_path() -> Path:
-    return ROOT / tasks.current().calibration_report
+    """The current task's evaluator reference; Highscore keeps the module constant so tests can point it elsewhere."""
+    task = tasks.current()
+    return CALIBRATION if task.key == 'highscore' else ROOT / task.calibration_report
 ITERATIONS = ROOT / '.local/iterations'
 TIMEOUT = 600
 FROZEN_SOURCES = ('agentic_delivery.py', 'iteration_runner.py', 'feature_delivery.py', 'model_adapter.py', 'evaluate_response.py',

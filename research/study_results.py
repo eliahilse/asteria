@@ -122,8 +122,11 @@ def study(path: Path, *, public=False) -> dict:
     return {'plan': plan, 'summary': summarize(plan, observations, reports), 'runs': compact}
 
 
-def index(public=False):
-    return {'local': not public, 'tests': TESTS, 'studies': [study(p, public=public) for p in manifests() if not public or '.local' not in p.parts]}
+def index(public=False, task: str | None = None):
+    """Every base study, or only those of one task (manifest `task`, compared case-insensitively; a manifest without one is Highscore)."""
+    def of_task(path: Path) -> bool:
+        return task is None or str(json.loads(path.read_text()).get('task') or 'highscore').lower() == task.lower()
+    return {'local': not public, 'tests': TESTS, 'studies': [study(p, public=public) for p in manifests() if (not public or '.local' not in p.parts) and of_task(p)]}
 
 
 if __name__ == '__main__':
