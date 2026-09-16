@@ -356,7 +356,7 @@ function addSecurityAndProvenance(wb: ExcelJS.Workbook, data: MatrixData, option
       [id, 'Changed measurements', qualification?.changes.length ?? null]);
     for (const acquisition of study.plan.acquisitions ?? []) definitions.push([id, `Context ${acquisition.id}`,
       `${acquisition.method} / ${acquisition.strategy}; ${acquisition.items} items; repository snapshot ${acquisition.snapshotFingerprint}; task ${acquisition.taskSha256}`]);
-    for (const note of study.plan.deviations) definitions.push([id, 'Protocol note', note]);
+    for (const note of study.plan.deviations ?? []) definitions.push([id, 'Protocol note', note]);
   }
   const provenance = wb.addWorksheet('Provenance');
   reportTable(provenance, ['Study', 'Field', 'Meaning / value'], definitions);

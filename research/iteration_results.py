@@ -168,6 +168,6 @@ if __name__ == '__main__':
         save(args.iteration)
     elif args.write_public:
         directory = ROOT / 'workbench/public/data'; directory.mkdir(parents=True, exist_ok=True)
-        (directory / 'original-matrix.json').write_bytes(canonical(original_index(public=True)))
+        (directory / 'original-matrix.json').write_bytes(canonical(original_index(public=True, task='highscore')))  # the Highscore matrix study alone; matrix.json carries every task
         (directory / 'matrix.json').write_bytes(canonical(index(public=True)))
     else: print(json.dumps(index(iteration=args.iteration)))
