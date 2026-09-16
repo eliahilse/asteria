@@ -49,9 +49,12 @@ def select(baseline: Path, output: Path) -> dict:
     return selection
 
 
-def acquisition_task(method: str) -> str:
+def acquisition_task(method: str, task_name: str | None = None) -> str:
+    if task_name is None:
+        from research import tasks
+        task_name = tasks.current().name
     with (ROOT / 'vamos-artifact/Pipeline/Prompts.csv').open(encoding='utf-8-sig') as handle:
-        prompt = next(r['Prompt'] for r in csv.DictReader(handle) if r['Task'] == 'Highscore' and r['Method'] == method)
+        prompt = next(r['Prompt'] for r in csv.DictReader(handle) if r['Task'] == task_name and r['Method'] == method)
     feature = prompt.split('Feature:', 1)[1].split('\n\nTask:', 1)[0].strip()
     task = prompt.split('\n\nTask:', 1)[1].split('. ', 1)[0].strip() + '.'
     requirements = prompt.split('Implementation Requirements:', 1)[1].split('\n\nInstructions:', 1)[0].strip()

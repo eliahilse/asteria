@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 import fcntl
 import importlib
 import json
+import os
 from pathlib import Path
 import random
 import re
@@ -21,6 +22,8 @@ import subprocess
 import sys
 
 from research import iteration_runner as delivery
+from research import tasks
+from research import feature_delivery
 from research.context_repository import operate, snapshot
 from research.evaluate_integrated import evaluate_response
 from research.feature_delivery import MODEL, SETTINGS, TARGETS, TOOL, apply_changes, original_sources
@@ -32,7 +35,11 @@ from research.run_experiment import timestamp, write_atomic
 from research.security_followup import acquisition_task, repository_input
 
 PROTOCOL = 'agentic-delivery-v1'
-EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'
+EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'  # the Highscore protocol; evaluation_protocol() gives the current task's
+
+
+def evaluation_protocol() -> str:
+    return f'{tasks.current().key}-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
 SIDECARS = ('none', 'static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
 GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
@@ -56,7 +63,11 @@ def kind_parts(kind) -> tuple[str, ...]:
     if len(set(parts) & set(INJECT_KINDS)) > 1 or len(set(parts) & set(GATE_KINDS + GUARD_KINDS)) > 1: raise ValueError(f'At most one injection kind and one judge kind per arm: {kind!r}')
     return parts
 DEFAULT_MAX_TURNS, DEFAULT_MAX_SUBMISSIONS = 24, 5
-CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'
+CALIBRATION = ROOT / '.local/calibration/integrated-security-reference/report.json'  # Highscore; calibration_path() gives the current task's
+
+
+def calibration_path() -> Path:
+    return ROOT / tasks.current().calibration_report
 ITERATIONS = ROOT / '.local/iterations'
 TIMEOUT = 600
 FROZEN_SOURCES = ('agentic_delivery.py', 'iteration_runner.py', 'feature_delivery.py', 'model_adapter.py', 'evaluate_response.py',
@@ -94,8 +105,9 @@ WORDS = {1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five'}
 def delivery_system(max_submissions: int, parent_plan: dict | None = None) -> str:
     """The I01 system text with the declared budget, as budget_sensitivity did for I05–I09; checked against the parent's stored bytes."""
     original = 'up to three submissions'
-    if delivery.SYSTEM.count(original) != 1: raise ValueError('Unexpected delivery system text')
-    system = delivery.SYSTEM.replace(original, f'up to {WORDS[max_submissions]} submissions')
+    base_system = delivery.SYSTEM if tasks.current().key == 'highscore' else delivery.SYSTEM.replace(feature_delivery.TASK_PARAGRAPH, tasks.current().delivery_text).replace('Highscore feature', f'{tasks.current().name} feature').replace('The menu must call or render the highscore view; an unused new view/getter is insufficient.', 'The menu must call or render the new view; an unused new view/getter is insufficient.')
+    if base_system.count(original) != 1: raise ValueError('Unexpected delivery system text')
+    system = base_system.replace(original, f'up to {WORDS[max_submissions]} submissions')
     if parent_plan and parent_plan.get('system') is not None and parent_plan.get('maxSubmissions') == max_submissions and parent_plan['system'] != system:
         raise ValueError('Derived delivery system differs from the parent iteration system')
     return system
@@ -142,7 +154,8 @@ def resolve_settings(reasoning_effort: str | None = None) -> dict:
 
 def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_inserts: dict[str, Path] | None,
             parent: str | Path = 'i07-operational-replication', *, max_turns=DEFAULT_MAX_TURNS, max_submissions=DEFAULT_MAX_SUBMISSIONS,
-            directory: Path | None = None, reasoning_effort: str | None = None, delivery_mode: str = 'strict') -> dict:
+            directory: Path | None = None, reasoning_effort: str | None = None, delivery_mode: str = 'strict', bootstrap_calibration: bool = False) -> dict:
+    task = tasks.current(); base = ROOT / task.study_dir
     arms = normalize_arms(arms); context_inserts = dict(context_inserts or {})
     if not re.fullmatch(r'[a-z0-9][a-z0-9_-]+', identifier) or not cells or len(set(cells)) != len(cells) or not 1 <= repetitions <= 30: raise ValueError('Invalid iteration plan')
     if delivery_mode not in ('strict', 'lenient'): raise ValueError('delivery must be strict or lenient')
@@ -151,12 +164,16 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
     parent_dir = parent if isinstance(parent, Path) else ITERATIONS / parent
     parent_plan = json.loads((parent_dir / 'manifest.json').read_text())
     if digest(canonical({k: v for k, v in parent_plan.items() if k != 'fingerprint'})) != parent_plan['fingerprint']: raise ValueError('Parent iteration fingerprint mismatch')
-    baseline = json.loads((delivery.BASE / 'manifest.json').read_text())
-    sources = {source_key(p): digest(p.read_bytes()) for p in [*[ROOT / 'research' / name for name in FROZEN_SOURCES], delivery.BASE / 'manifest.json', parent_dir / 'manifest.json']}
-    calibration = json.loads(CALIBRATION.read_text())
-    if calibration['protocol'] != EVALUATION_PROTOCOL or not calibration['functionalSuccess']:
-        raise ValueError('The corrected evaluator must reproduce its reference before collection')
-    sources.update(calibration['inputHashes'])
+    baseline = json.loads((base / 'manifest.json').read_text())
+    sources = {source_key(p): digest(p.read_bytes()) for p in [*[ROOT / 'research' / name for name in FROZEN_SOURCES], ROOT / 'research/tasks.py', base / 'manifest.json', parent_dir / 'manifest.json']}
+    if calibration_path().exists():
+        calibration = json.loads(calibration_path().read_text())
+        if calibration['protocol'] != evaluation_protocol() or not calibration['functionalSuccess']:
+            raise ValueError('The corrected evaluator must reproduce its reference before collection')
+        sources.update(calibration['inputHashes']); calibration_sha = digest(calibration_path().read_bytes())
+    elif bootstrap_calibration:
+        calibration_sha = None  # declared bootstrap round of a new task: its first fully passing artifact becomes the reference
+    else: raise ValueError(f'No evaluator reference for task {task.key}; run a bootstrap round or add {task.calibration_report}')
     for name, sha in sources.items():
         if digest((ROOT / name).read_bytes()) != sha: raise ValueError(f'Calibrated input changed: {name}')
     repositories, conditions = {}, []
@@ -174,8 +191,8 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
             repositories[method] = {'method': method, 'snapshotFingerprint': snap['fingerprint'], 'indexFile': str(path.relative_to(directory)),
                                     'indexSha256': digest(index.encode()), 'files': len(snap['files']), 'omitted': len(snap['omitted']),
                                     'sourceLines': sum(f['lines'] for f in snap['files'])}
-        original = (delivery.BASE / parent_condition['promptFile']).read_bytes()
-        sources[source_key(delivery.BASE / parent_condition['promptFile'])] = digest(original)
+        original = (base / parent_condition['promptFile']).read_bytes()
+        sources[source_key(base / parent_condition['promptFile'])] = digest(original)
         attachments = original.decode().split('\n\n--- BEGIN ATTACHED', 1)[1]
         prompt = (acquisition_task(method) + '\n\n--- BEGIN ATTACHED' + attachments).replace('\r\n', '\n')
         for arm in arms:
@@ -206,11 +223,11 @@ def prepare(identifier: str, cells: list[str], arms, repetitions: int, context_i
         block = [{'runId': f'{identifier}__{c["id"]}__r{repetition}', 'condition': c['id'], 'repetition': repetition} for c in conditions]
         rng.shuffle(block); schedule.extend(block)
     system, single = agentic_system(max_turns, max_submissions), delivery_system(max_submissions, parent_plan)
-    plan = {'id': identifier, 'phase': 'agentic_delivery', 'protocol': PROTOCOL, 'evaluationProtocol': EVALUATION_PROTOCOL, 'createdAt': timestamp(),
+    plan = {'id': identifier, 'phase': 'agentic_delivery', 'protocol': PROTOCOL, 'evaluationProtocol': evaluation_protocol(), 'task': task.key, 'createdAt': timestamp(),
         'model': MODEL, 'settings': resolve_settings(reasoning_effort), 'delivery': delivery_mode, 'maxSubmissions': max_submissions, 'maxTurns': max_turns,
         'system': single, 'systemSha256': digest(single.encode()), 'systemAgentic': system, 'systemAgenticSha256': digest(system.encode()),
         'tools': {'single_shot': TOOL, 'agentic': ACT}, 'arms': arms, 'repositories': list(repositories.values()), 'conditions': conditions, 'schedule': schedule,
-        'sourceHashes': sources, 'calibrationReportSha256': digest(CALIBRATION.read_bytes()),
+        'sourceHashes': sources, 'calibrationReportSha256': calibration_sha,
         'parentIteration': {'id': parent_plan['id'], 'fingerprint': parent_plan['fingerprint'],
                             'purpose': 'Supplies the frozen repository inputs and the single-shot reference protocol; agentic and sidecar arms are new.'},
         'analysis': {'primary': f'Full functional success within {max_submissions} submissions and {max_turns} tool turns / all planned trajectories; first-submission success reported separately.',
@@ -247,7 +264,7 @@ def load_sidecar(spec: str | None):
 
 
 def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | None = None) -> dict:
-    plan = validate(manifest)
+    plan = validate(manifest); os.environ['ASTERIA_TASK'] = plan.get('task', 'highscore')  # every task-dependent module reads the task from here
     if plan.get('protocol') != PROTOCOL: raise ValueError('Not an agentic-delivery manifest')
     row = next(r for r in plan['schedule'] if r['runId'] == run_id)
     condition = next(c for c in plan['conditions'] if c['id'] == row['condition'])
@@ -457,7 +474,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
                 try:
                     if action == 'submit_feature_changes':
                         arguments = {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
-                        if [n for n in TARGETS if apply_changes(files, arguments)[n] == original[n]]: raise ValueError('missing edits')
+                        if [n for n in tasks.current().required_edits if apply_changes(files, arguments)[n] == original[n]]: raise ValueError('missing edits')
                     else:
                         arguments = {k: v for k, v in payload.items() if k in ('query', 'paths', 'files') and v is not None}
                         operate(snap, {'action': action, 'query': payload.get('query'), 'paths': payload.get('paths'), 'files': payload.get('files')})
@@ -515,7 +532,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
             try:
                 changes = json.loads(response['output_text']) if mode == 'single_shot' else {'new_files': payload.get('new_files'), 'edits': payload.get('edits')}
                 candidate = apply_changes(files, changes, lenient=plan.get('delivery') == 'lenient')
-                missing = [name for name in TARGETS if candidate[name] == original[name]]
+                missing = [name for name in tasks.current().required_edits if candidate[name] == original[name]]
                 if missing: raise ValueError('Missing required game integration edits: ' + ', '.join(missing))
             except (ValueError, KeyError, TypeError) as error:
                 submission['status'] = 'invalid_changes'; feedback = {'deliveryError': str(error), 'applied': False}
@@ -595,7 +612,7 @@ def trajectory(manifest: Path, run_id: str, sidecar=None, command: list[str] | N
 
 def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 8: raise ValueError('Use 1–8 workers')
-    plan = validate(manifest)
+    plan = validate(manifest); os.environ['ASTERIA_TASK'] = plan.get('task', 'highscore')
     kinds = [set(kind_parts(c['sidecar'])) for c in plan['conditions']]
     if sidecar_spec is None and any(k & set(INJECT_KINDS + GATE_KINDS) for k in kinds): raise ValueError('Adaptive, ast and gate conditions need --sidecar module:attribute')
     if sidecar_spec is None and any(k & set(GUARD_KINDS) for k in kinds): raise ValueError('Guard conditions need --sidecar module:attribute')
@@ -677,12 +694,13 @@ if __name__ == '__main__':
     parser.add_argument('--max-turns', type=int, default=DEFAULT_MAX_TURNS)
     parser.add_argument('--max-submissions', type=int, default=DEFAULT_MAX_SUBMISSIONS)
     parser.add_argument('--reasoning-effort', choices=EFFORTS, help='generator reasoning effort for this round (default: the shared setting)')
+    parser.add_argument('--bootstrap-calibration', action='store_true', help='declare a first round of a task that has no evaluator reference yet')
     parser.add_argument('--delivery', choices=('strict', 'lenient'), default='strict', help='lenient: a new file naming an existing file replaces it whole')
     args = parser.parse_args()
     if args.prepare:
         inserts = {key: Path(value) for key, value in (item.split('=', 1) for item in args.insert)}
         plan = prepare(args.prepare, args.cells.split(','), args.arms.split(','), args.repetitions, inserts, args.parent,
-                       max_turns=args.max_turns, max_submissions=args.max_submissions, reasoning_effort=args.reasoning_effort, delivery_mode=args.delivery)
+                       max_turns=args.max_turns, max_submissions=args.max_submissions, reasoning_effort=args.reasoning_effort, delivery_mode=args.delivery, bootstrap_calibration=args.bootstrap_calibration)
         print(f"{plan['id']}: {len(plan['conditions'])} conditions; {len(plan['schedule'])} trajectories; {plan['fingerprint']}")
     elif not args.manifest: parser.error('--manifest is required')
     elif args.summary: print(json.dumps(summary(args.manifest.parent), indent=2))

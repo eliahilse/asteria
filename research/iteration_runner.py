@@ -25,7 +25,12 @@ Include actual edits to ALL THREE existing target files: ApoMarioLevel.java, Apo
 The menu must call or render the highscore view; an unused new view/getter is insufficient.
 Complete modified files are reconstructed by the harness. Deliver edits via the tool, not code fences or prose.
 '''
-BASE = ROOT / 'research/studies/highscore-paper-luna-v2'
+BASE = ROOT / 'research/studies/highscore-paper-luna-v2'  # the Highscore study; base_dir() gives the current task's
+
+
+def base_dir():
+    from research import tasks
+    return ROOT / tasks.current().study_dir
 
 
 def freeze(path: Path, value):
@@ -126,7 +131,8 @@ def trajectory(manifest: Path, run_id: str, command: list[str]):
             messages.append({'role': 'assistant', 'content': response['output_text']})
             try:
                 candidate = apply_changes(files, json.loads(response['output_text']))
-                missing = [name for name in TARGETS if candidate[name] == original[name]]
+                from research import tasks as _tasks
+                missing = [name for name in _tasks.current().required_edits if candidate[name] == original[name]]
                 if missing: raise ValueError('Missing required game integration edits: ' + ', '.join(missing))
             except (ValueError, KeyError, TypeError) as error:
                 submission['status'] = 'invalid_changes'; feedback = {'deliveryError': str(error), 'applied': False}

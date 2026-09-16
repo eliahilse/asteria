@@ -16,6 +16,7 @@ from unittest.mock import patch
 
 from research import evaluate_isolated as isolated
 from research import evaluate_security as security
+from research import tasks
 from research.import_evidence import ROOT, digest
 from research.run_experiment import write_atomic
 
@@ -52,14 +53,14 @@ def evaluate_response(text: str, output: Path, identity=None):
         shutil.copytree(classes, destination, dirs_exist_ok=True)
         empty = destination.parent / 'empty-source'; empty.mkdir(exist_ok=True)
         command = [str(jdk / 'javac'), '--release', '8', '-encoding', 'UTF-8', '-sourcepath', str(empty),
-                   '-cp', str(classes) + os.pathsep + str(security.JAR), '-d', str(destination), str(security.SOURCES / 'SecurityProbe.java')]
+                   '-cp', str(classes) + os.pathsep + str(security.JAR), '-d', str(destination), str(security.SOURCES / tasks.current().probe_source)]
         compiled = subprocess.run(command, capture_output=True, text=True, timeout=120)
         state['probeCompilation'] = {'command': command, 'exitCode': compiled.returncode, 'stdout': compiled.stdout, 'stderr': compiled.stderr}
         return compiled
 
     with patch.object(subprocess, 'run', side_effect=capture), patch.object(security, 'compile_sources', side_effect=compile_probe):
         report = isolated.evaluate_response(text, output, identity)
-    report['protocol'] = PROTOCOL
+    report['protocol'] = f'{tasks.current().key}-response-v3-integrated-security'
     report['inputHashes']['research/evaluate_integrated.py'] = digest(wrapper_source)
     (output / 'integrated-evaluator-wrapper.py').write_bytes(wrapper_source)
     report['environment']['securityClassPath'] = 'SecurityProbe plus the exact successful whole-game compilation, before test classes are added; original game jar remains the final classpath fallback.'
