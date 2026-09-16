@@ -256,6 +256,14 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i33a-s1 | reuse_sb__agentic__static | 5 | 37 | 5,561,817 | 0 | 67,184 | 24,418 | 12.1 | 13.8 |
 | i33b-s3 | generation_s__agentic__static | 5 | 49 | 4,676,139 | 0 | 65,899 | 18,656 | 11.8 | 13.5 |
 | i33b-s3 | reuse_sb__agentic__static | 5 | 34 | 5,049,796 | 0 | 71,745 | 17,265 | 10.9 | 13.1 |
+| a01-bootstrap | generation_s__agentic__none | 3 | 32 | 3,569,191 | 0 | 37,965 | 17,317 | 8.8 | 10.6 |
+| a01-bootstrap | reuse_sb__agentic__none | 3 | 34 | 5,460,140 | 164,689 | 48,674 | 21,864 | 15.9 | 17.6 |
+| a02a-s1 | generation_s__single_shot__static | 2 | 2 | 183,744 | 0 | 26,355 | 9,669 | 3.6 | 3.6 |
+| a02a-s1 | reuse_sb__single_shot__static | 1 | 1 | 138,251 | 0 | 10,145 | 4,660 | 1.6 | 1.7 |
+| a02b-s2 | generation_s__single_shot__none | 5 | 5 | 450,935 | 0 | 48,136 | 22,701 | 7.6 | 7.9 |
+| a02b-s2 | generation_s__single_shot__static | 5 | 5 | 486,205 | 0 | 51,937 | 25,517 | 8.6 | 8.9 |
+| a02b-s2 | reuse_sb__single_shot__none | 5 | 5 | 682,600 | 0 | 57,938 | 25,667 | 8.9 | 9.0 |
+| a02b-s2 | reuse_sb__single_shot__static | 5 | 5 | 716,405 | 0 | 67,236 | 28,961 | 10.2 | 10.2 |
 
 ## Acquisitions (context agent)
 
@@ -283,9 +291,15 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | agent-da3b9e79e63c4e318a1de1c345c482d2 | v11 | dataflow | Reuse | 20 | 3.4 | 631,583 | 528,896 | 10,272 | 1,400 | 15 |
 | agent-d747acce46b24ff9829ee60331499780 | v12 | dataflow | Generation | 20 | 3.5 | 495,512 | 415,232 | 10,388 | 1,004 | 18 |
 | agent-9ac24a9788654c35b906e5c160b7f5bf | v12 | dataflow | Reuse | 22 | 3.4 | 528,495 | 438,528 | 9,499 | 1,341 | 17 |
+| agent-28d8934efea04d32915630c117eaebc7 | v13 | dataflow | Generation | 26 | 3.6 | 708,997 | 617,216 | 9,928 | 1,135 | 17 |
 | agent-e17388c0f392492097a30057adc9d571 | v13 | dataflow | Generation | 54 | 3.7 | 471,836 | 373,760 | 10,766 | 787 | 18 |
 | agent-bb48045468d14b118c8c967ea3d9d3d8 | v13 | dataflow | Reuse | 34 | 4.2 | 1,041,748 | 934,656 | 12,099 | 2,580 | 17 |
+| agent-e81b7c3e74ae4b0295a0c95a6eb19230 | v13 | dataflow | Reuse | 64 | 4.5 | 438,508 | 325,888 | 11,834 | 2,569 | 17 |
+| agent-28e9b8ad0b8d4771989b9aa4d9b538ce | v13 | generic | Generation | 0 | 0.9 | 15,482 | 0 | 2,640 | 411 | 12 |
 | agent-afab1ce1bbd147128e3cf0cf3d200942 | v13 | generic | Generation | 0 | 1.0 | 15,390 | 0 | 2,980 | 516 | 14 |
+| agent-6552ac785f1642dc85b2873f4022c090 | v13 | generic | Reuse | 0 | 0.7 | 15,505 | 0 | 2,066 | 184 | 8 |
 | agent-8fbcde8f37434d5599817e4dd7cf3e53 | v13 | generic | Reuse | 0 | 0.7 | 15,429 | 0 | 1,989 | 254 | 10 |
 | agent-43a90b15b26b4be59c09192a2ce42443 | v13 | highlevel | Generation | 14 | 1.8 | 304,058 | 233,728 | 4,702 | 746 | 16 |
+| agent-b05a670024724e63ba46417c63921233 | v13 | highlevel | Generation | 26 | 1.5 | 152,024 | 98,304 | 4,459 | 635 | 14 |
+| agent-830fb53723484cf78ef351086059e0aa | v13 | highlevel | Reuse | 12 | 1.5 | 250,940 | 159,488 | 4,077 | 749 | 15 |
 | agent-a467c89d79d34295b2fb266e70f99e8c | v13 | highlevel | Reuse | 34 | 2.0 | 326,901 | 255,232 | 5,928 | 1,029 | 16 |
