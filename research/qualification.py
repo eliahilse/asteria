@@ -62,9 +62,12 @@ def apply_available(study):
 
 
 def save(identifier):
+    from research import tasks
     from research.iteration_results import index
     data = index(iteration=identifier)
-    data['studies'][0], metadata = apply_available(data['studies'][0])
+    if tasks.of_plan(data['studies'][0]['plan']).key != 'highscore':  # the amplification audit and its fixture exist for the Highscore store only
+        metadata = {'protocol': 'none', 'note': 'No qualification audit for this task; the probe itself reports unknown when a store encoding cannot be amplified.', 'changes': []}
+    else: data['studies'][0], metadata = apply_available(data['studies'][0])
     data['measurementQualification'] = metadata
     write_atomic(ROOT / 'research/iterations' / identifier / 'qualified-results.json', data)
     print(f"{identifier}: {len(metadata['changes'])} measurements qualified as unknown; all original outcomes retained")

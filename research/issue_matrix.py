@@ -16,27 +16,39 @@ import csv
 import json
 from pathlib import Path
 
+from research import tasks
 from research.import_evidence import ROOT
 
 # Protocol order from research/security/PROTOCOL.md; the positive check is reported separately.
-ISSUE_CHECKS = ['rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName',
-                'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet']
-POSITIVE_CHECK = 'validRecordRoundTrip'
-POSITIVE_LABEL = f'{POSITIVE_CHECK} (positive persistence check, not an issue)'
-TOTAL_LABEL = f'Total ({len(ISSUE_CHECKS)} issue checks)'
+class _Checks:
+    """The current task's checks, resolved when read so one module serves both tasks."""
+    def __iter__(self): return iter(tasks.current().issue_checks)
+    def __len__(self): return len(tasks.current().issue_checks)
+    def __getitem__(self, i): return tasks.current().issue_checks[i]
+    def __contains__(self, x): return x in tasks.current().issue_checks
+ISSUE_CHECKS = _Checks()
+class _Positive(str):
+    def __new__(cls): return str.__new__(cls, '')
+    def __eq__(self, other): return other == tasks.current().positive_check
+    def __hash__(self): return hash(tasks.current().positive_check)
+    def __str__(self): return tasks.current().positive_check
+    def __format__(self, spec): return format(tasks.current().positive_check, spec)
+POSITIVE_CHECK = _Positive()
+def POSITIVE_LABEL_(): return f'{tasks.current().positive_check} (positive persistence check, not an issue)'
+def TOTAL_LABEL_(): return f'Total ({len(tasks.current().issue_checks)} issue checks)'
 REASONS = {
     'not_run': 'check not executed',
-    'unknown': 'precondition not established by the qualification audit (for largePersistedRecordSet: the large-record precondition), so the outcome is unknown',
+    'unknown': 'precondition not established (for the large-store check: the amplification precondition), so the outcome is unknown',
     'compile_error': 'final artifact failed the security-suite compilation',
     'infrastructure_error': 'harness failure',
 }
 INTERPRETATION = (
     'Read every cell as failed / unresolved / passed out of a fixed denominator: N per check for each condition '
-    f'and {len(ISSUE_CHECKS)} × N for the ten-check total. Unresolved outcomes (not run, unknown, compile error, '
+    'and 10 × N for the ten-check total. Unresolved outcomes (not run, unknown, compile error, '
     'infrastructure error) are not passes and are never removed from the denominator, so cells are comparable '
     'across conditions without per-cell denominators. Failed counts are repeated contract failures across '
     'trajectories, not distinct vulnerabilities; CWE ids label the weakness category a check probes, not a finding. '
-    f'{POSITIVE_CHECK} is the positive persistence control and is excluded from the total.'
+    'The positive persistence check is excluded from the total.'
 )
 
 
@@ -47,7 +59,7 @@ def cwe_mapping(path: Path = ROOT / 'research/security/cwe-mapping.json') -> dic
     entries = raw.get('checks', raw) if isinstance(raw, dict) else {}
     mapping = {name: list(entry['cwes'] if isinstance(entry, dict) else entry) for name, entry in entries.items()}
     if any(not isinstance(cwe, str) for ids in mapping.values() for cwe in ids): raise ValueError('CWE mapping must list CWE ids as strings')
-    return mapping
+    return {**mapping, **{k: list(v) for k, v in tasks.current().cwe.items()}}
 
 
 def counts(summary: dict, name: str) -> dict | None:
@@ -73,8 +85,8 @@ def matrix(study: dict, cwes: dict[str, list[str]] | None = None) -> dict:
     for c in conditions:
         parts = [cell(by_id[c], name) for name in ISSUE_CHECKS]
         total[c] = None if any(p is None for p in parts) else tuple(sum(p[i] for p in parts) for i in range(3))
-    rows.append({'test': TOTAL_LABEL, 'cwe': '', 'kind': 'total', 'cells': total})
-    rows.append({'test': POSITIVE_LABEL, 'cwe': ', '.join(cwes.get(POSITIVE_CHECK, [])), 'kind': 'positive', 'cells': {c: cell(by_id[c], POSITIVE_CHECK) for c in conditions}})
+    rows.append({'test': TOTAL_LABEL_(), 'cwe': '', 'kind': 'total', 'cells': total})
+    rows.append({'test': POSITIVE_LABEL_(), 'cwe': ', '.join(cwes.get(POSITIVE_CHECK, [])), 'kind': 'positive', 'cells': {c: cell(by_id[c], POSITIVE_CHECK) for c in conditions}})
     unresolved = []
     for c in conditions:
         for name in [*ISSUE_CHECKS, POSITIVE_CHECK]:
@@ -128,7 +140,7 @@ def csv_rows(data: dict, cwes: dict[str, list[str]] | None = None) -> list[list]
 
 def write(iteration: str, root: Path = ROOT) -> tuple[Path, Path]:
     directory = root / 'research/iterations' / iteration
-    data = json.loads((directory / 'qualified-results.json').read_text())
+    data = json.loads((directory / 'qualified-results.json').read_text()); tasks.of_plan(data['studies'][0]['plan'])
     md, out = directory / 'issue-matrix.md', directory / 'issue-matrix.csv'
     md.write_text(render(data, iteration))
     with out.open('w', newline='') as handle: csv.writer(handle).writerows(csv_rows(data))
@@ -139,3 +151,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--iteration', required=True, help='Saved iteration id under research/iterations/')
     for path in write(parser.parse_args().iteration): print(f'Wrote {path.relative_to(ROOT)}')
+
+
+def __getattr__(name):  # PEP 562: the labels as module attributes, resolved for the current task when read
+    if name == 'POSITIVE_LABEL': return POSITIVE_LABEL_()
+    if name == 'TOTAL_LABEL': return TOTAL_LABEL_()
+    raise AttributeError(name)
