@@ -52,6 +52,7 @@ attested by the provider. All returned model identities are checked against Luna
 | A02b | Achievements under one response, no context and the v13 full document, Generation S and Reuse S+B, N = 5. No artifact of 20 compiles: 13 rejected at delivery, 7 delivered but not compiling as a whole game; every security check unresolved. The harder task is a compilation problem under one response. | [Findings](a02b-s2/findings.md) |
 | A02a, A02c | Achievements under one response with the v13 high-level (S1) and generic (S3) documents, N = 5 per cell, control in A02b: no artifact compiles either. | [A02a](a02a-s1/findings.md), [A02c](a02c-s3/findings.md) |
 | A03a | Achievements, agentic delivery without security context (control of A03b to A03e), N = 5 per cell: 9 of 10 compile, 7 of 10 functional; compiled artifacts pass 78 percent of the checks, every one failing the points overflow and the oversized line. | [Findings](a03a-none/findings.md), [issue matrix](a03a-none/issue-matrix.md) |
+| A03c | Achievements, agentic delivery with the v13 full document (S2), N = 5 per cell: Generation S 5 of 5 functional and 5 full hits (control 2 and 0); Reuse S+B 2 of 5 functional (control 5) with half the control's failed checks. Pooled: compiled 10 of 10, checks passed 95 percent (control 78), full hits 5 of 10 (control 0). | [Findings](a03c-s2/findings.md), [issue matrix](a03c-s2/issue-matrix.md) |
 
 Do not pool single responses with multi-submission trajectories or count the
 same saved code's remeasurement as a new model sample. Context acquisition itself
