@@ -2,7 +2,11 @@ import type { MatrixCondition, MatrixData, MatrixRun, MatrixStudy } from './expe
 import { fraction, type Fraction } from './combination-stats';
 
 export const paperContexts = ['None', 'S', 'F', 'B', 'S+F', 'S+B', 'F+B', 'S+F+B'];
-export const functionalSuites = { unit: 7, invoked: 4, autonomous: 5 } as const;
+export const functionalSuites = { unit: 7, invoked: 4, autonomous: 5 } as const;  // Highscore; taskSuites has every task
+export const taskSuites: Record<string, { unit: number; invoked: number; autonomous: number }> = { Highscore: { unit: 7, invoked: 4, autonomous: 5 }, Achievements: { unit: 16, invoked: 7, autonomous: 5 } };
+export const taskName = (plan: object): string => ({ highscore: 'Highscore', achievements: 'Achievements' })[(plan as { task?: string }).task ?? 'highscore'] ?? 'Highscore';
+export const suitesFor = (task: string) => taskSuites[task] ?? taskSuites.Highscore;
+export const totalFor = (task: string): number => { const s = suitesFor(task); return s.unit + s.invoked + s.autonomous; };
 export type FunctionalSuite = keyof typeof functionalSuites;
 export type ReportEntry = { study: string; task: string; method: string; context: string; security: string; condition: string; run: MatrixRun };
 export type ReportGroup = { study: MatrixStudy; task: string; method: string; security: string; entries: ReportEntry[] };
@@ -25,13 +29,13 @@ export function reportGroups(data: MatrixData): ReportGroup[] {
     const conditions = new Map(study.plan.conditions.map(c => [c.id, c]));
     for (const condition of conditions.values()) {
       const key = JSON.stringify([condition.strategy, condition.securityStrategy]);
-      if (!groups.has(key)) groups.set(key, { study, task: 'Highscore', method: condition.strategy, security: condition.securityStrategy, entries: [] });
+      if (!groups.has(key)) groups.set(key, { study, task: taskName(study.plan), method: condition.strategy, security: condition.securityStrategy, entries: [] });
     }
     for (const run of study.runs) {
       const condition = conditions.get(run.condition);
       if (!condition) throw new Error(`Run ${run.runId} has no matching condition.`);
       groups.get(JSON.stringify([condition.strategy, condition.securityStrategy]))!.entries.push({
-        study: study.plan.id, task: 'Highscore', method: condition.strategy, context: paperContext(condition),
+        study: study.plan.id, task: taskName(study.plan), method: condition.strategy, context: paperContext(condition),
         security: condition.securityStrategy, condition: condition.id, run,
       });
     }
@@ -41,8 +45,8 @@ export function reportGroups(data: MatrixData): ReportGroup[] {
 
 /** Match the report's compiled-run view; unknown checks never become failures. */
 export function functionalCounts(entries: ReportEntry[], suite?: FunctionalSuite, name?: string): CheckCounts {
-  const compiled = compiledEntries(entries);
-  const expected = compiled.length * (name ? 1 : suite ? functionalSuites[suite] : 16);
+  const compiled = compiledEntries(entries); const task = entries[0]?.task ?? 'Highscore'; const suites = suitesFor(task);
+  const expected = compiled.length * (name ? 1 : suite ? suites[suite] : totalFor(task));
   const checks = compiled.flatMap(e => e.run.checks.filter(c => Object.hasOwn(functionalSuites, c.suite) &&
     (!suite || c.suite === suite) && (!name || c.name === name)));
   const passed = checks.filter(c => c.status === 'pass').length;
@@ -59,9 +63,9 @@ export function passCounts(entries: ReportEntry[], suite?: FunctionalSuite, name
 }
 
 /** Passed functional checks / (16 × all recorded runs): the fixed-denominator view that keeps incomplete delivery visible. */
-export const allRunPassCounts = (entries: ReportEntry[]): Fraction => fraction(functionalCounts(entries).passed, 16 * entries.length, { units: entries.length });
+export const allRunPassCounts = (entries: ReportEntry[]): Fraction => fraction(functionalCounts(entries).passed, totalFor(entries[0]?.task ?? 'Highscore') * entries.length, { units: entries.length });
 export function allRunPassRate(entries: ReportEntry[]) {
-  return ratio(functionalCounts(entries).passed, 16 * entries.length);
+  return ratio(functionalCounts(entries).passed, totalFor(entries[0]?.task ?? 'Highscore') * entries.length);
 }
 
 export function suiteOutcome(entry: ReportEntry, suite: FunctionalSuite): string {

@@ -10,7 +10,15 @@ from research.evaluate_security import CHECKS
 from research.study_execution import evaluable
 
 TESTS = [{'id': f'{suite}.{name}', 'suite': suite, 'name': name, 'kind': 'security' if suite == 'security_v1' else 'functional'}
-         for suite, names in {**{k: TEST_NAMES[k] for k in ('unit', 'invoked', 'autonomous')}, 'security_v1': CHECKS}.items() for name in names]
+         for suite, names in {**{k: TEST_NAMES[k] for k in ('unit', 'invoked', 'autonomous')}, 'security_v1': CHECKS}.items() for name in names]  # Highscore
+
+
+def tests_for(task=None) -> list[dict]:
+    """The test list of a task (the Highscore constant TESTS for the default task)."""
+    from research import tasks
+    task = task or tasks.current()
+    return [{'id': f'{suite}.{name}', 'suite': suite, 'name': name, 'kind': 'security' if suite == 'security_v1' else 'functional'}
+            for suite, names in {**task.test_names, 'security_v1': list(task.checks)}.items() for name in names]
 STATUSES = ('pass', 'fail', 'not_run', 'unknown', 'compile_error', 'infrastructure_error')
 
 

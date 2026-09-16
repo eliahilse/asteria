@@ -48,6 +48,9 @@ def qualify(study, audit):
 
 
 def apply_available(study):
+    from research import tasks
+    if tasks.of_plan(study['plan']).key != 'highscore':  # the amplification audit and its fixture exist for the Highscore store only
+        return deepcopy(study), {'protocol': 'none', 'meaning': 'No qualification audit exists for this task; the probe itself reports unknown when a store encoding cannot be amplified, so qualified and raw outcomes are identical.', 'changes': []}
     path = ROOT / 'research/iterations' / study['plan']['id'] / 'amplification-audit.json'
     audit = json.loads(path.read_text())
     directory = ROOT / '.local/iterations' / audit['id']
@@ -65,9 +68,7 @@ def save(identifier):
     from research import tasks
     from research.iteration_results import index
     data = index(iteration=identifier)
-    if tasks.of_plan(data['studies'][0]['plan']).key != 'highscore':  # the amplification audit and its fixture exist for the Highscore store only
-        metadata = {'protocol': 'none', 'note': 'No qualification audit for this task; the probe itself reports unknown when a store encoding cannot be amplified.', 'changes': []}
-    else: data['studies'][0], metadata = apply_available(data['studies'][0])
+    data['studies'][0], metadata = apply_available(data['studies'][0])
     data['measurementQualification'] = metadata
     write_atomic(ROOT / 'research/iterations' / identifier / 'qualified-results.json', data)
     print(f"{identifier}: {len(metadata['changes'])} measurements qualified as unknown; all original outcomes retained")
