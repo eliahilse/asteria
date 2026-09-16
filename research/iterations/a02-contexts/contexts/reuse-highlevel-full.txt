@@ -1,0 +1,100 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Integrate a persistent three-achievement tracker into ApoMario by adapting the donor game's achievement state and connecting it to real run events, level completion, and the menu.
+
+Assets:
+- Achievement state [integrity]
+- Cross-session achievement store [availability]
+- Achievements menu panel [confidentiality]
+
+Trust boundaries:
+- Persistent store [entry point]: A local file the user can edit from Achievement store reader to Achievement state
+- Gameplay and level data [entry point]: Locally tampered or shared level content and replay-like run data from Level/gameplay event integration to Run counters and final achievement evaluation
+- Menu display: Persisted achievement identifiers from Achievement state to Dedicated menu panel
+
+[X1; change_risk; reasoned; tampering; CWE-20; CAPEC-122] A user-editable achievement store could add unknown identifiers, corrupt records, or remove valid progress.
+Task relevance: The feature persists unlocked achievements across sessions.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[X2; change_risk; reasoned; elevation_of_privilege; CWE-602; CAPEC-233] Untrusted level or integration data could forge counters and unlock achievements without the corresponding run events.
+Task relevance: Achievements must unlock from real gameplay and use the finished run's actual level values.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[X3; change_risk; reasoned; denial_of_service; CWE-400; CAPEC-125] Malformed or unavailable persistence data could prevent the menu from showing achievements or prevent newly earned progress from being saved.
+Task relevance: The feature requires a dedicated panel and cross-session preservation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R1; requirement; task; tampering; CWE-20; CAPEC-122] At the operation that reads the achievement store, accept only the three known identifiers POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL; reject malformed, unknown, or otherwise invalid records and report the rejection.
+Task relevance: Preserves the defined achievement vocabulary when local files are edited.
+Failure behavior: The invalid record is rejected and reported; the caller uses an empty achievement set so gameplay and the menu still operate.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1, related C1
+
+[R2; requirement; task; tampering; CWE-840] At the start of every run, reset points, enemy-kill count, and survived duration to zero while retaining the separately stored unlocked-achievement set.
+Task relevance: Prevents progress from one run carrying into another.
+Failure behavior: A run never reuses counters from an earlier run.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2, related C2
+
+[R3; requirement; task; elevation_of_privilege; CWE-602; CAPEC-233] At real gameplay event points, unlock POINTS_GOAL at at least 20,000 points, ENEMIES_GOAL at at least 3 kills, and TIME_GOAL above 60,000 milliseconds; unlock each achievement immediately when its threshold is reached.
+Task relevance: Defines the required thresholds and real-time behavior.
+Failure behavior: Invalid event values do not unlock an achievement; valid threshold-reaching events still take effect.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2, related C3
+
+[R4; requirement; task; elevation_of_privilege; CWE-20; CWE-602; CAPEC-233] When a level ends, perform a final evaluation from the supplied level's actual non-negative integer score, kill count, and elapsed duration, so achievements reached without an intermediate event are still recorded.
+Task relevance: Requires final evaluation through the level-end flow.
+Failure behavior: Invalid level-derived values are normalized by the integration caller to zero before evaluation; the final evaluation still runs.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2, related C4
+
+[R5; requirement; task; tampering; CWE- וש] Persist the allowlisted unlocked identifiers across sessions after an unlock and on explicit save, without allowing a failed save to undo the in-memory unlock.
+Task relevance: Preserves player progress between plays.
+Failure behavior: A write failure is reported and the newly unlocked achievement remains in memory for the current session.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1, mitigates X3, related C5
+
+[R6; requirement; task; information_disclosure; CWE-20] Expose the unlocked achievements through a dedicated menu panel that renders only the three allowlisted identifiers and remains usable when none are unlocked.
+Task relevance: Provides the required menu presentation.
+Failure behavior: Unknown or invalid identifiers are omitted from display while the panel renders its empty state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1, related C6
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-122] Use a strict parser at the store-reading operation with an allowlist and per-record textual length limit of 32 characters; reject and report malformed input.
+Task relevance: Protects persisted achievement state from local tampering.
+Failure behavior: The bad record is discarded and reported; the caller supplies an empty set rather than skipping achievement support.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-840] Make run initialization explicitly clear the three transient counters and any transient unlock candidates before gameplay begins.
+Task relevance: Enforces per-run isolation.
+Failure behavior: Stale counters are replaced with zero before the first gameplay event.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; elevation_of_privilege; CWE-20; CWE-190; CAPEC-233] At each counter-receiving operation, accept only non-negative integers: points in [0, Integer.MAX_VALUE], kills in [0, Integer.MAX_VALUE], and duration in [0, Long.MAX_VALUE]; retain only threshold state for kills at 3 and for points/duration once their thresholds are reached.
+Task relevance: Prevents forged negative or overflowing progress while preserving all valid threshold outcomes.
+Failure behavior: Out-of-domain values are rejected and reported; the gameplay caller normalizes a missing or invalid event value to zero before invoking the operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; elevation_of_privilege; CWE-20; CWE-602; CAPEC-233] At level-end integration, validate the level-derived score, kill count, and duration against their non-negative integer domains before calling final evaluation, substituting zero for missing or invalid values.
+Task relevance: Keeps final evaluation safe while ensuring the level-end effect still occurs.
+Failure behavior: Invalid derived data is reported and replaced with zero before evaluation, never silently accepted or used to skip evaluation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; denial_of_service; CWE-367; CAPEC-141] Use a bounded, application-owned persistence format containing at most 3 identifiers and write through a recoverable temporary-file/replace operation; report I/O failure without clearing memory.
+Task relevance: Preserves valid progress despite local storage failures.
+Failure behavior: A failed write is reported and current-session achievements remain available.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C6; control; reasoned; tampering; CWE-20] Build the dedicated panel from the fixed three-achievement allowlist and bound the displayed collection to 3 entries, evicting any excess invalid state rather than rejecting valid achievements.
+Task relevance: Keeps menu rendering predictable and task-specific.
+Failure behavior: Invalid or excess entries are omitted and the panel shows a valid empty or partial state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R6
+
+Uncertainty and limits:
+- This high-level context intentionally omits repository line anchors and verification items as requested.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

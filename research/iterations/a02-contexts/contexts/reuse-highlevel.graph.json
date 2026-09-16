@@ -1,0 +1,438 @@
+{
+ "schemaVersion": 1,
+ "angle": "requirements",
+ "summary": "Integrate a persistent three-achievement tracker into ApoMario by adapting the donor game's achievement state and connecting it to real run events, level completion, and the menu.",
+ "limitations": [
+  "This high-level context intentionally omits repository line anchors and verification items as requested."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Achievement state",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Cross-session achievement store",
+   "property": "availability"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Achievements menu panel",
+   "property": "confidentiality"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Persistent store",
+   "untrusted_input": "A local file the user can edit",
+   "source": "Achievement store reader",
+   "sink": "Achievement state",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Gameplay and level data",
+   "untrusted_input": "Locally tampered or shared level content and replay-like run data",
+   "source": "Level/gameplay event integration",
+   "sink": "Run counters and final achievement evaluation",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "Menu display",
+   "untrusted_input": "Persisted achievement identifiers",
+   "source": "Achievement state",
+   "sink": "Dedicated menu panel",
+   "entry_point": false
+  },
+  {
+   "id": "item:X1",
+   "kind": "change_risk",
+   "label": "A user-editable achievement store could add unknown identifiers, corrupt records, or remove valid progress.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-122"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "The feature persists unlocked achievements across sessions."
+  },
+  {
+   "id": "item:X2",
+   "kind": "change_risk",
+   "label": "Untrusted level or integration data could forge counters and unlock achievements without the corresponding run events.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-602"
+   ],
+   "capec": [
+    "CAPEC-233"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "Achievements must unlock from real gameplay and use the finished run's actual level values."
+  },
+  {
+   "id": "item:X3",
+   "kind": "change_risk",
+   "label": "Malformed or unavailable persistence data could prevent the menu from showing achievements or prevent newly earned progress from being saved.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-125"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": null,
+   "task_relevance": "The feature requires a dedicated panel and cross-session preservation."
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "At the operation that reads the achievement store, accept only the three known identifiers POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL; reject malformed, unknown, or otherwise invalid records and report the rejection.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-122"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The invalid record is rejected and reported; the caller uses an empty achievement set so gameplay and the menu still operate.",
+   "verification": null,
+   "task_relevance": "Preserves the defined achievement vocabulary when local files are edited."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "At the start of every run, reset points, enemy-kill count, and survived duration to zero while retaining the separately stored unlocked-achievement set.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-840"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "A run never reuses counters from an earlier run.",
+   "verification": null,
+   "task_relevance": "Prevents progress from one run carrying into another."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "At real gameplay event points, unlock POINTS_GOAL at at least 20,000 points, ENEMIES_GOAL at at least 3 kills, and TIME_GOAL above 60,000 milliseconds; unlock each achievement immediately when its threshold is reached.",
+   "basis": "task",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-602"
+   ],
+   "capec": [
+    "CAPEC-233"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Invalid event values do not unlock an achievement; valid threshold-reaching events still take effect.",
+   "verification": null,
+   "task_relevance": "Defines the required thresholds and real-time behavior."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "When a level ends, perform a final evaluation from the supplied level's actual non-negative integer score, kill count, and elapsed duration, so achievements reached without an intermediate event are still recorded.",
+   "basis": "task",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-20",
+    "CWE-602"
+   ],
+   "capec": [
+    "CAPEC-233"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Invalid level-derived values are normalized by the integration caller to zero before evaluation; the final evaluation still runs.",
+   "verification": null,
+   "task_relevance": "Requires final evaluation through the level-end flow."
+  },
+  {
+   "id": "item:R5",
+   "kind": "requirement",
+   "label": "Persist the allowlisted unlocked identifiers across sessions after an unlock and on explicit save, without allowing a failed save to undo the in-memory unlock.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE- וש"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "A write failure is reported and the newly unlocked achievement remains in memory for the current session.",
+   "verification": null,
+   "task_relevance": "Preserves player progress between plays."
+  },
+  {
+   "id": "item:R6",
+   "kind": "requirement",
+   "label": "Expose the unlocked achievements through a dedicated menu panel that renders only the three allowlisted identifiers and remains usable when none are unlocked.",
+   "basis": "task",
+   "threat": "information_disclosure",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Unknown or invalid identifiers are omitted from display while the panel renders its empty state.",
+   "verification": null,
+   "task_relevance": "Provides the required menu presentation."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "Use a strict parser at the store-reading operation with an allowlist and per-record textual length limit of 32 characters; reject and report malformed input.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-122"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The bad record is discarded and reported; the caller supplies an empty set rather than skipping achievement support.",
+   "verification": null,
+   "task_relevance": "Protects persisted achievement state from local tampering."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "Make run initialization explicitly clear the three transient counters and any transient unlock candidates before gameplay begins.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-840"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Stale counters are replaced with zero before the first gameplay event.",
+   "verification": null,
+   "task_relevance": "Enforces per-run isolation."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "At each counter-receiving operation, accept only non-negative integers: points in [0, Integer.MAX_VALUE], kills in [0, Integer.MAX_VALUE], and duration in [0, Long.MAX_VALUE]; retain only threshold state for kills at 3 and for points/duration once their thresholds are reached.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-20",
+    "CWE-190"
+   ],
+   "capec": [
+    "CAPEC-233"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Out-of-domain values are rejected and reported; the gameplay caller normalizes a missing or invalid event value to zero before invoking the operation.",
+   "verification": null,
+   "task_relevance": "Prevents forged negative or overflowing progress while preserving all valid threshold outcomes."
+  },
+  {
+   "id": "item:C4",
+   "kind": "control",
+   "label": "At level-end integration, validate the level-derived score, kill count, and duration against their non-negative integer domains before calling final evaluation, substituting zero for missing or invalid values.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-20",
+    "CWE-602"
+   ],
+   "capec": [
+    "CAPEC-233"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Invalid derived data is reported and replaced with zero before evaluation, never silently accepted or used to skip evaluation.",
+   "verification": null,
+   "task_relevance": "Keeps final evaluation safe while ensuring the level-end effect still occurs."
+  },
+  {
+   "id": "item:C5",
+   "kind": "control",
+   "label": "Use a bounded, application-owned persistence format containing at most 3 identifiers and write through a recoverable temporary-file/replace operation; report I/O failure without clearing memory.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-367"
+   ],
+   "capec": [
+    "CAPEC-141"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "A failed write is reported and current-session achievements remain available.",
+   "verification": null,
+   "task_relevance": "Preserves valid progress despite local storage failures."
+  },
+  {
+   "id": "item:C6",
+   "kind": "control",
+   "label": "Build the dedicated panel from the fixed three-achievement allowlist and bound the displayed collection to 3 entries, evicting any excess invalid state rather than rejecting valid achievements.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Invalid or excess entries are omitted and the panel shows a valid empty or partial state.",
+   "verification": null,
+   "task_relevance": "Keeps menu rendering predictable and task-specific."
+  }
+ ],
+ "edges": [
+  {
+   "from": "item:R1",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R1",
+   "to": "item:C1",
+   "type": "related"
+  },
+  {
+   "from": "item:R2",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R2",
+   "to": "item:C2",
+   "type": "related"
+  },
+  {
+   "from": "item:R3",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R3",
+   "to": "item:C3",
+   "type": "related"
+  },
+  {
+   "from": "item:R4",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R4",
+   "to": "item:C4",
+   "type": "related"
+  },
+  {
+   "from": "item:R5",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R5",
+   "to": "item:X3",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R5",
+   "to": "item:C5",
+   "type": "related"
+  },
+  {
+   "from": "item:R6",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R6",
+   "to": "item:C6",
+   "type": "related"
+  },
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C4",
+   "to": "item:R4",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C5",
+   "to": "item:R5",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C6",
+   "to": "item:R6",
+   "type": "satisfies"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "change_risk": 3,
+   "requirement": 6,
+   "control": 6
+  },
+  "edgesByType": {
+   "mitigates": 7,
+   "related": 6,
+   "satisfies": 6
+  },
+  "items": 15,
+  "anchoredItems": 0,
+  "entryPoints": 2,
+  "controls": 6,
+  "controlsWithEnforcementPoint": 0,
+  "itemsLinkedToRequirementOrRisk": 12,
+  "sinkSymbols": 124,
+  "sinkSymbolsAnchored": 0
+ },
+ "sha256": "c1990f5895b5bb73942c8d3b30d2ba89c17c7a3e1ef1ad0c370b5c4a7e540b8e"
+}

@@ -1,0 +1,200 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: dataflow) ---
+ApoMario currently has level-file loading, mutable in-memory run state, a game loop, and a menu/panel architecture, but no established achievement store, achievement panel, or achievement lifecycle integration was resolved in the inspected source. The feature must preserve unlocked-achievement integrity across sessions while keeping run counters isolated and gameplay-driven.
+
+Assets:
+- Unlocked achievement IDs persisted across sessions [integrity] @ ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants)
+- Per-run achievement progress and threshold evaluation [integrity] @ ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel#getPlayers()); ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints()); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)
+- Achievement panel/view and its displayed state [availability] @ ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D)); ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu); ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel#setMenu()); ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226 (apoMario.game.ApoMarioPanel)
+
+Trust boundaries:
+- Local achievement store boundary [entry point]: User-editable achievement-store bytes, including unknown IDs, malformed records, duplicates, excessive length, or oversized content. from The Path supplied to ApoMarioStateAchievements and the local filesystem; existing local persistence uses file streams in ApoMarioConstants and ApoIO. to The proposed achievement-store parser/loader and the unlocked-achievement collection used by getUnlockedAchievements() and the achievement panel. @ ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties()); ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants); ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO#readLevel(boolean,String,boolean)); ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO)
+- Level file and shared-level content boundary [entry point]: Binary level dimensions, tile values, enemy counts, coordinates, timing values, and other bytes from a local level file or shared level source. from ApoMarioLevelIO.readLevel(DataInputStream), reached through ApoIO file/network loading. to ApoMarioLevel state, including dimensions, time, players, enemies, and levelEntities, later read by recordRunEnd(ApoMarioLevel). @ ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)); ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO); ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO#readLevel(boolean,String,boolean)); ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO); ApoMario/src/apoMario/level/ApoMarioLevel.java:220-222 (apoMario.level.ApoMarioLevel#getEnemies()); ApoMario/src/apoMario/level/ApoMarioLevel.java:220-222 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel#getTime()); ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel)
+- Mutable gameplay and anti-cheat boundary [entry point]: Locally tampered or replay/editor/AI-influenced gameplay state, including mutable player points, level time, enemy visibility/death state, and externally selected AI or replay behavior. from Mutable public setters/accessors and gameplay code: player points are set directly, enemy death awards points, and the level loop advances time and entities. to The proposed achievement event calls and recordRunEnd(ApoMarioLevel), which determine POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL. @ ApoMario/src/apoMario/entity/ApoMarioPlayer.java:174-176 (apoMario.entity.ApoMarioPlayer#setPoints(int)); ApoMario/src/apoMario/entity/ApoMarioPlayer.java:174-176 (apoMario.entity.ApoMarioPlayer); ApoMario/src/apoMario/entity/ApoMarioEnemy.java:193-199 (apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)); ApoMario/src/apoMario/entity/ApoMarioEnemy.java:193-199 (apoMario.entity.ApoMarioEnemy); ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel); ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel#restart(boolean)); ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel)
+
+[O1; observation; observed] The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.
+Task relevance: The achievement service must be created and retained at an application-owned lifecycle point so it can load once, receive gameplay events, and serve the menu view.
+Inspected source: ApoMario/src/apoMario/ApoMarioComponent.java:100-162 (apoMario.ApoMarioComponent#init())
+Inspected source: ApoMario/src/apoMario/ApoMarioComponent.java:100-162 (apoMario.ApoMarioComponent)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel#init())
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137 (apoMario.game.ApoMarioPanel)
+Suggested verification: Trace construction and reuse across application initialization and menu/game transitions.
+
+[O2; observation; observed] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+Task relevance: These are the existing integration locations for gameplay-owned achievement updates and final run evaluation.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel#thinkTime(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioEnemy.java:193-199 (apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int))
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioEnemy.java:193-199 (apoMario.entity.ApoMarioEnemy)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:732-737 (apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int))
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:732-737 (apoMario.entity.ApoMarioPlayer)
+Suggested verification: Exercise coin collection, enemy kills, time advancement, player death, and level restart while observing achievement updates.
+
+[X1; existing_risk; observed; denial_of_service; CWE-20; CWE-400; CWE-789] The binary level parser reads width, height, time, tile values, enemy count, and per-enemy fields from a DataInputStream, allocates levelEntities from parsed dimensions, and loops according to parsed counts without an evident bounded-input validation step.
+Task relevance: A new recordRunEnd(ApoMarioLevel) that trusts parser-created level state could inherit malformed dimensions, counts, or values and cause denial of service or incorrect achievement evaluation.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO)
+Failure behavior: Existing behavior is not established as safe; the proposed achievement integration must not rely on unchecked level fields.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO)
+Suggested verification: Supply truncated, negative, zero, and very large dimensions/counts and verify parser rejection is reported without large allocation or unbounded looping.
+
+[X2; change_risk; reasoned; tampering; CWE-20; CWE-400; CWE-502; CAPEC-153; V5.1.1] If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.
+Task relevance: The store is a new persistent trust boundary and directly controls the achievement panel and getUnlockedAchievements().
+Failure behavior: The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Use malformed IDs, duplicates, blank records, overlong records, invalid encodings, and an oversized store; verify rejection is logged/reported and the panel remains usable with the fallback set.
+
+[X3; change_risk; reasoned; elevation_of_privilege; CWE-602; CWE-345; CAPEC-151; V4.1.3] If achievement unlocking is driven by menu actions, replay/editor state, or caller-supplied counters instead of the live level loop and actual level values, local tampering can unlock achievements without reaching the gameplay thresholds or can carry progress between runs.
+Task relevance: The task requires real-gameplay unlocking, immediate threshold handling, and no cross-run progress carry-over.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Failure behavior: Do not unlock from menu/display input or stale counters; retain existing unlocked IDs but reset run counters at each real run start and report invalid event values rather than applying them.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel#restart(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel)
+Suggested verification: Start two runs, inject menu/replay/editor events, and verify only live gameplay events and actual level values can unlock goals; verify counters are zero at the second run start.
+
+[R1; requirement; task; tampering; CWE-602; V4.1.3] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+Task relevance: Implements the three specified thresholds and immediate gameplay behavior.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Failure behavior: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer#getPoints())
+Inspected source: ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172 (apoMario.entity.ApoMarioPlayer)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel#getTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel)
+Suggested verification: Automated tests drive each public event method through values just below, equal to, and above every threshold, and an integration test confirms unlock timing during the live loop.
+Relations: mitigates X3
+
+[R2; requirement; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; V5.1.1] At the store parser/loader, accept only the three exact IDs POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL, with at most 3 retained records, each record no more than 64 UTF-8 bytes and the whole store no more than 1024 bytes; reject unknown, duplicate, malformed, or oversized input and report the rejection.
+Task relevance: Prevents a local user-editable store from changing the achievement namespace or causing unnecessary allocation.
+Failure behavior: Reject and report invalid store input; at the application integration point use an empty or last-valid unlocked set so achievement tracking and the panel still function.
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants)
+Suggested verification: Test every allowed ID, unknown IDs, duplicates, blank/overlong records, invalid UTF-8, and stores over 1024 bytes; verify exact rejection and fallback behavior.
+Relations: mitigates X2
+
+[R3; requirement; reasoned; denial_of_service; CWE-20; CWE-400; CWE-789; V5.1.1] At level decoding, validate every dimension, count, coordinate, time, and tile/enemy value before allocation or retention: dimensions and counts must be non-negative and within the game’s configured practical level bounds, score/duration-derived numbers must be non-negative integers, and invalid data must be rejected and reported before recordRunEnd reads it.
+Task relevance: Prevents shared or local level content from supplying malformed values that distort achievement evaluation or cause resource exhaustion.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO)
+Failure behavior: The decoder rejects and reports invalid level data; the caller substitutes the smallest valid fallback level/default values before invoking the decoder so normal game operation continues.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109 (apoMario.level.ApoMarioLevelIO)
+Suggested verification: Test negative, zero, oversized, truncated, and semantically invalid dimensions, counts, coordinates, times, and enum values; verify rejection occurs before allocation/loops and a valid fallback level remains playable.
+Relations: mitigates X1
+
+[R4; requirement; task; tampering; CWE-602; CWE-345; V4.1.3] At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().
+Task relevance: Ensures final evaluation uses authoritative run state and preserves progress across sessions.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Failure behavior: Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel#getPlayers())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel#getTime())
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399 (apoMario.level.ApoMarioLevel)
+Suggested verification: Construct levels with exact and invalid actual values, end runs in different orders, and verify only each run’s own values affect evaluation and save preserves all prior IDs.
+Relations: mitigates X3
+
+[R5; requirement; task; tampering; CWE-602; V4.1.3] At the dedicated menu panel/view, display the fixed three achievement IDs and their unlocked state from getUnlockedAchievements(), without allowing displayed text or menu input to mutate the stored set.
+Task relevance: Implements the required dedicated achievement view while preserving achievement-state integrity.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Failure behavior: If an unlocked list is missing or invalid, display the fixed three IDs as locked or use the last-valid set and report the data problem; keep menu navigation operational.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:347-391 (apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:347-391 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Open the achievement view before and after unlocking each ID, restart the application, and verify exactly three fixed IDs render with persisted states and navigation remains usable.
+Relations: mitigates X2
+
+[C1; control; reasoned; tampering; CWE-602; V4.1.3] At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.
+Task relevance: Enforces per-run isolation without losing already unlocked achievements.
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel#restart(boolean))
+Enforcement point: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel)
+Failure behavior: If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel#restart(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)
+Suggested verification: Run threshold progress, restart, and repeat; assert counters reset while previously unlocked IDs remain.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-20; CWE-400; CAPEC-153; V5.1.1] At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.
+Task relevance: Provides the required bounded allocation and fail-safe behavior for persistent achievement data.
+Failure behavior: Parser rejects and reports; caller falls back while preserving the primary game and display effect.
+Inspected source: ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO#readLevel(boolean,String,boolean))
+Inspected source: ApoMario/src/org/apogames/ApoIO.java:210-235 (org.apogames.ApoIO)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Fuzz the store with bounded and over-bound byte streams and verify no unbounded allocation, clamping, or silent substitution occurs.
+Relations: satisfies R2
+
+[C3; control; reasoned; tampering; CWE-20; CWE-602; V4.1.3] At the achievement panel renderer, iterate only the fixed three IDs and render state derived from a bounded defensive copy of getUnlockedAchievements(); treat null, unknown, duplicate, or overlong display data as locked/last-valid state and report it, without changing the store.
+Task relevance: Prevents persistence or display data from becoming executable menu state and bounds retained/displayed text.
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Enforcement point: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Failure behavior: Use locked/last-valid display state and report; do not suppress the achievement panel or mutate unlocked state.
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Pass null, unknown, duplicate, and oversized lists to the view adapter and verify bounded rendering, fixed IDs, no mutation, and continued navigation.
+Relations: satisfies R5
+
+[V1; verification; reasoned] Integration verification should trace beginRun, live addPoints/addEnemyKilled/addTimeSurvived calls, threshold unlock timing, recordRunEnd level evaluation, saveAcrossSessions, reload, and menu rendering across two independent runs.
+Task relevance: Covers the complete gameplay-to-persistence-to-view dataflow.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel#think(int))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu#render(Graphics2D))
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Use automated boundary-value tests plus a desktop restart test with a temporary store.
+Relations: verifies R1, verifies R4, verifies R5
+
+[V2; verification; reasoned; tampering; CWE-20; CWE-345; V5.1.1; V5.3.1] Verify store persistence under partial writes, malformed content, duplicate IDs, unknown IDs, and application restart; verify invalid store input is reported and fallback state still permits gameplay and the achievement panel to operate.
+Task relevance: Checks the local-file trust boundary and fail-safe persistence behavior.
+Enforcement point: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties())
+Enforcement point: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants)
+Failure behavior: A failed or invalid persistence operation must report the failure and preserve the last valid in-memory state while gameplay/display continue.
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants)
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants#loadProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:86-182 (apoMario.ApoMarioConstants)
+Suggested verification: Use a temporary store and fault injection for read/write failures, then assert exact unlocked IDs before and after restart.
+Relations: verifies R2, verifies C2
+
+[U1; unknown; observed] The inspected source does not establish where an ApoMarioStateAchievements instance, its Path, or its load/save lifecycle currently exists, nor which exact event marks the end of a real run versus replay, simulation, editor, timeout, death, or restart.
+Task relevance: The implementing model must resolve these integration edges before wiring achievement events and persistence.
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel#setGame(boolean,boolean))
+Inspected source: ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341 (apoMario.game.ApoMarioPanel)
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel#setAnalysis(boolean))
+Inspected source: ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233 (apoMario.level.ApoMarioLevel)
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:393-425 (apoMario.game.panels.ApoMarioMenu#releasedEnter())
+Inspected source: ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:393-425 (apoMario.game.panels.ApoMarioMenu)
+Suggested verification: Resolve and document the concrete constructor, store path, run-start, run-end, and menu-panel call edges in the implementation and add tests for each edge.
+
+[U2; unknown; observed; tampering; CWE-345; CWE-390; V5.3.1] The inspected source does not establish an authenticated or atomic persistence mechanism for achievement state; the existing Properties save writes directly to mario.properties and suppresses IOException details.
+Task relevance: The implementation must choose how to preserve integrity and report failures when a local user edits or interrupts a save.
+Enforcement point: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties())
+Enforcement point: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants)
+Failure behavior: Unknown until the new store design is resolved; verification must confirm failed saves are reported and do not silently replace valid state with partial data.
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants#saveProperties())
+Inspected source: ApoMario/src/apoMario/ApoMarioConstants.java:60-84 (apoMario.ApoMarioConstants)
+Suggested verification: Force permission, interruption, truncation, and concurrent-save failures and verify explicit reporting plus preservation of the last valid store.
+
+Uncertainty and limits:
+- The requested ApoMarioStateAchievements class and public members are not present in the inspected repository, so new-class anchors cannot be resolved here.
+- No concrete achievement store format, store path, cryptographic integrity design, or atomic-write mechanism is established by the existing source.
+- The exact real-run end event is unresolved; setAnalysis(false), player death, timeout, finish, restart, replay, simulation, and editor paths require implementation-level tracing.
+- Existing level parsing is only partially inspected for semantic validation beyond the shown dimensions, tiles, enemy records, and player/finish fields.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

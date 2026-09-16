@@ -1,0 +1,98 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+High-level guidance for adding gameplay achievements with per-run evaluation, cross-session persistence, and a dedicated menu view.
+
+Assets:
+- Achievement unlock state [integrity]
+- Per-run achievement measurements [integrity]
+- Achievements menu panel [availability]
+
+Trust boundaries:
+- Achievement persistence [entry point]: Locally editable achievement store contents from Desktop filesystem to Achievement state loader
+- Level-derived run results [entry point]: Values and entities from local or shared level content from Level file or level server to Finished-run achievement evaluator
+- Gameplay and menu interaction [entry point]: Local tampering with gameplay state or menu inputs from Desktop game process and user-controlled files to Achievement counters, unlock decisions, and panel display
+
+[X1; change_risk; reasoned; tampering; CWE-20; CAPEC-153] Achievement state could be forged or corrupted if persisted identifiers and values are trusted without validation.
+Task relevance: Cross-session unlock progress must remain meaningful despite editable local files.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: related R1
+
+[X2; change_risk; reasoned; elevation_of_privilege; CWE-602] Run progress could leak across runs or be awarded from manipulated level data if counters and final evaluation are not separated from persistent unlock state.
+Task relevance: Each achievement must use actual values from one completed run while unlocked achievements persist.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: related R2, related R3
+
+[X3; change_risk; reasoned; denial_of_service; CWE-400] Malformed persistence data or unbounded achievement display data could prevent the game or menu from functioning.
+Task relevance: The feature must remain usable when local storage is missing, damaged, or oversized.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: related R4, related R5
+
+[R1; requirement; task; tampering; CWE-20; CAPEC-153] At the operation that receives persisted achievement data, accept only the three known nonblank identifiers POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL, and retain at most three records with identifiers of at most 32 characters.
+Task relevance: Prevents local store tampering from creating arbitrary unlocks or excessive retained state.
+Failure behavior: Invalid records are rejected and reported; the caller uses an empty achievement set so gameplay and the menu still operate.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X1
+
+[R2; requirement; task; elevation_of_privilege; CWE-284] At the start of every run, reset points, enemy-kill count, and survived time to zero while leaving the cross-session unlocked set unchanged.
+Task relevance: Ensures progress does not carry across runs while previously unlocked achievements remain available.
+Failure behavior: A run with missing or invalid initial values starts from zero rather than inheriting prior progress.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R3; requirement; task; elevation_of_privilege; CWE-602] At the gameplay integration point, evaluate POINTS_GOAL at 20,000 non-negative points, ENEMIES_GOAL at three or more non-negative kills, and TIME_GOAL strictly above 60,000 non-negative milliseconds, using the finished level's actual run values and unlocking each goal as soon as its threshold is reached.
+Task relevance: Makes unlocks originate from real gameplay and preserves the exact threshold semantics.
+Failure behavior: Missing or invalid gameplay measurements are normalized to zero before evaluation; no achievement is awarded for an invalid threshold value.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X2
+
+[R4; requirement; reasoned; denial_of_service; CWE-400] At the persistence read operation, read no more than 4,096 bytes total, no more than 128 characters per line, and no more than 32 characters per field before retaining data.
+Task relevance: Bounds untrusted local storage without limiting any valid achievement set.
+Failure behavior: Oversized input is rejected and reported; the caller substitutes an empty set and continues.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X3
+
+[R5; requirement; reasoned; denial_of_service; CWE-400] At the menu panel boundary, display only the fixed three achievement identifiers and their unlocked state, with no more than three displayed records and bounded text lengths.
+Task relevance: Keeps the dedicated achievements view predictable and available even when storage is damaged.
+Failure behavior: Missing or invalid display data is shown as locked or omitted within the fixed panel layout; the panel remains navigable.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: mitigates X3
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-153] Use strict allowlisting and type/range validation at the persistence receiver, then report rejected records to the caller.
+Task relevance: Protects the integrity of stored unlock state.
+Failure behavior: Reject malformed, unknown, duplicate, or out-of-range records without clamping or substituting inside the receiver; the integration caller supplies an empty valid state.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C2; control; reasoned; elevation_of_privilege; CWE-284] Keep run counters in a run-scoped record initialized by beginRun and keep persistent unlock identifiers in a separate durable collection.
+Task relevance: Prevents old runs from contributing to a new run while preserving session-to-session unlocks.
+Failure behavior: If run initialization is incomplete, all current-run measurements default to zero and the prior persistent unlock set is not copied into counters.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; elevation_of_privilege; CWE-602] Wire score changes, enemy deaths, elapsed gameplay time, and level-end evaluation through the gameplay loop and perform the final recordRunEnd evaluation from normalized level values.
+Task relevance: Ensures unlocks are produced by actual game events and completed-run state.
+Failure behavior: A missing or invalid event value is normalized to zero before the achievement operation; the game continues without awarding that invalid event.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400] Use a bounded parser for the achievement store with a 4,096-byte total input limit, 128-character line limit, and 32-character field limit.
+Task relevance: Prevents malformed or oversized local files from exhausting resources.
+Failure behavior: The parser rejects and reports input exceeding any limit; the caller uses an empty state and preserves the feature's normal gameplay and menu behavior.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+[C5; control; reasoned; denial_of_service; CWE-400] Render the panel from the fixed allowlisted achievement catalog and bound the rendered collection to three records.
+Task relevance: Prevents persistence contents from controlling menu size or content.
+Failure behavior: Unknown or unavailable records are treated as locked or omitted, while the fixed panel remains available.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R5
+
+[C6; control; reasoned; tampering; CWE- мы] Write achievement state using a bounded, structured format with replacement-safe persistence and report write failures to the game integration layer.
+Task relevance: Preserves valid unlocks across sessions without allowing partial writes to corrupt the store.
+Failure behavior: A failed write is reported and the in-memory unlock state remains available for the current session; no fabricated success is shown.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+Uncertainty and limits:
+- The requested high-level guidance intentionally omits repository anchors and verification items.
+- The supplied schema permits angle values dataflow, requirements, and catalog; high-level is represented as requirements to remain schema-compatible.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---
