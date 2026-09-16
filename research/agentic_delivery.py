@@ -108,7 +108,7 @@ def delivery_system(max_submissions: int, parent_plan: dict | None = None) -> st
     base_system = delivery.SYSTEM if tasks.current().key == 'highscore' else delivery.SYSTEM.replace(feature_delivery.TASK_PARAGRAPH, tasks.current().delivery_text).replace('Highscore feature', f'{tasks.current().name} feature').replace('The menu must call or render the highscore view; an unused new view/getter is insufficient.', 'The menu must call or render the new view; an unused new view/getter is insufficient.')
     if base_system.count(original) != 1: raise ValueError('Unexpected delivery system text')
     system = base_system.replace(original, f'up to {WORDS[max_submissions]} submissions')
-    if parent_plan and parent_plan.get('system') is not None and parent_plan.get('maxSubmissions') == max_submissions and parent_plan['system'] != system:
+    if parent_plan and parent_plan.get('system') is not None and parent_plan.get('maxSubmissions') == max_submissions and parent_plan.get('task', 'highscore') == tasks.current().key and parent_plan['system'] != system:
         raise ValueError('Derived delivery system differs from the parent iteration system')
     return system
 
