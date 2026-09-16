@@ -1,0 +1,268 @@
+{
+ "schemaVersion": 1,
+ "angle": "requirements",
+ "summary": "Security context for a Java desktop game's locally persisted achievement data and menu display. No repository was inspected; all statements are prospective or reasoned from the feature description.",
+ "limitations": [
+  "No repository or source files were available or inspected, so no implementation anchors or repository-specific controls are identified.",
+  "The requested angle value \"generic\" is not represented in the supplied response schema enum; \"requirements\" is used as the closest schema-valid value."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Persisted achievement records",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Achievement feature and game availability",
+   "property": "availability"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Achievement data and processing path",
+   "property": "resistance"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Running-game progress boundary",
+   "untrusted_input": "Points, enemy-kill counts, and elapsed durations produced or supplied by gameplay code, including locally tampered values.",
+   "source": "Running game state and integration calls",
+   "sink": "Achievement state update and run-finalization operations",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Local achievement-store boundary",
+   "untrusted_input": "User-editable achievement-store bytes, lines, records, fields, identifiers, counters, and durations.",
+   "source": "Local persistence file",
+   "sink": "Achievement-store parser and loader",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "External-content boundary",
+   "untrusted_input": "Data loaded from outside the program, including shared level content that may influence run-finalization inputs.",
+   "source": "Shared level server or imported game content",
+   "sink": "Level decoder and achievement integration",
+   "entry_point": true
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "Achievement-state update and run-finalization operations must accept only their defined domains: achievement identifiers must be present and at most 64 characters; points, enemy counts, and durations must be non-negative integers, with durations limited to 86,400,000 milliseconds per run; invalid values must be rejected and reported. At the gameplay integration point, missing or invalid values must be normalized to stated safe defaults before those operations are called so valid gameplay effects still occur.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The receiving operation reports and rejects invalid input; the caller normalizes missing or invalid integration values to zero before calling it.",
+   "verification": null,
+   "task_relevance": "Protects threshold evaluation and stored unlock integrity while preserving achievement processing during malformed inputs."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "The achievement store must be treated as untrusted structured data, parsed without Java object deserialization or executable interpretation, and each file, line, record, field, identifier, and numeric value must be bounded before retention: at most 64 KiB per file, 4 KiB per line, 256 records, 64-character identifiers, and 32 characters per numeric field.",
+   "basis": "task",
+   "threat": "information_disclosure",
+   "cwe": [
+    "CWE-502",
+    "CWE-20",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-150",
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.5.1",
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The parser rejects and reports malformed, oversized, or unsupported data; valid records within bounds are retained, and excess retained records are evicted rather than causing valid input rejection.",
+   "verification": null,
+   "task_relevance": "Limits local-file attack surface and prevents achievement data from becoming code execution."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "Achievement persistence and menu loading must keep the game usable when the store is missing, malformed, truncated, unreadable, or partially invalid: preserve valid records where possible, otherwise use an empty achievement set, and never crash the game or suppress the current run's achievement evaluation.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-20",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-125"
+   ],
+   "asvs": [
+    "V5.1.1",
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The store operation reports the rejection and returns recoverable state; its caller substitutes an empty set before displaying or continuing persistence.",
+   "verification": null,
+   "task_relevance": "Maintains availability while allowing the primary unlock effect to proceed."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "The retained unlocked-achievement collection must be bounded to the three supported identifiers, evicting or ignoring unsupported retained entries after reporting them, while preserving every valid supported unlock.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400",
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-125"
+   ],
+   "asvs": [
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Unsupported or excess entries are reported and evicted; valid POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL entries are retained.",
+   "verification": null,
+   "task_relevance": "Prevents unbounded local data growth and keeps the dedicated achievements view predictable."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "Use domain validation at achievement update, final-evaluation, and store-parse operations, with explicit allowlisting of the three achievement identifiers and bounded non-negative integer parsing.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Invalid input is rejected and reported; the integration caller supplies zero for missing or invalid values before invoking the operation.",
+   "verification": null,
+   "task_relevance": "Enforces R1 at the operations receiving gameplay and persisted values."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "Implement a bounded streaming/text parser with fixed file, line, record, field, and identifier limits, and use an explicit non-executable format instead of Java object deserialization.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-502",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-150",
+    "CAPEC-125"
+   ],
+   "asvs": [
+    "V5.5.1",
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The parser reports and rejects malformed or oversized units; records that exceed the retention bound are evicted without rejecting valid records that fit.",
+   "verification": null,
+   "task_relevance": "Enforces R2 while retaining valid records and bounding resource use."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "Wrap store read, parse, and write failures in recoverable handling that reports the failure and supplies an empty achievement set to the menu or persistence caller.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-125"
+   ],
+   "asvs": [
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The receiving store operation reports the failure; the caller substitutes an empty set and continues the primary gameplay or display effect.",
+   "verification": null,
+   "task_relevance": "Enforces R3 and preserves game availability and run evaluation."
+  },
+  {
+   "id": "item:C4",
+   "kind": "control",
+   "label": "Use a fixed-size allowlisted achievement collection with capacity three and evict unsupported or excess records after reporting them.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-125"
+   ],
+   "asvs": [
+    "V14.2.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Excess or unsupported records are reported and evicted; supported valid records are not rejected because of the bound.",
+   "verification": null,
+   "task_relevance": "Enforces R4 and ensures the view retains all valid supported achievements."
+  }
+ ],
+ "edges": [
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C4",
+   "to": "item:R4",
+   "type": "satisfies"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "requirement": 4,
+   "control": 4
+  },
+  "edgesByType": {
+   "satisfies": 4
+  },
+  "items": 8,
+  "anchoredItems": 0,
+  "entryPoints": 3,
+  "controls": 4,
+  "controlsWithEnforcementPoint": 0,
+  "itemsLinkedToRequirementOrRisk": 8,
+  "sinkSymbols": 0,
+  "sinkSymbolsAnchored": 0
+ },
+ "sha256": "d5c0a889d8efeafc7c746e660cb23893350ad3f6d22cbd2bb18df1bbbed81ff5"
+}

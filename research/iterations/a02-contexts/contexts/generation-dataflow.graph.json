@@ -1,0 +1,3634 @@
+{
+ "schemaVersion": 1,
+ "angle": "dataflow",
+ "summary": "ApoMario currently has level-file loading, mutable in-memory run state, a game loop, and a menu/panel architecture, but no established achievement store, achievement panel, or achievement lifecycle integration was resolved in the inspected source. The feature must preserve unlocked-achievement integrity across sessions while keeping run counters isolated and gameplay-driven.",
+ "limitations": [
+  "The requested ApoMarioStateAchievements class and public members are not present in the inspected repository, so new-class anchors cannot be resolved here.",
+  "No concrete achievement store format, store path, cryptographic integrity design, or atomic-write mechanism is established by the existing source.",
+  "The exact real-run end event is unresolved; setAnalysis(false), player death, timeout, finish, restart, replay, simulation, and editor paths require implementation-level tracing.",
+  "Existing level parsing is only partially inspected for semantic validation beyond the shown dimensions, tiles, enemy records, and player/finish fields."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Unlocked achievement IDs persisted across sessions",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Per-run achievement progress and threshold evaluation",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Achievement panel/view and its displayed state",
+   "property": "availability"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Local achievement store boundary",
+   "untrusted_input": "User-editable achievement-store bytes, including unknown IDs, malformed records, duplicates, excessive length, or oversized content.",
+   "source": "The Path supplied to ApoMarioStateAchievements and the local filesystem; existing local persistence uses file streams in ApoMarioConstants and ApoIO.",
+   "sink": "The proposed achievement-store parser/loader and the unlocked-achievement collection used by getUnlockedAchievements() and the achievement panel.",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Level file and shared-level content boundary",
+   "untrusted_input": "Binary level dimensions, tile values, enemy counts, coordinates, timing values, and other bytes from a local level file or shared level source.",
+   "source": "ApoMarioLevelIO.readLevel(DataInputStream), reached through ApoIO file/network loading.",
+   "sink": "ApoMarioLevel state, including dimensions, time, players, enemies, and levelEntities, later read by recordRunEnd(ApoMarioLevel).",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "Mutable gameplay and anti-cheat boundary",
+   "untrusted_input": "Locally tampered or replay/editor/AI-influenced gameplay state, including mutable player points, level time, enemy visibility/death state, and externally selected AI or replay behavior.",
+   "source": "Mutable public setters/accessors and gameplay code: player points are set directly, enemy death awards points, and the level loop advances time and entities.",
+   "sink": "The proposed achievement event calls and recordRunEnd(ApoMarioLevel), which determine POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL.",
+   "entry_point": true
+  },
+  {
+   "id": "item:O1",
+   "kind": "observation",
+   "label": "The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.",
+   "basis": "observed",
+   "threat": null,
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": "Trace construction and reuse across application initialization and menu/game transitions.",
+   "task_relevance": "The achievement service must be created and retained at an application-owned lifecycle point so it can load once, receive gameplay events, and serve the menu view."
+  },
+  {
+   "id": "item:O2",
+   "kind": "observation",
+   "label": "A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.",
+   "basis": "observed",
+   "threat": null,
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": "Exercise coin collection, enemy kills, time advancement, player death, and level restart while observing achievement updates.",
+   "task_relevance": "These are the existing integration locations for gameplay-owned achievement updates and final run evaluation."
+  },
+  {
+   "id": "item:X1",
+   "kind": "existing_risk",
+   "label": "The binary level parser reads width, height, time, tile values, enemy count, and per-enemy fields from a DataInputStream, allocates levelEntities from parsed dimensions, and loops according to parsed counts without an evident bounded-input validation step.",
+   "basis": "observed",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-20",
+    "CWE-400",
+    "CWE-789"
+   ],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Existing behavior is not established as safe; the proposed achievement integration must not rely on unchecked level fields.",
+   "verification": "Supply truncated, negative, zero, and very large dimensions/counts and verify parser rejection is reported without large allocation or unbounded looping.",
+   "task_relevance": "A new recordRunEnd(ApoMarioLevel) that trusts parser-created level state could inherit malformed dimensions, counts, or values and cause denial of service or incorrect achievement evaluation."
+  },
+  {
+   "id": "item:X2",
+   "kind": "change_risk",
+   "label": "If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20",
+    "CWE-400",
+    "CWE-502"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.",
+   "verification": "Use malformed IDs, duplicates, blank records, overlong records, invalid encodings, and an oversized store; verify rejection is logged/reported and the panel remains usable with the fallback set.",
+   "task_relevance": "The store is a new persistent trust boundary and directly controls the achievement panel and getUnlockedAchievements()."
+  },
+  {
+   "id": "item:X3",
+   "kind": "change_risk",
+   "label": "If achievement unlocking is driven by menu actions, replay/editor state, or caller-supplied counters instead of the live level loop and actual level values, local tampering can unlock achievements without reaching the gameplay thresholds or can carry progress between runs.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-602",
+    "CWE-345"
+   ],
+   "capec": [
+    "CAPEC-151"
+   ],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "Do not unlock from menu/display input or stale counters; retain existing unlocked IDs but reset run counters at each real run start and report invalid event values rather than applying them.",
+   "verification": "Start two runs, inject menu/replay/editor events, and verify only live gameplay events and actual level values can unlock goals; verify counters are zero at the second run start.",
+   "task_relevance": "The task requires real-gameplay unlocking, immediate threshold handling, and no cross-run progress carry-over."
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-602"
+   ],
+   "capec": [],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.",
+   "verification": "Automated tests drive each public event method through values just below, equal to, and above every threshold, and an integration test confirms unlock timing during the live loop.",
+   "task_relevance": "Implements the three specified thresholds and immediate gameplay behavior."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "At the store parser/loader, accept only the three exact IDs POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL, with at most 3 retained records, each record no more than 64 UTF-8 bytes and the whole store no more than 1024 bytes; reject unknown, duplicate, malformed, or oversized input and report the rejection.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Reject and report invalid store input; at the application integration point use an empty or last-valid unlocked set so achievement tracking and the panel still function.",
+   "verification": "Test every allowed ID, unknown IDs, duplicates, blank/overlong records, invalid UTF-8, and stores over 1024 bytes; verify exact rejection and fallback behavior.",
+   "task_relevance": "Prevents a local user-editable store from changing the achievement namespace or causing unnecessary allocation."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "At level decoding, validate every dimension, count, coordinate, time, and tile/enemy value before allocation or retention: dimensions and counts must be non-negative and within the game’s configured practical level bounds, score/duration-derived numbers must be non-negative integers, and invalid data must be rejected and reported before recordRunEnd reads it.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-20",
+    "CWE-400",
+    "CWE-789"
+   ],
+   "capec": [],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "The decoder rejects and reports invalid level data; the caller substitutes the smallest valid fallback level/default values before invoking the decoder so normal game operation continues.",
+   "verification": "Test negative, zero, oversized, truncated, and semantically invalid dimensions, counts, coordinates, times, and enum values; verify rejection occurs before allocation/loops and a valid fallback level remains playable.",
+   "task_relevance": "Prevents shared or local level content from supplying malformed values that distort achievement evaluation or cause resource exhaustion."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-602",
+    "CWE-345"
+   ],
+   "capec": [],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.",
+   "verification": "Construct levels with exact and invalid actual values, end runs in different orders, and verify only each run’s own values affect evaluation and save preserves all prior IDs.",
+   "task_relevance": "Ensures final evaluation uses authoritative run state and preserves progress across sessions."
+  },
+  {
+   "id": "item:R5",
+   "kind": "requirement",
+   "label": "At the dedicated menu panel/view, display the fixed three achievement IDs and their unlocked state from getUnlockedAchievements(), without allowing displayed text or menu input to mutate the stored set.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-602"
+   ],
+   "capec": [],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "If an unlocked list is missing or invalid, display the fixed three IDs as locked or use the last-valid set and report the data problem; keep menu navigation operational.",
+   "verification": "Open the achievement view before and after unlocking each ID, restart the application, and verify exactly three fixed IDs render with persisted states and navigation remains usable.",
+   "task_relevance": "Implements the required dedicated achievement view while preserving achievement-state integrity."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-602"
+   ],
+   "capec": [],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.",
+   "verification": "Run threshold progress, restart, and repeat; assert counters reset while previously unlocked IDs remain.",
+   "task_relevance": "Enforces per-run isolation without losing already unlocked achievements."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20",
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-153"
+   ],
+   "asvs": [
+    "V5.1.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Parser rejects and reports; caller falls back while preserving the primary game and display effect.",
+   "verification": "Fuzz the store with bounded and over-bound byte streams and verify no unbounded allocation, clamping, or silent substitution occurs.",
+   "task_relevance": "Provides the required bounded allocation and fail-safe behavior for persistent achievement data."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "At the achievement panel renderer, iterate only the fixed three IDs and render state derived from a bounded defensive copy of getUnlockedAchievements(); treat null, unknown, duplicate, or overlong display data as locked/last-valid state and report it, without changing the store.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20",
+    "CWE-602"
+   ],
+   "capec": [],
+   "asvs": [
+    "V4.1.3"
+   ],
+   "cert": [],
+   "failure_behavior": "Use locked/last-valid display state and report; do not suppress the achievement panel or mutate unlocked state.",
+   "verification": "Pass null, unknown, duplicate, and oversized lists to the view adapter and verify bounded rendering, fixed IDs, no mutation, and continued navigation.",
+   "task_relevance": "Prevents persistence or display data from becoming executable menu state and bounds retained/displayed text."
+  },
+  {
+   "id": "item:V1",
+   "kind": "verification",
+   "label": "Integration verification should trace beginRun, live addPoints/addEnemyKilled/addTimeSurvived calls, threshold unlock timing, recordRunEnd level evaluation, saveAcrossSessions, reload, and menu rendering across two independent runs.",
+   "basis": "reasoned",
+   "threat": null,
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": "Use automated boundary-value tests plus a desktop restart test with a temporary store.",
+   "task_relevance": "Covers the complete gameplay-to-persistence-to-view dataflow."
+  },
+  {
+   "id": "item:V2",
+   "kind": "verification",
+   "label": "Verify store persistence under partial writes, malformed content, duplicate IDs, unknown IDs, and application restart; verify invalid store input is reported and fallback state still permits gameplay and the achievement panel to operate.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20",
+    "CWE-345"
+   ],
+   "capec": [],
+   "asvs": [
+    "V5.1.1",
+    "V5.3.1"
+   ],
+   "cert": [],
+   "failure_behavior": "A failed or invalid persistence operation must report the failure and preserve the last valid in-memory state while gameplay/display continue.",
+   "verification": "Use a temporary store and fault injection for read/write failures, then assert exact unlocked IDs before and after restart.",
+   "task_relevance": "Checks the local-file trust boundary and fail-safe persistence behavior."
+  },
+  {
+   "id": "item:U1",
+   "kind": "unknown",
+   "label": "The inspected source does not establish where an ApoMarioStateAchievements instance, its Path, or its load/save lifecycle currently exists, nor which exact event marks the end of a real run versus replay, simulation, editor, timeout, death, or restart.",
+   "basis": "observed",
+   "threat": null,
+   "cwe": [],
+   "capec": [],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": null,
+   "verification": "Resolve and document the concrete constructor, store path, run-start, run-end, and menu-panel call edges in the implementation and add tests for each edge.",
+   "task_relevance": "The implementing model must resolve these integration edges before wiring achievement events and persistence."
+  },
+  {
+   "id": "item:U2",
+   "kind": "unknown",
+   "label": "The inspected source does not establish an authenticated or atomic persistence mechanism for achievement state; the existing Properties save writes directly to mario.properties and suppresses IOException details.",
+   "basis": "observed",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-345",
+    "CWE-390"
+   ],
+   "capec": [],
+   "asvs": [
+    "V5.3.1"
+   ],
+   "cert": [],
+   "failure_behavior": "Unknown until the new store design is resolved; verification must confirm failed saves are reported and do not silently replace valid state with partial data.",
+   "verification": "Force permission, interruption, truncation, and concurrent-save failures and verify explicit reporting plus preservation of the last valid store.",
+   "task_relevance": "The implementation must choose how to preserve integrity and report failures when a local user edits or interrupts a save."
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/ApoMarioComponent.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/ApoMarioComponent.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/ApoMarioConstants.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/ApoMarioConstants.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "file:ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "kind": "file",
+   "label": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java"
+  },
+  {
+   "id": "file:ApoMario/src/org/apogames/ApoIO.java",
+   "kind": "file",
+   "label": "ApoMario/src/org/apogames/ApoIO.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioComponent",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioComponent",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java",
+   "sinks": [],
+   "start": 26,
+   "end": 521
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioComponent#init()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioComponent#init()",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java",
+   "sinks": [
+    "system_properties",
+    "ui_input"
+   ],
+   "start": 100,
+   "end": 162
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioComponent#setBMiddle(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioComponent#setBMiddle(boolean)",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioComponent#setBPause(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioComponent#setBPause(boolean)",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioComponent#setChangeX(float)",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioComponent#setChangeX(float)",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioConstants",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioConstants",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "sinks": [],
+   "start": 18,
+   "end": 369
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioConstants#loadProperties()",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "sinks": [
+    "file_read"
+   ],
+   "start": 86,
+   "end": 182
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioConstants#saveProperties()",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "sinks": [
+    "file_write"
+   ],
+   "start": 60,
+   "end": 84
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioConstants#setWaitTimeRender()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioConstants#setWaitTimeRender()",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioImage#ApoMarioImage()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioImage#ApoMarioImage()",
+   "file": "ApoMario/src/apoMario/ApoMarioImage.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioImageContainer#init(ApoMarioComponent)",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioImageContainer#init(ApoMarioComponent)",
+   "file": "ApoMario/src/apoMario/ApoMarioImageContainer.java"
+  },
+  {
+   "id": "symbol:apoMario.ApoMarioMain#windowClosingEvent()",
+   "kind": "symbol",
+   "label": "apoMario.ApoMarioMain#windowClosingEvent()",
+   "file": "ApoMario/src/apoMario/ApoMarioMain.java"
+  },
+  {
+   "id": "symbol:apoMario.ai.ApoMarioAILevel#getChangeX()",
+   "kind": "symbol",
+   "label": "apoMario.ai.ApoMarioAILevel#getChangeX()",
+   "file": "ApoMario/src/apoMario/ai/ApoMarioAILevel.java"
+  },
+  {
+   "id": "symbol:apoMario.ai.ApoMarioAILevel#init()",
+   "kind": "symbol",
+   "label": "apoMario.ai.ApoMarioAILevel#init()",
+   "file": "ApoMario/src/apoMario/ai/ApoMarioAILevel.java"
+  },
+  {
+   "id": "symbol:apoMario.analysis.ApoMarioAnalysis#init()",
+   "kind": "symbol",
+   "label": "apoMario.analysis.ApoMarioAnalysis#init()",
+   "file": "ApoMario/src/apoMario/analysis/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.analysis.ApoMarioAnalysis#run()",
+   "kind": "symbol",
+   "label": "apoMario.analysis.ApoMarioAnalysis#run()",
+   "file": "ApoMario/src/apoMario/analysis/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.analysis.ApoMarioAnalysis#setLabel(JLabel,int)",
+   "kind": "symbol",
+   "label": "apoMario.analysis.ApoMarioAnalysis#setLabel(JLabel,int)",
+   "file": "ApoMario/src/apoMario/analysis/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioCannon#makeCannon(ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioCannon#makeCannon(ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioCannon.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioCannon#thinkCanon(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioCannon#thinkCanon(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioCannon.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioDestructableWall#damageWall(ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioDestructableWall#damageWall(ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioDestructableWall.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "sinks": [],
+   "start": 11,
+   "end": 359
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "sinks": [],
+   "start": 193,
+   "end": 199
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#nextYCheck(int,ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#nextYCheck(int,ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#setBDie(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#setBDie(boolean)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#setBFly(boolean,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#setBFly(boolean,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#thinkJump(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#thinkJump(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEnemy#thinkSpeedAndMoveEnemy(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEnemy#thinkSpeedAndMoveEnemy(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEntity#getMinMax(ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEntity#getMinMax(ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEntity.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioEntity#isPlayerNear(ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioEntity#isPlayerNear(ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEntity.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioFlower#think(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioFlower#think(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioFlower.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioGoodieMushroom#think(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioGoodieMushroom#think(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioGoodieMushroom.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "sinks": [],
+   "start": 23,
+   "end": 857
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "sinks": [],
+   "start": 732,
+   "end": 737
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#getAi()",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#getAi()",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#getCoins()",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#getCoins()",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#getPoints()",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#getPoints()",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "sinks": [],
+   "start": 170,
+   "end": 172
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#init()",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#init()",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#setCoins(int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#setCoins(int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#setPoints(int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#setPoints(int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "sinks": [],
+   "start": 174,
+   "end": 176
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#think(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#think(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioPlayer#thinkAI(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioPlayer#thinkAI(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioShell#damageCheck(ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioShell#damageCheck(ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioShell.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioShell#thinkJump(int,ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioShell#thinkJump(int,ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioShell.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioWall#addGoodie(ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioWall#addGoodie(ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioWall.java"
+  },
+  {
+   "id": "symbol:apoMario.entity.ApoMarioWall#damageWall(ApoMarioLevel,int)",
+   "kind": "symbol",
+   "label": "apoMario.entity.ApoMarioWall#damageWall(ApoMarioLevel,int)",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioWall.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioButtons#ApoMarioButtons(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioButtons#ApoMarioButtons(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioButtons.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioButtons#makeButtons()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioButtons#makeButtons()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioButtons.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioDebugFrame#refresh()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioDebugFrame#refresh()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioDebugFrame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioMiniMap#ApoMarioMiniMap(ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioMiniMap#ApoMarioMiniMap(ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioMiniMap.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioMiniMap#render(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioMiniMap#render(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioMiniMap.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "sinks": [],
+   "start": 36,
+   "end": 699
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#init()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "sinks": [],
+   "start": 91,
+   "end": 137
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#isBEditor()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#isBEditor()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#loadEditorLevel()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#loadEditorLevel()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#loadProperties()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#loadProperties()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#loadReplay()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#loadReplay()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#playReplay(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#playReplay(boolean)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#renderLevelWidthStatistics(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#renderLevelWidthStatistics(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#restartLevel(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#restartLevel(boolean)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setAnalysis()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setAnalysis()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setBEditor(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setBEditor(boolean)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setButtons(boolean[])",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setButtons(boolean[])",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setCredits()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setCredits()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setEditor()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setEditor()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setGame(boolean)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "sinks": [],
+   "start": 322,
+   "end": 341
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setMenu()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "sinks": [],
+   "start": 214,
+   "end": 226
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setOptions()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setOptions()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioPanel#setSimulation()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioPanel#setSimulation()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioReplayPlay#initReplay()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioReplayPlay#initReplay()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioReplayPlay.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioReplayPlay#nextStep()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioReplayPlay#nextStep()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioReplayPlay.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioSearch#getNodes()",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioSearch#getNodes()",
+   "file": "ApoMario/src/apoMario/game/ApoMarioSearch.java"
+  },
+  {
+   "id": "symbol:apoMario.game.ApoMarioSearchRunner#setEnd(int,int)",
+   "kind": "symbol",
+   "label": "apoMario.game.ApoMarioSearchRunner#setEnd(int,int)",
+   "file": "ApoMario/src/apoMario/game/ApoMarioSearchRunner.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#ApoMarioAnalysis(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#ApoMarioAnalysis(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#excecuteFunction()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#excecuteFunction()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#isOnePlayer()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#isOnePlayer()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#releasedEnter()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#releasedEnter()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioAnalysis#render(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioAnalysis#render(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioAnalysis.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioCredits#ApoMarioCredits(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioCredits#ApoMarioCredits(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioCredits.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioCredits#excecuteFunction()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioCredits#excecuteFunction()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioCredits.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioCredits#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioCredits#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioCredits.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioCredits#releasedEnter()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioCredits#releasedEnter()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioCredits.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioEditor#ApoMarioEditor(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioEditor#ApoMarioEditor(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioEditor.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioEditor#checkFunction(String,int)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioEditor#checkFunction(String,int)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioEditor.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioEditor#init()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioEditor#init()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioEditor.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioEditor#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioEditor#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioEditor.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioEditorIO#ApoMarioEditorIO(ApoMarioLevel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioEditorIO#ApoMarioEditorIO(ApoMarioLevel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioEditorIO.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#ApoMarioGame(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#ApoMarioGame(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#changeCamera()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#changeCamera()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#isOnePlayer()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#isOnePlayer()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#playerHumanControl()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#playerHumanControl()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#renderStatistics(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#renderStatistics(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#setPlayerSelectCamera(int)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#setPlayerSelectCamera(int)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioGame#think(int)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioGame#think(int)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "sinks": [],
+   "start": 28,
+   "end": 553
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#ApoMarioMenu(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#ApoMarioMenu(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#excecuteFunction()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#excecuteFunction()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#exit()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#exit()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "sinks": [],
+   "start": 347,
+   "end": 391
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "sinks": [],
+   "start": 393,
+   "end": 425
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "sinks": [],
+   "start": 493,
+   "end": 514
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModel#getGame()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModel#getGame()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModel.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#getCurNode()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#getCurNode()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#getEndNode()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#getEndNode()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#getRunner()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#getRunner()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#getSearch()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#getSearch()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#renderBackgroundAndAnimation(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#renderBackgroundAndAnimation(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#renderButtonsAndRunner(Graphics2D)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#renderButtonsAndRunner(Graphics2D)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#searchWay()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#searchWay()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#setCurNode(int)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#setCurNode(int)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#setEndNode(int)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#setEndNode(int)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#setExcecuteFunction(String)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#setExcecuteFunction(String)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioModelMenu#setWay(ArrayList<ApoMarioSearchNode>)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioModelMenu#setWay(ArrayList<ApoMarioSearchNode>)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioOptions#ApoMarioOptions(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioOptions#ApoMarioOptions(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioOptions.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioOptions#excecuteFunction()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioOptions#excecuteFunction()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioOptions.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioOptions#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioOptions#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioOptions.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioOptions#releasedEnter()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioOptions#releasedEnter()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioOptions.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioOptions#stopOptions()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioOptions#stopOptions()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioOptions.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioSimulation#ApoMarioSimulation(ApoMarioPanel)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioSimulation#ApoMarioSimulation(ApoMarioPanel)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioSimulation.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioSimulation#excecuteFunction()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioSimulation#excecuteFunction()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioSimulation.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioSimulation#keyButtonReleased(int,char)",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioSimulation#keyButtonReleased(int,char)",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioSimulation.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioSimulation#releasedEnter()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioSimulation#releasedEnter()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioSimulation.java"
+  },
+  {
+   "id": "symbol:apoMario.game.panels.ApoMarioSimulation#startSimulation()",
+   "kind": "symbol",
+   "label": "apoMario.game.panels.ApoMarioSimulation#startSimulation()",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioSimulation.java"
+  },
+  {
+   "id": "symbol:apoMario.help.ApoMarioPlayerDraw#setColor(Color)",
+   "kind": "symbol",
+   "label": "apoMario.help.ApoMarioPlayerDraw#setColor(Color)",
+   "file": "ApoMario/src/apoMario/help/ApoMarioPlayerDraw.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 55,
+   "end": 1668
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#ApoMarioLevel(ApoMarioComponent)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#ApoMarioLevel(ApoMarioComponent)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#changePlayerOneAI(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#changePlayerOneAI(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#changePlayerTwoAI(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#changePlayerTwoAI(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getComponent()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getComponent()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getDifficulty()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getDifficulty()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getEnemies()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getEnemies()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 220,
+   "end": 222
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getFinish()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getFinish()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getLevelEntities()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getLevelEntities()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getPlayers()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 1168,
+   "end": 1170
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getTime()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getTime()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 397,
+   "end": 399
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#getWidth()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#getWidth()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#isOnePlayer()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#isOnePlayer()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#levelRestart(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#levelRestart(boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#loadPlayer(int,String)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#loadPlayer(int,String)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeBoxCoin(int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeBoxCoin(int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeBoxQuestionMark(int,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeBoxQuestionMark(int,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeCanon(int,int,int,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeCanon(int,int,int,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeEmptyLevel(int,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeEmptyLevel(int,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeFinish(int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeFinish(int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeFlower(int,int,int,int,boolean,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeFlower(int,int,int,int,boolean,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeGroundWall(int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeGroundWall(int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeGumba(int,int,boolean,boolean,boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeGumba(int,int,boolean,boolean,boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeImmortal(int,int,boolean,boolean,boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeImmortal(int,int,boolean,boolean,boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeKoopa(boolean,int,int,boolean,boolean,boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeKoopa(boolean,int,int,boolean,boolean,boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeLevel(long,boolean,boolean,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeLevel(long,boolean,boolean,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makePlayer(float,float)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makePlayer(float,float)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeWall(BufferedImage,boolean,boolean,boolean,boolean,int,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeWall(BufferedImage,boolean,boolean,boolean,boolean,int,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#makeWall(boolean,boolean,int,int,int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#makeWall(boolean,boolean,int,int,int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#restart(boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#setBReplay(boolean)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#setBReplay(boolean)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#setNames()",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#setNames()",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#think(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkEnemies(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkEnemies(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkFinish(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkFinish(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkGoodies(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkGoodies(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkLevelEntities(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkLevelEntities(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkParticle(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkParticle(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkPlayer(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkPlayer(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#thinkTime(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#thinkTime(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "sinks": [],
+   "start": 1266,
+   "end": 1272
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevel#unloadPlayer(int)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevel#unloadPlayer(int)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevelIO",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevelIO",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "sinks": [],
+   "start": 22,
+   "end": 200
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "sinks": [
+    "file_read"
+   ],
+   "start": 30,
+   "end": 109
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioLevelIO#writeLevel(DataOutputStream)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioLevelIO#writeLevel(DataOutputStream)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java"
+  },
+  {
+   "id": "symbol:apoMario.level.ApoMarioRandomLevel#makeRandomLevel(long)",
+   "kind": "symbol",
+   "label": "apoMario.level.ApoMarioRandomLevel#makeRandomLevel(long)",
+   "file": "ApoMario/src/apoMario/level/ApoMarioRandomLevel.java"
+  },
+  {
+   "id": "symbol:org.apogames.ApoIO",
+   "kind": "symbol",
+   "label": "org.apogames.ApoIO",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "sinks": [],
+   "start": 19,
+   "end": 245
+  },
+  {
+   "id": "symbol:org.apogames.ApoIO#readLevel(boolean,String)",
+   "kind": "symbol",
+   "label": "org.apogames.ApoIO#readLevel(boolean,String)",
+   "file": "ApoMario/src/org/apogames/ApoIO.java"
+  },
+  {
+   "id": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "kind": "symbol",
+   "label": "org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "sinks": [
+    "file_read",
+    "network"
+   ],
+   "start": 210,
+   "end": 235
+  },
+  {
+   "id": "symbol:org.apogames.entity.ApoEntity#isBVisible()",
+   "kind": "symbol",
+   "label": "org.apogames.entity.ApoEntity#isBVisible()",
+   "file": "ApoMario/src/org/apogames/entity/ApoEntity.java"
+  },
+  {
+   "id": "symbol:org.apogames.entity.ApoEntity#setVecY(float)",
+   "kind": "symbol",
+   "label": "org.apogames.entity.ApoEntity#setVecY(float)",
+   "file": "ApoMario/src/org/apogames/entity/ApoEntity.java"
+  },
+  {
+   "id": "symbol:org.apogames.image.ApoImageScale#ApoImageScale(String)",
+   "kind": "symbol",
+   "label": "org.apogames.image.ApoImageScale#ApoImageScale(String)",
+   "file": "ApoMario/src/org/apogames/image/ApoImageScale.java"
+  },
+  {
+   "id": "symbol:org.apogames.sound.ApoMidiPlayer#close()",
+   "kind": "symbol",
+   "label": "org.apogames.sound.ApoMidiPlayer#close()",
+   "file": "ApoMario/src/org/apogames/sound/ApoMidiPlayer.java"
+  },
+  {
+   "id": "symbol:org.apogames.sound.ApoSounds#ApoSounds()",
+   "kind": "symbol",
+   "label": "org.apogames.sound.ApoSounds#ApoSounds()",
+   "file": "ApoMario/src/org/apogames/sound/ApoSounds.java"
+  }
+ ],
+ "edges": [
+  {
+   "from": "asset:A1",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "asset:A1",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "asset:A1",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "asset:A1",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1168,
+   "end": 1170
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1168,
+   "end": 1170
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getPoints()",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 170,
+   "end": 172
+  },
+  {
+   "from": "asset:A2",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 170,
+   "end": 172
+  },
+  {
+   "from": "asset:A3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "asset:A3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "asset:A3",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 214,
+   "end": 226
+  },
+  {
+   "from": "asset:A3",
+   "to": "symbol:apoMario.game.ApoMarioPanel",
+   "type": "located_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 214,
+   "end": 226
+  },
+  {
+   "from": "boundary:B1",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "boundary:B1",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "boundary:B1",
+   "to": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "type": "crosses",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "boundary:B1",
+   "to": "symbol:org.apogames.ApoIO",
+   "type": "crosses",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "type": "crosses",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:org.apogames.ApoIO",
+   "type": "crosses",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getEnemies()",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 220,
+   "end": 222
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 220,
+   "end": 222
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getTime()",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "boundary:B2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#setPoints(int)",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 174,
+   "end": 176
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 174,
+   "end": 176
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "start": 193,
+   "end": 199
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "start": 193,
+   "end": 199
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "boundary:B3",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "crosses",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:O1",
+   "to": "symbol:apoMario.ApoMarioComponent#init()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java",
+   "start": 100,
+   "end": 162
+  },
+  {
+   "from": "item:O1",
+   "to": "symbol:apoMario.ApoMarioComponent",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioComponent.java",
+   "start": 100,
+   "end": 162
+  },
+  {
+   "from": "item:O1",
+   "to": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 91,
+   "end": 137
+  },
+  {
+   "from": "item:O1",
+   "to": "symbol:apoMario.game.ApoMarioPanel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 91,
+   "end": 137
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkTime(int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1266,
+   "end": 1272
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1266,
+   "end": 1272
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "start": 193,
+   "end": 199
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioEnemy.java",
+   "start": 193,
+   "end": 199
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 732,
+   "end": 737
+  },
+  {
+   "from": "item:O2",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 732,
+   "end": 737
+  },
+  {
+   "from": "item:X1",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:X1",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:X1",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:X1",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:X2",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:X2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:X2",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:X2",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:X3",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getPoints()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 170,
+   "end": 172
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "start": 170,
+   "end": 172
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getTime()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:R1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:R1",
+   "to": "item:X3",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.game.ApoMarioPanel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:C1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1124,
+   "end": 1132
+  },
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:R2",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:R2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:R2",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:C2",
+   "to": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "item:C2",
+   "to": "symbol:org.apogames.ApoIO",
+   "type": "anchored_at",
+   "file": "ApoMario/src/org/apogames/ApoIO.java",
+   "start": 210,
+   "end": 235
+  },
+  {
+   "from": "item:C2",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C2",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:R3",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:R3",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:R3",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:R3",
+   "to": "symbol:apoMario.level.ApoMarioLevelIO",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevelIO.java",
+   "start": 30,
+   "end": 109
+  },
+  {
+   "from": "item:R3",
+   "to": "item:X1",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1168,
+   "end": 1170
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1168,
+   "end": 1170
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getTime()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 397,
+   "end": 399
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:R4",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:R4",
+   "to": "item:X3",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 347,
+   "end": 391
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 347,
+   "end": 391
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:R5",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:R5",
+   "to": "item:X2",
+   "type": "mitigates"
+  },
+  {
+   "from": "item:C3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C3",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R5",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.game.ApoMarioPanel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1253,
+   "end": 1264
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:V1",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 493,
+   "end": 514
+  },
+  {
+   "from": "item:V1",
+   "to": "item:R1",
+   "type": "verifies"
+  },
+  {
+   "from": "item:V1",
+   "to": "item:R4",
+   "type": "verifies"
+  },
+  {
+   "from": "item:V1",
+   "to": "item:R5",
+   "type": "verifies"
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.game.ApoMarioPanel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "start": 322,
+   "end": 341
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.level.ApoMarioLevel",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "start": 1176,
+   "end": 1233
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 393,
+   "end": 425
+  },
+  {
+   "from": "item:U1",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioMenu.java",
+   "start": 393,
+   "end": 425
+  },
+  {
+   "from": "item:U2",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:U2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:U2",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:U2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "anchored_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 86,
+   "end": 182
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:V2",
+   "to": "symbol:apoMario.ApoMarioConstants",
+   "type": "enforced_at",
+   "file": "ApoMario/src/apoMario/ApoMarioConstants.java",
+   "start": 60,
+   "end": 84
+  },
+  {
+   "from": "item:V2",
+   "to": "item:R2",
+   "type": "verifies"
+  },
+  {
+   "from": "item:V2",
+   "to": "item:C2",
+   "type": "verifies"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioComponent#init()",
+   "to": "symbol:apoMario.ApoMarioImage#ApoMarioImage()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioComponent#init()",
+   "to": "symbol:apoMario.ApoMarioImageContainer#init(ApoMarioComponent)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioComponent#init()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#ApoMarioLevel(ApoMarioComponent)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioComponent#init()",
+   "to": "symbol:org.apogames.image.ApoImageScale#ApoImageScale(String)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioComponent#init()",
+   "to": "symbol:org.apogames.sound.ApoSounds#ApoSounds()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioConstants",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "to": "symbol:apoMario.ApoMarioConstants#setWaitTimeRender()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "to": "symbol:org.apogames.sound.ApoMidiPlayer#close()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ApoMarioMain#windowClosingEvent()",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ai.ApoMarioAILevel#getChangeX()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.ai.ApoMarioAILevel#init()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.analysis.ApoMarioAnalysis#init()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.analysis.ApoMarioAnalysis#run()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.analysis.ApoMarioAnalysis#setLabel(JLabel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioCannon#makeCannon(ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioCannon#thinkCanon(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioDestructableWall#damageWall(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#setBDie(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "to": "symbol:org.apogames.entity.ApoEntity#setVecY(float)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#nextYCheck(int,ApoMarioLevel,int)",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#setBFly(boolean,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#thinkJump(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#thinkJump(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEnemy#thinkSpeedAndMoveEnemy(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEntity#getMinMax(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioEntity#isPlayerNear(ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioFlower#think(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioGoodieMushroom#think(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getCoins()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getPoints()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#setCoins(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#setPoints(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getLevelEntities()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#init()",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#setPoints(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#think(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#thinkAI(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioPlayer#thinkAI(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioShell#damageCheck(ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioShell#thinkJump(int,ApoMarioLevel)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioWall#addGoodie(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.entity.ApoMarioWall#damageWall(ApoMarioLevel,int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioDebugFrame#refresh()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioMiniMap#render(Graphics2D)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.ApoMarioComponent#init()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.ApoMarioComponent#setBMiddle(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.ApoMarioComponent#setBPause(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.ApoMarioButtons#ApoMarioButtons(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.ApoMarioButtons#makeButtons()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.ApoMarioMiniMap#ApoMarioMiniMap(ApoMarioLevel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#loadProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioAnalysis#ApoMarioAnalysis(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioCredits#ApoMarioCredits(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioEditor#ApoMarioEditor(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioEditorIO#ApoMarioEditorIO(ApoMarioLevel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioGame#ApoMarioGame(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#ApoMarioMenu(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioOptions#ApoMarioOptions(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#init()",
+   "to": "symbol:apoMario.game.panels.ApoMarioSimulation#ApoMarioSimulation(ApoMarioPanel)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#loadProperties()",
+   "to": "symbol:apoMario.ApoMarioConstants#loadProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#playReplay(boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#renderLevelWidthStatistics(Graphics2D)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#restartLevel(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "to": "symbol:apoMario.ApoMarioComponent#setBPause(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#restartLevel(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setBEditor(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setButtons(boolean[])",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setNames()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "to": "symbol:apoMario.ApoMarioComponent#setBPause(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setButtons(boolean[])",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "to": "symbol:apoMario.game.panels.ApoMarioOptions#stopOptions()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setBReplay(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioReplayPlay#initReplay()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.ApoMarioReplayPlay#nextStep()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioAnalysis#excecuteFunction()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioAnalysis#isOnePlayer()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioAnalysis#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioAnalysis#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioAnalysis#render(Graphics2D)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioCredits#excecuteFunction()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioCredits#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioCredits#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioEditor#checkFunction(String,int)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioEditor#checkFunction(String,int)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioEditor#init()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioEditor#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#changeCamera()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#isOnePlayer()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#playerHumanControl()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#renderStatistics(Graphics2D)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#setPlayerSelectCamera(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioGame#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#exit()",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.ApoMarioSearch#getNodes()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.ApoMarioSearchRunner#setEnd(int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#excecuteFunction()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModel#getGame()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#getEndNode()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#getRunner()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#getSearch()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#searchWay()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#setCurNode(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#setEndNode(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#setExcecuteFunction(String)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#setWay(ArrayList<ApoMarioSearchNode>)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#changePlayerOneAI(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#changePlayerTwoAI(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#loadEditorLevel()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#loadReplay()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setCredits()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setEditor()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setGame(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setOptions()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setSimulation()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#exit()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.panels.ApoMarioModel#getGame()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#getCurNode()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#releasedEnter()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#loadPlayer(int,String)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getAi()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModel#getGame()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#renderBackgroundAndAnimation(Graphics2D)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.game.panels.ApoMarioModelMenu#renderButtonsAndRunner(Graphics2D)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.help.ApoMarioPlayerDraw#setColor(Color)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioMenu#render(Graphics2D)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioOptions#excecuteFunction()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioOptions#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioOptions#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioSimulation#excecuteFunction()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioSimulation#keyButtonReleased(int,char)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioSimulation#releasedEnter()",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setMenu()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.game.panels.ApoMarioSimulation#startSimulation()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#changePlayerOneAI(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#changePlayerTwoAI(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#isOnePlayer()",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String)",
+   "to": "symbol:apoMario.ApoMarioConstants#saveProperties()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#loadPlayer(int,String,String,String)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.ApoMarioComponent#setBPause(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.ApoMarioComponent#setChangeX(float)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getComponent()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#levelRestart(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeLevel(long,boolean,boolean,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#restart(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setBReplay(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.entity.ApoMarioPlayer#getCoins()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#isBEditor()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setAnalysis()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.game.ApoMarioPanel#setEditor()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getDifficulty()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getFinish()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getTime()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getWidth()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#isOnePlayer()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "to": "symbol:org.apogames.entity.ApoEntity#isBVisible()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkEnemies(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkFinish(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkGoodies(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkLevelEntities(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkParticle(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkPlayer(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#think(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#thinkTime(int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#thinkTime(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#setAnalysis(boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevel#unloadPlayer(int)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeBoxCoin(int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeBoxQuestionMark(int,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeCanon(int,int,int,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeEmptyLevel(int,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeFinish(int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeFlower(int,int,int,int,boolean,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeGroundWall(int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeGumba(int,int,boolean,boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeImmortal(int,int,boolean,boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeKoopa(boolean,int,int,boolean,boolean,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makePlayer(float,float)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeWall(BufferedImage,boolean,boolean,boolean,boolean,int,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#makeWall(boolean,boolean,int,int,int)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioLevelIO#writeLevel(DataOutputStream)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:apoMario.level.ApoMarioRandomLevel#makeRandomLevel(long)",
+   "to": "symbol:apoMario.level.ApoMarioLevel#getPlayers()",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:org.apogames.ApoIO#readLevel(boolean,String)",
+   "to": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "type": "calls"
+  },
+  {
+   "from": "symbol:org.apogames.ApoIO#readLevel(boolean,String,boolean)",
+   "to": "symbol:org.apogames.sound.ApoMidiPlayer#close()",
+   "type": "calls"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "observation": 2,
+   "existing_risk": 1,
+   "change_risk": 2,
+   "requirement": 5,
+   "control": 3,
+   "verification": 2,
+   "unknown": 2,
+   "file": 9,
+   "symbol": 183
+  },
+  "edgesByType": {
+   "located_at": 14,
+   "crosses": 20,
+   "anchored_at": 70,
+   "enforced_at": 20,
+   "mitigates": 5,
+   "satisfies": 3,
+   "verifies": 5,
+   "calls": 185
+  },
+  "items": 17,
+  "anchoredItems": 17,
+  "entryPoints": 3,
+  "controls": 3,
+  "controlsWithEnforcementPoint": 2,
+  "itemsLinkedToRequirementOrRisk": 8,
+  "sinkSymbols": 85,
+  "sinkSymbolsAnchored": 5
+ },
+ "sha256": "1871968a1c7052aaed5f148e10f1a9fcff370599c41dacd984e4b3c444da48ba"
+}

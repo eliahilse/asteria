@@ -1,0 +1,61 @@
+--- BEGIN REPOSITORY-DERIVED SECURITY CONTEXT (angle: requirements) ---
+Security context for a Java desktop game's locally persisted achievement data and menu display. No repository was inspected; all statements are prospective or reasoned from the feature description.
+
+Assets:
+- Persisted achievement records [integrity]
+- Achievement feature and game availability [availability]
+- Achievement data and processing path [resistance]
+
+Trust boundaries:
+- Running-game progress boundary [entry point]: Points, enemy-kill counts, and elapsed durations produced or supplied by gameplay code, including locally tampered values. from Running game state and integration calls to Achievement state update and run-finalization operations
+- Local achievement-store boundary [entry point]: User-editable achievement-store bytes, lines, records, fields, identifiers, counters, and durations. from Local persistence file to Achievement-store parser and loader
+- External-content boundary [entry point]: Data loaded from outside the program, including shared level content that may influence run-finalization inputs. from Shared level server or imported game content to Level decoder and achievement integration
+
+[R1; requirement; task; tampering; CWE-20; CAPEC-153; V5.1.1] Achievement-state update and run-finalization operations must accept only their defined domains: achievement identifiers must be present and at most 64 characters; points, enemy counts, and durations must be non-negative integers, with durations limited to 86,400,000 milliseconds per run; invalid values must be rejected and reported. At the gameplay integration point, missing or invalid values must be normalized to stated safe defaults before those operations are called so valid gameplay effects still occur.
+Task relevance: Protects threshold evaluation and stored unlock integrity while preserving achievement processing during malformed inputs.
+Failure behavior: The receiving operation reports and rejects invalid input; the caller normalizes missing or invalid integration values to zero before calling it.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R2; requirement; task; information_disclosure; CWE-502; CWE-20; CWE-400; CAPEC-150; CAPEC-153; V5.5.1; V14.2.1] The achievement store must be treated as untrusted structured data, parsed without Java object deserialization or executable interpretation, and each file, line, record, field, identifier, and numeric value must be bounded before retention: at most 64 KiB per file, 4 KiB per line, 256 records, 64-character identifiers, and 32 characters per numeric field.
+Task relevance: Limits local-file attack surface and prevents achievement data from becoming code execution.
+Failure behavior: The parser rejects and reports malformed, oversized, or unsupported data; valid records within bounds are retained, and excess retained records are evicted rather than causing valid input rejection.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R3; requirement; task; denial_of_service; CWE-20; CWE-400; CAPEC-125; V5.1.1; V14.2.1] Achievement persistence and menu loading must keep the game usable when the store is missing, malformed, truncated, unreadable, or partially invalid: preserve valid records where possible, otherwise use an empty achievement set, and never crash the game or suppress the current run's achievement evaluation.
+Task relevance: Maintains availability while allowing the primary unlock effect to proceed.
+Failure behavior: The store operation reports the rejection and returns recoverable state; its caller substitutes an empty set before displaying or continuing persistence.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[R4; requirement; task; denial_of_service; CWE-400; CWE-20; CAPEC-125; V14.2.1] The retained unlocked-achievement collection must be bounded to the three supported identifiers, evicting or ignoring unsupported retained entries after reporting them, while preserving every valid supported unlock.
+Task relevance: Prevents unbounded local data growth and keeps the dedicated achievements view predictable.
+Failure behavior: Unsupported or excess entries are reported and evicted; valid POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL entries are retained.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+
+[C1; control; reasoned; tampering; CWE-20; CAPEC-153; V5.1.1] Use domain validation at achievement update, final-evaluation, and store-parse operations, with explicit allowlisting of the three achievement identifiers and bounded non-negative integer parsing.
+Task relevance: Enforces R1 at the operations receiving gameplay and persisted values.
+Failure behavior: Invalid input is rejected and reported; the integration caller supplies zero for missing or invalid values before invoking the operation.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R1
+
+[C2; control; reasoned; tampering; CWE-502; CWE-400; CAPEC-150; CAPEC-125; V5.5.1; V14.2.1] Implement a bounded streaming/text parser with fixed file, line, record, field, and identifier limits, and use an explicit non-executable format instead of Java object deserialization.
+Task relevance: Enforces R2 while retaining valid records and bounding resource use.
+Failure behavior: The parser reports and rejects malformed or oversized units; records that exceed the retention bound are evicted without rejecting valid records that fit.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R2
+
+[C3; control; reasoned; denial_of_service; CWE-400; CAPEC-125; V14.2.1] Wrap store read, parse, and write failures in recoverable handling that reports the failure and supplies an empty achievement set to the menu or persistence caller.
+Task relevance: Enforces R3 and preserves game availability and run evaluation.
+Failure behavior: The receiving store operation reports the failure; the caller substitutes an empty set and continues the primary gameplay or display effect.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R3
+
+[C4; control; reasoned; denial_of_service; CWE-400; CAPEC-125; V14.2.1] Use a fixed-size allowlisted achievement collection with capacity three and evict unsupported or excess records after reporting them.
+Task relevance: Enforces R4 and ensures the view retains all valid supported achievements.
+Failure behavior: Excess or unsupported records are reported and evicted; supported valid records are not rejected because of the bound.
+Basis: prospective task requirement or reasoning; not an implemented safeguard.
+Relations: satisfies R4
+
+Uncertainty and limits:
+- No repository or source files were available or inspected, so no implementation anchors or repository-specific controls are identified.
+- The requested angle value "generic" is not represented in the supplied response schema enum; "requirements" is used as the closest schema-valid value.
+--- END REPOSITORY-DERIVED SECURITY CONTEXT ---

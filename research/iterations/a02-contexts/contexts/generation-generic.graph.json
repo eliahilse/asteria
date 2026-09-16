@@ -1,0 +1,331 @@
+{
+ "schemaVersion": 1,
+ "angle": "requirements",
+ "summary": "Generic security context for a Java desktop game's achievement tracking, local persistence, and menu display. No repository was available for inspection.",
+ "limitations": [
+  "No repository was available, so no source symbols, files, line ranges, existing controls, or implementation-specific verification could be inspected."
+ ],
+ "nodes": [
+  {
+   "id": "asset:A1",
+   "kind": "asset",
+   "label": "Achievement records",
+   "property": "integrity"
+  },
+  {
+   "id": "asset:A2",
+   "kind": "asset",
+   "label": "Game availability",
+   "property": "availability"
+  },
+  {
+   "id": "asset:A3",
+   "kind": "asset",
+   "label": "Achievement data handling",
+   "property": "resistance"
+  },
+  {
+   "id": "boundary:B1",
+   "kind": "boundary",
+   "label": "Running-game progress",
+   "untrusted_input": "Points, enemy counts, and survival durations produced or tampered with during gameplay",
+   "source": "Running game state and local cheating attempts",
+   "sink": "Achievement progress and unlock evaluation",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B2",
+   "kind": "boundary",
+   "label": "Local achievement store",
+   "untrusted_input": "User-editable persisted achievement records and file contents",
+   "source": "Local filesystem",
+   "sink": "Achievement store parser and loader",
+   "entry_point": true
+  },
+  {
+   "id": "boundary:B3",
+   "kind": "boundary",
+   "label": "External level content",
+   "untrusted_input": "Level data loaded from a shared level server or other external source",
+   "source": "Outside the program",
+   "sink": "Level parser and gameplay integration",
+   "entry_point": true
+  },
+  {
+   "id": "item:R1",
+   "kind": "requirement",
+   "label": "The operation that receives achievement progress or run-finalization values shall accept only non-negative integers for points, enemy counts, and elapsed milliseconds, and shall reject and report values outside that domain without substituting or clamping them.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-20"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report the invalid value; the gameplay integration caller shall normalize missing or invalid progress to the stated non-negative default before invoking the operation so gameplay achievement tracking continues.",
+   "verification": null,
+   "task_relevance": "Protects threshold evaluation from malformed or tampered gameplay inputs."
+  },
+  {
+   "id": "item:R2",
+   "kind": "requirement",
+   "label": "The achievement store shall read untrusted files using bounded units: no more than 64 KiB per line, 256 KiB per record, and 1 MiB total per store read; data exceeding a bound shall be rejected and reported.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400",
+    "CWE-789"
+   ],
+   "capec": [
+    "CAPEC-130"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The parser rejects and reports the oversized unit; the loading caller uses an empty achievement set before calling the parser so the game and achievement feature remain available.",
+   "verification": null,
+   "task_relevance": "Prevents oversized local files from exhausting memory or blocking startup."
+  },
+  {
+   "id": "item:R3",
+   "kind": "requirement",
+   "label": "The persisted achievement format shall be explicit data such as bounded text or structured records and shall not use Java object deserialization or execute code represented by store contents.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-502",
+    "CWE-913"
+   ],
+   "capec": [
+    "CAPEC-586"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The receiving decoder rejects and reports unsupported executable or serialized input; the caller initializes an empty achievement set before decoding so normal gameplay and unlocking still work.",
+   "verification": null,
+   "task_relevance": "Ensures saved achievement records cannot trigger code execution when loaded."
+  },
+  {
+   "id": "item:R4",
+   "kind": "requirement",
+   "label": "Malformed, unreadable, or semantically invalid achievement-store contents shall not prevent the game or menu from running; the load integration point shall substitute an empty unlocked-achievement set before requesting parsing or display.",
+   "basis": "task",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-248",
+    "CWE-703"
+   ],
+   "capec": [
+    "CAPEC-吹"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The store operation rejects and reports the malformed input, while its caller uses the empty set and continues the primary game/menu operation.",
+   "verification": null,
+   "task_relevance": "Preserves availability while allowing achievements to unlock and be saved after recovery."
+  },
+  {
+   "id": "item:R5",
+   "kind": "requirement",
+   "label": "The retained unlocked-achievement collection shall be bounded to the three defined achievement identifiers, and any additional records shall be evicted or omitted from retained and displayed state rather than causing an otherwise valid defined achievement to be rejected.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-130"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The collection bounds operation evicts unsupported excess records and reports the condition; the caller retains the valid defined achievements and continues displaying the panel.",
+   "verification": null,
+   "task_relevance": "Keeps persistence and the dedicated menu panel small and predictable."
+  },
+  {
+   "id": "item:R6",
+   "kind": "requirement",
+   "label": "Run progress shall be reset at each run start, evaluated against the actual level values at run end, and unlocked identifiers shall be persisted only as the defined POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL values once their thresholds are reached.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-345",
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-472"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "The progress evaluator rejects inconsistent or unsupported identifiers and reports them; the gameplay caller starts from zero-valued run state and still performs the run-end evaluation and save operation.",
+   "verification": null,
+   "task_relevance": "Prevents progress carrying across runs and preserves correct unlock integrity across sessions."
+  },
+  {
+   "id": "item:C1",
+   "kind": "control",
+   "label": "Use strict domain validation at each progress and finalization receiver, with explicit non-negative integer checks and rejection reporting, plus caller-side normalization to zero for missing or invalid gameplay values before invocation.",
+   "basis": "reasoned",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-20"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report invalid received data; normalize to zero at the caller so tracking continues.",
+   "verification": null,
+   "task_relevance": "Enforces R1 at the data-receiving operation and gameplay integration point."
+  },
+  {
+   "id": "item:C2",
+   "kind": "control",
+   "label": "Implement a streaming or otherwise bounded file reader enforcing 64 KiB line, 256 KiB record, and 1 MiB total-read limits before retaining data.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400",
+    "CWE-789"
+   ],
+   "capec": [
+    "CAPEC-130"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report an exceeded bound; initialize an empty store at the caller.",
+   "verification": null,
+   "task_relevance": "Enforces R2 without rejecting valid records within the stated limits."
+  },
+  {
+   "id": "item:C3",
+   "kind": "control",
+   "label": "Use a small explicit schema decoder for achievement identifiers and values, with no Java serialization APIs, reflection-based class loading, scripting, or executable interpretation.",
+   "basis": "reasoned",
+   "threat": "elevation_of_privilege",
+   "cwe": [
+    "CWE-502",
+    "CWE-913"
+   ],
+   "capec": [
+    "CAPEC-586"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Reject and report unsupported serialized or executable content; use an empty achievement set at the caller.",
+   "verification": null,
+   "task_relevance": "Enforces R3 for the local persistence format."
+  },
+  {
+   "id": "item:C4",
+   "kind": "control",
+   "label": "Wrap store open, bounded read, decode, and validation at the load integration point with explicit fallback to an empty unlocked-achievement set before menu rendering or gameplay use.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-248",
+    "CWE-703"
+   ],
+   "capec": [
+    "CAPEC-130"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Report the rejected store condition and continue with an empty set.",
+   "verification": null,
+   "task_relevance": "Enforces R4 while preserving the primary game and menu effects."
+  },
+  {
+   "id": "item:C5",
+   "kind": "control",
+   "label": "Use an allowlisted bounded collection containing at most the three supported achievement identifiers, evicting unsupported excess entries before retention and display.",
+   "basis": "reasoned",
+   "threat": "denial_of_service",
+   "cwe": [
+    "CWE-400"
+   ],
+   "capec": [
+    "CAPEC-130"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Evict excess unsupported records, report the condition, and retain valid supported achievements.",
+   "verification": null,
+   "task_relevance": "Enforces R5 for persistence and the dedicated achievements panel."
+  },
+  {
+   "id": "item:C6",
+   "kind": "control",
+   "label": "Connect run lifecycle hooks to zero the per-run counters at run start, update them from gameplay, perform final evaluation from the level's actual values at run end, and save the allowlisted unlocked set across sessions.",
+   "basis": "task",
+   "threat": "tampering",
+   "cwe": [
+    "CWE-345",
+    "CWE-20"
+   ],
+   "capec": [
+    "CAPEC-472"
+   ],
+   "asvs": [],
+   "cert": [],
+   "failure_behavior": "Report inconsistent run data, use zeroed run progress at the caller, and still execute final evaluation and persistence.",
+   "verification": null,
+   "task_relevance": "Enforces run isolation, threshold timing, and durable unlock state."
+  }
+ ],
+ "edges": [
+  {
+   "from": "item:C1",
+   "to": "item:R1",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C2",
+   "to": "item:R2",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C3",
+   "to": "item:R3",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C4",
+   "to": "item:R4",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C5",
+   "to": "item:R5",
+   "type": "satisfies"
+  },
+  {
+   "from": "item:C6",
+   "to": "item:R6",
+   "type": "satisfies"
+  }
+ ],
+ "metrics": {
+  "nodesByKind": {
+   "asset": 3,
+   "boundary": 3,
+   "requirement": 6,
+   "control": 6
+  },
+  "edgesByType": {
+   "satisfies": 6
+  },
+  "items": 12,
+  "anchoredItems": 0,
+  "entryPoints": 3,
+  "controls": 6,
+  "controlsWithEnforcementPoint": 0,
+  "itemsLinkedToRequirementOrRisk": 12,
+  "sinkSymbols": 0,
+  "sinkSymbolsAnchored": 0
+ },
+ "sha256": "9a60daf5a84c46a2cd4cd6c517f373ad0906ea64e393231dd8876ff642ae5d9a"
+}
