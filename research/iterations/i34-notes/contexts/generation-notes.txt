@@ -1,0 +1,115 @@
+apoMario.ApoMarioConstants [class] ApoMario/src/apoMario/ApoMarioConstants.java:18-369
+  [C2; control; concerns this code] At the Path-backed highscore reader, bound each input line to 256 bytes, each parsed field to its declared domain, and the total records read to 10; reject malformed records with a reported error and continue only with independently valid records.
+    on failure: Reject and report invalid lines/records; do not substitute, clamp, or allocate based on unbounded input.
+  [O4; observation; concerns this code] Existing persistence uses a caller-selected fixed properties filename, FileInputStream/FileOutputStream, Properties parsing, and catches malformed numeric properties by substituting defaults or clamping application size.
+  [X1; change_risk; concerns this code] A malformed or oversized user-edited leaderboard record could cause invalid score/time/name state, excessive allocation, parser exceptions, or denial of service before the board is displayed.
+    on failure: Reject the invalid record, report the rejection, and continue loading other valid records without substituting an unbounded value.
+
+apoMario.entity.ApoMarioPlayer [class] ApoMario/src/apoMario/entity/ApoMarioPlayer.java:23-857
+  [C1; control; concerns this code] At ApoMarioHighscore#storeRun, validate score and survivalTime as non-negative integers and playerName as non-null, non-blank after trimming, and at most 32 characters; keep at most 10 aligned records by evicting the lowest-scoring excess entry, then sort by score descending.
+    on failure: Return false and report invalid input without changing valid state; evict only valid records beyond 10 and never reject a valid record merely because the bounded leaderboard is full.
+  [R1; requirement; concerns this code] ApoMarioHighscore#storeRun must accept only a non-negative integer score, a non-negative integer survivalTime, and a non-null, non-blank-after-trimming playerName of at most 32 characters; it must retain accepted records in descending score order and expose aligned names, scores, and durations.
+    on failure: For any invalid argument, return false, report the rejection, and leave the existing valid leaderboard unchanged; never substitute or clamp at this receiving operation.
+  [X2; change_risk; concerns this code] A user can tamper with stored scores, names, durations, or ordering and thereby spoof leaderboard identity or alter leaderboard integrity.
+    on failure: Reject values outside the storeRun domain and report the rejection; do not silently accept altered records or clamp invalid values.
+
+apoMario.entity.ApoMarioPlayer#getPoints() [method] ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172
+  [C1; control; concerns this code] At ApoMarioHighscore#storeRun, validate score and survivalTime as non-negative integers and playerName as non-null, non-blank after trimming, and at most 32 characters; keep at most 10 aligned records by evicting the lowest-scoring excess entry, then sort by score descending.
+    on failure: Return false and report invalid input without changing valid state; evict only valid records beyond 10 and never reject a valid record merely because the bounded leaderboard is full.
+  [R1; requirement; concerns this code] ApoMarioHighscore#storeRun must accept only a non-negative integer score, a non-negative integer survivalTime, and a non-null, non-blank-after-trimming playerName of at most 32 characters; it must retain accepted records in descending score order and expose aligned names, scores, and durations.
+    on failure: For any invalid argument, return false, report the rejection, and leave the existing valid leaderboard unchanged; never substitute or clamp at this receiving operation.
+  [X2; change_risk; concerns this code] A user can tamper with stored scores, names, durations, or ordering and thereby spoof leaderboard identity or alter leaderboard integrity.
+    on failure: Reject values outside the storeRun domain and report the rejection; do not silently accept altered records or clamp invalid values.
+
+apoMario.game.ApoMarioPanel [class] ApoMario/src/apoMario/game/ApoMarioPanel.java:36-699
+  [O3; observation; concerns this code] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.
+  [R2; requirement; concerns this code] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level's actual elapsed duration, and persist the accepted run across process restarts.
+    on failure: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name "human", score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.
+  [X3; change_risk; concerns this code] If completion recording is attached to only one transition or occurs before score calculation, wins, losses, timeout, and restart paths can be omitted or recorded with stale values.
+    on failure: At the completion integration point, normalize missing/invalid run values to stated safe defaults and still invoke the primary store operation exactly once for each finished run.
+
+apoMario.game.ApoMarioPanel#restartLevel(boolean) [method] ApoMario/src/apoMario/game/ApoMarioPanel.java:454-462
+  [X3; change_risk; concerns this code] If completion recording is attached to only one transition or occurs before score calculation, wins, losses, timeout, and restart paths can be omitted or recorded with stale values.
+    on failure: At the completion integration point, normalize missing/invalid run values to stated safe defaults and still invoke the primary store operation exactly once for each finished run.
+
+apoMario.game.ApoMarioPanel#setAnalysis() [method] ApoMario/src/apoMario/game/ApoMarioPanel.java:363-371
+  [R2; requirement; concerns this code] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level's actual elapsed duration, and persist the accepted run across process restarts.
+    on failure: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name "human", score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.
+
+apoMario.game.ApoMarioPanel#setMenu() [method] ApoMario/src/apoMario/game/ApoMarioPanel.java:214-226
+  [O3; observation; concerns this code] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.
+
+apoMario.game.panels.ApoMarioGame [class] ApoMario/src/apoMario/game/panels/ApoMarioGame.java:23-433
+  [R3; requirement; concerns this code] The highscore view must display player name, score, and survival time in mm:ss, with records in descending score order, and must limit displayed/retained records to the view’s capacity, such as 10 entries.
+    on failure: The view truncates excess valid records by evicting records beyond 10; it does not reject a valid run that fits the input domain. Invalid loaded records are rejected and reported before rendering.
+
+apoMario.game.panels.ApoMarioGame#renderStatistics(Graphics2D) [method] ApoMario/src/apoMario/game/panels/ApoMarioGame.java:318-371
+  [R3; requirement; concerns this code] The highscore view must display player name, score, and survival time in mm:ss, with records in descending score order, and must limit displayed/retained records to the view’s capacity, such as 10 entries.
+    on failure: The view truncates excess valid records by evicting records beyond 10; it does not reject a valid run that fits the input domain. Invalid loaded records are rejected and reported before rendering.
+
+apoMario.game.panels.ApoMarioMenu [class] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:28-553
+  [O3; observation; concerns this code] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.
+  [R1; requirement; concerns this code] ApoMarioHighscore#storeRun must accept only a non-negative integer score, a non-negative integer survivalTime, and a non-null, non-blank-after-trimming playerName of at most 32 characters; it must retain accepted records in descending score order and expose aligned names, scores, and durations.
+    on failure: For any invalid argument, return false, report the rejection, and leave the existing valid leaderboard unchanged; never substitute or clamp at this receiving operation.
+  [R3; requirement; enforced here] The highscore view must display player name, score, and survival time in mm:ss, with records in descending score order, and must limit displayed/retained records to the view’s capacity, such as 10 entries.
+    on failure: The view truncates excess valid records by evicting records beyond 10; it does not reject a valid run that fits the input domain. Invalid loaded records are rejected and reported before rendering.
+
+apoMario.game.panels.ApoMarioMenu#render(Graphics2D) [method] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514
+  [O3; observation; concerns this code] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.
+  [R3; requirement; enforced here] The highscore view must display player name, score, and survival time in mm:ss, with records in descending score order, and must limit displayed/retained records to the view’s capacity, such as 10 entries.
+    on failure: The view truncates excess valid records by evicting records beyond 10; it does not reject a valid run that fits the input domain. Invalid loaded records are rejected and reported before rendering.
+
+apoMario.game.panels.ApoMarioMenu#renderPlayerStats(Graphics2D,int,int,ApoMarioPlayer) [method] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:516-545
+  [R1; requirement; concerns this code] ApoMarioHighscore#storeRun must accept only a non-negative integer score, a non-negative integer survivalTime, and a non-null, non-blank-after-trimming playerName of at most 32 characters; it must retain accepted records in descending score order and expose aligned names, scores, and durations.
+    on failure: For any invalid argument, return false, report the rejection, and leave the existing valid leaderboard unchanged; never substitute or clamp at this receiving operation.
+
+apoMario.game.panels.ApoMarioModelMenu [class] ApoMario/src/apoMario/game/panels/ApoMarioModelMenu.java:22-219
+  [O3; observation; concerns this code] The menu is a model with a render method, and ApoMarioPanel#setMenu selects and initializes it; current menu rendering displays player statistics and existing menu buttons.
+
+apoMario.level.ApoMarioLevel [class] ApoMario/src/apoMario/level/ApoMarioLevel.java:55-1668
+  [C3; control; enforced here] At the completion integration in ApoMarioLevel#setAnalysis(boolean), read the post-calculation player points and getPassedTime(), choose the human/default name when the source name is missing or invalid, normalize invalid score or duration to 0, and invoke storeRun once before entering analysis.
+    on failure: Fallback occurs at this caller integration point, so the run is still recorded; storeRun remains strict and reports any unexpected rejection or persistence failure.
+  [O1; observation; concerns this code] On a one-player win, ApoMarioLevel#setAnalysis(boolean) adds finish, time, difficulty, and width-derived points to playerOne; on a loss it can award points to the remaining visible player. The method then transitions the panel to analysis.
+  [O2; observation; concerns this code] The level stores a countdown time, initializes levelStartTime, exposes getTime(), and computes elapsed time as randomLevel.getTime() minus time through getPassedTime().
+  [R2; requirement; enforced here] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level's actual elapsed duration, and persist the accepted run across process restarts.
+    on failure: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name "human", score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.
+  [R4; requirement; concerns this code] The level-file reader must bound every untrusted allocation and numeric collection before construction: width and height must be positive and within the game’s needed bounds, time must be a non-negative integer, and enemy/entity counts must be non-negative and capped to the level’s supported capacity.
+    on failure: Reject the invalid level input, report the rejection, and do not allocate or construct the invalid level; the caller may retain the prior valid game state.
+  [X2; change_risk; concerns this code] A user can tamper with stored scores, names, durations, or ordering and thereby spoof leaderboard identity or alter leaderboard integrity.
+    on failure: Reject values outside the storeRun domain and report the rejection; do not silently accept altered records or clamp invalid values.
+  [X3; change_risk; enforced here] If completion recording is attached to only one transition or occurs before score calculation, wins, losses, timeout, and restart paths can be omitted or recorded with stale values.
+    on failure: At the completion integration point, normalize missing/invalid run values to stated safe defaults and still invoke the primary store operation exactly once for each finished run.
+
+apoMario.level.ApoMarioLevel#getPassedTime() [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1172-1174
+  [C3; control; concerns this code] At the completion integration in ApoMarioLevel#setAnalysis(boolean), read the post-calculation player points and getPassedTime(), choose the human/default name when the source name is missing or invalid, normalize invalid score or duration to 0, and invoke storeRun once before entering analysis.
+    on failure: Fallback occurs at this caller integration point, so the run is still recorded; storeRun remains strict and reports any unexpected rejection or persistence failure.
+  [O2; observation; concerns this code] The level stores a countdown time, initializes levelStartTime, exposes getTime(), and computes elapsed time as randomLevel.getTime() minus time through getPassedTime().
+  [R2; requirement; concerns this code] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level's actual elapsed duration, and persist the accepted run across process restarts.
+    on failure: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name "human", score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.
+  [X2; change_risk; concerns this code] A user can tamper with stored scores, names, durations, or ordering and thereby spoof leaderboard identity or alter leaderboard integrity.
+    on failure: Reject values outside the storeRun domain and report the rejection; do not silently accept altered records or clamp invalid values.
+
+apoMario.level.ApoMarioLevel#getTime() [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399
+  [O2; observation; concerns this code] The level stores a countdown time, initializes levelStartTime, exposes getTime(), and computes elapsed time as randomLevel.getTime() minus time through getPassedTime().
+
+apoMario.level.ApoMarioLevel#makeEmptyLevel(int,int,int) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:228-260
+  [R4; requirement; concerns this code] The level-file reader must bound every untrusted allocation and numeric collection before construction: width and height must be positive and within the game’s needed bounds, time must be a non-negative integer, and enemy/entity counts must be non-negative and capped to the level’s supported capacity.
+    on failure: Reject the invalid level input, report the rejection, and do not allocate or construct the invalid level; the caller may retain the prior valid game state.
+
+apoMario.level.ApoMarioLevel#setAnalysis(boolean) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233
+  [C3; control; enforced here] At the completion integration in ApoMarioLevel#setAnalysis(boolean), read the post-calculation player points and getPassedTime(), choose the human/default name when the source name is missing or invalid, normalize invalid score or duration to 0, and invoke storeRun once before entering analysis.
+    on failure: Fallback occurs at this caller integration point, so the run is still recorded; storeRun remains strict and reports any unexpected rejection or persistence failure.
+  [O1; observation; concerns this code] On a one-player win, ApoMarioLevel#setAnalysis(boolean) adds finish, time, difficulty, and width-derived points to playerOne; on a loss it can award points to the remaining visible player. The method then transitions the panel to analysis.
+  [R2; requirement; enforced here] The completion integration must call recordRunEnd(ApoMarioLevel) after final score adjustments for both level clearing and losing, use the level's actual elapsed duration, and persist the accepted run across process restarts.
+    on failure: If the level supplies a missing/invalid name, score, or duration, the integration must normalize it to explicit safe defaults (for example, name "human", score 0, duration 0) before calling storeRun; it must still perform the store operation and report persistence failures.
+  [X3; change_risk; enforced here] If completion recording is attached to only one transition or occurs before score calculation, wins, losses, timeout, and restart paths can be omitted or recorded with stale values.
+    on failure: At the completion integration point, normalize missing/invalid run values to stated safe defaults and still invoke the primary store operation exactly once for each finished run.
+
+apoMario.level.ApoMarioLevel#thinkTime(int) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272
+  [O2; observation; concerns this code] The level stores a countdown time, initializes levelStartTime, exposes getTime(), and computes elapsed time as randomLevel.getTime() minus time through getPassedTime().
+
+apoMario.level.ApoMarioLevelIO [class] ApoMario/src/apoMario/level/ApoMarioLevelIO.java:22-200
+  [C4; control; enforced here] At ApoMarioLevelIO#readLevel(DataInputStream), validate dimensions, time, tile/enemy counts, and each field before allocating arrays or constructing entities; cap each count to the level’s supported capacity and report rejected input.
+    on failure: Reject invalid data before allocation/entity construction and report the rejection; do not substitute or clamp malformed level fields.
+  [R4; requirement; enforced here] The level-file reader must bound every untrusted allocation and numeric collection before construction: width and height must be positive and within the game’s needed bounds, time must be a non-negative integer, and enemy/entity counts must be non-negative and capped to the level’s supported capacity.
+    on failure: Reject the invalid level input, report the rejection, and do not allocate or construct the invalid level; the caller may retain the prior valid game state.

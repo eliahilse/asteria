@@ -1,0 +1,435 @@
+{
+ "kinds": [
+  "requirement",
+  "control",
+  "observation",
+  "existing_risk",
+  "change_risk"
+ ],
+ "method": "Reuse",
+ "notes": {
+  "apoJump.game.ApoJumpStateHighscore": {
+   "end": 237,
+   "file": "ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "Exclude only records already rejected by the store; render an empty or partial valid board without throwing when no valid records remain.",
+     "id": "C4",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the highscore panel's view-model/render boundary, sort records by score descending while moving name and duration with the same record, cap the displayed collection at 10, and format each validated duration as mm:ss before drawing it."
+    },
+    {
+     "failureBehavior": "Render only validated aligned records; malformed records must already have been rejected by the store, and an empty valid list renders an empty board rather than throwing.",
+     "id": "R4",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "The dedicated highscore panel must display aligned name, score, and survival-time fields in descending score order, format survival time as mm:ss, and render no more than the 10 retained records."
+    },
+    {
+     "failureBehavior": "If invalid data is accepted, the leaderboard can display false identity/score/time data or become unavailable.",
+     "id": "X2",
+     "kind": "change_risk",
+     "relation": "anchored_at",
+     "text": "A Path-backed highscore store will accept locally editable names, scores, durations, and record counts; without validation, tampering can corrupt leaderboard ordering or cause excessive allocation during load."
+    }
+   ],
+   "kind": "class",
+   "start": 18
+  },
+  "apoJump.game.ApoJumpStateHighscore#render(Graphics2D)": {
+   "end": 235,
+   "file": "ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "Exclude only records already rejected by the store; render an empty or partial valid board without throwing when no valid records remain.",
+     "id": "C4",
+     "kind": "control",
+     "relation": "anchored_at",
+     "text": "At the highscore panel's view-model/render boundary, sort records by score descending while moving name and duration with the same record, cap the displayed collection at 10, and format each validated duration as mm:ss before drawing it."
+    },
+    {
+     "failureBehavior": "Render only validated aligned records; malformed records must already have been rejected by the store, and an empty valid list renders an empty board rather than throwing.",
+     "id": "R4",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "The dedicated highscore panel must display aligned name, score, and survival-time fields in descending score order, format survival time as mm:ss, and render no more than the 10 retained records."
+    },
+    {
+     "failureBehavior": "If invalid data is accepted, the leaderboard can display false identity/score/time data or become unavailable.",
+     "id": "X2",
+     "kind": "change_risk",
+     "relation": "anchored_at",
+     "text": "A Path-backed highscore store will accept locally editable names, scores, durations, and record counts; without validation, tampering can corrupt leaderboard ordering or cause excessive allocation during load."
+    }
+   ],
+   "kind": "method",
+   "start": 189
+  },
+  "apoJump.game.ApoJumpStateHighscore#sortList(boolean)": {
+   "end": 134,
+   "file": "ApoIcarus/src/apoJump/game/ApoJumpStateHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "Exclude only records already rejected by the store; render an empty or partial valid board without throwing when no valid records remain.",
+     "id": "C4",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the highscore panel's view-model/render boundary, sort records by score descending while moving name and duration with the same record, cap the displayed collection at 10, and format each validated duration as mm:ss before drawing it."
+    },
+    {
+     "failureBehavior": "Render only validated aligned records; malformed records must already have been rejected by the store, and an empty valid list renders an empty board rather than throwing.",
+     "id": "R4",
+     "kind": "requirement",
+     "relation": "anchored_at",
+     "text": "The dedicated highscore panel must display aligned name, score, and survival-time fields in descending score order, format survival time as mm:ss, and render no more than the 10 retained records."
+    }
+   ],
+   "kind": "method",
+   "start": 106
+  },
+  "apoMario.entity.ApoMarioPlayer": {
+   "end": 857,
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "items": [
+    {
+     "failureBehavior": "Normalize only at this integration point, then always invoke recordRunEnd/storeRun; never suppress a terminal record because one field is invalid.",
+     "id": "C2",
+     "kind": "control",
+     "relation": "anchored_at",
+     "text": "At the terminal integration in ApoMarioLevel.setAnalysis(boolean), guard recording so it executes once after terminal point adjustments and before setAnalysis() changes the panel; compute elapsed time as startTime minus remaining time, and use the existing displayed identity, defaulting a missing/blank name to \"human\" and an invalid score or duration to 0 before calling storeRun."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O2",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "ApoMarioPlayer stores points and an optional teamName; the HUD displays the teamName or the literal human label and displays the player's points."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O3",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel."
+    },
+    {
+     "failureBehavior": "If a missing or invalid name, score, or elapsed time reaches the integration point, substitute a stated safe default there before calling recordRunEnd; do not skip recording the run.",
+     "id": "R2",
+     "kind": "requirement",
+     "relation": "anchored_at",
+     "text": "The terminal integration must call recordRunEnd once for every completed or lost run, after ApoMarioLevel has applied the terminal score adjustments and before the panel transition; it must derive elapsed time from getStartTime() minus getTime(), preserve valid non-negative values, and select the actual finished player's score and displayed identity."
+    },
+    {
+     "failureBehavior": "A missed hook silently loses the run record or records an intermediate score.",
+     "id": "X3",
+     "kind": "change_risk",
+     "relation": "anchored_at",
+     "text": "If recording is attached only to the finish path, or occurs before terminal scoring, losing runs and final score adjustments will be omitted, producing incomplete or false accountability data."
+    }
+   ],
+   "kind": "class",
+   "start": 23
+  },
+  "apoMario.entity.ApoMarioPlayer#getPoints()": {
+   "end": 172,
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "items": [
+    {
+     "failureBehavior": "",
+     "id": "O2",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "ApoMarioPlayer stores points and an optional teamName; the HUD displays the teamName or the literal human label and displays the player's points."
+    }
+   ],
+   "kind": "method",
+   "start": 170
+  },
+  "apoMario.entity.ApoMarioPlayer#getTeamName()": {
+   "end": 118,
+   "file": "ApoMario/src/apoMario/entity/ApoMarioPlayer.java",
+   "items": [
+    {
+     "failureBehavior": "",
+     "id": "O2",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "ApoMarioPlayer stores points and an optional teamName; the HUD displays the teamName or the literal human label and displays the player's points."
+    }
+   ],
+   "kind": "method",
+   "start": 116
+  },
+  "apoMario.game.ApoMarioPanel": {
+   "end": 699,
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "items": [
+    {
+     "failureBehavior": "",
+     "id": "O3",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel."
+    }
+   ],
+   "kind": "class",
+   "start": 36
+  },
+  "apoMario.game.ApoMarioPanel#setAnalysis()": {
+   "end": 371,
+   "file": "ApoMario/src/apoMario/game/ApoMarioPanel.java",
+   "items": [
+    {
+     "failureBehavior": "",
+     "id": "O3",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel."
+    }
+   ],
+   "kind": "method",
+   "start": 363
+  },
+  "apoMario.game.panels.ApoMarioGame": {
+   "end": 433,
+   "file": "ApoMario/src/apoMario/game/panels/ApoMarioGame.java",
+   "items": [
+    {
+     "failureBehavior": "",
+     "id": "O2",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "ApoMarioPlayer stores points and an optional teamName; the HUD displays the teamName or the literal human label and displays the player's points."
+    }
+   ],
+   "kind": "class",
+   "start": 23
+  },
+  "apoMario.level.ApoMarioLevel": {
+   "end": 1668,
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "items": [
+    {
+     "failureBehavior": "Normalize only at this integration point, then always invoke recordRunEnd/storeRun; never suppress a terminal record because one field is invalid.",
+     "id": "C2",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the terminal integration in ApoMarioLevel.setAnalysis(boolean), guard recording so it executes once after terminal point adjustments and before setAnalysis() changes the panel; compute elapsed time as startTime minus remaining time, and use the existing displayed identity, defaulting a missing/blank name to \"human\" and an invalid score or duration to 0 before calling storeRun."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O3",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel."
+    },
+    {
+     "failureBehavior": "If a missing or invalid name, score, or elapsed time reaches the integration point, substitute a stated safe default there before calling recordRunEnd; do not skip recording the run.",
+     "id": "R2",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "The terminal integration must call recordRunEnd once for every completed or lost run, after ApoMarioLevel has applied the terminal score adjustments and before the panel transition; it must derive elapsed time from getStartTime() minus getTime(), preserve valid non-negative values, and select the actual finished player's score and displayed identity."
+    },
+    {
+     "failureBehavior": "A missed hook silently loses the run record or records an intermediate score.",
+     "id": "X3",
+     "kind": "change_risk",
+     "relation": "enforced_at",
+     "text": "If recording is attached only to the finish path, or occurs before terminal scoring, losing runs and final score adjustments will be omitted, producing incomplete or false accountability data."
+    }
+   ],
+   "kind": "class",
+   "start": 55
+  },
+  "apoMario.level.ApoMarioLevel#setAnalysis(boolean)": {
+   "end": 1233,
+   "file": "ApoMario/src/apoMario/level/ApoMarioLevel.java",
+   "items": [
+    {
+     "failureBehavior": "Normalize only at this integration point, then always invoke recordRunEnd/storeRun; never suppress a terminal record because one field is invalid.",
+     "id": "C2",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the terminal integration in ApoMarioLevel.setAnalysis(boolean), guard recording so it executes once after terminal point adjustments and before setAnalysis() changes the panel; compute elapsed time as startTime minus remaining time, and use the existing displayed identity, defaulting a missing/blank name to \"human\" and an invalid score or duration to 0 before calling storeRun."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O3",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "A player reaching the finish calls level.setAnalysis(true), while a dead player becomes invisible and calls level.setAnalysis(false); setAnalysis computes terminal score adjustments and then navigates to the analysis panel."
+    },
+    {
+     "failureBehavior": "If a missing or invalid name, score, or elapsed time reaches the integration point, substitute a stated safe default there before calling recordRunEnd; do not skip recording the run.",
+     "id": "R2",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "The terminal integration must call recordRunEnd once for every completed or lost run, after ApoMarioLevel has applied the terminal score adjustments and before the panel transition; it must derive elapsed time from getStartTime() minus getTime(), preserve valid non-negative values, and select the actual finished player's score and displayed identity."
+    },
+    {
+     "failureBehavior": "A missed hook silently loses the run record or records an intermediate score.",
+     "id": "X3",
+     "kind": "change_risk",
+     "relation": "enforced_at",
+     "text": "If recording is attached only to the finish path, or occurs before terminal scoring, losing runs and final score adjustments will be omitted, producing incomplete or false accountability data."
+    }
+   ],
+   "kind": "method",
+   "start": 1176
+  },
+  "org.apogames.help.ApoHighscore": {
+   "end": 151,
+   "file": "ApoIcarus/src/org/apogames/help/ApoHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "Report and discard only the invalid record; do not clamp or substitute its fields, and keep valid records within the 10-record bound.",
+     "id": "C1",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the new ApoMarioHighscore file parser and storeRun boundary, validate the complete record before appending it: score and survival time must be integers in [0,Integer.MAX_VALUE], name must be trimmed, non-blank, non-null, and at most 32 characters, and each line/record must be at most 256 bytes. Reject and report invalid records; retain valid records and evict records beyond the 10-record display capacity instead of rejecting a valid fitting record."
+    },
+    {
+     "failureBehavior": "On any write or replace failure, report it and leave the current validated list intact.",
+     "id": "C3",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At persistAcrossRuns, serialize only the validated, at-most-10-record state, use a temporary sibling file followed by an atomic replace when supported, and report any failure while retaining the in-memory state for the current panel."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O1",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "The donor stores names, times, and points in parallel lists; save() sends them to a network endpoint, while load() parses every third line as an integer point or time and otherwise stores a name."
+    },
+    {
+     "failureBehavior": "Reject and report the invalid record; preserve valid retained records and do not replace the rejected value with a guessed or clamped value.",
+     "id": "R1",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "ApoMarioHighscore's file-reading and storeRun operations must accept only complete records with a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming name of at most 32 characters; each input record must be limited to 256 bytes, and the retained leaderboard must be limited to 10 records by evicting the lowest-ranked entries after insertion. Invalid records must be rejected and reported, never substituted or clamped by the store operation."
+    },
+    {
+     "failureBehavior": "Report the write failure and leave the validated in-memory leaderboard available for the current view; do not discard the run.",
+     "id": "R3",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "persistAcrossRuns must write the validated bounded leaderboard to the supplied Path and preserve the in-memory record if the file cannot be written; persistence errors must be reported without dropping the newly recorded run."
+    },
+    {
+     "failureBehavior": "Observed code returns false only for MalformedURLException or IOException; numeric parsing and list-size failure behavior is not established.",
+     "id": "X1",
+     "kind": "existing_risk",
+     "relation": "enforced_at",
+     "text": "The donor load operation converts untrusted lines directly with Integer.valueOf and appends them to parallel lists without visible bounds or record-consistency checks; malformed data reaches parsing exceptions and oversized input can allocate unbounded list contents."
+    },
+    {
+     "failureBehavior": "If invalid data is accepted, the leaderboard can display false identity/score/time data or become unavailable.",
+     "id": "X2",
+     "kind": "change_risk",
+     "relation": "anchored_at",
+     "text": "A Path-backed highscore store will accept locally editable names, scores, durations, and record counts; without validation, tampering can corrupt leaderboard ordering or cause excessive allocation during load."
+    },
+    {
+     "failureBehavior": "A failed write must not clear memory or suppress display of the current leaderboard.",
+     "id": "X4",
+     "kind": "change_risk",
+     "relation": "enforced_at",
+     "text": "A persistence failure or non-atomic rewrite can make the leaderboard unavailable or partially written across runs, causing loss of otherwise valid highscore records."
+    }
+   ],
+   "kind": "class",
+   "start": 14
+  },
+  "org.apogames.help.ApoHighscore#load()": {
+   "end": 150,
+   "file": "ApoIcarus/src/org/apogames/help/ApoHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "Report and discard only the invalid record; do not clamp or substitute its fields, and keep valid records within the 10-record bound.",
+     "id": "C1",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At the new ApoMarioHighscore file parser and storeRun boundary, validate the complete record before appending it: score and survival time must be integers in [0,Integer.MAX_VALUE], name must be trimmed, non-blank, non-null, and at most 32 characters, and each line/record must be at most 256 bytes. Reject and report invalid records; retain valid records and evict records beyond the 10-record display capacity instead of rejecting a valid fitting record."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O1",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "The donor stores names, times, and points in parallel lists; save() sends them to a network endpoint, while load() parses every third line as an integer point or time and otherwise stores a name."
+    },
+    {
+     "failureBehavior": "Reject and report the invalid record; preserve valid retained records and do not replace the rejected value with a guessed or clamped value.",
+     "id": "R1",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "ApoMarioHighscore's file-reading and storeRun operations must accept only complete records with a non-negative integer score, a non-negative integer survival duration, and a non-null, non-blank-after-trimming name of at most 32 characters; each input record must be limited to 256 bytes, and the retained leaderboard must be limited to 10 records by evicting the lowest-ranked entries after insertion. Invalid records must be rejected and reported, never substituted or clamped by the store operation."
+    },
+    {
+     "failureBehavior": "Observed code returns false only for MalformedURLException or IOException; numeric parsing and list-size failure behavior is not established.",
+     "id": "X1",
+     "kind": "existing_risk",
+     "relation": "enforced_at",
+     "text": "The donor load operation converts untrusted lines directly with Integer.valueOf and appends them to parallel lists without visible bounds or record-consistency checks; malformed data reaches parsing exceptions and oversized input can allocate unbounded list contents."
+    },
+    {
+     "failureBehavior": "If invalid data is accepted, the leaderboard can display false identity/score/time data or become unavailable.",
+     "id": "X2",
+     "kind": "change_risk",
+     "relation": "anchored_at",
+     "text": "A Path-backed highscore store will accept locally editable names, scores, durations, and record counts; without validation, tampering can corrupt leaderboard ordering or cause excessive allocation during load."
+    }
+   ],
+   "kind": "method",
+   "start": 99
+  },
+  "org.apogames.help.ApoHighscore#save(int,int,String)": {
+   "end": 97,
+   "file": "ApoIcarus/src/org/apogames/help/ApoHighscore.java",
+   "items": [
+    {
+     "failureBehavior": "On any write or replace failure, report it and leave the current validated list intact.",
+     "id": "C3",
+     "kind": "control",
+     "relation": "enforced_at",
+     "text": "At persistAcrossRuns, serialize only the validated, at-most-10-record state, use a temporary sibling file followed by an atomic replace when supported, and report any failure while retaining the in-memory state for the current panel."
+    },
+    {
+     "failureBehavior": "",
+     "id": "O1",
+     "kind": "observation",
+     "relation": "anchored_at",
+     "text": "The donor stores names, times, and points in parallel lists; save() sends them to a network endpoint, while load() parses every third line as an integer point or time and otherwise stores a name."
+    },
+    {
+     "failureBehavior": "Report the write failure and leave the validated in-memory leaderboard available for the current view; do not discard the run.",
+     "id": "R3",
+     "kind": "requirement",
+     "relation": "enforced_at",
+     "text": "persistAcrossRuns must write the validated bounded leaderboard to the supplied Path and preserve the in-memory record if the file cannot be written; persistence errors must be reported without dropping the newly recorded run."
+    },
+    {
+     "failureBehavior": "A failed write must not clear memory or suppress display of the current leaderboard.",
+     "id": "X4",
+     "kind": "change_risk",
+     "relation": "enforced_at",
+     "text": "A persistence failure or non-atomic rewrite can make the leaderboard unavailable or partially written across runs, causing loss of otherwise valid highscore records."
+    }
+   ],
+   "kind": "method",
+   "start": 54
+  }
+ },
+ "schemaVersion": 1,
+ "skippedSymbols": [],
+ "source": {
+  "codeGraph": "research/iterations/i28-graph/contexts/reuse-code-graph.json",
+  "codeGraphSha256": "fcc86810a1567b606b22bf5b5294dcf9f15f5449d267c33ceed9658ffa012df9",
+  "dataflowGraph": "research/iterations/i31-v13/contexts/reuse-dataflow.graph.json",
+  "dataflowSha256": "649aa9bc1f00cf01c5c854dab620d0fc69e88af4fe95ff983e4aae9d4569f26b"
+ },
+ "statements": 15,
+ "symbols": 14
+}

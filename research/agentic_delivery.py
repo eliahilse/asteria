@@ -41,16 +41,16 @@ EVALUATION_PROTOCOL = 'highscore-response-v3-integrated-security'  # the Highsco
 def evaluation_protocol() -> str:
     return f'{tasks.current().key}-response-v3-integrated-security'
 MODES = ('single_shot', 'agentic')
-SIDECARS = ('none', 'static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
+SIDECARS = ('none', 'static', 'adaptive', 'ast', 'notes', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
 GATE_KINDS = ('gate', 'coach', 'gate_once', 'rewind')  # kinds served by the judge hook; the sidecar chooses its policy from the condition
 GUARD_KINDS = ('guard', 'guard_shadow', 'advise')  # kinds served by the pre-tool-call judge hook; guard_shadow records verdicts and never cancels; advise never cancels but appends a positive verdict's advice to the submission's feedback
 GUARD_JUDGE_TURNS_LIMIT = 9  # bound on a guard sidecar's judge_turns; one consultation sends at most judge_turns + 1 judge requests, ids <runId>-g<turn>k<n>
 MESSAGE_TEXT_NOTE = 'not available: adapter protocol v1 returns the forced tool call arguments only'
 ACTIONS = ('search', 'read', 'submit_feature_changes')
 REQUEST_ID_LIMIT = 64  # the private adapter forwards request ids as the provider's `user` field, capped at 64 characters
-INJECT_KINDS = ('adaptive', 'ast')  # kinds served by the injection hook (update after reads and before submissions): security statements, or the code graph of what was read (ast: AST autocontext)
-KIND_ORDER = ('static', 'adaptive', 'ast', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
-DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS and sidecar not in GUARD_KINDS and sidecar != 'ast']  # judge and autocontext arms are requested explicitly
+INJECT_KINDS = ('adaptive', 'ast', 'notes')  # kinds served by the injection hook (update after reads and before submissions): security statements, the code graph of what was read (ast: AST autocontext), or per-symbol security notes with call edges (notes: research.security_notes)
+KIND_ORDER = ('static', 'adaptive', 'ast', 'notes', 'gate', 'coach', 'gate_once', 'rewind', 'guard', 'guard_shadow', 'advise')
+DEFAULT_ARMS = [{'mode': mode, 'sidecar': sidecar} for mode in MODES for sidecar in SIDECARS if sidecar not in GATE_KINDS and sidecar not in GUARD_KINDS and sidecar not in ('ast', 'notes')]  # judge, autocontext and notes arms are requested explicitly
 
 
 def kind_parts(kind) -> tuple[str, ...]:
@@ -137,7 +137,7 @@ def normalize_arms(arms) -> list[dict]:
         if not isinstance(arm, dict) or arm.get('mode') not in MODES or not isinstance(arm.get('sidecar'), str): raise ValueError(f'Invalid arm: {arm!r}')
         parts = kind_parts(arm['sidecar'])
         arm = {'mode': arm['mode'], 'sidecar': arm['sidecar']}
-        if (set(parts) & set(GUARD_KINDS) or 'ast' in parts) and arm['mode'] != 'agentic': raise ValueError(f'Guard and ast kinds need the agentic mode: {arm}')
+        if (set(parts) & set(GUARD_KINDS) or set(parts) & {'ast', 'notes'}) and arm['mode'] != 'agentic': raise ValueError(f'Guard, ast and notes kinds need the agentic mode: {arm}')
         if arm in result: raise ValueError(f'Duplicate arm: {arm}')
         result.append(arm)
     if not result: raise ValueError('At least one arm is required')
@@ -616,7 +616,7 @@ def run(manifest: Path, workers=3, sidecar_spec: str | None = None):
     if not 1 <= workers <= 8: raise ValueError('Use 1–8 workers')
     plan = validate(manifest); os.environ['ASTERIA_TASK'] = plan.get('task', 'highscore')
     kinds = [set(kind_parts(c['sidecar'])) for c in plan['conditions']]
-    if sidecar_spec is None and any(k & set(INJECT_KINDS + GATE_KINDS) for k in kinds): raise ValueError('Adaptive, ast and gate conditions need --sidecar module:attribute')
+    if sidecar_spec is None and any(k & set(INJECT_KINDS + GATE_KINDS) for k in kinds): raise ValueError('Adaptive, ast, notes and gate conditions need --sidecar module:attribute')
     if sidecar_spec is None and any(k & set(GUARD_KINDS) for k in kinds): raise ValueError('Guard conditions need --sidecar module:attribute')
     if sidecar_spec is not None: load_sidecar(sidecar_spec)  # Fail before any subprocess starts.
     with (manifest.parent / '.iteration.lock').open('a') as lock:
