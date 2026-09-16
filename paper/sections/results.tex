@@ -4,7 +4,9 @@
 Table~\ref{tab:matrix} is the baseline without security context: the
 prior study's sixteen cells rerun with our generator under its protocol.
 Table~\ref{tab:results} compares the strategies under one set of
-conditions; every arm has a control collected in the same session.
+conditions for Highscore, Table~\ref{tab:results-ach} for the harder
+second task, Achievements; every arm has a control collected in the same
+session.
 
 \begin{table}[t]
 \centering
@@ -54,6 +56,23 @@ S1 high-level guidance & 10 & 100\% & 100\% & 90\% & 20\% & 1.0 & 2.3 \\
 S2 full document & 10 & 100\% & 97\% & 87\% & 0\% & 1.0 & 2.1 \\
 S3 generic, no repository & 10 & 100\% & 100\% & 87\% & 10\% & 1.0 & 2.3 \\
 S2 full document + judge & 10 & 100\% & 96\% & 86\% & 10\% & 1.4 & 2.7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\caption{The second task, Achievements, under the same conditions and columns as Table~\ref{tab:results} (version-13 documents written for this task, the cells Generation S and Reuse S+B, five artifacts per cell). Rows appear as their rounds complete; this is a working document.}
+\label{tab:results-ach}
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Security context & $N$ & Compiled & Tests & Checks & All pass & Input (M) & Min \\
+\midrule
+\multicolumn{8}{@{}l}{\emph{One response, no feedback}} \\
+no security context & 10 & 0\% & -- & -- & 0\% & 0.0 & 0.0 \\
+S2 full document & 10 & 0\% & -- & -- & 0\% & 0.0 & 0.0 \\
 \bottomrule
 \end{tabular}
 \end{table}

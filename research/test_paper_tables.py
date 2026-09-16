@@ -40,6 +40,11 @@ class ResultsTableTests(unittest.TestCase):
         block = source.split('\\label{tab:results}', 1)[1].split('\\end{tabular}', 1)[0]
         printed = [line.strip() for line in block.splitlines() if line.strip().endswith('\\\\') and 'Security context' not in line]
         self.assertEqual(printed, [line.strip() for line in body().splitlines()])
+        from research.paper_results_table import ACHIEVEMENTS_GROUPS
+        if '\\label{tab:results-ach}' in source:
+            block = source.split('\\label{tab:results-ach}', 1)[1].split('\\end{tabular}', 1)[0]
+            printed = [line.strip() for line in block.splitlines() if line.strip().endswith('\\\\') and 'Security context' not in line]
+            self.assertEqual(printed, [line.strip() for line in body(ACHIEVEMENTS_GROUPS).splitlines()])
         for group, items in rows():
             for r in items:
                 self.assertEqual(r['n'], 10, r['label']); self.assertLessEqual(r['full'], r['compiled'], r['label'])
