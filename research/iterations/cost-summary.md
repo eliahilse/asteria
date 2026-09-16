@@ -258,12 +258,14 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i33b-s3 | reuse_sb__agentic__static | 5 | 34 | 5,049,796 | 0 | 71,745 | 17,265 | 10.9 | 13.1 |
 | a01-bootstrap | generation_s__agentic__none | 3 | 32 | 3,569,191 | 0 | 37,965 | 17,317 | 8.8 | 10.6 |
 | a01-bootstrap | reuse_sb__agentic__none | 3 | 34 | 5,460,140 | 164,689 | 48,674 | 21,864 | 15.9 | 17.6 |
-| a02a-s1 | generation_s__single_shot__static | 2 | 2 | 183,744 | 0 | 26,355 | 9,669 | 3.6 | 3.6 |
-| a02a-s1 | reuse_sb__single_shot__static | 1 | 1 | 138,251 | 0 | 10,145 | 4,660 | 1.6 | 1.7 |
+| a02a-s1 | generation_s__single_shot__static | 5 | 5 | 459,360 | 0 | 56,732 | 24,916 | 8.3 | 8.5 |
+| a02a-s1 | reuse_sb__single_shot__static | 5 | 5 | 691,255 | 0 | 68,619 | 25,606 | 9.4 | 9.7 |
 | a02b-s2 | generation_s__single_shot__none | 5 | 5 | 450,935 | 0 | 48,136 | 22,701 | 7.6 | 7.9 |
 | a02b-s2 | generation_s__single_shot__static | 5 | 5 | 486,205 | 0 | 51,937 | 25,517 | 8.6 | 8.9 |
 | a02b-s2 | reuse_sb__single_shot__none | 5 | 5 | 682,600 | 0 | 57,938 | 25,667 | 8.9 | 9.0 |
 | a02b-s2 | reuse_sb__single_shot__static | 5 | 5 | 716,405 | 0 | 67,236 | 28,961 | 10.2 | 10.2 |
+| a02c-s3 | generation_s__single_shot__static | 3 | 3 | 275,481 | 0 | 32,257 | 16,066 | 5.0 | 5.3 |
+| a02c-s3 | reuse_sb__single_shot__static | 3 | 3 | 413,805 | 0 | 38,132 | 19,155 | 5.7 | 6.0 |
 
 ## Acquisitions (context agent)
 
