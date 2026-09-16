@@ -54,7 +54,7 @@ class IssueMatrixTests(unittest.TestCase):
         self.assertEqual(len(unresolved), 1 + 11)
         large = unresolved['reuse_b__none', 'largePersistedRecordSet']
         self.assertEqual((large['unresolved'], large['unknown'], large['compile_error']), (1, 1, 0))
-        self.assertIn('qualification audit', large['meaning'])
+        self.assertIn('amplification precondition', large['meaning'])
         self.assertIn('not passes', large['meaning'])
         compile_error = unresolved['reuse_b__operations', POSITIVE_CHECK]
         self.assertEqual(compile_error['compile_error'], 1)
