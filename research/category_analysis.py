@@ -54,7 +54,7 @@ def save(identifier):
         '| Condition | Category | Affected / N | Unaffected | Unresolved | Affected-rate Δ bounds, pp |',
         '| --- | --- | ---: | ---: | ---: | ---: |']
     for r in rows:
-        bounds = 'Control' if r['strategy'] == 'none' else f"[{100*r['deltaLowerBound']:+.0f}, {100*r['deltaUpperBound']:+.0f}]"
+        bounds = 'Control' if r['strategy'] == 'none' else f"[{100*r['deltaLowerBound']:+.0f}, {100*r['deltaUpperBound']:+.0f}]" if 'deltaLowerBound' in r else 'no control arm in this round'
         lines.append(f"| {r['condition']} | {r['category']} | {r['affected']}/{r['n']} | {r['unaffected']} | {r['unresolved']} | {bounds} |")
     lines += ['', 'Input and retention policies are separate from parser robustness, resource stress and the deserialization-dispatch canary. This grouping is an exploratory analysis introduced after I04; original counts and complete per-check results remain available. No significance claim or category-weighted combined score is introduced.', '']
     (directory / 'qualified-categories.md').write_text('\n'.join(lines))

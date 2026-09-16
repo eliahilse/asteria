@@ -1,0 +1,132 @@
+apoMario.ApoMarioComponent [class] ApoMario/src/apoMario/ApoMarioComponent.java:26-521
+  [O1; observation; concerns this code] The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.
+
+apoMario.ApoMarioComponent#init() [method] ApoMario/src/apoMario/ApoMarioComponent.java:100-162
+  [O1; observation; concerns this code] The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.
+
+apoMario.ApoMarioConstants [class] ApoMario/src/apoMario/ApoMarioConstants.java:18-369
+  [R2; requirement; concerns this code] At the store parser/loader, accept only the three exact IDs POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL, with at most 3 retained records, each record no more than 64 UTF-8 bytes and the whole store no more than 1024 bytes; reject unknown, duplicate, malformed, or oversized input and report the rejection.
+    on failure: Reject and report invalid store input; at the application integration point use an empty or last-valid unlocked set so achievement tracking and the panel still function.
+  [X2; change_risk; concerns this code] If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.
+    on failure: The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.
+
+apoMario.ApoMarioConstants#loadProperties() [method] ApoMario/src/apoMario/ApoMarioConstants.java:86-182
+  [R2; requirement; concerns this code] At the store parser/loader, accept only the three exact IDs POINTS_GOAL, ENEMIES_GOAL, and TIME_GOAL, with at most 3 retained records, each record no more than 64 UTF-8 bytes and the whole store no more than 1024 bytes; reject unknown, duplicate, malformed, or oversized input and report the rejection.
+    on failure: Reject and report invalid store input; at the application integration point use an empty or last-valid unlocked set so achievement tracking and the panel still function.
+  [X2; change_risk; concerns this code] If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.
+    on failure: The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.
+
+apoMario.entity.ApoMarioEnemy [class] ApoMario/src/apoMario/entity/ApoMarioEnemy.java:11-359
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+
+apoMario.entity.ApoMarioEnemy#die(ApoMarioLevel,int) [method] ApoMario/src/apoMario/entity/ApoMarioEnemy.java:193-199
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+
+apoMario.entity.ApoMarioPlayer [class] ApoMario/src/apoMario/entity/ApoMarioPlayer.java:23-857
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+  [R1; requirement; concerns this code] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+    on failure: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+
+apoMario.entity.ApoMarioPlayer#coinCheck(ApoMarioLevel,int,int) [method] ApoMario/src/apoMario/entity/ApoMarioPlayer.java:732-737
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+
+apoMario.entity.ApoMarioPlayer#getPoints() [method] ApoMario/src/apoMario/entity/ApoMarioPlayer.java:170-172
+  [R1; requirement; concerns this code] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+    on failure: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+
+apoMario.game.ApoMarioPanel [class] ApoMario/src/apoMario/game/ApoMarioPanel.java:36-699
+  [C1; control; concerns this code] At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.
+    on failure: If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.
+  [O1; observation; concerns this code] The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.
+
+apoMario.game.ApoMarioPanel#init() [method] ApoMario/src/apoMario/game/ApoMarioPanel.java:91-137
+  [O1; observation; concerns this code] The game initializes one ApoMarioLevel from ApoMarioComponent during component initialization, and ApoMarioPanel initializes menu/game panel instances during panel initialization.
+
+apoMario.game.ApoMarioPanel#setGame(boolean,boolean) [method] ApoMario/src/apoMario/game/ApoMarioPanel.java:322-341
+  [C1; control; concerns this code] At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.
+    on failure: If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.
+
+apoMario.game.panels.ApoMarioMenu [class] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:28-553
+  [C2; control; concerns this code] At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.
+    on failure: Parser rejects and reports; caller falls back while preserving the primary game and display effect.
+  [C3; control; enforced here] At the achievement panel renderer, iterate only the fixed three IDs and render state derived from a bounded defensive copy of getUnlockedAchievements(); treat null, unknown, duplicate, or overlong display data as locked/last-valid state and report it, without changing the store.
+    on failure: Use locked/last-valid display state and report; do not suppress the achievement panel or mutate unlocked state.
+  [R5; requirement; enforced here] At the dedicated menu panel/view, display the fixed three achievement IDs and their unlocked state from getUnlockedAchievements(), without allowing displayed text or menu input to mutate the stored set.
+    on failure: If an unlocked list is missing or invalid, display the fixed three IDs as locked or use the last-valid set and report the data problem; keep menu navigation operational.
+  [X2; change_risk; concerns this code] If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.
+    on failure: The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.
+
+apoMario.game.panels.ApoMarioMenu#mouseButtonFunction(String) [method] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:347-391
+  [R5; requirement; concerns this code] At the dedicated menu panel/view, display the fixed three achievement IDs and their unlocked state from getUnlockedAchievements(), without allowing displayed text or menu input to mutate the stored set.
+    on failure: If an unlocked list is missing or invalid, display the fixed three IDs as locked or use the last-valid set and report the data problem; keep menu navigation operational.
+
+apoMario.game.panels.ApoMarioMenu#render(Graphics2D) [method] ApoMario/src/apoMario/game/panels/ApoMarioMenu.java:493-514
+  [C2; control; concerns this code] At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.
+    on failure: Parser rejects and reports; caller falls back while preserving the primary game and display effect.
+  [C3; control; enforced here] At the achievement panel renderer, iterate only the fixed three IDs and render state derived from a bounded defensive copy of getUnlockedAchievements(); treat null, unknown, duplicate, or overlong display data as locked/last-valid state and report it, without changing the store.
+    on failure: Use locked/last-valid display state and report; do not suppress the achievement panel or mutate unlocked state.
+  [R5; requirement; enforced here] At the dedicated menu panel/view, display the fixed three achievement IDs and their unlocked state from getUnlockedAchievements(), without allowing displayed text or menu input to mutate the stored set.
+    on failure: If an unlocked list is missing or invalid, display the fixed three IDs as locked or use the last-valid set and report the data problem; keep menu navigation operational.
+  [X2; change_risk; concerns this code] If the achievement store accepts arbitrary text or records, a user-edited file can inject unknown achievement IDs, duplicate records, malformed values, or excessive content, corrupting the unlocked set or consuming memory during parsing.
+    on failure: The new store operation must reject invalid input and report the rejection; the application integration point must fall back to an empty or last-valid unlocked set so the game and panel continue operating.
+
+apoMario.level.ApoMarioLevel [class] ApoMario/src/apoMario/level/ApoMarioLevel.java:55-1668
+  [C1; control; enforced here] At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.
+    on failure: If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+  [R1; requirement; enforced here] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+    on failure: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+  [R4; requirement; enforced here] At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().
+    on failure: Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.
+  [X3; change_risk; enforced here] If achievement unlocking is driven by menu actions, replay/editor state, or caller-supplied counters instead of the live level loop and actual level values, local tampering can unlock achievements without reaching the gameplay thresholds or can carry progress between runs.
+    on failure: Do not unlock from menu/display input or stale counters; retain existing unlocked IDs but reset run counters at each real run start and report invalid event values rather than applying them.
+
+apoMario.level.ApoMarioLevel#getPlayers() [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1168-1170
+  [R4; requirement; concerns this code] At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().
+    on failure: Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.
+
+apoMario.level.ApoMarioLevel#getTime() [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:397-399
+  [R1; requirement; concerns this code] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+    on failure: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+  [R4; requirement; concerns this code] At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().
+    on failure: Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.
+
+apoMario.level.ApoMarioLevel#restart(boolean) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1124-1132
+  [C1; control; enforced here] At beginRun() and the run-start/restart integration, clear only per-run points, kill, and survived-time counters while preserving the persisted unlocked ID set; prevent replay/editor/menu actions from starting an achievement run.
+    on failure: If run initialization receives an invalid state, report it and normalize to zero counters before the next real run; do not erase the persisted unlocked set or suppress level restart.
+  [X3; change_risk; concerns this code] If achievement unlocking is driven by menu actions, replay/editor state, or caller-supplied counters instead of the live level loop and actual level values, local tampering can unlock achievements without reaching the gameplay thresholds or can carry progress between runs.
+    on failure: Do not unlock from menu/display input or stale counters; retain existing unlocked IDs but reset run counters at each real run start and report invalid event values rather than applying them.
+
+apoMario.level.ApoMarioLevel#setAnalysis(boolean) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1176-1233
+  [R4; requirement; enforced here] At recordRunEnd(ApoMarioLevel), evaluate goals against the supplied level’s actual run values, use non-negative integer score and kill counts and a non-negative integer duration in milliseconds, and never combine values from separate runs; save newly unlocked IDs through saveAcrossSessions().
+    on failure: Reject and report invalid level-derived values; the integration caller normalizes missing or invalid values to the current valid run values before evaluation, and does not skip final evaluation or delete existing unlocked IDs.
+
+apoMario.level.ApoMarioLevel#think(int) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1253-1264
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+  [R1; requirement; enforced here] At the gameplay integration point, unlock POINTS_GOAL as soon as the current run's actual player score reaches at least 20,000 points, ENEMIES_GOAL as soon as the current run records at least 3 kills, and TIME_GOAL as soon as the run's actual survived duration exceeds 60,000 ms; retain unlocked IDs across later runs.
+    on failure: Invalid or unavailable gameplay values are rejected/reported by the receiving achievement operation; the gameplay caller normalizes a missing value to the actual current level/player value before invoking it, preserving the game effect.
+  [X3; change_risk; enforced here] If achievement unlocking is driven by menu actions, replay/editor state, or caller-supplied counters instead of the live level loop and actual level values, local tampering can unlock achievements without reaching the gameplay thresholds or can carry progress between runs.
+    on failure: Do not unlock from menu/display input or stale counters; retain existing unlocked IDs but reset run counters at each real run start and report invalid event values rather than applying them.
+
+apoMario.level.ApoMarioLevel#thinkTime(int) [method] ApoMario/src/apoMario/level/ApoMarioLevel.java:1266-1272
+  [O2; observation; concerns this code] A run is advanced by ApoMarioLevel.think(int), which decrements level time, thinks players, finish, enemies, goodies, entities, and particles; player points are mutated by gameplay and enemy death awards points to a player.
+
+apoMario.level.ApoMarioLevelIO [class] ApoMario/src/apoMario/level/ApoMarioLevelIO.java:22-200
+  [R3; requirement; enforced here] At level decoding, validate every dimension, count, coordinate, time, and tile/enemy value before allocation or retention: dimensions and counts must be non-negative and within the game’s configured practical level bounds, score/duration-derived numbers must be non-negative integers, and invalid data must be rejected and reported before recordRunEnd reads it.
+    on failure: The decoder rejects and reports invalid level data; the caller substitutes the smallest valid fallback level/default values before invoking the decoder so normal game operation continues.
+  [X1; existing_risk; enforced here] The binary level parser reads width, height, time, tile values, enemy count, and per-enemy fields from a DataInputStream, allocates levelEntities from parsed dimensions, and loops according to parsed counts without an evident bounded-input validation step.
+    on failure: Existing behavior is not established as safe; the proposed achievement integration must not rely on unchecked level fields.
+
+apoMario.level.ApoMarioLevelIO#readLevel(DataInputStream) [method] ApoMario/src/apoMario/level/ApoMarioLevelIO.java:30-109
+  [R3; requirement; enforced here] At level decoding, validate every dimension, count, coordinate, time, and tile/enemy value before allocation or retention: dimensions and counts must be non-negative and within the game’s configured practical level bounds, score/duration-derived numbers must be non-negative integers, and invalid data must be rejected and reported before recordRunEnd reads it.
+    on failure: The decoder rejects and reports invalid level data; the caller substitutes the smallest valid fallback level/default values before invoking the decoder so normal game operation continues.
+  [X1; existing_risk; enforced here] The binary level parser reads width, height, time, tile values, enemy count, and per-enemy fields from a DataInputStream, allocates levelEntities from parsed dimensions, and loops according to parsed counts without an evident bounded-input validation step.
+    on failure: Existing behavior is not established as safe; the proposed achievement integration must not rely on unchecked level fields.
+
+org.apogames.ApoIO [class] ApoMario/src/org/apogames/ApoIO.java:19-245
+  [C2; control; concerns this code] At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.
+    on failure: Parser rejects and reports; caller falls back while preserving the primary game and display effect.
+
+org.apogames.ApoIO#readLevel(boolean,String,boolean) [method] ApoMario/src/org/apogames/ApoIO.java:210-235
+  [C2; control; concerns this code] At the achievement store decoder, bound each read before retaining it to 1024 total bytes and 64 UTF-8 bytes per record, maintain a fixed three-ID set, and reject malformed or out-of-domain text without substituting a different ID; at panel/store integration, fall back to the empty or last-valid set and report the rejection.
+    on failure: Parser rejects and reports; caller falls back while preserving the primary game and display effect.

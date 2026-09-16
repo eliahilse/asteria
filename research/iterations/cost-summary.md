@@ -256,6 +256,10 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | i33a-s1 | reuse_sb__agentic__static | 5 | 37 | 5,561,817 | 0 | 67,184 | 24,418 | 12.1 | 13.8 |
 | i33b-s3 | generation_s__agentic__static | 5 | 49 | 4,676,139 | 0 | 65,899 | 18,656 | 11.8 | 13.5 |
 | i33b-s3 | reuse_sb__agentic__static | 5 | 34 | 5,049,796 | 0 | 71,745 | 17,265 | 10.9 | 13.1 |
+| i34-notes | generation_s__agentic__notes | 2 | 10 | 953,235 | 0 | 27,206 | 6,864 | 4.2 | 4.8 |
+| i34-notes | generation_s__agentic__static-notes | 2 | 24 | 2,590,112 | 0 | 20,575 | 7,720 | 7.3 | 8.1 |
+| i34-notes | reuse_sb__agentic__notes | 2 | 18 | 2,674,627 | 0 | 19,184 | 6,822 | 5.1 | 5.8 |
+| i34-notes | reuse_sb__agentic__static-notes | 2 | 13 | 1,977,649 | 0 | 15,077 | 5,728 | 4.3 | 5.0 |
 | a01-bootstrap | generation_s__agentic__none | 3 | 32 | 3,569,191 | 0 | 37,965 | 17,317 | 8.8 | 10.6 |
 | a01-bootstrap | reuse_sb__agentic__none | 3 | 34 | 5,460,140 | 164,689 | 48,674 | 21,864 | 15.9 | 17.6 |
 | a02a-s1 | generation_s__single_shot__static | 5 | 5 | 459,360 | 0 | 56,732 | 24,916 | 8.3 | 8.5 |

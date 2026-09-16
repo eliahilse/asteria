@@ -169,6 +169,11 @@ def I34():
     return NotesSidecar(ROOT / 'research/iterations/i34-notes/contexts', snapshot_path_maps())
 
 
+def A05():
+    """A05: security notes derived from the v13 Achievements data-flow graphs (A02 contexts, S2) over the I28 code graphs of the same snapshot."""
+    return NotesSidecar(ROOT / 'research/iterations/a05-notes/contexts', snapshot_path_maps())
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--freeze', metavar='OUT_DIR', help='write <method>-notes.json/.txt and copy the code graphs into this contexts folder')
