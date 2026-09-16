@@ -9,7 +9,7 @@ import re
 from research import tasks
 from research.import_evidence import ROOT, canonical, digest
 from research.run_experiment import timestamp
-from research.study_results import TESTS, STATUSES, index as original_index
+from research.study_results import STATUSES, tests_for, index as original_index
 
 
 def normalized_feedback(messages):
@@ -82,7 +82,7 @@ def read_study(directory: Path):
     for condition in plan['conditions']:
         selected = [r for r in runs if r['condition'] == condition['id']]
         checks = []
-        for test in TESTS:
+        for test in tests_for():
             counts = {status: 0 for status in STATUSES}
             for run in selected:
                 check = next((c for c in run['checks'] if c['suite'] == test['suite'] and c['name'] == test['name']), None)
@@ -132,7 +132,8 @@ def index(public=False, iteration=None):
         path = ROOT / 'research/iterations' / iteration / 'results.json'
         if not path.exists(): return original_index(public=True)
         data = json.loads(path.read_text()); data['local'] = False; return data
-    return {'local': True, 'tests': TESTS, 'studies': [read_study(ROOT / '.local/iterations' / iteration)], 'analysisSha256': digest(Path(__file__).read_bytes())}
+    study = read_study(ROOT / '.local/iterations' / iteration)  # sets the task from the manifest
+    return {'local': True, 'tests': tests_for(), 'studies': [study], 'analysisSha256': digest(Path(__file__).read_bytes())}
 
 
 def save(identifier: str):
