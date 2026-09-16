@@ -268,10 +268,12 @@ Delivery arms: model calls of the generator (and of a judge where a sidecar reco
 | a02c-s3 | reuse_sb__single_shot__static | 5 | 5 | 689,675 | 0 | 58,902 | 30,188 | 8.9 | 9.2 |
 | a03a-none | generation_s__agentic__none | 5 | 46 | 5,062,294 | 0 | 85,951 | 33,118 | 15.2 | 17.2 |
 | a03a-none | reuse_sb__agentic__none | 5 | 57 | 9,401,541 | 0 | 122,771 | 43,050 | 20.7 | 22.9 |
+| a03b-s1 | generation_s__agentic__static | 4 | 40 | 4,436,351 | 0 | 71,996 | 29,533 | 12.8 | 14.0 |
+| a03b-s1 | reuse_sb__agentic__static | 5 | 46 | 7,635,295 | 0 | 100,267 | 46,176 | 17.6 | 19.9 |
 | a03c-s2 | generation_s__agentic__static | 5 | 53 | 6,165,712 | 0 | 74,812 | 30,238 | 14.6 | 16.8 |
 | a03c-s2 | reuse_sb__agentic__static | 5 | 54 | 9,263,608 | 0 | 117,042 | 42,015 | 19.5 | 22.0 |
-| a03e-guard | generation_s__agentic__static-guard | 2 | 38 | 3,094,080 | 0 | 67,967 | 27,335 | 10.6 | 12.7 |
-| a03e-guard | reuse_sb__agentic__static-guard | 1 | 29 | 2,715,666 | 0 | 28,634 | 13,787 | 4.7 | 7.2 |
+| a03e-guard | generation_s__agentic__static-guard | 5 | 100 | 8,217,291 | 0 | 154,855 | 57,141 | 23.5 | 29.4 |
+| a03e-guard | reuse_sb__agentic__static-guard | 5 | 115 | 11,557,080 | 0 | 138,036 | 58,413 | 21.7 | 30.4 |
 
 ## Acquisitions (context agent)
 
