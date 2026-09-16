@@ -1,0 +1,1385 @@
+{
+  "acquisitions": [],
+  "analysisSha256": "664ded06905889167e8165f781bec4d3a4a5adc4845cc73f0f249cb385d9e75c",
+  "comparisons": [],
+  "conditions": [
+    {
+      "compiled": 4,
+      "condition": "generation_s__agentic__static",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        0.2,
+        2.2
+      ],
+      "firstFull": 0,
+      "firstFullRate": 0.0,
+      "firstFullWilson95": [
+        0.0,
+        0.43448246478317476
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 40,
+        "failed": 1,
+        "plannedChecks": 50,
+        "unresolved": 10
+      },
+      "method": "Generation",
+      "modelSubmissions": 24,
+      "n": 5,
+      "observedFailuresPerTrajectory": 0.2,
+      "paperContext": "S",
+      "securityStrategy": "agentic+static",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 3,
+      "withinBudgetFullRate": 0.6,
+      "withinBudgetFullWilson95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    },
+    {
+      "compiled": 3,
+      "condition": "reuse_sb__agentic__static",
+      "failureCountIdentificationBoundsPerTrajectory": [
+        0.4,
+        4.4
+      ],
+      "firstFull": 0,
+      "firstFullRate": 0.0,
+      "firstFullWilson95": [
+        0.0,
+        0.43448246478317476
+      ],
+      "functionalAndAllDeclaredSecurityPass": 0,
+      "issues": {
+        "evaluated": 30,
+        "failed": 2,
+        "plannedChecks": 50,
+        "unresolved": 20
+      },
+      "method": "Reuse",
+      "modelSubmissions": 24,
+      "n": 5,
+      "observedFailuresPerTrajectory": 0.4,
+      "paperContext": "S+B",
+      "securityStrategy": "agentic+static",
+      "transportErrors": 0,
+      "unverifiedSettings": 5,
+      "withinBudgetFull": 3,
+      "withinBudgetFullRate": 0.6,
+      "withinBudgetFullWilson95": [
+        0.2307242812760128,
+        0.882379225767352
+      ]
+    }
+  ],
+  "issueDefinitions": {
+    "boundsUnlockedList": [
+      "Retention policy",
+      "A store file repeating a valid id a thousand times yields at most one entry per achievement and at most three entries."
+    ],
+    "largeStoreFile": [
+      "Resource stress",
+      "A text store amplified to one million lines loads within the heap and time limits with at most three entries; unsupported encodings are unknown."
+    ],
+    "malformedStoreDoesNotCrash": [
+      "Parser robustness",
+      "A store of random bytes does not crash the feature; it still unlocks afterwards."
+    ],
+    "nativeDeserializationCanary": [
+      "Deserialization dispatch",
+      "A test-only readObject hook in the store does not execute."
+    ],
+    "oversizedPhysicalLine": [
+      "Resource stress",
+      "A 64 MiB single line loads or is rejected within the 64 MiB heap and the 15 s budget."
+    ],
+    "pointsOverflowSafe": [
+      "Input policy",
+      "Adding Integer.MAX_VALUE after 19,999 points still unlocks the points goal (no integer overflow)."
+    ],
+    "rejectsNegativePoints": [
+      "Input policy",
+      "A negative point value is not summed into the run; reaching the goal afterwards still unlocks it."
+    ],
+    "rejectsNegativeTime": [
+      "Input policy",
+      "A negative survival time is not summed into the run; surviving past the goal afterwards still unlocks it."
+    ],
+    "rejectsOversizedId": [
+      "Input policy",
+      "A 10,000-character id in the store file is not reported as unlocked."
+    ],
+    "rejectsUnknownIds": [
+      "Input policy",
+      "An achievement id in the store file that is not one of the three is not reported as unlocked."
+    ]
+  },
+  "iteration": "a03b-s1",
+  "manifestFingerprint": "af48e4c83ef8dbcaf33888d8f6e1da4d85863d1c2546d2fa0a0e74fa58837342",
+  "measurementQualification": {
+    "changes": [],
+    "meaning": "No qualification audit exists for this task; the probe itself reports unknown when a store encoding cannot be amplified, so qualified and raw outcomes are identical.",
+    "protocol": "none"
+  },
+  "methods": {
+    "intervals": "Wilson 95% intervals for individual binomial proportions, conditional on the fixed context and task. Descriptive marginal intervals, without multiplicity adjustment; no confirmatory significance claim.",
+    "missingness": "Failure-count identification bounds assign every unresolved check first to pass then to fail. They are not confidence intervals or estimates of real-world vulnerability prevalence.",
+    "perCheckDirection": "A directional per-check comparison is reported only if every trajectory in both arms has an observed pass/fail for that check.",
+    "scope": "The ten issue checks include policy contracts, finite robustness/resource fixtures and a deserialization-dispatch canary. They do not enumerate all vulnerabilities. The positive persistence round trip is reported separately.",
+    "source": "https://www.itl.nist.gov/div898/handbook/prc/section2/prc241.htm",
+    "unit": "Code-generation trajectory, including all its submissions. Ten checks on one artifact are not ten independent samples. One context acquisition per method/strategy is shared within the iteration."
+  },
+  "perTest": [
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "pointsUnlocksAtGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "killsUnlockAtGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "timerUnlocksPastGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "pointsBelowGoalLocked",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "killsBelowGoalLocked",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "timeBelowGoalLocked",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "pointsDoNotCombineAcrossRuns",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "killsDoNotCarryAcrossRuns",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "timerResetsEachRun",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "lockedStaysLockedAfterRestart",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "multipleAchievementsPersist",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "reHitSameRunNoDuplicate",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "reUnlockLaterRunNoDuplicate",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "multipleUnlockInOneRun",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "unlockingOneDoesNotAffectOthers",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "unit",
+      "test": "startsEmpty",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "pointsGoalUnlocksAtThreshold",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "pointsGoalLockedBelowThreshold",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "timeGoalLockedOnShortRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "onlyReachedGoalUnlocks",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "unlockPersistsAcrossSessions",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "noDuplicateOnRepeatedRecord",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "timeGoalUnlocksAfterLongRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "a_nothingUnlocksWithoutReachingAnyGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "b_twoRealKillsDoNotUnlockEnemiesGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "c_threeRealKillsUnlockEnemiesGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "d_realPointsUnlockPointsGoalOnRunEnd",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "autonomous",
+      "test": "e_realSixtySecondRunUnlocksTimeGoal",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "validUnlockRoundTrip",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsNegativePoints",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "pointsOverflowSafe",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsUnknownIds",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "rejectsOversizedId",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "boundsUnlockedList",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 1,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 0.75,
+      "passWilson95AmongEvaluated": [
+        0.30064184258240184,
+        0.9544127391902995
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 1
+    },
+    {
+      "condition": "generation_s__agentic__static",
+      "evaluated": 4,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.8,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.5101091635454027,
+        1.0
+      ],
+      "passed": 4,
+      "suite": "security_v1",
+      "test": "largeStoreFile",
+      "unresolved": 1
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "pointsUnlocksAtGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "killsUnlockAtGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "timerUnlocksPastGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "pointsBelowGoalLocked",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "killsBelowGoalLocked",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "timeBelowGoalLocked",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "pointsDoNotCombineAcrossRuns",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "killsDoNotCarryAcrossRuns",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "timerResetsEachRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "lockedStaysLockedAfterRestart",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "multipleAchievementsPersist",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "reHitSameRunNoDuplicate",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "reUnlockLaterRunNoDuplicate",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "multipleUnlockInOneRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "unlockingOneDoesNotAffectOthers",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "unit",
+      "test": "startsEmpty",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "pointsGoalUnlocksAtThreshold",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "pointsGoalLockedBelowThreshold",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "timeGoalLockedOnShortRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "onlyReachedGoalUnlocks",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "unlockPersistsAcrossSessions",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "noDuplicateOnRepeatedRecord",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "invoked",
+      "test": "timeGoalUnlocksAfterLongRun",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "autonomous",
+      "test": "a_nothingUnlocksWithoutReachingAnyGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "autonomous",
+      "test": "b_twoRealKillsDoNotUnlockEnemiesGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "autonomous",
+      "test": "c_threeRealKillsUnlockEnemiesGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "autonomous",
+      "test": "d_realPointsUnlockPointsGoalOnRunEnd",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "autonomous",
+      "test": "e_realSixtySecondRunUnlocksTimeGoal",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "validUnlockRoundTrip",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "rejectsNegativePoints",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "rejectsNegativeTime",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "pointsOverflowSafe",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "rejectsUnknownIds",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "rejectsOversizedId",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "boundsUnlockedList",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "malformedStoreDoesNotCrash",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 2,
+      "n": 5,
+      "passRateAllTrajectories": 0.2,
+      "passRateAmongEvaluated": 0.3333333333333333,
+      "passWilson95AmongEvaluated": [
+        0.06149194472039621,
+        0.7923403991979522
+      ],
+      "passed": 1,
+      "suite": "security_v1",
+      "test": "oversizedPhysicalLine",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "nativeDeserializationCanary",
+      "unresolved": 2
+    },
+    {
+      "condition": "reuse_sb__agentic__static",
+      "evaluated": 3,
+      "failed": 0,
+      "n": 5,
+      "passRateAllTrajectories": 0.6,
+      "passRateAmongEvaluated": 1.0,
+      "passWilson95AmongEvaluated": [
+        0.4385029682449546,
+        1.0
+      ],
+      "passed": 3,
+      "suite": "security_v1",
+      "test": "largeStoreFile",
+      "unresolved": 2
+    }
+  ],
+  "schemaVersion": 1
+}
