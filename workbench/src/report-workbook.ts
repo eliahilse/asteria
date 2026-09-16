@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import type { MatrixData } from './experiment-types';
-import { PERCENT_MIN_N, combinationRows, fraction, fractionText, fractionValue, issueTests, percentAllowed, positiveTest, type Fraction } from './combination-stats';
+import { PERCENT_MIN_N, combinationRows, fraction, fractionText, fractionValue, issueTestsFor, percentAllowed, positiveTestFor, type Fraction } from './combination-stats';
 import { allRunPassCounts, compileCounts, compiledEntries, fullCounts, functionalCounts, functionalSuites,
   mostCommonFailure, paperContexts, passCounts, reportGroups, suiteOutcome,
   type FunctionalSuite, type ReportEntry, type ReportGroup } from './report-data';
@@ -261,7 +261,7 @@ function addIssueMatrix(wb: ExcelJS.Workbook, data: MatrixData, cweMapping: Reco
     + `. Unresolved outcomes are not passes; they remain in the fixed denominator N = ${n}.`;
   let row = 1;
   for (const study of data.studies) {
-    const id = study.plan.id;
+    const id = study.plan.id; const issueTests = issueTestsFor(study.plan); const positiveTest = positiveTestFor(study.plan);
     const conditions = study.plan.conditions.map(c => ({ id: c.id, summary: study.summary.conditions.find(s => s.id === c.id)! }));
     const headers = ['Study', 'Test', 'CWE', ...conditions.flatMap(c => [`${c.id} failed`, `${c.id} unresolved`, `${c.id} passed`])];
     const total = (summary: Summary): Value[] => {

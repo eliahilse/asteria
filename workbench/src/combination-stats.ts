@@ -24,6 +24,12 @@ export type SecurityIssues = { detected: number | null; evaluated: number; unres
 export type CombinationRow = { study: string; condition: string; phase: string; method: string; paper: string[]; security: string; attempts: number; stats: Record<string, Fraction>; issues: SecurityIssues };
 /** The ten issue checks of research/security/PROTOCOL.md in protocol order; validRecordRoundTrip is the positive persistence check. */
 export const issueTests = ['rejectsNegativeScore', 'rejectsNegativeTime', 'rejectsNullName', 'rejectsBlankName', 'rejectsExcessiveName', 'boundsRetainedEntries', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largePersistedRecordSet'];
+/** Per task: the Achievements probe's ten issue checks and its positive check (research/tasks.py). */
+export const issueTestsByTask: Record<string, string[]> = { Highscore: issueTests, Achievements: ['rejectsNegativePoints', 'rejectsNegativeTime', 'pointsOverflowSafe', 'rejectsUnknownIds', 'rejectsOversizedId', 'boundsUnlockedList', 'malformedStoreDoesNotCrash', 'oversizedPhysicalLine', 'nativeDeserializationCanary', 'largeStoreFile'] };
+export const positiveTestByTask: Record<string, string> = { Highscore: 'validRecordRoundTrip', Achievements: 'validUnlockRoundTrip' };
+export const taskOf = (plan: object): string => ({ highscore: 'Highscore', achievements: 'Achievements' })[(plan as { task?: string }).task ?? 'highscore'] ?? 'Highscore';
+export const issueTestsFor = (plan: object): string[] => issueTestsByTask[taskOf(plan)] ?? issueTests;
+export const positiveTestFor = (plan: object): string => positiveTestByTask[taskOf(plan)] ?? positiveTest;
 export const positiveTest = 'validRecordRoundTrip';
 // The four invoked-integration checks still count toward Full (all 16 checks) and remain in the
 // per-test and raw exports; they are no longer a separate headline column.
@@ -36,16 +42,16 @@ export const statColumns: StatColumn[] = [
   { key: 'full', label: 'Full', description: 'All 16 functional checks pass on the evaluated feature / all N observations.', format: 'fraction' },
 ];
 
-export function securityIssues(summary: Summary, control?: Summary): SecurityIssues {
+export function securityIssues(summary: Summary, control?: Summary, tests: string[] = issueTests): SecurityIssues {
   // The valid-record round trip is a positive functional check, not an issue detector.
-  const checks = issueTests.map(name => summary.checks.find(c => c.suite === 'security_v1' && c.name === name));
-  const base = issueTests.map(name => control?.checks.find(c => c.suite === 'security_v1' && c.name === name));
+  const checks = tests.map(name => summary.checks.find(c => c.suite === 'security_v1' && c.name === name));
+  const base = tests.map(name => control?.checks.find(c => c.suite === 'security_v1' && c.name === name));
   const evaluated = checks.reduce((n, c) => n + (c?.executed ?? 0), 0);
   const detected = evaluated ? checks.reduce((n, c) => n + (c?.fail ?? 0), 0) : null;
   // Compare counts only at equal exposure for EVERY check, not merely equal totals.
   const comparable = control && detected !== null && summary.attempts === control.attempts && !summary.pending && !control.pending &&
     checks.every((c, i) => c && base[i] && c.executed === base[i]!.executed);
-  const expected = issueTests.length * summary.attempts;
+  const expected = tests.length * summary.attempts;
   const bounded = control && detected !== null && summary.attempts === control.attempts && !summary.pending && !control.pending && checks.every(Boolean) && base.every(Boolean);
   const baseDetected = base.reduce((n, c) => n + (c?.fail ?? 0), 0), baseEvaluated = base.reduce((n, c) => n + (c?.executed ?? 0), 0);
   // Extremes over every possible assignment of unresolved checks in both arms.
@@ -66,7 +72,7 @@ function row(study: MatrixStudy, condition: MatrixCondition): CombinationRow {
   const stats: CombinationRow['stats'] = { compiled: fraction(summary.compiled, summary.attempts), full: fraction(summary.fullFunctional, summary.attempts) };
   for (const [suite, count] of [['unit', 7], ['autonomous', 5]] as const) stats[suite] = fraction(summary.checks.filter(c => c.suite === suite).reduce((n, c) => n + c.pass, 0), count * summary.attempts, { units: summary.attempts });
   return { study: study.plan.id, condition: condition.id, phase: study.plan.label ?? (study.plan.phase === 'screening' ? 'Replay' : 'Follow-up'), method: condition.strategy,
-    paper: condition.contextTypes, security: condition.securityStrategy, attempts: summary.attempts, stats, issues: securityIssues(summary, control) };
+    paper: condition.contextTypes, security: condition.securityStrategy, attempts: summary.attempts, stats, issues: securityIssues(summary, control, issueTestsFor(study.plan)) };
 }
 export function combinationRows(data: MatrixData): CombinationRow[] {
   return [...data.studies].sort((a, b) => Number(a.plan.phase === 'screening') - Number(b.plan.phase === 'screening')).flatMap(study =>
