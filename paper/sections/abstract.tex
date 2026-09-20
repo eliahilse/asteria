@@ -1,24 +1,20 @@
 % Evidence: sections/results.tex, sections/design.tex.
 \begin{abstract}
-We ask whether a repository-specific \emph{security context}, a document
-of assets, trust boundaries, weakness types, requirements and controls
-written by an agent from the repository and a one-line feature
-description, makes LLM-generated code more secure, and what it costs.
-Task: a Highscore feature for a Java game, implemented from scratch
-(Generation) or by reusing a sibling game's implementation (Reuse) by
-OpenAI's \texttt{gpt-5.6-luna} at reasoning effort high, scored by ten
-security checks and sixteen functional tests against a control collected
-alongside. Three ways of writing the document (high-level guidance from
-the repository, a full document anchored to code, a generic document
-written without any repository) are compared under one response and
-under agentic delivery with repository tools and feedback. Compiled
-artifacts without context pass 22\% (one response) and 33\% (agentic) of
-the security checks; with any of the three documents 82 to 90\%, within
-five points of each other in each mode, at unchanged test pass rates. A
-judge that cancels violating submissions adds nothing at 1.4 times the
-tokens. On a second, harder task (Achievements) nothing compiles under
-one response, and with tools and feedback the document takes compiled
-artifacts from 78 to 95\% of the checks and half of them to passing every
-test and check, while the judge costs attempts. Two tasks, one pair of
-games and ten artifacts per arm limit what the rates can claim.
+\begin{itemize}
+\item Question: agent-written security context before implementation;
+security gains, functionality, token/time cost.
+\item Setting: Highscore + harder Achievements task; Java game;
+Generation / Reuse; \texttt{gpt-5.6-luna}, reasoning high;
+one response / agentic delivery; ten artifacts per arm.
+\item Contexts: high-level repository guidance; code-anchored document;
+generic document without repository; optional cancelling judge.
+\item Highscore, checks among compiled artifacts: 22\% to 82--87\%
+(one response); 33\% to 87--90\% (agentic, documents without judge);
+mostly high functional-test means.
+\item Achievements: no one-response compilation; agentic full document,
+checks 78\% to 95\%, all-pass artifacts 0/10 to 5/10.
+\item Judge: higher input-token use; no mean-check improvement;
+lower Achievements compilation. Limits: two tasks, one game pair,
+one model, small samples.
+\end{itemize}
 \end{abstract}

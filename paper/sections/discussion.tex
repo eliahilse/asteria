@@ -1,38 +1,45 @@
 \section{Discussion}
 \label{sec:discussion}
 
-The document matters and its provenance does not: any of the three
-documents takes the security checks passed by compiled artifacts from a
-quarter or a third to well over four fifths, in both delivery modes, and
-the one written without any repository does as well as the one anchored
-to code. Functionality does not pay for it. Enforcement during the
-attempts does not add to it: the judge leaves the rate where it is at
-higher cost. What compiled document artifacts still fail depends on the
-document's wording; the study repository records three revisions of the
-agent's instructions, each removing failures the previous wording left
-open, and is the place for that history. The second task confirms the
-document and not the judge: on Achievements, where every control artifact
-fails the arithmetic and read bounds, the document turns half of the
-agentic artifacts into ones that pass every test and every check, and the
-cancelling judge, harmless on Highscore, removes attempts a five-class
-integration cannot spare.
+\begin{itemize}
+\item Explicit security documents: large measured gains on these tasks;
+tools and feedback supporting compilable integrations.
+\item Provenance: similar compiled-artifact check rates across S1--S3;
+no demonstrated check-rate advantage from repository grounding here;
+no general equivalence claim.
+\item Functionality: mostly high test means among compiled outputs;
+compilation and all-pass outcomes still varying, especially Achievements.
+\item Judge: added cost; no consistent Highscore benefit;
+worse Achievements delivery under fixed attempt budget.
+\item Wording: three instruction revisions removing previously observed
+failures; explicit numeric bounds and validation domains;
+history in study repository.
+\end{itemize}
 
 \paragraph{Threats to validity.}
-One task, one pair of games, one model as agent, generator and judge, ten
-artifacts per arm. Each arm shares one acquired document, so the rates
-measure generation variability given that document, not acquisition
-variability. The five input-policy checks weigh heavily in the ten. The
-agent's instructions were revised after examining failures on this task,
-so they show that the rule can be written, not that it transfers.
+\begin{itemize}
+\item Two tasks, one game pair, one model in all roles, ten artifacts/arm;
+limited generalisation.
+\item Shared acquired document within each arm: generation variability
+given that document; acquisition variability unmeasured.
+\item Five input-policy checks out of ten: heavy weighting;
+passing this suite versus broader security.
+\item Instructions revised after inspecting task failures;
+adaptation to observed benchmarks; transfer unestablished.
+\item Checks among compiled artifacts; compilation and all-pass rates;
+conditional rates versus overall delivery success.
+\end{itemize}
 
 \section{Conclusions}
 \label{sec:conclusions}
 
-Agent-written, repository-specific security context, given before the
-model writes, raises the share of security checks a compiled artifact
-passes from 22 to 33\% to 82 to 90\% on Highscore without a functional
-cost, and from 78 to 95\% on the harder Achievements task with tools and
-feedback, where it also produces the first artifacts that pass every test
-and every check; a judge during the attempts does not add to it and, on
-the harder task, costs attempts. Whether the instructions transfer to
-another repository is the next question.
+\begin{itemize}
+\item Agent-written guidance before implementation: Highscore checks
+22--33\% without context versus 82--90\% with documents;
+agentic Achievements, full document 78\% to 95\%, all pass 0/10 to 5/10.
+\item Generic guidance competitive on checks; full repository document
+highest Achievements all-pass rate in this sample.
+\item Judge: no consistent gains justifying added cost;
+attempt budget relevant on harder task.
+\item Next question: transfer to another repository.
+\end{itemize}

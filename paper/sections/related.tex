@@ -1,23 +1,22 @@
 \section{Related Work and Terms}
 \label{sec:related}
 
-A \emph{weakness} is a type of flaw, catalogued by CWE~\citep{cwe}; a
-\emph{security requirement} says what a part of the feature must
-ensure~\citep{haley2008}, a \emph{control} is the mechanism that enforces
-it at an \emph{enforcement point}~\citep{nist80053}, and a \emph{trust
-boundary} separates parts of a system that make different assumptions
-about the data they receive~\citep{manadhata2011}. The \emph{security
-context} of a planned change is the set of such statements handed to the
-model before it writes, each labelled by kind and either citing the
-source lines it was derived from or marked as a proposal. It is neither
-feedback from tests on generated code nor a generic secure-coding
-instruction~\citep{tony2025}. Prior work measures code-model security on
-isolated snippets~\citep{pearce2022,siddiq2022,hajipour2024} or varies
-generic prompt wording~\citep{tony2025}; we work inside a real code base,
-a family of games maintained by copying one game into the
-next~\citep{krueger2018,dubinsky2013}. The study this work
-extends\footnote{\url{https://github.com/ieiris/llm-context-generation-reuse}}
-compares structural, functional and behavioural context for generation
-and reuse in that family with one model response per prompt, scored by
-compilation and test pass rates; we keep its Highscore task, tests and
-context files and add security context and security checks.
+\begin{itemize}
+\item \emph{Weakness}: flaw type; CWE catalogue~\citep{cwe}.
+\item \emph{Security requirement}: property the feature must ensure~\citep{haley2008}.
+\item \emph{Control}: enforcement mechanism;
+\emph{enforcement point}: where applied~\citep{nist80053}.
+\item \emph{Trust boundary}: differing assumptions about received data~\citep{manadhata2011}.
+\item \emph{Security context}: assets, boundaries, weaknesses,
+requirements, controls; labelled statements; source-line evidence or
+explicit proposals; supplied before implementation.
+\item Prior security evaluation: isolated snippets /
+benchmarks~\citep{pearce2022,siddiq2022,hajipour2024}; generic
+secure-coding prompt wording~\citep{tony2025}.
+\item Here: feature integration in an existing code base; game family
+from copying and adaptation~\citep{krueger2018,dubinsky2013}.
+\item Prior study\footnote{\url{https://github.com/ieiris/llm-context-generation-reuse}}:
+structural, functional, behavioural context; one response per prompt;
+compilation and functional tests. Retained tasks, games, tests, contexts;
+added security documents and checks.
+\end{itemize}

@@ -1,18 +1,18 @@
 \section{Results}
 \label{sec:results}
 
-Table~\ref{tab:matrix} is the baseline without security context: the
-prior study's sixteen cells rerun with our generator under its protocol.
-Table~\ref{tab:results} compares the strategies under one set of
-conditions for Highscore, Table~\ref{tab:results-ach} for the harder
-second task, Achievements; every arm has a control collected in the same
-session.
+\begin{itemize}
+\item Table~\ref{tab:matrix}: baseline without security context;
+prior study's 16 Highscore cells rerun with current generator.
+\item Tables~\ref{tab:results} and~\ref{tab:results-ach}: Highscore and
+Achievements strategy comparisons; controls collected in the same session.
+\end{itemize}
 
 \begin{table}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{Baseline without security context: the prior study's Highscore matrix and its rerun with \texttt{gpt-5.6-luna}, one response per prompt, five artifacts per cell. ``Prior'' is the number compiled in the prior study; C is compiled and F functional (all sixteen tests pass), each of 5, under strict delivery (a returned file that names an existing file is rejected) and under lenient delivery (it replaces the file, as the prior study's pipeline does).}
+\caption{Highscore baseline without security context; prior study and \texttt{gpt-5.6-luna} rerun; one response; 5 artifacts/cell. Prior: prior-study compiled count. C: compiled; F: all 16 functional tests passed. Strict: existing-file replacement rejected; lenient: accepted, matching prior pipeline.}
 \label{tab:matrix}
 \begin{tabular}{@{}lrrrrrrrrrr@{}}
 \toprule
@@ -39,7 +39,7 @@ Total of 40 & 17 & 18 & 17 & 25 & 20 & 13 & 21 & 19 & 19 & 18 \\
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\caption{Every security-context strategy under the same conditions: the version-13 documents, the cells Generation S and Reuse S+B, five artifacts per cell ($N = 10$), \texttt{gpt-5.6-luna} at reasoning effort high. Compiled: share of the $N$ artifacts that compile. Tests: mean share of the sixteen functional tests passed per compiled artifact. Checks: mean share of the ten security checks passed per compiled artifact (a check that could not run counts as not passed). All pass: share of the $N$ artifacts that pass all sixteen tests and all eleven security checks. Input: mean generator (and judge) input tokens per artifact, millions. Min: mean model-call minutes per artifact.}
+\caption{Highscore; v13 documents; Generation S + Reuse S+B, 5 artifacts each ($N=10$); \texttt{gpt-5.6-luna}, reasoning high. Compiled: share of $N$. Tests/Checks: mean share of 16 functional tests / 10 security checks passed among compiled artifacts; unrunnable check = not passed. All pass: share of $N$ passing all 16 tests + 11 security checks, including persistence. Input: mean generator + judge input tokens/artifact, millions. Min: mean model-call minutes/artifact.}
 \label{tab:results}
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
@@ -64,9 +64,9 @@ S2 full document + judge & 10 & 100\% & 96\% & 86\% & 10\% & 1.4 & 2.7 \\
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\caption{The second task, Achievements, under the same conditions and columns as Table~\ref{tab:results} (version-13 documents written for this task, the cells Generation S and Reuse S+B, five artifacts per cell). Rows appear as their rounds complete; this is a working document.}
+\caption{Achievements; same conditions and column definitions as Table~\ref{tab:results}, with 28 functional tests; task-specific v13 documents; Generation S + Reuse S+B, 5 artifacts each. Dashes: no compiled artifacts to score.}
 \label{tab:results-ach}
-\begin{tabular}{@{}lrrrrrrrr@{}}
+\begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
 Security context & $N$ & Compiled & Tests & Checks & All pass & Input (M) & Min \\
 \midrule
@@ -85,41 +85,44 @@ S2 full document + judge & 10 & 60\% & 91\% & 90\% & 10\% & 2.0 & 4.5 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Functional.}
-Under one response 40\% of the artifacts compile without security context
-and 50 to 70\% with one; compiled artifacts pass 93 to 100\% of the tests
-whatever the context. With repository tools and feedback every artifact
-compiles and passes 96 to 100\% of the tests, with or without a document.
+\paragraph{Functional: Highscore.}
+\begin{itemize}
+\item One response: compilation 40\% without context, 50--70\% with;
+compiled-artifact functional-test means 93--100\%.
+\item Agentic: compilation 100\% throughout; functional-test means 96--100\%.
+\end{itemize}
 
-\paragraph{Secure.}
-Compiled artifacts without security context pass 22\% (one response) and
-33\% (agentic) of the ten security checks; with any of the three documents
-82 to 87\% under one response and 86 to 90\% in agentic delivery, the
-document written without any repository included. The judge leaves the
-rate where it is (86 against 87\%) at 1.4 times the tokens. No
-one-response artifact passes every test and every check; 0 to 20\% of the
-agentic ones do.
+\paragraph{Secure: Highscore.}
+\begin{itemize}
+\item Compiled-artifact checks: 22\% to 82--87\% (one response);
+33\% to 87--90\% (agentic, S1--S3).
+\item S1--S3 within 5 percentage points per mode;
+generic document competitive despite no repository access.
+\item All pass: no one-response artifacts; 0--2/10 agentic artifacts.
+\item Judge versus S2: checks 87\% to 86\%; all pass 0/10 to 1/10;
+$1.4\times$ input tokens; no consistent benefit across measures.
+\end{itemize}
 
-\paragraph{Usage and time.}
-One response reads 0.1 M input tokens in 1.2 to 1.9 minutes per artifact.
-An agentic trajectory reads 0.8 M without and 1.0 M with a document in
-about two minutes, 1.4 M in 2.7 minutes with the judge.
+\paragraph{Usage and time: Highscore.}
+\begin{itemize}
+\item One response: 0.1 M input tokens; 1.2--1.9 model-call minutes/artifact.
+\item Agentic: 0.8 M without context, 1.0 M with; about 2 minutes.
+\item Judge: 1.4 M; 2.7 minutes.
+\end{itemize}
 
-\paragraph{The second task.}
-Achievements separates what Highscore did not
-(Table~\ref{tab:results-ach}). Under one response no artifact compiles,
-with or without a document: the feature touches five game classes, and
-an exact-edit response gets at least one of them wrong. With repository
-tools and feedback the control compiles 90\% and passes 78\% of the
-security checks, failing the points overflow and the oversized line in
-every compiled artifact; the full document takes the checks to 95\% and
-makes 5 of 10 artifacts pass everything, all five in Generation, while
-Reuse loses three functional artifacts; the high-level and the generic
-document are within two points on the checks at 3 of 10 all-pass each,
-the generic one again without having seen the repository. The judge, which
-changed little for Highscore, costs here: compilation falls to 60\%,
-functional artifacts to 4 of 10 and all-pass to 1, because a cancelled
-submission on a five-class integration leaves too few attempts to reach
-a compiling one. An Achievements trajectory reads 1.4 to 1.5 M input
-tokens in about three and a half minutes, 2.0 M in 4.5 minutes with the
-judge.
+\paragraph{The second task: Achievements.}
+\begin{itemize}
+\item One response: 0\% compilation in every arm; integration across
+5 game classes; exact-edit failures (Table~\ref{tab:results-ach}).
+\item Agentic control: 90\% compilation; 78\% checks;
+point-overflow and oversized-line failures in every compiled artifact.
+\item Full document: 100\% compilation; 95\% checks; 5/10 all pass,
+all five in Generation; three Reuse artifacts failing functional suite.
+\item S1/S3: 96\%/94\% checks, but 70\% compilation each;
+3/10 all pass each. High check means alongside delivery failures.
+\item Judge versus S2: compilation 100\% to 60\%; functional artifacts
+4/10; all pass 5/10 to 1/10. Trajectory explanation: cancellations
+consume attempts needed for five-class integration.
+\item Input/time: 1.4--1.5 M, 3.4--3.7 minutes without judge;
+2.0 M, 4.5 minutes with judge.
+\end{itemize}
